@@ -95,7 +95,7 @@ if (Astro.request.method === "POST") {
                 text-transform: uppercase;
                 letter-spacing: 4px;
                 margin-top: 8px;
-                color: rgba(0, 0, 0, 0.45); /* Darkened for accessibility */
+                color: rgba(0, 0, 0, 0.75); /* Maximized contrast */
             }
 
             form {
@@ -113,7 +113,7 @@ if (Astro.request.method === "POST") {
                 padding: 16px 0;
                 background: transparent;
                 border: none;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.2); /* Increased contrast */
+                border-bottom: 2px solid rgba(0, 0, 0, 0.4); /* Thicker and darker */
                 font-family: var(--doc-sans);
                 font-size: 16px;
                 text-align: center;
@@ -126,9 +126,9 @@ if (Astro.request.method === "POST") {
             }
 
             input::placeholder {
-                color: rgba(0, 0, 0, 0.35); /* Darkened for accessibility */
+                color: rgba(0, 0, 0, 0.65); /* Maximized contrast */
                 font-style: italic;
-                opacity: 1; /* Reset opacity for cleaner control */
+                opacity: 1;
             }
 
             button {
@@ -164,7 +164,7 @@ if (Astro.request.method === "POST") {
                 position: fixed;
                 bottom: 40px;
                 font-size: 10px;
-                color: rgba(0, 0, 0, 0.4); /* Darkened for accessibility */
+                color: rgba(0, 0, 0, 0.65); /* Maximized contrast */
                 text-transform: uppercase;
                 letter-spacing: 2px;
             }
@@ -174,7 +174,7 @@ if (Astro.request.method === "POST") {
         <div class="login-container">
             <div class="logo">
                 KC Wolff-Ingham
-                <span>Design Leadership Portfolio</span>
+                <span>Resume and portfolio</span>
             </div>
 
             <form method="POST">
