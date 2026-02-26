@@ -25,8 +25,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
     if (session === password) {
         const response = await next();
-        // Ensure even authenticated pages tell crawlers not to index
-        response.headers.set("X-Robots-Tag", "noindex, nofollow");
+        // Consolidate security & privacy headers
+        response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
+        response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+        response.headers.set("Pragma", "no-cache");
+        response.headers.set("Expires", "0");
         return response;
     }
 
