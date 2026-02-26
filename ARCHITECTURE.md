@@ -26,7 +26,8 @@ A client-side JavaScript engine in `index.astro` handles:
 ### Margin Annotation System
 A custom implementation using `IntersectionObserver` that:
 - Monitors hotspots as they enter the viewport.
-- Triggers the appearance of absolute-positioned annotations in the page margins.
+- Triggers the appearance of absolute-positioned annotations in the page margins on wide displays (≥1400px).
+- **Marginalia Preview (Desktop Discovery):** When the window is between 1024px and 1399px, a vertical discovery hint is displayed. As hotspots enter the viewport, a subtle "nudge" animation is triggered to encourage users to widen their browser.
 - Resolves vertical overlaps to ensure a clean layout on wide displays.
 
 ## Styling

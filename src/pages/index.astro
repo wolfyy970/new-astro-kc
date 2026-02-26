@@ -2,15 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import resume from '../content/resume.json';
 import popovers from '../content/popovers.json';
+import { renderHotspots } from '../utils/render';
 import '../styles/global.css';
-
-// Helper: convert <hotspot key="x">text</hotspot> in JSON strings to real HTML spans
-function renderHotspots(text: string): string {
-  return text.replace(
-    /<hotspot key="([^"]+)">([^<]+)<\/hotspot>/g,
-    '<span class="hotspot" data-popover="$1" tabindex="0" role="button" aria-expanded="false">$2</span>'
-  );
-}
 ---
 
 <BaseLayout

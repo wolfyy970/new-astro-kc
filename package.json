@@ -10,5 +10,8 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.7.0",
     "astro": "^5.0.0"
+  },
+  "devDependencies": {
+    "vitest": "^4.0.18"
   }
 }
