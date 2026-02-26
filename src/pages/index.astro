@@ -20,7 +20,7 @@ import "../styles/global.css";
       {
         resume.hero.credentials.map((c, i) => (
           <>
-            {i > 0 && <span>·</span>}
+            {i > 0 && <span aria-hidden="true">·</span>}
             {c}
           </>
         ))
@@ -29,10 +29,11 @@ import "../styles/global.css";
   </header>
 
   <!-- ═══════ THE DOCUMENT ═══════ -->
-  <div class="doc-wrapper">
-    <div class="doc-page reveal">
+  <main class="doc-wrapper" id="main-content">
+    <section class="doc-page reveal" aria-label="Resume Content">
       <div class="doc-hint">
-        <span class="doc-hint-dot"></span> Highlighted items are interactive
+        <span class="doc-hint-dot" aria-hidden="true"></span> Highlighted items are
+        interactive
       </div>
 
       <!-- Header -->
@@ -141,8 +142,8 @@ import "../styles/global.css";
           resume.contact.phone
         } &nbsp;·&nbsp; {resume.contact.location}
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
 
   <!-- ═══════ POPOVER OVERLAY ═══════ -->
   <div class="popover-overlay" id="popover-overlay" role="presentation"></div>

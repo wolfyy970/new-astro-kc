@@ -9,10 +9,11 @@
 :root {
   --bg: #E8E6E1;
   --doc-white: #FFFFFF;
-  --accent: #7A5C1F;
+  --accent: #70541C;
+  /* Darkened from #7A5C1F for 4.8:1 contrast on #E8E6E1 */
   /* kept for CSS usage; JS reads from constants.ts */
-  --accent-hover: rgba(122, 92, 31, 0.22);
-  --accent-border: rgba(122, 92, 31, 0.25);
+  --accent-hover: rgba(112, 84, 28, 0.22);
+  --accent-border: rgba(112, 84, 28, 0.25);
   --doc-heading: #1A1A1A;
   --doc-body: #333;
   --doc-light: #666;

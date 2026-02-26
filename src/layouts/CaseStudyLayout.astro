@@ -1,5 +1,5 @@
 ---
-import '../styles/case-study.css';
+import "../styles/case-study.css";
 
 interface Props {
   title: string;
@@ -7,44 +7,67 @@ interface Props {
   ogImage?: string;
 }
 
-const {
-  title,
-  description,
-  ogImage,
-} = Astro.props;
+const { title, description, ogImage } = Astro.props;
 ---
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{title}</title>
-  <meta name="description" content={description}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
 
-  <!-- Open Graph -->
-  <meta property="og:title" content={title}>
-  <meta property="og:description" content={description}>
-  {ogImage && <meta property="og:image" content={ogImage}>}
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- Favicon -->
-  <link rel="icon" href="/favicon.png">
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.png" />
 
-  <!-- Case study fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
-</head>
-<body>
-  <nav class="back-nav">
-    <a class="back-link" href="/">&larr; Back</a>
-  </nav>
+    <!-- Case study fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .skip-link {
+        position: absolute;
+        top: -100px;
+        left: 0;
+        background: var(--accent, #000);
+        color: #fff;
+        padding: 10px 20px;
+        z-index: 9999;
+        transition: top 0.2s;
+        font-size: 14px;
+        text-decoration: none;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .skip-link:focus {
+        top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <nav class="back-nav">
+      <a class="back-link" href="/">&larr; Back</a>
+    </nav>
 
-  <slot />
+    <main id="main-content">
+      <slot />
+    </main>
 
-  <footer>
-    <p>KC &mdash; Design Leadership Portfolio</p>
-  </footer>
-</body>
+    <footer>
+      <p>KC &mdash; Design Leadership Portfolio</p>
+    </footer>
+  </body>
 </html>
