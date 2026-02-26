@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { buildContentHTML, requireGlobal, requireEl } from './dom';
+import { buildContentNode, requireGlobal, requireEl } from './dom';
 import type { PopoverData } from '../types/content';
 
-describe('buildContentHTML', () => {
+describe('buildContentNode', () => {
     const mockData: PopoverData = {
         label: 'Test Label',
         text: 'This is sentence one. This is sentence two. This is sentence three.',
@@ -13,8 +13,15 @@ describe('buildContentHTML', () => {
         linkText: 'Learn More'
     };
 
-    it('should build full HTML for popover (wrapBody: true)', () => {
-        const html = buildContentHTML(mockData, 'popover', { wrapBody: true });
+    function fragmentToHTML(frag: DocumentFragment): string {
+        const div = document.createElement('div');
+        div.appendChild(frag);
+        return div.innerHTML;
+    }
+
+    it('should build full HTML/DOM for popover (wrapBody: true)', () => {
+        const frag = buildContentNode(mockData, 'popover', { wrapBody: true });
+        const html = fragmentToHTML(frag);
         expect(html).toContain('class="popover-body"');
         expect(html).toContain('class="popover-img"');
         expect(html).toContain('src="test.jpg"');
@@ -27,8 +34,9 @@ describe('buildContentHTML', () => {
         expect(html).toContain('This is sentence three.'); // Full text
     });
 
-    it('should build truncated HTML for annotation (truncateText: true, prependRule: true)', () => {
-        const html = buildContentHTML(mockData, 'sa', { truncateText: true, prependRule: true });
+    it('should build truncated HTML/DOM for annotation (truncateText: true, prependRule: true)', () => {
+        const frag = buildContentNode(mockData, 'sa', { truncateText: true, prependRule: true });
+        const html = fragmentToHTML(frag);
         expect(html).toContain('class="sa-rule"');
         expect(html).toContain('This is sentence two.');
         expect(html).not.toContain('This is sentence three.'); // Truncated
@@ -39,7 +47,8 @@ describe('buildContentHTML', () => {
             label: 'Minimal',
             text: 'Only text.'
         };
-        const html = buildContentHTML(minimalData, 'popover');
+        const frag = buildContentNode(minimalData, 'popover');
+        const html = fragmentToHTML(frag);
         expect(html).not.toContain('img');
         expect(html).not.toContain('stat');
         expect(html).not.toContain('quote');
@@ -53,7 +62,8 @@ describe('buildContentHTML', () => {
             text: 'Text',
             link: 'https://example.com'
         };
-        const html = buildContentHTML(noLinkText, 'popover');
+        const frag = buildContentNode(noLinkText, 'popover');
+        const html = fragmentToHTML(frag);
         expect(html).not.toContain('href');
     });
 });
@@ -61,13 +71,13 @@ describe('buildContentHTML', () => {
 describe('requireGlobal', () => {
     it('should return the value if present on window', () => {
         (window as any).__MOCK_GLOBAL__ = { test: 123 };
-        const result = requireGlobal<{ test: number }>('__MOCK_GLOBAL__');
+        const result = (requireGlobal as any)('__MOCK_GLOBAL__');
         expect(result.test).toBe(123);
         delete (window as any).__MOCK_GLOBAL__;
     });
 
     it('should throw if value is missing', () => {
-        expect(() => requireGlobal('__NON_EXISTENT__')).toThrow('window.__NON_EXISTENT__ is not set');
+        expect(() => (requireGlobal as any)('__NON_EXISTENT__')).toThrow('window.__NON_EXISTENT__ is not set');
     });
 });
 

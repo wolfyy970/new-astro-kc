@@ -26,17 +26,16 @@ Handles the heavy lifting for the contextual overlay system:
 - **Responsive Handling:** Swaps between floating draggable panels and mobile "bottom-sheets."
 - **Annotation Sync:** "Dissolves" (suppresses) the corresponding margin annotation when a popover is open to prevent content duplication.
 
-### 2. Highlight Engine (`highlight-engine.ts`)
-Orchestrates the visual affordances for interactive text:
-- **Multi-line Highlights:** Uses `getClientRects()` to draw precise highlights behind each visual line of wrapped text.
-- **Directional Fades:** Multi-line highlights apply directional gradients to signal flow (fade out at the end of a line, fade in at the start of the next).
-- **Stacking Integrity:** Fragments are drawn relative to `.doc-page` using `isolation: isolate` to ensure they paint correctly above the page background but below the text.
-
-### 3. Annotation Engine (`annotation-engine.ts`)
+### 2. Annotation Engine (`annotation-engine.ts`)
 Manages the "magazine-style" margin content:
+- **Automatic DOM Mapping:** Dynamically parses `.hotspot` anchors in the DOM and automatically alternates left/right side assignments for marginalia (decoupling content creation from configuration).
 - **Intersection Observation:** Rebuilds and positions margin annotations as hotspots scroll into view.
-- **Overlap Resolution:** Algorithmic adjustment to prevent vertical collisions between annotations.
+- **Overlap Resolution:** Algorithmic adjustment to prevent vertical collisions between adjacent annotations.
 - **Widen Hint:** Triggers nudge animations between 1024px-1399px to signal hidden marginalia content.
+
+### 3. Native CSS Highlighting
+We removed JavaScript-based highlight orchestration in favor of native CSS robustness:
+- **`box-decoration-break: clone`:** Enables precise padding and border-radius applications geometry wrapping across multiple lines.
 
 ## Shared Infrastructure
 

@@ -19,7 +19,12 @@ export function requireEl(id: string, context = 'Unknown'): HTMLElement {
     return el;
 }
 
-// ── Window global access ───────────────────────────────────────────────────────
+declare global {
+    interface Window {
+        __POPOVERS__?: import('../types/content.ts').PopoverMap;
+        __ANNOTATIONS__?: import('../types/content.ts').ScrollAnnotation[];
+    }
+}
 
 /**
  * Reads a window global set by a <script define:vars> block.
@@ -29,21 +34,21 @@ export function requireEl(id: string, context = 'Unknown'): HTMLElement {
  * @param key     Property name on window (e.g. '__POPOVERS__')
  * @param context Name of the calling module
  */
-export function requireGlobal<T>(key: string, context = 'Unknown'): T {
-    const value = (window as unknown as Record<string, unknown>)[key];
+export function requireGlobal<K extends keyof Window>(key: K, context = 'Unknown'): NonNullable<Window[K]> {
+    const value = window[key];
     if (value === undefined) {
         throw new Error(
             `[${context}] window.${key} is not set. ` +
             `Check that <script define:vars> in index.astro runs before this module.`,
         );
     }
-    return value as T;
+    return value as NonNullable<Window[K]>;
 }
 
 // ── HTML builder ───────────────────────────────────────────────────────────────
 
 /**
- * Builds an HTML string for a popover card or margin annotation from PopoverData.
+ * Builds a DocumentFragment containing DOM elements for a popover card or margin annotation.
  * Both surfaces use the same data shape but differ in class prefix, text length,
  * structural wrapper, and leading rule element.
  *
@@ -54,35 +59,58 @@ export function requireGlobal<T>(key: string, context = 'Unknown'): T {
  *   wrapBody      — wrap content fields in <div class="{prefix}-body"> (for popovers)
  *   prependRule   — prepend <div class="{prefix}-rule"></div> (for annotations)
  */
-export function buildContentHTML(
+export function buildContentNode(
     data: PopoverData,
     prefix: string,
     options: { truncateText?: boolean; wrapBody?: boolean; prependRule?: boolean } = {},
-): string {
+): DocumentFragment {
     const { truncateText = false, wrapBody = false, prependRule = false } = options;
+    const fragment = document.createDocumentFragment();
 
     const text = truncateText
         ? data.text.split('. ').slice(0, 2).join('. ') + '.'
         : data.text;
 
-    let html = prependRule ? '<div class="' + prefix + '-rule"></div>' : '';
-
-    if (data.img) {
-        html += '<img class="' + prefix + '-img" src="' + data.img + '" alt="' + data.label + '">';
+    if (prependRule) {
+        const rule = document.createElement('div');
+        rule.className = `${prefix}-rule`;
+        fragment.appendChild(rule);
     }
 
-    const fields =
-        '<div class="' + prefix + '-label">' + data.label + '</div>' +
-        (data.stat ? '<div class="' + prefix + '-stat">' + data.stat + '</div>' : '') +
-        '<div class="' + prefix + '-text">' + text + '</div>' +
-        (data.quote ? '<div class="' + prefix + '-quote">' + data.quote + '</div>' : '') +
-        (data.link && data.linkText
-            ? '<a class="' + prefix + '-link" href="' + data.link + '">' + data.linkText + '</a>'
-            : '');
+    if (data.img) {
+        const img = document.createElement('img');
+        img.className = `${prefix}-img`;
+        img.src = data.img;
+        img.alt = data.label;
+        fragment.appendChild(img);
+    }
 
-    html += wrapBody
-        ? '<div class="' + prefix + '-body">' + fields + '</div>'
-        : fields;
+    const bodyContainer = wrapBody ? document.createElement('div') : fragment;
+    if (wrapBody) {
+        (bodyContainer as HTMLElement).className = `${prefix}-body`;
+    }
 
-    return html;
+    const appendField = (tag: string, className: string, content: string, href?: string) => {
+        const el = document.createElement(tag);
+        el.className = className;
+        el.textContent = content; // Safely escapes HTML
+        if (href && tag === 'a') {
+            (el as HTMLAnchorElement).href = href;
+        }
+        bodyContainer.appendChild(el);
+    };
+
+    appendField('div', `${prefix}-label`, data.label);
+    if (data.stat) appendField('div', `${prefix}-stat`, data.stat);
+    appendField('div', `${prefix}-text`, text);
+    if (data.quote) appendField('div', `${prefix}-quote`, data.quote);
+    if (data.link && data.linkText) {
+        appendField('a', `${prefix}-link`, data.linkText, data.link);
+    }
+
+    if (wrapBody) {
+        fragment.appendChild(bodyContainer as HTMLElement);
+    }
+
+    return fragment;
 }

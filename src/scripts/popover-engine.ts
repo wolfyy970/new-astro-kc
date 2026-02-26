@@ -17,12 +17,11 @@
 //   - Drag handle has aria-hidden (purely presentational)
 
 import type { PopoverMap } from '../types/content.ts';
-import { syncFragmentStates } from './highlight-engine.ts';
-import { requireEl, buildContentHTML } from './dom.ts';
+import { requireEl, buildContentNode } from './dom.ts';
 import {
     BREAKPOINT_MOBILE,
     POPOVER_WIDTH, POPOVER_MARGIN_MIN, POPOVER_OFFSET_Y,
-    POPOVER_EST_HEIGHT_WITH_IMG, POPOVER_EST_HEIGHT_WITHOUT_IMG,
+    POPOVER_EST_HEIGHT_WITH_IMG, POPOVER_EST_HEIGHT_WITHOUT_IMG, DRAG_MIN_VISIBLE,
     ID_OVERLAY, ID_POPOVER,
     CLS_ACTIVE, CLS_VISIBLE, CLS_OPEN, CLS_POPOVER_OPEN, CLS_HOVERED,
     CLS_ANNOTATION_SUPPRESSED, CLS_IS_DRAGGING,
@@ -84,11 +83,6 @@ function disableFocusTrap(container: HTMLElement): void {
 }
 
 // ── Drag ──────────────────────────────────────────────────────────────────────
-// Called once from initPopoverEngine — attaches persistent listeners to the
-// popoverEl. Drag only initiates from the .popover-handle strip; all other
-// pointer events pass through normally to links and the close button.
-
-const DRAG_MIN_VISIBLE = 48; // px — minimum panel area that must stay on-screen
 
 function makeDraggable(popoverEl: HTMLElement): void {
     let isDragging = false;
@@ -158,41 +152,14 @@ function makeDraggable(popoverEl: HTMLElement): void {
     popoverEl.addEventListener('pointercancel', stopDrag);
 }
 
-// ── Engine state ───────────────────────────────────────────────────────────────
-
 let activeHotspot: HTMLElement | null = null;
 let popovers: PopoverMap = {};
 
-// ── Core open/close ────────────────────────────────────────────────────────────
+// ── Helpers ────────────────────────────────────────────────────────────────────
 
-function openPopover(hotspot: HTMLElement): void {
-    const overlay = requireEl(ID_OVERLAY, 'PopoverEngine');
-    const popoverEl = requireEl(ID_POPOVER, 'PopoverEngine');
+function injectPopoverChrome(popoverEl: HTMLElement, label: string): HTMLButtonElement {
+    popoverEl.setAttribute('aria-label', label);
 
-    const key = hotspot.dataset.popover;
-    if (!key) return;
-    const data = popovers[key];
-    if (!data) return;
-
-    // Close any existing popover without returning focus (swapping to new one)
-    closePopover({ returnFocus: false });
-
-    activeHotspot = hotspot;
-    hotspot.classList.add(CLS_ACTIVE);
-    hotspot.setAttribute('aria-expanded', 'true');
-    syncFragmentStates();
-
-    // Dissolve the paired margin annotation — no duplicate content
-    suppressAnnotation(key);
-
-    // Update accessible dialog name
-    popoverEl.setAttribute('aria-label', data.label);
-
-    // Build content
-    popoverEl.innerHTML = buildContentHTML(data, 'popover', { wrapBody: true });
-
-    // Inject drag handle with integrated × close button
-    // The handle is a single chrome bar: grip dots centered, × on the right
     const handle = document.createElement('div');
     handle.className = 'popover-handle';
     handle.setAttribute('aria-hidden', 'true');
@@ -202,47 +169,74 @@ function openPopover(hotspot: HTMLElement): void {
     closeBtn.setAttribute('aria-label', 'Close');
     closeBtn.addEventListener('click', () => closePopover());
 
-    // Prepend as siblings so they can be styled/hidden independently in CSS
     popoverEl.prepend(closeBtn);
     popoverEl.prepend(handle);
+    return closeBtn;
+}
 
-    const isMobile = window.innerWidth <= BREAKPOINT_MOBILE;
-    if (!isMobile) {
-        const rect = hotspot.getBoundingClientRect();
-        const scrollY = window.scrollY;
-        const scrollX = window.scrollX;
+function calculatePopoverPosition(hotspot: HTMLElement, hasImg: boolean): { top: string; left: string } {
+    if (window.innerWidth <= BREAKPOINT_MOBILE) return { top: '', left: '' };
 
-        let top = rect.bottom + scrollY + POPOVER_OFFSET_Y;
-        let left = rect.left + scrollX + rect.width / 2 - POPOVER_WIDTH / 2;
+    const rect = hotspot.getBoundingClientRect();
+    const scrollY = window.scrollY;
+    const scrollX = window.scrollX;
 
-        if (left < POPOVER_MARGIN_MIN) left = POPOVER_MARGIN_MIN;
-        if (left + POPOVER_WIDTH > window.innerWidth) {
-            left = window.innerWidth - POPOVER_WIDTH - POPOVER_MARGIN_MIN;
-        }
+    let top = rect.bottom + scrollY + POPOVER_OFFSET_Y;
+    let left = rect.left + scrollX + rect.width / 2 - POPOVER_WIDTH / 2;
 
-        const estimatedHeight = data.img
-            ? POPOVER_EST_HEIGHT_WITH_IMG
-            : POPOVER_EST_HEIGHT_WITHOUT_IMG;
-        if (rect.bottom + estimatedHeight > window.innerHeight) {
-            top = rect.top + scrollY - estimatedHeight - POPOVER_OFFSET_Y;
-            if (top < scrollY + POPOVER_MARGIN_MIN) {
-                top = rect.bottom + scrollY + POPOVER_OFFSET_Y;
-            }
-        }
-
-        popoverEl.style.top = top + 'px';
-        popoverEl.style.left = left + 'px';
-    } else {
-        popoverEl.style.top = '';
-        popoverEl.style.left = '';
+    if (left < POPOVER_MARGIN_MIN) left = POPOVER_MARGIN_MIN;
+    if (left + POPOVER_WIDTH > window.innerWidth) {
+        left = window.innerWidth - POPOVER_WIDTH - POPOVER_MARGIN_MIN;
     }
 
+    const estimatedHeight = hasImg ? POPOVER_EST_HEIGHT_WITH_IMG : POPOVER_EST_HEIGHT_WITHOUT_IMG;
+    if (rect.bottom + estimatedHeight > window.innerHeight) {
+        top = rect.top + scrollY - estimatedHeight - POPOVER_OFFSET_Y;
+        if (top < scrollY + POPOVER_MARGIN_MIN) {
+            top = rect.bottom + scrollY + POPOVER_OFFSET_Y;
+        }
+    }
+
+    return { top: top + 'px', left: left + 'px' };
+}
+
+function toggleHotspotState(el: HTMLElement, isHovered: boolean): void {
+    if (isHovered) el.classList.add(CLS_HOVERED);
+    else el.classList.remove(CLS_HOVERED);
+}
+
+// ── Core open/close ────────────────────────────────────────────────────────────
+
+function openPopover(hotspot: HTMLElement): void {
+    const overlay = requireEl(ID_OVERLAY, 'PopoverEngine');
+    const popoverEl = requireEl(ID_POPOVER, 'PopoverEngine');
+
+    const key = hotspot.dataset.popover;
+    if (!key || !popovers[key]) return;
+    const data = popovers[key];
+
+    closePopover({ returnFocus: false });
+
+    activeHotspot = hotspot;
+    hotspot.classList.add(CLS_ACTIVE);
+    hotspot.setAttribute('aria-expanded', 'true');
+    suppressAnnotation(key);
+
+    popoverEl.replaceChildren(buildContentNode(data, 'popover', { wrapBody: true }));
+    const closeBtn = injectPopoverChrome(popoverEl, data.label);
+
+    const pos = calculatePopoverPosition(hotspot, !!data.img);
+    popoverEl.style.top = pos.top;
+    popoverEl.style.left = pos.left;
+
     overlay.classList.add(CLS_OPEN);
-    if (isMobile) document.body.classList.add(CLS_POPOVER_OPEN);
+    if (window.innerWidth <= BREAKPOINT_MOBILE) {
+        document.body.classList.add(CLS_POPOVER_OPEN);
+    }
 
     requestAnimationFrame(() => {
         popoverEl.classList.add(CLS_VISIBLE);
-        closeBtn.focus(); // first Tab stop — immediate keyboard escape route
+        closeBtn.focus();
         enableFocusTrap(popoverEl);
     });
 }
@@ -268,7 +262,6 @@ export function closePopover(options: CloseOptions = {}): void {
         const returnEl = activeHotspot;
         const returnKey = activeHotspot.dataset.popover ?? '';
         activeHotspot = null;
-        syncFragmentStates();
         restoreAnnotation(returnKey);
         if (returnFocus) {
             requestAnimationFrame(() => returnEl.focus());
@@ -288,41 +281,22 @@ export function initPopoverEngine(popoverData: PopoverMap): void {
     makeDraggable(popoverEl);
 
     document.querySelectorAll<HTMLElement>(SEL_HOTSPOT).forEach(el => {
-        el.addEventListener('pointerenter', () => {
-            el.classList.add(CLS_HOVERED);
-            syncFragmentStates();
-        });
-        el.addEventListener('pointerleave', () => {
-            el.classList.remove(CLS_HOVERED);
-            syncFragmentStates();
-        });
-        el.addEventListener('focus', () => {
-            el.classList.add(CLS_HOVERED);
-            syncFragmentStates();
-        });
-        el.addEventListener('blur', () => {
-            el.classList.remove(CLS_HOVERED);
-            syncFragmentStates();
-        });
+        el.addEventListener('pointerenter', () => toggleHotspotState(el, true));
+        el.addEventListener('pointerleave', () => toggleHotspotState(el, false));
+        el.addEventListener('focus', () => toggleHotspotState(el, true));
+        el.addEventListener('blur', () => toggleHotspotState(el, false));
 
-        el.addEventListener('click', (e: Event) => {
+        const trigger = (e: Event) => {
             e.stopPropagation();
-            if (activeHotspot === el) {
-                closePopover();
-            } else {
-                openPopover(el);
-            }
-        });
+            if (activeHotspot === el) closePopover();
+            else openPopover(el);
+        };
 
+        el.addEventListener('click', trigger);
         el.addEventListener('keydown', (e: KeyboardEvent) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                e.stopPropagation();
-                if (activeHotspot === el) {
-                    closePopover();
-                } else {
-                    openPopover(el);
-                }
+                trigger(e);
             }
         });
     });

@@ -8,7 +8,12 @@
    ```bash
    npm install
    ```
-4. **Run the development server:**
+4. **(Optional) Reset Demo Content:**
+   ```bash
+   npm run setup
+   ```
+   This clears example data from the JSON files so you can start fresh.
+5. **Run the development server:**
    ```bash
    npm run dev
    ```
@@ -51,13 +56,8 @@ Popover data is stored in `src/content/popovers.json`.
 - Fields include `label`, `text`, `stat`, `img`, `quote`, `link`, and `linkText`.
 
 ### Controlling Scroll Annotations
-The sequence and positioning of margin annotations are controlled in `resume.json` under the `scrollAnnotations` key:
-```json
-"scrollAnnotations": [
-  { "key": "gpc-revenue", "side": "right" },
-  { "key": "agentic",     "side": "left" }
-]
-```
+The sequence and positioning of margin annotations are **handled automatically**.
+Whenever a `<hotspot>` tag resolves with valid configuration inside `popovers.json`, the annotation engine reads the DOM from top to bottom and automatically alternates placing the marginalia on the left and right sides of the document. You do not need to manually map or configure their placement.
 
 ## Adding Case Studies
 

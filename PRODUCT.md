@@ -14,7 +14,7 @@ The primary landing experience is a "living" resume document.
 - **Scroll Annotations:** On wide screens (≥1400px), key hotspots automatically reveal themselves as margin annotations as the user scrolls, providing a rich, "magazine-style" experience.
 - **Annotation Dissolve:** A refined visual effect where margin annotations gracefully disappear when their corresponding popover is opened, avoiding visual clutter and content duplication.
 - **Marginalia Preview (Widen Hint):** On standard desktop screens (1024px-1399px), an elegant "Expand for Marginalia" hint appears. It signals that more content is available in a wider view.
-- **High-Fidelity Highlighting:** Smooth, multi-line highlights that flow with text wrapping.
+- **High-Fidelity Highlighting:** Smooth, multi-line highlights that flow with text wrapping using native CSS `box-decoration-break: clone` for maximum performance and zero JavaScript overhead.
 
 ### 2. Case Studies
 Deep dives into major projects, each with a custom thematic style while sharing a common backbone:

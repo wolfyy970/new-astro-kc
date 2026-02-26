@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "setup": "node scripts/setup.js"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.0",

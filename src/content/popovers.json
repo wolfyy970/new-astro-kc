@@ -47,13 +47,13 @@
     "linkText": "View Delta project →"
   },
   "clients": {
-    "label": "Client Portfolio",
+    "label": "Client Work",
     "text": "As Practice Lead at Sparks Grove (North Highland's innovation agency), won $4.7M+ in new business over 2.5 years including $3M in the first year alone. Led the shift from traditional agency model to agile software development and lean product management. Earned National Impact Award (2016) for transforming agency positioning to Human Experience Design."
   },
   "upwave": {
     "label": "Upwave · Turner Broadcasting",
     "text": "An IoT-driven digital health venture at the intersection of wearables and personalized content delivery. Partnered with IDEO on market validation. Introduced lean product methodology enabling daily release cycles. The product was ahead of mainstream wearable adoption — pre-Apple Watch.",
-    "img": "/images/upwave/upwave_homepage_screens.webp",
+    "img": "/images/upwave/turner-upwave-site.png",
     "link": "/upwave",
     "linkText": "View Upwave project →",
     "stat": "0 → 1M users in 8 months"

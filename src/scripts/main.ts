@@ -3,13 +3,12 @@
 // index.astro. Initialises all three interactive systems and coordinates the
 // highlight engine resize handler.
 
-import type { PopoverMap, ScrollAnnotation } from '../types/content.ts';
+import type { PopoverMap } from '../types/content.ts';
 import { requireGlobal } from './dom.ts';
-import { drawFragments } from './highlight-engine.ts';
 import { initPopoverEngine } from './popover-engine.ts';
 import { initAnnotationEngine } from './annotation-engine.ts';
 import {
-    SEL_REVEAL, SEL_FRAGMENT,
+    SEL_REVEAL,
     CLS_VISIBLE,
     RESIZE_DEBOUNCE_MS,
     REVEAL_THRESHOLD,
@@ -20,8 +19,7 @@ import {
 // requireGlobal() throws a clear diagnostic error if a global is missing,
 // rather than silently passing undefined through the type system.
 
-const popovers = requireGlobal<PopoverMap>('__POPOVERS__', 'main');
-const scrollAnnotations = requireGlobal<ScrollAnnotation[]>('__ANNOTATIONS__', 'main');
+const popovers = requireGlobal('__POPOVERS__', 'main');
 
 // ── Scroll reveal (.reveal elements) ─────────────────────────────────────────
 
@@ -41,12 +39,7 @@ document.querySelectorAll(SEL_REVEAL).forEach(el => revealObserver.observe(el));
 
 let resizeTimer = 0;
 window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    document.querySelectorAll(SEL_FRAGMENT).forEach(el => el.remove());
-
-    resizeTimer = window.setTimeout(() => {
-        drawFragments();
-    }, RESIZE_DEBOUNCE_MS);
+    // Other engines (annotation-engine) handle their own resize logic
 });
 
 // ── Boot sequence ─────────────────────────────────────────────────────────────
@@ -55,12 +48,6 @@ window.addEventListener('resize', () => {
 requestAnimationFrame(() => {
     requestAnimationFrame(() => {
         initPopoverEngine(popovers);
-        initAnnotationEngine(scrollAnnotations, popovers);
-        drawFragments();
-
-        // Re-draw after fonts load — Cormorant Garamond shifts bounding rects
-        document.fonts.ready.then(() => {
-            drawFragments();
-        });
+        initAnnotationEngine(popovers);
     });
 });

@@ -14,6 +14,7 @@ High-fidelity Design Leadership Portfolio built with Astro 5.0. This project dem
 
 ```bash
 npm install     # Install dependencies
+npm run setup   # Clean demo content to start fresh
 npm run dev     # Start development server (http://localhost:4321)
 npm run test    # Run WCAG-aligned test suite
 npm run build   # Production-ready build

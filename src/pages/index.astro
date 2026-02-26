@@ -9,7 +9,7 @@ import "../styles/global.css";
 
 <BaseLayout
   title={resume.displayName}
-  description="Design leadership portfolio — KC Wolff-Ingham. Senior product design leader with 30 years spanning banking, health tech, and media."
+  description="Design leadership — KC Wolff-Ingham. Senior product design leader with 30 years spanning banking, health tech, and media."
 >
   <!-- ═══════ HERO ═══════ -->
   <header class="hero">
@@ -169,11 +169,8 @@ import "../styles/global.css";
 
   <!-- ═══════ PAGE DATA → window globals ═══════ -->
   <!-- define:vars safely serialises build-time data; no template literals used here -->
-  <script
-    define:vars={{ popovers, scrollAnnotations: resume.scrollAnnotations }}
-  >
+  <script define:vars={{ popovers }}>
     window.__POPOVERS__ = popovers;
-    window.__ANNOTATIONS__ = scrollAnnotations;
   </script>
 
   <!-- ═══════ CLIENT-SIDE JS (module) ═══════ -->

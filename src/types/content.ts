@@ -36,11 +36,6 @@ export interface PatentsAndRecognition {
   certifications: string;
 }
 
-export interface ScrollAnnotation {
-  key: string;
-  side: 'left' | 'right';
-}
-
 export interface ResumeData {
   name: string;
   displayName: string;
@@ -55,7 +50,6 @@ export interface ResumeData {
   experience: ExperienceEntry[];
   education: Education[];
   patentsAndRecognition: PatentsAndRecognition;
-  scrollAnnotations: ScrollAnnotation[];
 }
 
 export interface PopoverData {

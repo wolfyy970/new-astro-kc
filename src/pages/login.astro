@@ -96,7 +96,9 @@ if (Astro.request.method === "POST") {
                 text-transform: uppercase;
                 letter-spacing: 0.25em; /* Refined tracking */
                 margin-top: 12px;
-                color: #555555; /* Authoritative, solid contrast */
+                color: var(
+                    --doc-heading
+                ); /* Match header for maximum contrast */
             }
 
             form {
@@ -175,7 +177,7 @@ if (Astro.request.method === "POST") {
         <div class="login-container">
             <div class="logo">
                 KC Wolff-Ingham
-                <span>Resume and portfolio</span>
+                <span>Resume and Selected Work</span>
             </div>
 
             <form method="POST">
