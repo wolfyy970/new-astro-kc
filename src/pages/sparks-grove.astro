@@ -25,11 +25,10 @@ import CaseStudyLayout from "../layouts/CaseStudyLayout.astro";
       min-height: 800px;
       overflow: hidden;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: center;
       text-align: center;
-      padding-bottom: 80px;
+      padding: 120px 40px;
     }
 
     .hero-bg {
@@ -45,25 +44,20 @@ import CaseStudyLayout from "../layouts/CaseStudyLayout.astro";
       object-position: center 25%;
     }
 
+    /* Global Overlay Scrim - The Middle Ground */
     .hero-bg::after {
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        to bottom,
-        rgba(11, 27, 43, 0.2) 0%,
-        rgba(11, 27, 43, 0.3) 50%,
-        rgba(11, 27, 43, 0.8) 100%
-      );
+      background: rgba(11, 27, 43, 0.55);
+      z-index: 1;
     }
 
     .hero-content {
       position: relative;
-      z-index: 1;
+      z-index: 2;
       padding: 0 40px;
-      max-width: 1000px;
-      margin-top: auto;
-      margin-bottom: 80px;
+      max-width: 900px;
     }
 
     .hero-label {
@@ -72,28 +66,27 @@ import CaseStudyLayout from "../layouts/CaseStudyLayout.astro";
       letter-spacing: 5px;
       text-transform: uppercase;
       color: #fff;
-      margin-bottom: 24px;
+      margin-bottom: 32px;
       opacity: 0.9;
     }
 
     .hero-title {
       font-family: "Playfair Display", serif;
-      font-size: clamp(54px, 7vw, 92px);
+      font-size: clamp(48px, 6vw, 84px);
       font-weight: 400;
       color: #fff;
-      line-height: 1;
-      margin-bottom: 32px;
-      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+      line-height: 1.05;
+      margin-bottom: 40px;
     }
 
     .hero-subtitle {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 300;
       color: #fff;
-      line-height: 1.6;
-      max-width: 720px;
+      line-height: 1.7;
+      max-width: 680px;
       margin: 0 auto;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      opacity: 0.95;
     }
 
     /* ── Showcase ── */
@@ -190,13 +183,11 @@ import CaseStudyLayout from "../layouts/CaseStudyLayout.astro";
     /* ── Responsive ── */
     @media (max-width: 1024px) {
       .hero {
-        height: 80vh;
         min-height: 600px;
-        padding-bottom: 48px;
+        padding: 120px 24px 80px;
       }
       .hero-content {
-        padding: 0 24px;
-        margin-bottom: 0;
+        padding: 0;
       }
       .showcase {
         padding: 100px 32px;
