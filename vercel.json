@@ -1,7 +1,0 @@
-{
-    "deploymentProtection": {
-        "vercelAuthentication": false,
-        "passwords": [],
-        "standardProtection": false
-    }
-}

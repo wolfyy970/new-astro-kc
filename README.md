@@ -1,4 +1,4 @@
-# KC Wolff-Ingham Portfolio
+# Confidential — KC Wolff-Ingham
 
 High-fidelity Design Leadership Portfolio built with Astro 5.0. This project demonstrates strategic product depth, technical fluency, and a commitment to inclusive, high-presence digital experiences.
 
