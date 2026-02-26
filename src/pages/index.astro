@@ -1,0 +1,435 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import resume from '../content/resume.json';
+import popovers from '../content/popovers.json';
+import '../styles/global.css';
+
+// Helper: convert <hotspot key="x">text</hotspot> in JSON strings to real HTML spans
+function renderHotspots(text: string): string {
+  return text.replace(
+    /<hotspot key="([^"]+)">([^<]+)<\/hotspot>/g,
+    '<span class="hotspot" data-popover="$1" tabindex="0" role="button" aria-expanded="false">$2</span>'
+  );
+}
+---
+
+<BaseLayout
+  title={resume.displayName}
+  description="Design leadership portfolio — KC Wolff-Ingham. Senior product design leader with 30 years spanning banking, health tech, and media."
+>
+
+  <!-- ═══════ HERO ═══════ -->
+  <header class="hero">
+    <h1 class="hero-name">{resume.displayName}</h1>
+    <div class="hero-rule"></div>
+    <p class="hero-sub">{resume.hero.tagline}</p>
+    <div class="hero-credentials">
+      {resume.hero.credentials.map((c, i) => (
+        <>{i > 0 && <span>·</span>}{c}</>
+      ))}
+    </div>
+  </header>
+
+  <!-- ═══════ THE DOCUMENT ═══════ -->
+  <div class="doc-wrapper">
+    <div class="doc-page reveal">
+
+      <div class="doc-hint"><span class="doc-hint-dot"></span> Highlighted items are interactive</div>
+
+      <!-- Header -->
+      <div class="doc-name">{resume.name}</div>
+      <div class="doc-title-line">{resume.titleLine}</div>
+      <div class="doc-contact">
+        <a href={`mailto:${resume.contact.email}`}>{resume.contact.email}</a> &nbsp;·&nbsp;
+        {resume.contact.phone} &nbsp;·&nbsp;
+        <a href={resume.contact.linkedinUrl} target="_blank">{resume.contact.linkedin}</a> &nbsp;·&nbsp;
+        {resume.contact.location}
+      </div>
+      <hr class="doc-hr">
+
+      <!-- Executive Summary -->
+      {resume.summary.split('\n\n').map((para) => (
+        <div class="doc-summary" set:html={renderHotspots(para)} />
+      ))}
+
+      <!-- Key Achievements -->
+      <div class="doc-section-heading">Key Achievements</div>
+
+      {resume.keyAchievements.map((cluster) => (
+        <div class="doc-achievement-cluster">
+          <h4>{cluster.heading}</h4>
+          <ul>
+            {cluster.items.map((item) => (
+              <li set:html={renderHotspots(item)} />
+            ))}
+          </ul>
+        </div>
+      ))}
+
+      <hr class="doc-hr-thin">
+
+      <!-- Experience -->
+      <div class="doc-section-heading">Experience</div>
+
+      {resume.experience.map((job) => (
+        <div class="doc-exp">
+          <div class="doc-exp-header">
+            <span class="doc-exp-company">{job.company}</span>
+            <span class="doc-exp-dates">{job.dates}</span>
+          </div>
+          <div class="doc-exp-title">{job.title}</div>
+          {job.description && <div class="doc-exp-desc" set:html={renderHotspots(job.description)} />}
+          <ul>
+            {job.bullets.map((bullet) => (
+              <li set:html={renderHotspots(bullet)} />
+            ))}
+          </ul>
+        </div>
+      ))}
+
+      <hr class="doc-hr-thin">
+
+      <!-- Education -->
+      <div class="doc-section-heading">Education</div>
+
+      {resume.education.map((edu) => (
+        <div class="doc-edu-item">
+          <div class="degree">{edu.degree}</div>
+          <div class="school">{edu.school}</div>
+          {edu.focus && <div class="focus" set:html={renderHotspots(edu.focus)} />}
+        </div>
+      ))}
+
+      <hr class="doc-hr-thin">
+
+      <!-- Patents & Recognition -->
+      <div class="doc-section-heading">Patents &amp; Recognition</div>
+      <div class="doc-awards-line"><strong>Patents:</strong> {resume.patentsAndRecognition.patents}</div>
+      <div class="doc-awards-line"><strong>Awards:</strong> {resume.patentsAndRecognition.awards}</div>
+      <div class="doc-awards-line"><strong>Certifications:</strong> {resume.patentsAndRecognition.certifications}</div>
+
+      <!-- Page footer -->
+      <div class="doc-footer">{resume.displayName} &nbsp;·&nbsp; {resume.contact.email} &nbsp;·&nbsp; {resume.contact.phone} &nbsp;·&nbsp; {resume.contact.location}</div>
+
+    </div>
+  </div>
+
+  <!-- ═══════ POPOVER OVERLAY ═══════ -->
+  <div class="popover-overlay" id="popover-overlay" role="presentation"></div>
+  <div class="popover" id="popover" role="dialog" aria-modal="false" aria-label="Details"></div>
+
+  <div class="site-footer">
+    <p>&copy; 2026 {resume.displayName}</p>
+  </div>
+
+  <!-- Discovery Hint (Desktop, < 1400px) -->
+  <div id="widen-hint" class="widen-hint" role="presentation">
+    <div class="widen-hint-text">Expand for Marginalia</div>
+    <div class="widen-hint-arrow">→</div>
+  </div>
+
+  <!-- ═══════ CLIENT-SIDE JS ═══════ -->
+  <script define:vars={{ popovers, scrollAnnotations: resume.scrollAnnotations }}>
+    // ── Popover Engine ──
+    const overlay = document.getElementById('popover-overlay');
+    const popoverEl = document.getElementById('popover');
+    const widenHintEl = document.getElementById('widen-hint');
+    let activeHotspot = null;
+
+    function openPopover(hotspot) {
+      const key = hotspot.dataset.popover;
+      const data = popovers[key];
+      if (!data) return;
+
+      closePopover();
+
+      activeHotspot = hotspot;
+      hotspot.classList.add('active');
+      hotspot.setAttribute('aria-expanded', 'true');
+
+      let html = '';
+      if (data.img) {
+        html += `<img class="popover-img" src="${data.img}" alt="${data.label}">`;
+      }
+      html += '<div class="popover-body">';
+      html += `<div class="popover-label">${data.label}</div>`;
+      if (data.stat) {
+        html += `<div class="popover-stat">${data.stat}</div>`;
+      }
+      html += `<div class="popover-text">${data.text}</div>`;
+      if (data.quote) {
+        html += `<div class="popover-quote">${data.quote}</div>`;
+      }
+      if (data.link) {
+        html += `<a class="popover-link" href="${data.link}">${data.linkText}</a>`;
+      }
+      html += '</div>';
+
+      popoverEl.innerHTML = html;
+
+      const isMobile = window.innerWidth <= 600;
+      if (!isMobile) {
+        const rect = hotspot.getBoundingClientRect();
+        const scrollY = window.scrollY;
+        const scrollX = window.scrollX;
+
+        let top = rect.bottom + scrollY + 10;
+        let left = rect.left + scrollX + (rect.width / 2) - 190;
+
+        if (left < 16) left = 16;
+        if (left + 380 > window.innerWidth) left = window.innerWidth - 396;
+
+        const estimatedHeight = data.img ? 360 : 220;
+        if (rect.bottom + estimatedHeight > window.innerHeight) {
+          top = rect.top + scrollY - estimatedHeight - 10;
+          if (top < scrollY + 16) top = rect.bottom + scrollY + 10;
+        }
+
+        popoverEl.style.top = top + 'px';
+        popoverEl.style.left = left + 'px';
+      } else {
+        popoverEl.style.top = '';
+        popoverEl.style.left = '';
+      }
+
+      overlay.classList.add('open');
+      if (isMobile) document.body.classList.add('popover-open');
+      requestAnimationFrame(() => {
+        popoverEl.classList.add('visible');
+      });
+    }
+
+    function closePopover() {
+      popoverEl.classList.remove('visible');
+      overlay.classList.remove('open');
+      document.body.classList.remove('popover-open');
+      if (activeHotspot) {
+        activeHotspot.classList.remove('active');
+        activeHotspot.setAttribute('aria-expanded', 'false');
+        const returnFocus = activeHotspot;
+        activeHotspot = null;
+        requestAnimationFrame(() => returnFocus.focus());
+      }
+    }
+
+    // Init hotspot listeners
+    document.querySelectorAll('.hotspot').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (activeHotspot === el) {
+          closePopover();
+        } else {
+          openPopover(el);
+        }
+      });
+
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          e.stopPropagation();
+          if (activeHotspot === el) {
+            closePopover();
+          } else {
+            openPopover(el);
+          }
+        }
+      });
+    });
+
+    overlay.addEventListener('click', closePopover);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closePopover();
+    });
+
+    // ── Scroll reveal ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.05 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ── Scroll-triggered margin annotations (≥1400px) ──
+    const autoRevealList = scrollAnnotations;
+    const autoRevealKeys = new Set(autoRevealList.map(a => a.key));
+    const docPage = document.querySelector('.doc-page');
+    let annotationEls = {};
+    let annotationsBuilt = false;
+
+    function isWideScreen() {
+      return window.innerWidth >= 1400;
+    }
+
+    function isNearWideScreen() {
+      const w = window.innerWidth;
+      return w >= 1024 && w < 1400;
+    }
+
+    function nudgeWidenHint() {
+      if (!isNearWideScreen()) return;
+      widenHintEl.classList.add('nudge');
+      setTimeout(() => widenHintEl.classList.remove('nudge'), 600);
+    }
+
+    function buildAnnotationHTML(data, side) {
+      let html = `<div class="sa-rule"></div>`;
+      html += `<div class="sa-label">${data.label}</div>`;
+      if (data.img) {
+        html += `<img class="sa-img" src="${data.img}" alt="${data.label}">`;
+      }
+      if (data.stat) {
+        html += `<div class="sa-stat">${data.stat}</div>`;
+      }
+      const shortText = data.text.split('. ').slice(0, 2).join('. ') + '.';
+      html += `<div class="sa-text">${shortText}</div>`;
+      if (data.quote) {
+        html += `<div class="sa-quote">${data.quote}</div>`;
+      }
+      if (data.link) {
+        html += `<a class="sa-link" href="${data.link}">${data.linkText}</a>`;
+      }
+      return html;
+    }
+
+    function buildAllAnnotations() {
+      if (annotationsBuilt) return;
+
+      const docPageRect = docPage.getBoundingClientRect();
+
+      // Pass 1: Create all annotations at hotspot positions
+      autoRevealList.forEach(({ key, side }) => {
+        const hotspot = document.querySelector(`.hotspot[data-popover="${key}"]`);
+        if (!hotspot) return;
+        const data = popovers[key];
+        if (!data) return;
+
+        const el = document.createElement('div');
+        el.className = `scroll-annotation side-${side}`;
+        el.innerHTML = buildAnnotationHTML(data, side);
+
+        const hotspotRect = hotspot.getBoundingClientRect();
+        const naturalTop = hotspotRect.top - docPageRect.top;
+
+        el.style.top = naturalTop + 'px';
+        docPage.appendChild(el);
+
+        annotationEls[key] = { el, hotspot, side, naturalTop };
+      });
+
+      // Pass 2: Resolve overlaps per side
+      resolveOverlaps('left');
+      resolveOverlaps('right');
+
+      annotationsBuilt = true;
+    }
+
+    function resolveOverlaps(side) {
+      const MIN_GAP = 48;
+
+      const items = autoRevealList
+        .filter(a => a.side === side && annotationEls[a.key])
+        .map(a => annotationEls[a.key]);
+
+      items.sort((a, b) => a.naturalTop - b.naturalTop);
+
+      let prevBottom = -Infinity;
+      for (const item of items) {
+        let top = item.naturalTop;
+        if (top < prevBottom + MIN_GAP) {
+          top = prevBottom + MIN_GAP;
+        }
+        item.el.style.top = top + 'px';
+        prevBottom = top + item.el.offsetHeight;
+      }
+    }
+
+    function revealAnnotation(key) {
+      const entry = annotationEls[key];
+      if (!entry || entry.el.classList.contains('revealed')) return;
+      entry.el.classList.add('revealed');
+      entry.hotspot.classList.add('scroll-revealed');
+    }
+
+    const marginObserver = new IntersectionObserver((entries) => {
+      if (isWideScreen()) {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const key = entry.target.dataset.popover;
+            if (autoRevealKeys.has(key)) {
+              revealAnnotation(key);
+            }
+          }
+        });
+      } else if (isNearWideScreen()) {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const key = entry.target.dataset.popover;
+            if (autoRevealKeys.has(key)) {
+              nudgeWidenHint();
+            }
+          }
+        });
+      }
+    }, {
+      rootMargin: '-15% 0px -40% 0px',
+      threshold: 0
+    });
+
+    function initScrollAnnotations() {
+      if (isWideScreen()) {
+        buildAllAnnotations();
+      }
+      
+      if (isNearWideScreen()) {
+        widenHintEl.classList.add('visible');
+      } else {
+        widenHintEl.classList.remove('visible');
+      }
+
+      document.querySelectorAll('.hotspot').forEach(el => {
+        const key = el.dataset.popover;
+        if (autoRevealKeys.has(key)) {
+          marginObserver.observe(el);
+        }
+      });
+    }
+
+    function cleanupAnnotations() {
+      Object.values(annotationEls).forEach(({ el, hotspot }) => {
+        el.remove();
+        hotspot.classList.remove('scroll-revealed');
+      });
+      annotationEls = {};
+      annotationsBuilt = false;
+      marginObserver.disconnect();
+    }
+
+    // Init
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        initScrollAnnotations();
+      });
+    });
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (isWideScreen() && !annotationsBuilt) {
+          initScrollAnnotations();
+        } else if (isWideScreen() && annotationsBuilt) {
+          widenHintEl.classList.remove('visible');
+        } else if (isNearWideScreen()) {
+          widenHintEl.classList.add('visible');
+          if (annotationsBuilt) cleanupAnnotations();
+          // Need to re-observe for the nudge logic
+          initScrollAnnotations();
+        } else if (!isWideScreen() && !isNearWideScreen()) {
+          widenHintEl.classList.remove('visible');
+          if (annotationsBuilt) cleanupAnnotations();
+        }
+      }, 250);
+    });
+  </script>
+
+</BaseLayout>

@@ -1,0 +1,378 @@
+---
+import CaseStudyLayout from '../layouts/CaseStudyLayout.astro';
+---
+
+<CaseStudyLayout
+  title="Upwave — Health & Wellness Platform"
+  description="How I led product and design for Upwave — Turner's health and wellness venture — from concept to 1 million users in 8 months."
+  ogImage="/images/upwave/upwave_homepage_screens.webp"
+>
+
+<style>
+  :root {
+    --upwave-orange: #F26522;
+    --upwave-red: #C83C2C;
+    --upwave-gold: #F5A623;
+    --upwave-dark: #1E1E1E;
+    --warm-white: #F7F5F2;
+    --soft-cream: #FFF8F4;
+    --text-primary: #1A1A1A;
+    --text-secondary: #5A5A5A;
+    --text-light: rgba(255,255,255,0.85);
+    --accent: #F26522;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    gap: 64px;
+    background: linear-gradient(160deg, #1A1A1A 0%, #2C2C2C 40%, #1E1E1E 100%);
+    overflow: hidden;
+    padding: 120px 80px;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    bottom: -20%;
+    left: -10%;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,102,51,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: -15%;
+    right: 10%;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245,166,35,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-left {
+    flex: 1;
+    max-width: 560px;
+    z-index: 1;
+  }
+
+  .hero-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    position: relative;
+  }
+
+  .hero-right img {
+    max-width: 100%;
+    border-radius: 16px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.35);
+  }
+
+  .hero-label {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--upwave-orange);
+    margin-bottom: 24px;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 5vw, 68px);
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 28px;
+  }
+
+  .hero-subtitle {
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--text-light);
+    line-height: 1.8;
+    max-width: 480px;
+  }
+
+  /* ── Platform Showcase (warm bg) ── */
+  .platform {
+    background: var(--soft-cream);
+    padding: 120px 80px;
+  }
+
+  .platform-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 64px;
+    max-width: 1400px;
+  }
+
+  .platform-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(255,102,51,0.06);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  .platform-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 48px rgba(255,102,51,0.1);
+  }
+
+  .platform-card img {
+    width: 100%;
+    display: block;
+  }
+
+  .platform-card-text {
+    padding: 24px 28px;
+  }
+
+  .platform-card-text h3 {
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+
+  .platform-card-text p {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .platform-card.full-width {
+    grid-column: 1 / -1;
+  }
+
+  /* ── Dark section ── */
+  .dark-section {
+    background: var(--upwave-dark);
+    padding: 120px 80px;
+  }
+
+  .dark-section .section-label { color: var(--upwave-gold); }
+  .dark-section .section-heading { color: #fff; }
+  .dark-section .section-body { color: var(--text-light); }
+
+  .dark-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-top: 64px;
+    max-width: 1400px;
+  }
+
+  .dark-card {
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: transform 0.35s ease;
+  }
+
+  .dark-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .dark-card img {
+    width: 100%;
+    display: block;
+  }
+
+  .dark-card-text {
+    padding: 24px 28px;
+  }
+
+  .dark-card-text h3 {
+    font-size: 17px;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .dark-card-text p {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* ── Feature image bg ── */
+  .feature-image {
+    background: #f0ebe6;
+  }
+
+  /* ── Campaign / Brand ── */
+  .campaign {
+    background: linear-gradient(135deg, #1A1A1A 0%, #2C2220 100%);
+    padding: 120px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .campaign-image {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+  }
+
+  .campaign-image img {
+    width: 100%;
+    display: block;
+  }
+
+  .campaign-text .section-heading { color: #fff; }
+  .campaign-text .section-body { color: rgba(255,255,255,0.7); }
+
+  /* ── Responsive ── */
+  @media (max-width: 1024px) {
+    .hero { flex-direction: column; padding: 80px 32px; gap: 48px; text-align: center; }
+    .hero-left { max-width: 100%; }
+    .hero-subtitle { max-width: 100%; }
+    .platform { padding: 80px 32px; }
+    .platform-grid { grid-template-columns: 1fr; }
+    .dark-section { padding: 80px 32px; }
+    .dark-grid { grid-template-columns: 1fr; }
+    .campaign { grid-template-columns: 1fr; padding: 80px 32px; }
+  }
+</style>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-label">Upwave</div>
+      <h1 class="hero-title">Building a Platform That Makes Wellness Stick</h1>
+      <p class="hero-subtitle">I led product and design for Turner's health and wellness venture — partnering with IDEO on market validation, then taking it from concept to 1M monthly users in eight months.</p>
+    </div>
+    <div class="hero-right">
+      <img src="/images/upwave/upwave_homepage_screens.webp" alt="Upwave homepage on desktop and mobile">
+    </div>
+  </div>
+
+  <!-- Context -->
+  <section class="context">
+    <div class="context-inner">
+      <div>
+        <div class="section-label">The Challenge</div>
+        <h2 class="section-heading">Wellness content is everywhere. Making people actually do something with it is the hard part.</h2>
+        <p class="section-body">Upwave wasn't a design project — it was a venture. I led product management and product design at the intersection of quantified-self technologies and personalized content. After partnering with IDEO on initial market validation, I owned the end-to-end experience: onboarding personalization, the content ecosystem, challenge mechanics, and the TrackIt analytics platform. We introduced lean product methodology with daily release cycles, grew site recirculation from 5% to 24%, and earned a Webby nomination before Turner exited the health vertical.</p>
+      </div>
+      <div>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <h4>My Role</h4>
+            <p>VP, Product &amp; UX</p>
+          </div>
+          <div class="meta-item">
+            <h4>Platform</h4>
+            <p>Upwave (Health & Wellness)</p>
+          </div>
+          <div class="meta-item">
+            <h4>Scope</h4>
+            <p>Responsive Web, Mobile, Personalization Engine, Analytics Dashboard</p>
+          </div>
+          <div class="meta-item">
+            <h4>Team</h4>
+            <p>UX/UI Designers, Content Strategists, Data Visualization, Engineering</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Platform Showcase -->
+  <div class="platform">
+    <div class="section-label">The Platform</div>
+    <h2 class="section-heading">Content, challenges, and tracking — designed as one system.</h2>
+    <p class="section-body">Every surface was designed to nudge users from reading to doing. The content feeds into challenges, challenges feed into tracking, and tracking feeds back into personalized content.</p>
+
+    <div class="platform-grid">
+      <div class="platform-card">
+        <img src="/images/upwave/8dc0f0d910df1c24b3620919604df9b218d4ad07_190917_110730.png" alt="Upwave content platform desktop and mobile">
+        <div class="platform-card-text">
+          <h3>Content Ecosystem</h3>
+          <p>Category-driven wellness content — move, eat, thrive, relax, connect — with responsive layouts for every device.</p>
+        </div>
+      </div>
+      <div class="platform-card">
+        <img src="/images/upwave/upwave_challenge_screens_desktop_mobile.webp" alt="Upwave challenge feature">
+        <div class="platform-card-text">
+          <h3>Challenge Engine</h3>
+          <p>Multi-day wellness challenges with progress tracking and daily step-by-step guidance.</p>
+        </div>
+      </div>
+      <div class="platform-card full-width">
+        <img src="/images/upwave/turner-upwave-trackit.png" alt="Upwave TrackIt analytics dashboard">
+        <div class="platform-card-text">
+          <h3>TrackIt Analytics</h3>
+          <p>Personal health dashboard connecting fitness trackers, nutrition data, and challenge progress into one view.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Personalization Feature -->
+  <div class="feature-row">
+    <div class="feature-image">
+      <img src="/images/upwave/36903fcf3073d5987b4290891753ef7c240b899b.jpg" alt="Upwave interest selection onboarding">
+    </div>
+    <div class="feature-text">
+      <div class="section-label">Personalization</div>
+      <h2 class="section-heading">Start by listening.</h2>
+      <p class="section-body">The onboarding experience opens with "So, what are you into?" — letting users self-select across wellness categories. This felt deceptively simple, but the design of this moment shaped the entire downstream experience: content ranking, challenge recommendations, and engagement patterns all keyed off these initial signals.</p>
+    </div>
+  </div>
+
+  <!-- UX Process (dark) -->
+  <div class="dark-section">
+    <div class="section-label">The Process</div>
+    <h2 class="section-heading">Rigorous thinking behind the warmth.</h2>
+    <p class="section-body">A product this content-rich required serious information architecture and interaction design work before anything felt effortless.</p>
+
+    <div class="dark-grid">
+      <div class="dark-card">
+        <img src="/images/upwave/turner-upwave-ux-01b-1024x587.png" alt="Upwave UX wireframes">
+        <div class="dark-card-text">
+          <h3>Information Architecture</h3>
+          <p>Wireframes and responsive layout specifications for the core content system.</p>
+        </div>
+      </div>
+      <div class="dark-card">
+        <img src="/images/upwave/turner-upwave-ux-02-1024x768.png" alt="Upwave UX design documentation">
+        <div class="dark-card-text">
+          <h3>Interaction Design</h3>
+          <p>Detailed component specs, user flows, and editorial content structures.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Campaign -->
+  <div class="campaign">
+    <div class="campaign-image">
+      <img src="/images/upwave/XC0CAmPAeICtOP9EN8uqN770k.webp" alt="Upwave Bring Your Z Game campaign">
+    </div>
+    <div class="campaign-text">
+      <div class="section-label">Brand Extension</div>
+      <h2 class="section-heading">Design that lived beyond the screen.</h2>
+      <p class="section-body">The visual language we built for the platform extended into campaign work — sleep challenges, social media activations, and brand moments that reinforced Upwave's voice. "Bring Your Z Game" became one of the platform's most recognized campaigns, driving engagement around the sleep and recovery content vertical.</p>
+    </div>
+  </div>
+
+</CaseStudyLayout>

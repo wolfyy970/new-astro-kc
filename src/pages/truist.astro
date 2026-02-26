@@ -1,0 +1,364 @@
+---
+import CaseStudyLayout from '../layouts/CaseStudyLayout.astro';
+---
+
+<CaseStudyLayout
+  title="Truist — Digital Banking Platform"
+  description="How I built and scaled a 30-person design org at SunTrust across all lines of business, then led business and commercial banking design through the $66B merger to Truist."
+  ogImage="/images/truist/1771246115132-cd678175.png"
+>
+
+<style>
+  :root {
+    --truist-purple: #3B1A5A;
+    --truist-deep: #2D1446;
+    --truist-teal: #00B4A0;
+    --warm-white: #F7F5F2;
+    --soft-purple: #F3EFF8;
+    --text-primary: #1A1A1A;
+    --text-secondary: #5A5A5A;
+    --text-light: rgba(255,255,255,0.85);
+    --accent: #3B1A5A;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, var(--truist-deep) 0%, var(--truist-purple) 50%, #5A2D82 100%);
+    overflow: hidden;
+    padding: 120px 80px;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -10%;
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,180,160,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-left {
+    flex: 1;
+    max-width: 600px;
+    z-index: 1;
+  }
+
+  .hero-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+  }
+
+  .hero-right img {
+    max-height: 600px;
+    width: auto;
+    border-radius: 24px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.4);
+  }
+
+  .hero-label {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--truist-teal);
+    margin-bottom: 24px;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 5vw, 68px);
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 28px;
+  }
+
+  .hero-subtitle {
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--text-light);
+    line-height: 1.8;
+    max-width: 500px;
+  }
+
+  /* ── Ecosystem Strip ── */
+  .ecosystem {
+    background: var(--soft-purple);
+    padding: 120px 80px;
+  }
+
+  .ecosystem-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-top: 64px;
+    max-width: 1400px;
+  }
+
+  .eco-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(59,26,90,0.06);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  .eco-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 48px rgba(59,26,90,0.12);
+  }
+
+  .eco-card img {
+    width: 100%;
+    display: block;
+  }
+
+  .eco-card-text {
+    padding: 24px 28px;
+  }
+
+  .eco-card-text h3 {
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+
+  .eco-card-text p {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* ── Dark showcase ── */
+  .showcase-dark {
+    background: var(--truist-deep);
+    padding: 120px 80px;
+  }
+
+  .showcase-dark .section-label { color: var(--truist-teal); }
+  .showcase-dark .section-heading { color: #fff; }
+  .showcase-dark .section-body { color: var(--text-light); }
+
+  .showcase-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-top: 64px;
+    max-width: 1400px;
+  }
+
+  .showcase-card {
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: transform 0.35s ease;
+  }
+
+  .showcase-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .showcase-card img {
+    width: 100%;
+    display: block;
+  }
+
+  .showcase-card-text {
+    padding: 24px 28px;
+  }
+
+  .showcase-card-text h3 {
+    font-size: 17px;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .showcase-card-text p {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* ── Wealth / Enterprise ── */
+  .wealth {
+    background: var(--warm-white);
+  }
+
+  .wealth-hero-img {
+    margin-top: 64px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+    max-width: 1400px;
+  }
+
+  .wealth-hero-img img {
+    width: 100%;
+    display: block;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1024px) {
+    .hero { flex-direction: column; padding: 80px 32px; gap: 48px; text-align: center; }
+    .hero-left { max-width: 100%; }
+    .hero-subtitle { max-width: 100%; }
+    .hero-right img { max-height: 400px; }
+    .ecosystem-grid { grid-template-columns: 1fr; }
+    .ecosystem { padding: 80px 32px; }
+    .showcase-dark { padding: 80px 32px; }
+    .showcase-row { grid-template-columns: 1fr; }
+  }
+</style>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-label">Truist Financial</div>
+      <h1 class="hero-title">Defining the Digital Experience for America's 7th Largest Bank</h1>
+      <p class="hero-subtitle">I built and scaled a 30-person design organization at SunTrust — owning every line of business — then led business and commercial banking design through the largest bank merger since 2008.</p>
+    </div>
+    <div class="hero-right">
+      <img src="/images/truist/truist-mobile-app-tour-620x1150.jpg" alt="Truist mobile app screens">
+    </div>
+  </div>
+
+  <!-- Context -->
+  <section class="context">
+    <div class="context-inner">
+      <div>
+        <div class="section-label">The Challenge</div>
+        <h2 class="section-heading">Two legacy banks became one. The digital experience had to earn that trust from day one.</h2>
+        <p class="section-body">I inherited a small, nascent UX team at SunTrust with no research function, no UI practice, and no independent design voice. I scaled it to a 30-person multidisciplinary organization covering consumer, small business, wealth management, and commercial banking. When the $66B merger with BB&T created Truist, I led business and commercial banking design through the transition — rebuilding product experiences for the merged entity and translating the new Truist brand into a design system deployed across all digital products.</p>
+      </div>
+      <div>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <h4>My Role</h4>
+            <p>Head of UX Design &amp; Research</p>
+          </div>
+          <div class="meta-item">
+            <h4>Company</h4>
+            <p>SunTrust → Truist Financial</p>
+          </div>
+          <div class="meta-item">
+            <h4>Scope</h4>
+            <p>All lines of business (SunTrust); Business &amp; Commercial Banking (Truist); Design System</p>
+          </div>
+          <div class="meta-item">
+            <h4>Team</h4>
+            <p>UX/UI Designers, Researchers, Product Managers, Engineering</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ecosystem -->
+  <div class="ecosystem">
+    <div class="section-label">The Ecosystem</div>
+    <h2 class="section-heading">One design language across every surface.</h2>
+    <p class="section-body">At SunTrust, I owned every digital touchpoint — consumer mobile, business banking, and the web platform. That breadth meant the design system had to hold together across radically different use cases and user needs.</p>
+
+    <div class="ecosystem-grid">
+      <div class="eco-card">
+        <img src="/images/truist/1771246123096-e2ad64a0.png" alt="Truist mobile home screen">
+        <div class="eco-card-text">
+          <h3>Consumer Mobile</h3>
+          <p>Account management, transfers, and day-to-day banking designed for speed and clarity.</p>
+        </div>
+      </div>
+      <div class="eco-card">
+        <img src="/images/truist/f6b34fae57ddb0e3fc45c70cca0e5130.webp" alt="Truist business banking dashboard">
+        <div class="eco-card-text">
+          <h3>Business Banking</h3>
+          <p>Multi-account management, notifications, and commercial tools for business clients.</p>
+        </div>
+      </div>
+      <div class="eco-card">
+        <img src="/images/truist/1771246117084-2367c12e.png" alt="Truist dashboard on laptop">
+        <div class="eco-card-text">
+          <h3>Web Platform</h3>
+          <p>Full-featured dashboard with spending analytics, account activity, and cross-product visibility.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dark Showcase: App Depth -->
+  <div class="showcase-dark">
+    <div class="section-label">Going Deeper</div>
+    <h2 class="section-heading">The details that make banking feel effortless.</h2>
+    <p class="section-body">Every flow — from transferring money to verifying your identity — was designed to reduce friction and build confidence.</p>
+
+    <div class="showcase-row">
+      <div class="showcase-card">
+        <img src="/images/truist/1771281467064-e8609008.png" alt="Truist app interaction flows">
+        <div class="showcase-card-text">
+          <h3>Core Interaction Flows</h3>
+          <p>Transfers, chat, and confirmations — designed as a system, not screens.</p>
+        </div>
+      </div>
+      <div class="showcase-card">
+        <img src="/images/truist/1771281469482-048153c4.png" alt="Truist cross-device payments">
+        <div class="showcase-card-text">
+          <h3>Cross-Device Payments</h3>
+          <p>Transfers and QR payments across mobile, web, and wearables.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase-row" style="margin-top: 48px;">
+      <div class="showcase-card">
+        <img src="/images/truist/1771281472014-694a3592.png" alt="Truist biometric security">
+        <div class="showcase-card-text">
+          <h3>Biometric Security</h3>
+          <p>Facial recognition and biometric authentication integrated seamlessly into the experience.</p>
+        </div>
+      </div>
+      <div class="showcase-card">
+        <img src="/images/truist/1771246115132-cd678175.png" alt="Truist responsive design system">
+        <div class="showcase-card-text">
+          <h3>Responsive Design System</h3>
+          <p>Consistent brand expression from mobile to desktop to tablet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Onboarding Feature -->
+  <div class="feature-row">
+    <div class="feature-image">
+      <img src="/images/truist/1771281481615-23cda954.jpg" alt="Truist onboarding flow on laptop">
+    </div>
+    <div class="feature-text">
+      <div class="section-label">Onboarding</div>
+      <h2 class="section-heading">First impressions, done right.</h2>
+      <p class="section-body">Opening an account is the first real relationship moment. I pushed the team to treat onboarding not as a form, but as a conversation — progressive disclosure, clear progress, and a sense that the bank actually cares about getting to know you.</p>
+    </div>
+  </div>
+
+  <!-- Wealth Management -->
+  <section class="wealth">
+    <div class="section-label">Wealth Management</div>
+    <h2 class="section-heading">Designing for the highest-value clients.</h2>
+    <p class="section-body">The wealth management platform required a different register — sophisticated, information-dense, and built for clients managing substantial portfolios. The same design system, elevated for a different audience.</p>
+    <div class="wealth-hero-img">
+      <img src="/images/truist/original.png" alt="Truist wealth management dashboard">
+    </div>
+  </section>
+
+</CaseStudyLayout>

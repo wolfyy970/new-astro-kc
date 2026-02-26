@@ -1,0 +1,44 @@
+# User & Contributor Guide
+
+## Local Setup
+
+1. **Clone the repository.**
+2. **Install Node.js:** Version 18 or higher is recommended.
+3. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+   The site will be available at `http://localhost:4321`.
+
+## Managing Content
+
+### Updating the Resume
+The resume content is stored in `src/content/resume.json`.
+- Modify `displayName`, `titleLine`, and `contact` information.
+- Update `summary` and `experience` bullets.
+- Use the `<hotspot key="key-name">text</hotspot>` tag within strings to create interactive elements.
+
+### Configuring Popovers
+Popover data is stored in `src/content/popovers.json`.
+- Each key corresponds to a `hotspot` key used in the resume.
+- Fields include `label`, `text`, `stat`, `img`, `quote`, `link`, and `linkText`.
+
+### Controlling Scroll Annotations
+The sequence and positioning of margin annotations are controlled in `resume.json` under the `scrollAnnotations` key:
+```json
+"scrollAnnotations": [
+  { "key": "gpc-revenue", "side": "right" },
+  { "key": "agentic",     "side": "left" }
+]
+```
+
+## Adding Case Studies
+
+1. **Create a new page:** Add a `.astro` file in `src/pages/`.
+2. **Use CaseStudyLayout:** Import and use the `CaseStudyLayout` component.
+3. **Add Images:** Place project-specific images in `public/images/[case-study-name]/`.
+4. **Style:** Use a `<style>` block for theme-specific CSS (colors, hero styles).

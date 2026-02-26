@@ -1,0 +1,288 @@
+---
+import CaseStudyLayout from '../layouts/CaseStudyLayout.astro';
+---
+
+<CaseStudyLayout
+  title="Sparks Grove — Delta Air Lines"
+  description="How I led design for the Delta News Hub — a unified communications platform for the world's most-traveled airline, serving 90,000 employees and millions of customers."
+  ogImage="/images/sparks-grove/news-hub.jpg"
+>
+
+<style>
+  :root {
+    --navy: #0B1B2B;
+    --delta-red: #C8102E;
+    --warm-white: #F7F5F2;
+    --text-primary: #1A1A1A;
+    --text-secondary: #5A5A5A;
+    --text-light: rgba(255,255,255,0.85);
+    --accent: #C8102E;
+  }
+
+  /* ── Hero (full-bleed photo) ── */
+  .hero {
+    position: relative;
+    height: 100vh;
+    min-height: 700px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 40%;
+  }
+
+  .hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(11,27,43,0.15) 0%,
+      rgba(11,27,43,0.4) 50%,
+      rgba(11,27,43,0.92) 100%
+    );
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    padding: 0 80px 80px;
+    max-width: 900px;
+  }
+
+  .hero-label {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--delta-red);
+    margin-bottom: 20px;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 5.5vw, 72px);
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+
+  .hero-subtitle {
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--text-light);
+    line-height: 1.7;
+    max-width: 600px;
+  }
+
+  /* context-inner override (even columns for this page) */
+  .context-inner { grid-template-columns: 1fr 1fr; }
+
+  /* ── Showcase ── */
+  .showcase {
+    background: var(--navy);
+    padding: 120px 80px;
+  }
+
+  .showcase .section-heading { color: #fff; }
+  .showcase .section-body { color: var(--text-light); }
+
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    margin-top: 64px;
+    max-width: 1400px;
+  }
+
+  .showcase-item {
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+
+  .showcase-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+  }
+
+  .showcase-item img {
+    width: 100%;
+    display: block;
+  }
+
+  .showcase-caption {
+    padding: 28px 32px;
+  }
+
+  .showcase-caption h3 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+
+  .showcase-caption p {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.55);
+  }
+
+  /* ── Two-up layout ── */
+  .two-up {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+
+  /* ── Full Bleed Image ── */
+  .full-bleed { padding: 0; }
+
+  .full-bleed img {
+    width: 100%;
+    height: 70vh;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ── Event Section ── */
+  .event-section {
+    background: #111;
+    padding: 120px 80px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .event-image {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .event-image img {
+    width: 100%;
+    display: block;
+  }
+
+  .event-text .section-heading { color: #fff; }
+  .event-text .section-body { color: rgba(255,255,255,0.7); }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .hero-content { padding: 0 32px 48px; }
+    .event-section { grid-template-columns: 1fr; padding: 80px 32px; }
+    .showcase { padding: 80px 32px; }
+    .two-up { grid-template-columns: 1fr; }
+  }
+</style>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-bg">
+      <img src="/images/sparks-grove/delta-777-right-inflight_new_livery.jpg" alt="Delta 777 in flight over the Rockies">
+    </div>
+    <div class="hero-content">
+      <div class="hero-label">Sparks Grove &times; Delta Air Lines</div>
+      <h1 class="hero-title">Reimagining Delta's Digital Storytelling</h1>
+      <p class="hero-subtitle">I led the design team that transformed how the world's most-traveled airline communicates with 90,000 employees and millions of customers.</p>
+    </div>
+  </div>
+
+  <!-- Context -->
+  <section class="context">
+    <div class="context-inner">
+      <div>
+        <div class="section-label">The Challenge</div>
+        <h2 class="section-heading">A global airline needed a communications platform worthy of its brand.</h2>
+        <p class="section-body">Delta's internal and external storytelling lived across fragmented, dated systems that didn't reflect the premium experience the airline had built in the air. I directed the design vision for the Delta News Hub — a unified communications platform that would serve corporate comms, media relations, and employee engagement under one cohesive experience.</p>
+      </div>
+      <div>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <h4>My Role</h4>
+            <p>UX Design Practice Leader</p>
+          </div>
+          <div class="meta-item">
+            <h4>Agency</h4>
+            <p>Sparks Grove</p>
+          </div>
+          <div class="meta-item">
+            <h4>Scope</h4>
+            <p>Web Platform, Content Strategy, Responsive Design</p>
+          </div>
+          <div class="meta-item">
+            <h4>Team</h4>
+            <p>UX Designers, Visual Designers, Content Strategists, Engineering</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Showcase: News Hub -->
+  <div class="showcase">
+    <div class="section-label">The Work</div>
+    <h2 class="section-heading">Delta News Hub</h2>
+    <p class="section-body">We designed a content-rich platform that balances editorial storytelling with real-time operational information — giving Delta a digital newsroom that felt as polished as their in-flight experience.</p>
+
+    <div class="showcase-grid">
+      <div class="showcase-item">
+        <img src="/images/sparks-grove/news-hub.jpg" alt="Delta News Hub full homepage">
+        <div class="showcase-caption">
+          <h3>Homepage — Full Editorial System</h3>
+          <p>Category-driven content architecture with featured stories, operational updates, and deep-dive sections.</p>
+        </div>
+      </div>
+
+      <div class="two-up">
+        <div class="showcase-item">
+          <img src="/images/sparks-grove/DNH01.jpg" alt="Delta News Hub header and navigation">
+          <div class="showcase-caption">
+            <h3>Navigation & Information Architecture</h3>
+            <p>Clean content hierarchy organized by audience and topic.</p>
+          </div>
+        </div>
+        <div class="showcase-item">
+          <img src="/images/sparks-grove/delta-4.jpg" alt="Delta News Hub responsive views">
+          <div class="showcase-caption">
+            <h3>Responsive & Mobile Experience</h3>
+            <p>Adaptive layouts that maintained editorial quality across every device.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Event / Centennial -->
+  <div class="event-section">
+    <div class="event-image">
+      <img src="/images/sparks-grove/gala_5.jpg" alt="Delta centennial celebration with illuminated aircraft">
+    </div>
+    <div class="event-text">
+      <div class="section-label">Beyond Digital</div>
+      <h2 class="section-heading">The work extended into brand moments that mattered.</h2>
+      <p class="section-body">Our relationship with Delta went deeper than screens. The design language we established informed brand experiences across the organization — from centennial celebrations to employee engagement campaigns. When you lead design for a brand this iconic, every touchpoint has to earn its place.</p>
+    </div>
+  </div>
+
+  <!-- Full Bleed Closing -->
+  <section class="full-bleed">
+    <img src="/images/sparks-grove/20150925_a330a2a_stills_cam1-1179-v2.jpg.jpeg" alt="Delta A330 over the ocean">
+  </section>
+
+</CaseStudyLayout>
