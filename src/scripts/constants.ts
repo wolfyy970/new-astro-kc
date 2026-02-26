@@ -7,10 +7,10 @@ export const BREAKPOINT_WIDE = 1400;   // px — wide desktop, marginalia visibl
 export const BREAKPOINT_NEAR = 1024;   // px — near-wide, show widen hint
 export const BREAKPOINT_MOBILE = 600;   // px — mobile, bottom-sheet popover
 
-// ── Accent color (must match --accent: #7A5C1F in global.css) ──
-export const ACCENT_R = 122;
-export const ACCENT_G = 92;
-export const ACCENT_B = 31;
+// ── Accent color (must match --accent: #70541C in global.css) ──
+export const ACCENT_R = 112;
+export const ACCENT_G = 84;
+export const ACCENT_B = 28;
 
 // ── Highlight opacity levels ──
 export const TINT_ALPHA = 0.14;   // resting highlight
@@ -63,4 +63,4 @@ export const CLS_SCROLL_REVEALED = 'scroll-revealed';
 export const CLS_POPOVER_OPEN = 'popover-open';
 export const CLS_NUDGE = 'nudge';
 export const CLS_ANNOTATION_SUPPRESSED = 'annotation-suppressed'; // popover open for this key
-export const CLS_IS_DRAGGING           = 'is-dragging';
+export const CLS_IS_DRAGGING = 'is-dragging';

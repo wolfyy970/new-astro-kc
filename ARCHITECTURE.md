@@ -41,9 +41,12 @@ Manages the "magazine-style" margin content:
 ## Shared Infrastructure
 
 - **DOM Utilities (`dom.ts`):** Centralized helper for required elements, global variables, and shared HTML building logic for cards.
-- **Constants (`constants.ts`):** Single source of truth for breakpoints, timing, and visual constants (R/G/B values, alpha levels).
-- **Global CSS:** `src/styles/global.css` defines the core design system and sophisticated transitions for all interactive surfaces.
+- **Constants (`constants.ts`):** Single source of truth for breakpoints, timing, and visual constants. Includes WCAG-calibrated R/G/B values to ensure parity between CSS and JS-rendered elements.
+- **Global CSS:** `src/styles/global.css` defines the core design system (4px baseline) and sophisticated transitions.
 
 ## Testing Strategy
-- **Vitest:** Used for unit testing core logic.
-- **Key Testable Units:** `src/utils/render.ts` (HTML transformation), `src/scripts/dom.ts` (HTML structure building).
+- **Vitest + JSDOM:** Core logic is verified against a simulated browser environment.
+- **Key Testable Units:** 
+  - `src/utils/render.ts`: Verifies hotspot-to-span transformation logic.
+  - `src/scripts/dom.ts`: Validates shared HTML construction and global variable safety.
+  - `src/scripts/constants.ts`: Sanity checks for visual and geometric configuration.

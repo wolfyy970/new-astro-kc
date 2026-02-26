@@ -14,13 +14,21 @@
    ```
    The site will be available at `http://localhost:4321`.
 
-## Testing
-
-The project uses **Vitest** for unit testing core logic.
-- **Run tests once:** `npm run test` (or `npx vitest run`)
+The project uses **Vitest** with a **jsdom** environment for unit testing core logic and DOM utilities.
+- **Run tests once:** `npm run test`
 - **Run in watch mode:** `npx vitest`
 
-Test files are located alongside the source code with the `.test.ts` extension.
+## Deployment
+
+The project is configured for **manual production deployment** to Vercel via the CLI. Git-based auto-deployment is disabled to maintain strict release control.
+
+1. **Production Manual Push:**
+   ```bash
+   vercel deploy --prod
+   ```
+
+2. **Integration Checks:**
+   Always run `npm run build` locally before pushing to production to ensure TypeScript and Astro validation passes.
 
 ## Managing Content
 

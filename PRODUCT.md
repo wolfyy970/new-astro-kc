@@ -17,11 +17,16 @@ The primary landing experience is a "living" resume document.
 - **High-Fidelity Highlighting:** Smooth, multi-line highlights that flow with text wrapping.
 
 ### 2. Case Studies
-Deep dives into major projects, each with a custom thematic style while sharing a common layout (Truist, Sparks Grove, Upwave).
+Deep dives into major projects, each with a custom thematic style while sharing a common backbone:
+- **Truist:** Focused on $66B merger strategy and C-suite foresight.
+- **Sparks Grove (Delta):** Cinematic, unobstructed editorial presentation of global media platforms.
+- **Upwave:** Quantified-self venture and IoT behavioral science.
 
-### 3. Responsive Experience
-- **Desktop:** Full "magazine" layout with margin annotations and floating draggable popovers.
-- **Mobile:** Optimized "bottom-sheet" popovers with frosted-glass dismiss controls for high-fidelity mobile interaction.
+### 3. Accessibility & Presence
+- **WCAG AA Compliance:** Rigorous color contrast calibration (4.5:1+) for all branding accents.
+- **Semantic Structure:** Full 11.21 ARIA implementation, keyboard skip-links, and focus-trapped interactive cards.
+- **Cinematic Pacing:** Fluid high-altitude photography blended with authoritative, accessible typography.
+- **Responsive Mastery:** From 1400px marginalia to mobile bottom-sheets with identical functional density.
 
 ## Target Audience
 - Executive recruiters and hiring managers.

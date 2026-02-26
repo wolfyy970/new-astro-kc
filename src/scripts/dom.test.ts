@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { buildContentHTML } from './dom';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { buildContentHTML, requireGlobal, requireEl } from './dom';
 import type { PopoverData } from '../types/content';
 
 describe('buildContentHTML', () => {
@@ -46,5 +46,33 @@ describe('buildContentHTML', () => {
         expect(html).not.toContain('link');
         expect(html).toContain('Minimal');
         expect(html).toContain('Only text.');
+    });
+    it('should handle lack of linkText for link', () => {
+        const noLinkText: PopoverData = {
+            label: 'No Link Text',
+            text: 'Text',
+            link: 'https://example.com'
+        };
+        const html = buildContentHTML(noLinkText, 'popover');
+        expect(html).not.toContain('href');
+    });
+});
+
+describe('requireGlobal', () => {
+    it('should return the value if present on window', () => {
+        (window as any).__MOCK_GLOBAL__ = { test: 123 };
+        const result = requireGlobal<{ test: number }>('__MOCK_GLOBAL__');
+        expect(result.test).toBe(123);
+        delete (window as any).__MOCK_GLOBAL__;
+    });
+
+    it('should throw if value is missing', () => {
+        expect(() => requireGlobal('__NON_EXISTENT__')).toThrow('window.__NON_EXISTENT__ is not set');
+    });
+});
+
+describe('requireEl', () => {
+    it('should throw if element is missing', () => {
+        expect(() => requireEl('ghost-id')).toThrow('Required element #ghost-id not found');
     });
 });
