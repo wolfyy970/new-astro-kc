@@ -18,30 +18,30 @@
       "2 Patents"
     ]
   },
-  "summary": "Senior leader bridging design, product, and technology to drive enterprise-scale digital transformation and measurable business growth. Proven track record building and maturing UX organizations, establishing design as strategic capability, innovating with emerging technologies and delivering customer-centric solutions that generate significant ROI across Fortune companies.\n\nUnique combination of technical fluency (patents, BS Computer Science), human-centered design expertise (MS HCI), and business acumen (MBA Brown/IE) enables strategic vision with hands-on execution. Experience spans media, finance, e-commerce, and consulting sectors, consistently translating complex customer needs into innovative products that drive competitive advantage.",
+  "summary": "Senior leader bridging design, product, and technology to drive enterprise-scale digital transformation and measurable business growth. Proven track record building and maturing UX organizations, establishing design as strategic capability, innovating with emerging technologies and delivering customer-centric solutions that generate significant ROI across Fortune companies.\n\nUnique combination of technical fluency (<hotspot key=\"patents\">patents</hotspot>, BS Computer Science), human-centered design expertise (MS HCI), and business acumen (MBA Brown/IE) enables strategic vision with hands-on execution. Experience spans media, finance, e-commerce, and consulting sectors, consistently translating complex customer needs into innovative products that drive competitive advantage.",
   "keyAchievements": [
     {
       "heading": "Driving Business Growth Through Design Leadership",
       "items": [
-        "Leading design for digital transformation of $10B e-commerce platform at Global Fortune automotive parts distribution leader, delivering 7% add-to-cart improvement representing $32.8M lift in revenue (2025) for Pro product.",
-        "Led product and design for innovative quantified self, health and wellness product — upwave, growing it from zero to 1M monthly unique users, 27K registered users, and 9.5M visits in 8 months, earning Webby nomination."
+        "Leading design for digital transformation of <hotspot key=\"gpc-revenue\">$10B e-commerce platform at Global Fortune automotive parts distribution leader</hotspot>, delivering 7% add-to-cart improvement representing $32.8M lift in revenue (2025) for Pro product.",
+        "Led product and design for innovative quantified self, health and wellness product — <hotspot key=\"upwave\">upwave</hotspot>, growing it from zero to 1M monthly unique users, 27K registered users, and 9.5M visits in 8 months, earning Webby nomination."
       ]
     },
     {
       "heading": "Building & Scaling Design Organizations",
       "items": [
         "Established design and research as strategic function at GPC, reporting to CIO and transforming multi-billion-dollar e-commerce platform.",
-        "Scaled SunTrust design team prior to largest banking merger since 2008 ($66B), improving customer satisfaction by 3.8% (CSAT) and positioning design as strategic differentiator.",
-        "Led and transformed UX practice for North Highland, serving Delta, Coca-Cola, T-Mobile, Disney, Universal Studios, Home Depot and other Fortune companies. Won $4.7M+ in new business.",
-        "Built \"Bolt\" global design system adopted across North America, Europe, and APAC."
+        "Scaled SunTrust design team prior to <hotspot key=\"merger\">largest banking merger since 2008 ($66B)</hotspot>, improving customer satisfaction by 3.8% (CSAT) and positioning design as strategic differentiator.",
+        "Led and transformed UX practice for North Highland, serving <hotspot key=\"clients\">Delta, Coca-Cola, T-Mobile, Disney, Universal Studios, Home Depot</hotspot> and other Fortune companies. Won $4.7M+ in new business.",
+        "Built <hotspot key=\"bolt\">\"Bolt\" global design system</hotspot> adopted across North America, Europe, and APAC."
       ]
     },
     {
       "heading": "Innovation Leadership & Strategic Foresight",
       "items": [
-        "Rebooted and led Innovation Studio at SunTrust and partnered with Corporate Strategy to explore future of banking through strategic foresight, delivering CEO and C-suite presentation that shaped organizational vision and subsequent merger.",
-        "Led R&D function at Turner Broadcasting exploring emerging platforms and technologies, resulting in Emmy Award-winning products and two granted patents in automatic content recognition.",
-        "Pioneered interactive broadcast technologies including CNN \"Magic Wall\" and sync-to-TV platforms that redefined industry standards for data storytelling and audience engagement."
+        "Rebooted and led <hotspot key=\"accelerator\">Innovation Studio at SunTrust</hotspot> and partnered with Corporate Strategy to explore future of banking through <hotspot key=\"foresight\">strategic foresight</hotspot>, delivering CEO and C-suite presentation that shaped organizational vision and subsequent merger.",
+        "Led R&D function at Turner Broadcasting exploring emerging platforms and technologies, resulting in <hotspot key=\"emmy\">Emmy Award-winning products</hotspot> and two granted <hotspot key=\"patents\">patents</hotspot> in automatic content recognition.",
+        "Pioneered interactive broadcast technologies including <hotspot key=\"magicwall\">CNN \"Magic Wall\"</hotspot> and sync-to-TV platforms that redefined industry standards for data storytelling and audience engagement."
       ]
     }
   ],
@@ -52,8 +52,8 @@
       "title": "Senior Director & Head of UX Design and Research · Atlanta, GA",
       "description": "Executive design leader leading UX design and research for Fortune Global 500 automotive/industrial parts distribution leader.",
       "bullets": [
-        "Leading research-driven redesign of $8B unified commerce platform and AI-driven (agentic) internal venture, informed by prior consulting engagement.",
-        "Developed \"Bolt\" global design system adopted across North America, Europe, and APAC.",
+        "Leading research-driven redesign of <hotspot key=\"gpc-research\">$8B unified commerce platform</hotspot> and <hotspot key=\"agentic\">AI-driven (agentic) internal venture</hotspot>, informed by prior consulting engagement.",
+        "Developed <hotspot key=\"bolt\">\"Bolt\" global design system</hotspot> adopted across North America, Europe, and APAC.",
         "Introduced balanced team model embedding dedicated design and research roles in agile pods, supported by a scalable design process integrating stakeholder engagement and user research.",
         "Pioneered early 2025 assessment of and subsequent introduction of AI design and prototyping tool (v0) to optimize for exploration breadth and execution speed."
       ]
@@ -74,9 +74,9 @@
       "title": "Head of UX Design & Research · Atlanta, GA",
       "description": "Inherited small nascent UX design team (SunTrust) with no research or UI and no independent design voice. Scaled to 30-person multidisciplinary team and established evidence-based design methodology through the SunTrust-BB&T merger.",
       "bullets": [
-        "Rebooted and repositioned the SunTrust Innovation Accelerator Studio, introducing service design, customer journey mapping and strategic foresight as core capabilities. Partnered with Corporate Strategy on a foresight exercise - presenting three future-of-banking scenarios to CEO and C-Suite; CEO called the work \"instrumental\" in shaping merger strategy.",
+        "Rebooted and repositioned the <hotspot key=\"accelerator\">SunTrust Innovation Accelerator Studio</hotspot>, introducing service design, customer journey mapping and strategic foresight as core capabilities. Partnered with Corporate Strategy on a <hotspot key=\"foresight\">foresight exercise</hotspot> - presenting three future-of-banking scenarios to CEO and C-Suite; CEO called the work \"instrumental\" in shaping merger strategy.",
         "Led UX design and research across Consumer Banking, Small Business, Wealth Management, Small Business and Commercial Banking for SunTrust and Small Business and Commercial Banking for Truist.",
-        "Rebuilt all product experiences for the merged entity. Integrating design and voice of the customer into Scaled Agile Framework (SAFe).",
+        "Rebuilt all <hotspot key=\"truist-products\">product experiences</hotspot> for the merged entity. Integrating design and voice of the customer into Scaled Agile Framework (SAFe).",
         "Translated the new Truist brand into visual design and UI standards, defining the Truist design system deployed across all digital products."
       ]
     },
@@ -87,16 +87,16 @@
       "description": "Led UX and emerging interactions practice for Sparks Grove, North Highland's innovation agency. Served Fortune 500 clients including Delta Air Lines, The Coca-Cola Company, Disney, Universal Studios, T-Mobile, and The Home Depot.",
       "bullets": [
         "Led transformation of agency from traditional waterfall delivery to agile software development and lean product management — repositioning the practice around \"Human Experience Design\" (HxD). Earned National Impact Award (2016) for the transformation.",
-        "Pitched and won $4.7M+ in new business over 2.5 years, including $3M in client projects during first year. Key engagements included building news.delta.com for Delta Air Lines and consulting with The Home Depot for lean product development and design in their product organization."
+        "Pitched and won $4.7M+ in new business over 2.5 years, including $3M in client projects during first year. Key engagements included building <hotspot key=\"delta\">news.delta.com</hotspot> for Delta Air Lines and consulting with The Home Depot for lean product development and design in their product organization."
       ]
     },
     {
       "company": "TURNER (Time Warner)",
       "dates": "Oct 2012 – Mar 2014",
       "title": "Vice President, Product & UX · Atlanta, GA",
-      "description": "Led product management and product design for upwave, Turner's IoT- driven digital health venture at the intersection of quantified-self technologies (wearables, health trackers) and personalized content delivery. Partnered with IDEO on initial market validation and product-market fit.",
+      "description": "Led product management and product design for upwave, Turner's IoT- driven digital health venture at the intersection of quantified-self technologies (wearables, health trackers) and personalized content delivery. Partnered with <hotspot key=\"ideo\">IDEO</hotspot> on initial market validation and product-market fit.",
       "bullets": [
-        "Took venture from concept to 1M monthly unique users, 27K registered users, and 9.5M visits in 8 months. Introduced lean product methodology enabling daily release cycles, and increased site recirculation from 5% to 24%.",
+        "Took <hotspot key=\"upwave\">venture from concept to 1M monthly unique users</hotspot>, 27K registered users, and 9.5M visits in 8 months. Introduced lean product methodology enabling daily release cycles, and increased site recirculation from 5% to 24%.",
         "Product nominated for Webby Award (Health & Fitness). Venture was ahead of mainstream wearables adoption (pre-Apple Watch) and sunset when Turner exited the health vertical."
       ]
     },
@@ -106,9 +106,9 @@
       "title": "Senior Director, Innovation & Emerging Technology · Atlanta, GA",
       "description": "Led multi-disciplinary (Product, UX & Engineering) R&D and innovation team focused on innovation across emerging platforms for Turner properties — CNN, Cartoon Network, TBS & TNT networks.",
       "bullets": [
-        "Pioneered mobile augmented reality applications for NBA and Cartoon Network in partnership with Georgia Tech. Led development of on-air augmented reality application for CNN elections coverage and large format multitouch weather reporting application.",
+        "Pioneered <hotspot key=\"ar\">mobile augmented reality applications</hotspot> for NBA and Cartoon Network in partnership with Georgia Tech. Led development of on-air augmented reality application for CNN elections coverage and large format multitouch weather reporting application.",
         "Designed and led development for CNN World Cup Twitter Buzz — Realtime twitter data visualization — Royal Television Society Award and Fast Company's \"Infographic of the Day\".",
-        "Collaborated on two patents for interactive content to broadcast TV sync technology (embedded into SmartTV's) and managed the development of the software development. Emmy award for Conan Team CoCo app (iPad) that utilized it."
+        "Collaborated on two <hotspot key=\"patents\">patents</hotspot> for interactive content to broadcast TV sync technology (embedded into SmartTV's) and managed the development of the software development. <hotspot key=\"emmy\">Emmy award</hotspot> for Conan Team CoCo app (iPad) that utilized it."
       ]
     }
   ],
