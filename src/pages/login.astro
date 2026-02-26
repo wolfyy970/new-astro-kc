@@ -95,7 +95,7 @@ if (Astro.request.method === "POST") {
                 text-transform: uppercase;
                 letter-spacing: 4px;
                 margin-top: 8px;
-                color: #999;
+                color: rgba(0, 0, 0, 0.45); /* Darkened for accessibility */
             }
 
             form {
@@ -113,7 +113,7 @@ if (Astro.request.method === "POST") {
                 padding: 16px 0;
                 background: transparent;
                 border: none;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                border-bottom: 1px solid rgba(0, 0, 0, 0.2); /* Increased contrast */
                 font-family: var(--doc-sans);
                 font-size: 16px;
                 text-align: center;
@@ -126,9 +126,9 @@ if (Astro.request.method === "POST") {
             }
 
             input::placeholder {
-                color: #999;
+                color: rgba(0, 0, 0, 0.35); /* Darkened for accessibility */
                 font-style: italic;
-                opacity: 0.5;
+                opacity: 1; /* Reset opacity for cleaner control */
             }
 
             button {
@@ -164,7 +164,7 @@ if (Astro.request.method === "POST") {
                 position: fixed;
                 bottom: 40px;
                 font-size: 10px;
-                color: #999;
+                color: rgba(0, 0, 0, 0.4); /* Darkened for accessibility */
                 text-transform: uppercase;
                 letter-spacing: 2px;
             }
