@@ -5,7 +5,7 @@ describe('renderHotspots', () => {
   it('should convert hotspot tags to span elements', () => {
     const input = 'This is a <hotspot key="test">hotspot</hotspot>.';
     const output = renderHotspots(input);
-    expect(output).toBe('This is a <span class="hotspot" data-popover="test" tabindex="0" role="button" aria-expanded="false">hotspot</span>.');
+    expect(output).toBe('This is a <span class="hotspot" data-popover="test" tabindex="0" role="button" aria-expanded="false" aria-controls="popover">hotspot</span>.');
   });
 
   it('should handle multiple hotspots', () => {

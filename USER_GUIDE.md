@@ -14,11 +14,19 @@
    ```
    The site will be available at `http://localhost:4321`.
 
+## Testing
+
+The project uses **Vitest** for unit testing core logic.
+- **Run tests once:** `npm run test` (or `npx vitest run`)
+- **Run in watch mode:** `npx vitest`
+
+Test files are located alongside the source code with the `.test.ts` extension.
+
 ## Managing Content
 
 ### Updating the Resume
 The resume content is stored in `src/content/resume.json`.
-- Modify `displayName`, `titleLine`, and `contact` information.
+- Modify `displayName`, `titleLine`, and `credentials`.
 - Update `summary` and `experience` bullets.
 - Use the `<hotspot key="key-name">text</hotspot>` tag within strings to create interactive elements.
 

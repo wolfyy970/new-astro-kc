@@ -10,11 +10,15 @@
     "location": "Atlanta, Georgia"
   },
   "hero": {
-    "tagline": "Design leadership, technical depth, and thirty years of seeing what's next",
-    "credentials": ["M.Sc. HCI", "B.Sc. Computer Science", "Executive MBA", "2 Patents"]
+    "tagline": "Design leadership, product depth, and technical savvy",
+    "credentials": [
+      "M.Sc. HCI",
+      "B.Sc. Computer Science",
+      "Executive MBA",
+      "2 Patents"
+    ]
   },
   "summary": "Senior leader bridging design, product, and technology to drive enterprise-scale digital transformation and measurable business growth. Proven track record building and maturing UX organizations, establishing design as strategic capability, innovating with emerging technologies and delivering customer-centric solutions that generate significant ROI across Fortune companies.\n\nUnique combination of technical fluency (<hotspot key=\"patents\">patents</hotspot>, BS Computer Science), human-centered design expertise (MS HCI), and business acumen (MBA Brown/IE) enables strategic vision with hands-on execution. Experience spans media, finance, e-commerce, and consulting sectors, consistently translating complex customer needs into innovative products that drive competitive advantage.",
-
   "keyAchievements": [
     {
       "heading": "Driving Business Growth Through Design Leadership",
@@ -41,7 +45,6 @@
       ]
     }
   ],
-
   "experience": [
     {
       "company": "Genuine Parts Company",
@@ -109,7 +112,6 @@
       ]
     }
   ],
-
   "education": [
     {
       "degree": "Executive MBA",
@@ -124,23 +126,51 @@
       "school": "University of Brighton, UK"
     }
   ],
-
   "patentsAndRecognition": {
     "patents": "Automatic content recognition systems, audience engagement technologies",
     "awards": "Emmy Award, Royal Television Society Award, BAFTA Nomination (UK), Webby Nomination, Apple Design Project Award",
     "certifications": "Creative Leadership, Strategic Foresight, Product Management"
   },
-
   "scrollAnnotations": [
-    { "key": "gpc-revenue", "side": "right" },
-    { "key": "agentic",     "side": "left" },
-    { "key": "merger",      "side": "right" },
-    { "key": "foresight",   "side": "left" },
-    { "key": "delta",       "side": "left" },
-    { "key": "upwave",      "side": "right" },
-    { "key": "emmy",        "side": "left" },
-    { "key": "ar",          "side": "right" },
-    { "key": "bolt",        "side": "left" },
-    { "key": "patents",     "side": "right" }
+    {
+      "key": "gpc-revenue",
+      "side": "right"
+    },
+    {
+      "key": "agentic",
+      "side": "left"
+    },
+    {
+      "key": "merger",
+      "side": "right"
+    },
+    {
+      "key": "foresight",
+      "side": "left"
+    },
+    {
+      "key": "delta",
+      "side": "left"
+    },
+    {
+      "key": "upwave",
+      "side": "right"
+    },
+    {
+      "key": "emmy",
+      "side": "left"
+    },
+    {
+      "key": "ar",
+      "side": "right"
+    },
+    {
+      "key": "bolt",
+      "side": "left"
+    },
+    {
+      "key": "patents",
+      "side": "right"
+    }
   ]
 }

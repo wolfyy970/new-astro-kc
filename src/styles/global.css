@@ -1,12 +1,18 @@
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 :root {
   --bg: #E8E6E1;
   --doc-white: #FFFFFF;
   --accent: #7A5C1F;
-  --accent-tint: rgba(122,92,31,0.06);
-  --accent-hover: rgba(122,92,31,0.12);
-  --accent-border: rgba(122,92,31,0.25);
+  /* kept for CSS usage; JS reads from constants.ts */
+  --accent-hover: rgba(122, 92, 31, 0.22);
+  --accent-border: rgba(122, 92, 31, 0.25);
   --doc-heading: #1A1A1A;
   --doc-body: #333;
   --doc-light: #666;
@@ -17,7 +23,10 @@
   --mono: 'JetBrains Mono', monospace;
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: var(--doc-sans);
   background: var(--bg);
@@ -108,13 +117,15 @@ body {
   padding: 64px 72px 56px;
   border-radius: 4px;
   box-shadow:
-    0 1px 1px rgba(0,0,0,0.03),
-    0 2px 4px rgba(0,0,0,0.03),
-    0 4px 8px rgba(0,0,0,0.03),
-    0 8px 16px rgba(0,0,0,0.03),
-    0 16px 32px rgba(0,0,0,0.05),
-    0 32px 64px rgba(0,0,0,0.04);
+    0 1px 1px rgba(0, 0, 0, 0.03),
+    0 2px 4px rgba(0, 0, 0, 0.03),
+    0 4px 8px rgba(0, 0, 0, 0.03),
+    0 8px 16px rgba(0, 0, 0, 0.03),
+    0 16px 32px rgba(0, 0, 0, 0.05),
+    0 32px 64px rgba(0, 0, 0, 0.04);
   position: relative;
+  isolation: isolate;
+  /* stacking context: z-index:-1 fragments appear above white bg, below text */
   overflow: visible;
 }
 
@@ -142,8 +153,15 @@ body {
 }
 
 @keyframes pulse-dot {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.8; }
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
 }
 
 /* ══════════════════════════════════════
@@ -348,30 +366,41 @@ body {
    INTERACTIVE HOTSPOTS
    ══════════════════════════════════════ */
 .hotspot {
-  background: var(--accent-tint);
-  border-radius: 3px;
-  padding: 1px 3px;
-  cursor: pointer;
-  transition: background 0.25s ease, box-shadow 0.25s ease;
   position: relative;
-  border-bottom: 1px dotted rgba(139,105,20,0.25);
+  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  padding: 0;
+  display: inline;
+  transition: color 0.15s ease;
 }
 
+/* Hover / focus — color shift only; the .hs-fragment handles the fill visual */
 .hotspot:hover,
-.hotspot:focus-visible {
-  background: var(--accent-hover);
-  box-shadow: 0 0 0 2px var(--accent-hover);
-  outline: none;
+.hotspot.hovered {
+  color: var(--accent);
 }
 
-.hotspot:focus-visible {
-  box-shadow: 0 0 0 2px var(--accent-border), 0 0 0 4px rgba(139,105,20,0.15);
-}
-
+/* Active state (popover open) */
 .hotspot.active {
-  background: var(--accent-hover);
-  box-shadow: 0 0 0 2px var(--accent-border);
+  color: var(--accent);
+}
+
+/* Keyboard focus ring */
+.hotspot:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ══════════════════════════════════════
+   JS-DRIVEN HOTSPOT FRAGMENTS
+   Backgrounds set via inline styles in JS
+   ══════════════════════════════════════ */
+.hs-fragment {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  transition: background 0.2s ease, filter 0.2s ease;
 }
 
 /* ══════════════════════════════════════
@@ -398,20 +427,21 @@ body.popover-open {
   position: absolute;
   z-index: 1000;
   width: 380px;
+  max-height: 80vh;
+  overflow-y: auto;
   background: var(--doc-white);
   border: 1px solid #E0DED9;
   border-radius: 10px;
   box-shadow:
-    0 4px 6px rgba(0,0,0,0.04),
-    0 10px 20px rgba(0,0,0,0.06),
-    0 20px 40px rgba(0,0,0,0.04);
+    0 4px 6px rgba(0, 0, 0, 0.04),
+    0 10px 20px rgba(0, 0, 0, 0.06),
+    0 20px 40px rgba(0, 0, 0, 0.04);
   padding: 0;
   opacity: 0;
   transform: translateY(8px) scale(0.97);
   transition: opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
-  overflow: hidden;
 }
 
 .popover.visible {
@@ -422,10 +452,120 @@ body.popover-open {
 
 .popover-img {
   width: 100%;
-  height: 160px;
-  object-fit: cover;
+  height: auto;
+  max-height: 240px;
+  object-fit: contain;
+  object-position: top center;
   display: block;
+  flex-shrink: 0;
   border-bottom: 1px solid #F0EEEA;
+  background: #fdfdfd;
+}
+
+/* ── Drag handle + close button (unified chrome bar) ──────────────────────── */
+.popover-handle {
+  position: relative;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+/* Single row of 3 dots — 2px each, 5px gaps */
+.popover-handle::before {
+  content: '';
+  display: block;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: var(--doc-rule);
+  box-shadow:
+    7px 0 0 var(--doc-rule),
+    14px 0 0 var(--doc-rule);
+}
+
+/* Separator spans nearly full width — brackets both dots AND the × button */
+.popover-handle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 96px;
+  height: 1px;
+  background: var(--doc-rule);
+  opacity: 0.4;
+}
+
+/* × close button — anchored top-right of the popover card */
+.popover-close {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  /* aligned within the 20px handle area on desktop */
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: rgba(255, 255, 255, 0.4);
+  /* Glassmorphism for legibility */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  cursor: pointer;
+  color: var(--doc-rule);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.popover-close::before,
+.popover-close::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 1px;
+}
+
+.popover-close::before {
+  transform: rotate(45deg);
+}
+
+.popover-close::after {
+  transform: rotate(-45deg);
+}
+
+.popover-close:hover {
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--doc-heading);
+  transform: scale(1.05);
+}
+
+.popover-close:active {
+  transform: scale(0.95);
+}
+
+.popover-close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Dragging state */
+.popover.is-dragging {
+  transition: none !important;
+  cursor: grabbing;
+  user-select: none;
+}
+
+.popover.is-dragging .popover-handle {
+  cursor: grabbing;
 }
 
 .popover-body {
@@ -501,7 +641,7 @@ body.popover-open {
     opacity: 0;
     transform: translateY(6px);
     transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
     pointer-events: none;
   }
 
@@ -509,6 +649,19 @@ body.popover-open {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
+  }
+
+  /* Popover is open for this entry — dissolve the annotation out.
+     150ms: fast enough to not block the user, slow enough to read as
+     intentional. The popover's 250ms entrance overlaps the tail of this,
+     so the crossing of the two motions is the effect. */
+  .scroll-annotation.annotation-suppressed {
+    opacity: 0;
+    transform: scale(0.96) translateY(3px);
+    pointer-events: none;
+    transition:
+      opacity 0.15s ease-out,
+      transform 0.15s ease-out;
   }
 
   .scroll-annotation.side-right {
@@ -553,8 +706,9 @@ body.popover-open {
     font-family: var(--doc-sans);
     font-size: 12px;
     font-weight: 400;
-    color: #888;
-    line-height: 1.5;
+    color: #555;
+    /* lifted from #888 — passes WCAG AA (5.1:1 on white) */
+    line-height: 1.6;
     margin-bottom: 8px;
   }
 
@@ -562,20 +716,23 @@ body.popover-open {
     font-family: var(--display);
     font-style: italic;
     font-size: 12.5px;
-    color: #888;
+    color: #555;
     border-left: 1.5px solid var(--accent-border);
     padding-left: 10px;
     margin: 6px 0;
-    line-height: 1.45;
+    line-height: 1.5;
   }
 
   .sa-img {
     width: 100%;
-    height: 120px;
-    object-fit: cover;
+    height: auto;
+    max-height: 160px;
+    object-fit: contain;
+    object-position: top center;
     border-radius: 3px;
     margin-bottom: 8px;
     opacity: 0.85;
+    background: #fdfdfd;
   }
 
   .sa-link {
@@ -593,20 +750,29 @@ body.popover-open {
     border-color: var(--accent);
   }
 
-  /* Left-side: right-align text */
-  .side-left { text-align: right; }
-  .side-left .sa-quote {
-    border-left: none;
-    border-right: 1.5px solid var(--accent-border);
-    padding-left: 0;
-    padding-right: 10px;
+  /* Left-side annotations: left-align body text for readability in narrow column.
+     The rule + label still anchor the right edge visually. */
+  .side-left {
+    text-align: left;
   }
 
-  /* Subtle highlight on hotspot when its annotation is visible */
+  .side-left .sa-rule {
+    margin-left: 0;
+  }
+
+  .side-left .sa-quote {
+    border-left: 1.5px solid var(--accent-border);
+    border-right: none;
+    padding-left: 10px;
+    padding-right: 0;
+  }
+
+  /* When a margin annotation is revealed, the fragment engine elevates the
+     highlight opacity via syncFragmentStates(). No direct background is applied
+     to the .hotspot span — the .hs-fragment layer is the sole visual authority. */
   .hotspot.scroll-revealed {
-    background: var(--accent-hover);
-    box-shadow: 0 0 0 2px var(--accent-border);
-    transition: background 0.4s ease, box-shadow 0.4s ease;
+    border-bottom: 1.5px solid var(--accent-border);
+    transition: border-color 0.4s ease;
   }
 }
 
@@ -653,16 +819,27 @@ body.popover-open {
 }
 
 @keyframes nudge-right {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(4px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(4px);
+  }
 }
 
 @media (max-width: 1023px) {
-  .widen-hint { display: none; }
+  .widen-hint {
+    display: none;
+  }
 }
 
 @media (min-width: 1400px) {
-  .widen-hint { display: none; }
+  .widen-hint {
+    display: none;
+  }
 }
 
 /* ══════════════════════════════════════
@@ -684,15 +861,22 @@ body.popover-open {
    ANIMATIONS
    ══════════════════════════════════════ */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .reveal {
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .reveal.visible {
@@ -704,10 +888,22 @@ body.popover-open {
    RESPONSIVE — TABLET
    ══════════════════════════════════════ */
 @media (max-width: 900px) {
-  .hero { padding: 80px 24px 56px; }
-  .doc-page { padding: 40px 32px 40px; }
-  .doc-exp-header { flex-direction: column; gap: 2px; }
-  .popover { width: 320px; }
+  .hero {
+    padding: 80px 24px 56px;
+  }
+
+  .doc-page {
+    padding: 40px 32px 40px;
+  }
+
+  .doc-exp-header {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .popover {
+    width: 320px;
+  }
 }
 
 /* ══════════════════════════════════════
@@ -717,57 +913,105 @@ body.popover-open {
   .hero {
     padding: 56px 24px 40px;
   }
+
   .hero-name {
     font-size: clamp(36px, 11vw, 52px);
   }
-  .hero-rule { width: 40px; margin: 20px auto; }
+
+  .hero-rule {
+    width: 40px;
+    margin: 20px auto;
+  }
+
   .hero-sub {
     font-size: 16px;
     max-width: 100%;
   }
+
   .hero-credentials {
     font-size: 10px;
     letter-spacing: 1px;
     line-height: 2;
   }
 
-  .doc-wrapper { padding: 0 0 60px; }
+  .doc-wrapper {
+    padding: 0 0 60px;
+  }
+
   .doc-page {
     padding: 24px 18px 28px;
     border-radius: 0;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
   }
-  .doc-hint { display: none; }
 
-  .doc-name { font-size: 20px; }
-  .doc-title-line { font-size: 12px; }
+  .doc-hint {
+    display: none;
+  }
+
+  .doc-name {
+    font-size: 20px;
+  }
+
+  .doc-title-line {
+    font-size: 12px;
+  }
+
   .doc-contact {
     font-size: 11px;
     line-height: 1.8;
   }
-  .doc-summary { font-size: 13.5px; }
+
+  .doc-summary {
+    font-size: 13.5px;
+  }
+
   .doc-section-heading {
     font-size: 11px;
     letter-spacing: 2px;
     margin-top: 20px;
     margin-bottom: 12px;
   }
-  .doc-achievement-cluster h4 { font-size: 12px; }
+
+  .doc-achievement-cluster h4 {
+    font-size: 12px;
+  }
+
   .doc-achievement-cluster li,
-  .doc-exp li { font-size: 12.5px; }
-  .doc-exp-company { font-size: 14px; }
-  .doc-exp-title { font-size: 12.5px; }
-  .doc-edu-item .degree { font-size: 13px; }
-  .doc-edu-item .school { font-size: 12px; }
-  .doc-edu-item .focus { font-size: 11px; }
-  .doc-awards-line { font-size: 12px; }
+  .doc-exp li {
+    font-size: 12.5px;
+  }
+
+  .doc-exp-company {
+    font-size: 14px;
+  }
+
+  .doc-exp-title {
+    font-size: 12.5px;
+  }
+
+  .doc-edu-item .degree {
+    font-size: 13px;
+  }
+
+  .doc-edu-item .school {
+    font-size: 12px;
+  }
+
+  .doc-edu-item .focus {
+    font-size: 11px;
+  }
+
+  .doc-awards-line {
+    font-size: 12px;
+  }
 
   /* ── Mobile bottom-sheet popover ── */
   .popover-overlay.open {
-    background: rgba(0,0,0,0.4);
+    background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
   }
+
   .popover {
     position: fixed;
     bottom: 0;
@@ -780,23 +1024,50 @@ body.popover-open {
     border-radius: 16px 16px 0 0;
     transform: translateY(100%) !important;
     transition: opacity 0.3s cubic-bezier(0.32, 0.72, 0, 1),
-                transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
     -webkit-overflow-scrolling: touch;
   }
+
   .popover.visible {
     transform: translateY(0) !important;
     opacity: 1;
   }
-  .popover-img { height: 140px; }
-  .popover-body { padding: 20px 20px 32px; }
+
+  .popover-img {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: contain;
+    object-position: top center;
+    background: #fdfdfd;
+  }
+
+  .popover-body {
+    padding: 20px 20px 32px;
+  }
+
   .popover-body::before {
     content: '';
     display: block;
-    width: 36px;
+    width: 40px;
+    /* sheet drag pill — desktop has the JS handle, mobile gets this */
     height: 4px;
-    background: #D4D2CD;
+    background: var(--doc-rule);
     border-radius: 2px;
     margin: -8px auto 16px;
+  }
+
+  /* Drag handle is desktop-only chrome — hide its dots/line on bottom-sheet */
+  .popover-handle {
+    display: none;
+  }
+
+  .popover-close {
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.7);
+    /* Stronger indicator on mobile */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 }
 
@@ -804,12 +1075,80 @@ body.popover-open {
    RESPONSIVE — SMALL MOBILE
    ══════════════════════════════════════ */
 @media (max-width: 380px) {
-  .hero { padding: 44px 20px 32px; }
-  .hero-name { font-size: 32px; }
-  .hero-sub { font-size: 15px; }
-  .hero-credentials { font-size: 9px; }
-  .doc-page { padding: 20px 14px 24px; }
-  .doc-name { font-size: 18px; }
+  .hero {
+    padding: 44px 20px 32px;
+  }
+
+  .hero-name {
+    font-size: 32px;
+  }
+
+  .hero-sub {
+    font-size: 15px;
+  }
+
+  .hero-credentials {
+    font-size: 9px;
+  }
+
+  .doc-page {
+    padding: 20px 14px 24px;
+  }
+
+  .doc-name {
+    font-size: 18px;
+  }
+
   .doc-achievement-cluster li,
-  .doc-exp li { font-size: 12px; line-height: 1.55; }
+  .doc-exp li {
+    font-size: 12px;
+    line-height: 1.55;
+  }
+}
+
+/* ══════════════════════════════════════
+   REDUCED MOTION
+   All transforms/transitions disabled;
+   visual states (opacity, color) preserved.
+   ══════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+
+  /* Scroll reveal: show immediately, no slide-up */
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  /* Highlight fragments: snap on hover */
+  .hs-fragment {
+    transition: none;
+  }
+
+  /* Hotspot text colour: snap */
+  .hotspot {
+    transition: none;
+  }
+
+  /* Popover: fade-only entrance, no scale/translate */
+  .popover {
+    transform: none !important;
+    transition: opacity 0.15s ease;
+  }
+
+  /* Scroll annotations: appear/disappear instantly */
+  .scroll-annotation,
+  .scroll-annotation.annotation-suppressed {
+    transform: none;
+    transition: none;
+  }
+
+  /* Widen hint: no motion */
+  .widen-hint {
+    transition: none;
+  }
+
+  .widen-hint-arrow {
+    animation: none;
+  }
 }
