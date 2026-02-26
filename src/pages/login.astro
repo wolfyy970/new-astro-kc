@@ -1,0 +1,205 @@
+---
+const password = process.env.SITE_PASSWORD || import.meta.env.SITE_PASSWORD;
+let error = false;
+
+if (Astro.request.method === "POST") {
+    const formData = await Astro.request.formData();
+    const input = formData.get("password");
+
+    if (input === password) {
+        Astro.cookies.set("portfolio_session", password as string, {
+            path: "/",
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            maxAge: 60 * 60 * 24 * 7, // 1 week
+        });
+        return Astro.redirect("/");
+    } else {
+        error = true;
+    }
+}
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Private Access — KC Wolff-Ingham</title>
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="icon" href="/favicon.png" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Source+Sans+3:wght@300;400&family=JetBrains+Mono&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                --bg: #e8e6e1;
+                --accent: #70541c;
+                --doc-heading: #1a1a1a;
+                --display: "Cormorant Garamond", Georgia, serif;
+                --doc-sans: "Source Sans 3", -apple-system, sans-serif;
+                --mono: "JetBrains Mono", monospace;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: var(--doc-sans);
+                background: var(--bg);
+                color: var(--doc-heading);
+                height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                -webkit-font-smoothing: antialiased;
+                overflow: hidden;
+            }
+
+            .login-container {
+                max-width: 400px;
+                width: 100%;
+                padding: 40px;
+                text-align: center;
+                opacity: 0;
+                transform: translateY(20px);
+                animation: reveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            }
+
+            @keyframes reveal {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .logo {
+                font-family: var(--display);
+                font-size: 32px;
+                font-weight: 300;
+                letter-spacing: 0.05em;
+                margin-bottom: 48px;
+                color: var(--doc-heading);
+            }
+
+            .logo span {
+                display: block;
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 4px;
+                margin-top: 8px;
+                color: #999;
+            }
+
+            form {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .input-wrapper {
+                position: relative;
+            }
+
+            input {
+                width: 100%;
+                padding: 16px 0;
+                background: transparent;
+                border: none;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                font-family: var(--doc-sans);
+                font-size: 16px;
+                text-align: center;
+                outline: none;
+                transition: border-color 0.3s ease;
+            }
+
+            input:focus {
+                border-bottom-color: var(--accent);
+            }
+
+            input::placeholder {
+                color: #999;
+                font-style: italic;
+                opacity: 0.5;
+            }
+
+            button {
+                background: var(--accent);
+                color: white;
+                border: none;
+                padding: 14px;
+                font-family: var(--doc-sans);
+                font-size: 12px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                margin-top: 10px;
+            }
+
+            button:hover {
+                background: #5a4316;
+                letter-spacing: 3px;
+            }
+
+            .error-msg {
+                font-family: var(--mono);
+                font-size: 10px;
+                color: #c8102e;
+                margin-top: 16px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+            .footer {
+                position: fixed;
+                bottom: 40px;
+                font-size: 10px;
+                color: #999;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="login-container">
+            <div class="logo">
+                KC Wolff-Ingham
+                <span>Design Leadership Portfolio</span>
+            </div>
+
+            <form method="POST">
+                <div class="input-wrapper">
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Enter access code"
+                        required
+                        autofocus
+                    />
+                </div>
+                <button type="submit">Unlock Access</button>
+                {
+                    error && (
+                        <p class="error-msg">
+                            Incorrect access code. Please try again.
+                        </p>
+                    )
+                }
+            </form>
+        </div>
+
+        <div class="footer">
+            Private Property &mdash; No Unauthorized Access
+        </div>
+    </body>
+</html>

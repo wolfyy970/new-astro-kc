@@ -1,7 +1,12 @@
 import { defineConfig } from 'astro/config';
-import sitemap from '@astrojs/sitemap';
+
+import vercel from '@astrojs/vercel';
 
 export default defineConfig({
-  site: 'https://example.com', // placeholder — update when domain is known
-  integrations: [sitemap()],
+  // placeholder — update when domain is known
+  site: 'https://example.com',
+
+  output: 'server',
+  integrations: [],
+  adapter: vercel(),
 });
