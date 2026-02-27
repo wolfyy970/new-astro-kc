@@ -173,15 +173,15 @@ const popovers = await optimizePopoverImages(popoversRaw, getImage);
   <!-- Discovery Hint (Desktop, < 1400px) -->
   <div id="widen-hint" class="widen-hint" role="presentation">
     <div class="widen-side left" aria-hidden="true">
-      <div class="widen-line"></div>
-      <div class="widen-line pulse"></div>
+      <div class="widen-bracket">[</div>
     </div>
     <div class="widen-content">
-      <div class="widen-hint-text">Expand viewport to reveal marginalia</div>
+      <div class="widen-hint-text" id="widen-hint-text">
+        Expand for Marginalia
+      </div>
     </div>
     <div class="widen-side right" aria-hidden="true">
-      <div class="widen-line"></div>
-      <div class="widen-line pulse"></div>
+      <div class="widen-bracket">]</div>
     </div>
   </div>
 

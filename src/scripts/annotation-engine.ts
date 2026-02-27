@@ -37,6 +37,40 @@ function nudgeWidenHint(): void {
     setTimeout(() => hint.classList.remove(CLS_NUDGE), NUDGE_DURATION_MS);
 }
 
+let successTriggered = false;
+
+function triggerSuccessFeedback(): void {
+    if (successTriggered) return;
+    const hint = document.getElementById(ID_WIDEN_HINT);
+    const hintText = document.getElementById('widen-hint-text');
+    if (!hint || !hintText) return;
+
+    successTriggered = true;
+
+    // Determine if any annotations are currently in the viewport
+    const visibleAnnotations = document.querySelectorAll('.scroll-annotation.revealed');
+    let isInView = false;
+
+    visibleAnnotations.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+            isInView = true;
+        }
+    });
+
+    hintText.textContent = isInView ? "Marginalia Active" : "Viewport Expanded — Scroll to discover";
+    hint.classList.add('success-mode');
+
+    // Fade out and cleanup
+    setTimeout(() => {
+        hint.classList.remove(CLS_VISIBLE);
+        setTimeout(() => {
+            hint.classList.remove('success-mode');
+            successTriggered = false;
+        }, 1000);
+    }, 2500);
+}
+
 // ── Engine state ───────────────────────────────────────────────────────────────
 
 interface AnnotationEntry {
@@ -216,21 +250,36 @@ export function initAnnotationEngine(
 
     // Handle resize
     let resizeTimer = 0;
+    let wasNearWide = isNearWideScreen();
+
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = window.setTimeout(() => {
-            if (isWideScreen() && !annotationsBuilt) {
+            const isWide = isWideScreen();
+            const isNear = isNearWideScreen();
+
+            if (isWide && wasNearWide) {
+                triggerSuccessFeedback();
+            }
+
+            if (isWide && !annotationsBuilt) {
                 init();
-            } else if (isWideScreen() && annotationsBuilt) {
-                hint.classList.remove(CLS_VISIBLE);
-            } else if (isNearWideScreen()) {
+            } else if (isWide && annotationsBuilt) {
+                // Keep success-mode hint visible until it self-destructs via its own timer
+                if (!hint.classList.contains('success-mode')) {
+                    hint.classList.remove(CLS_VISIBLE);
+                }
+            } else if (isNear) {
                 hint.classList.add(CLS_VISIBLE);
+                hint.classList.remove('success-mode'); // Cancel success if shrunk back early
                 if (annotationsBuilt) cleanupAnnotations();
                 init();
             } else {
                 hint.classList.remove(CLS_VISIBLE);
                 if (annotationsBuilt) cleanupAnnotations();
             }
+
+            wasNearWide = isNear;
         }, 0); // annotation resize runs after highlight engine redraw (see main.ts)
     });
 

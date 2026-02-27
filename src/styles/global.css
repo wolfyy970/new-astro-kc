@@ -777,16 +777,17 @@ body.popover-open {
 /* ══════════════════════════════════════
    WIDEN HINT (Desktop discovery)
    ══════════════════════════════════════ */
+/* ── Discovery Interaction (Widen Hint) ── */
 .widen-hint {
   position: fixed;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: 1000;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.8s ease;
+  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1);
   padding: 0 40px;
 }
 
@@ -796,16 +797,15 @@ body.popover-open {
 
 .widen-side {
   flex: 1;
-  height: 1px;
-  position: relative;
   display: flex;
   align-items: center;
+  height: 400px;
+  /* Large vertical span */
 }
 
 .widen-side.left {
   justify-content: flex-end;
   margin-right: 460px;
-  /* Half of doc-page max-width + margin */
 }
 
 .widen-side.right {
@@ -813,76 +813,100 @@ body.popover-open {
   margin-left: 460px;
 }
 
-.widen-line {
-  height: 1px;
-  background: var(--accent);
-  opacity: 0.2;
-  width: 40px;
+.widen-bracket {
+  font-family: var(--doc-serif);
+  font-size: 320px;
+  font-weight: 200;
+  color: var(--accent);
+  opacity: 0.08;
+  line-height: 1;
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 1s ease;
+  animation: bracket-breath 6s ease-in-out infinite;
 }
 
-.widen-line.pulse {
-  position: absolute;
-  width: 40px;
-  opacity: 0;
-  animation: pulse-out 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+.widen-side.left .widen-bracket {
+  transform-origin: right center;
 }
 
-.widen-side.left .widen-line.pulse {
-  right: 0;
-}
-
-.widen-side.right .widen-line.pulse {
-  left: 0;
+.widen-side.right .widen-bracket {
+  transform-origin: left center;
 }
 
 .widen-content {
   position: absolute;
-  bottom: 80px;
+  bottom: 12%;
   text-align: center;
+  transition: transform 1s ease;
 }
 
 .widen-hint-text {
   font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 3px;
+  font-size: 11px;
+  letter-spacing: 4px;
   text-transform: uppercase;
   color: var(--accent);
-  opacity: 0.6;
+  opacity: 0.4;
+  transition: opacity 0.6s ease, color 0.6s ease;
 }
 
-.widen-hint.nudge .widen-line.pulse {
-  animation-duration: 0.8s;
-  animation-iteration-count: 2;
+/* Success Mode: The "Pop" */
+.widen-hint.success-mode {
+  opacity: 1 !important;
+  display: flex !important;
+  /* Force display during animation if JS triggered */
 }
 
-@keyframes pulse-out {
-  0% {
-    transform: scaleX(1);
-    opacity: 0.8;
-  }
+.widen-hint.success-mode .widen-bracket {
+  opacity: 0.25;
+  color: var(--accent);
+}
 
+.widen-hint.success-mode .widen-side.left .widen-bracket {
+  transform: translateX(-100px) scale(1.1);
+  opacity: 0;
+}
+
+.widen-hint.success-mode .widen-side.right .widen-bracket {
+  transform: translateX(100px) scale(1.1);
+  opacity: 0;
+}
+
+.widen-hint.success-mode .widen-hint-text {
+  opacity: 0.9;
+  color: #000;
+  /* Sharp black for the success message */
+  letter-spacing: 6px;
+  transform: scale(1.05);
+}
+
+/* Nudge: Subtle animation on scroll */
+.widen-hint.nudge .widen-bracket {
+  animation: none;
+  transform: scaleX(1.15);
+  opacity: 0.15;
+}
+
+@keyframes bracket-breath {
+
+  0%,
   100% {
-    transform: scaleX(4);
-    opacity: 0;
+    transform: scaleX(1);
+    opacity: 0.08;
+  }
+
+  50% {
+    transform: scaleX(1.1);
+    opacity: 0.12;
   }
 }
 
-.widen-side.left .widen-line.pulse {
-  transform-origin: right;
-}
-
-.widen-side.right .widen-line.pulse {
-  transform-origin: left;
-}
-
-/* Desktop overrides for widen hint */
-@media (min-width: 1400px) {
-  .widen-hint {
+@media (min-width: 1460px) {
+  .widen-hint:not(.success-mode) {
     display: none !important;
   }
 }
 
-@media (max-width: 1399px) and (min-width: 1024px) {
+@media (max-width: 1459px) and (min-width: 1024px) {
   .widen-side.left {
     margin-right: 440px;
   }
@@ -894,13 +918,7 @@ body.popover-open {
 
 @media (max-width: 1023px) {
   .widen-hint {
-    display: none;
-  }
-}
-
-@media (min-width: 1460px) {
-  .widen-hint {
-    display: none;
+    display: none !important;
   }
 }
 
