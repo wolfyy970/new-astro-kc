@@ -13,7 +13,7 @@ The primary landing experience is a "living" resume document.
   - **Integrated Close:** Consistent, easy-to-find '×' button on both desktop and mobile.
 - **Scroll Annotations:** On wide screens (≥1400px), key hotspots automatically reveal themselves as margin annotations as the user scrolls, providing a rich, "magazine-style" experience.
 - **Annotation Dissolve:** A refined visual effect where margin annotations gracefully disappear when their corresponding popover is opened, avoiding visual clutter and content duplication.
-- **Marginalia Discovery (Widen Hint):** On standard desktop screens (1024px-1399px), an elegant dual-sided pulsating line design signals that more content is available in a wider view, guiding users toward the full experience without being intrusive.
+- **Marginalia Discovery (Widen Hint):** On standard laptop/desktop screens (≥ 600px and < 1400px), an elegant "sticker peel" animation guides the user to widen their browser. Animated directional chevrons naturally slide around the edge of the resume document as the user resizes. Upon expanding past 1400px, it delivers a clear "Success / Marginalia Active" semantic transition.
 - **Executive Elegance Interaction:** Refined hotspot states with subtle underlines and semantic opacity control, ensuring a premium feel that prioritizes content readability.
 
 ### 2. Case Studies (Componentized)

@@ -31,7 +31,7 @@ Manages the "magazine-style" margin content:
 - **Automatic DOM Mapping:** Dynamically parses `.hotspot` anchors in the DOM and automatically alternates left/right side assignments for marginalia (decoupling content creation from configuration).
 - **Intersection Observation:** Rebuilds and positions margin annotations as hotspots scroll into view.
 - **Overlap Resolution:** Algorithmic adjustment to prevent vertical collisions between adjacent annotations.
-- **Widen Hint:** Triggers nudge animations between 1024px-1399px to signal hidden marginalia content.
+- **Widen Hint ("Sticker Peel"):** An intricate resize-driven interaction on laptop and tablet sizes (600px - 1399px). It features tracking SVG `<textPath>` components that physically roll out around the resume's boundaries synchronously as the user resizes the window, avoiding complex CSS transforms. It automatically resets IntersectionObservers to detect immediate visibility upon completion.
 
 ### 3. Native CSS Highlighting
 We've refined the interactive highlighting for "Executive Elegance":

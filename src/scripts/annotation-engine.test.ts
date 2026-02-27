@@ -85,3 +85,29 @@ describe('Annotation Engine (DOM auto-mapping)', () => {
         consoleSpy.mockRestore();
     });
 });
+
+import { isWideScreen, isNearWideScreen } from './annotation-engine';
+import { BREAKPOINT_MOBILE } from './constants';
+
+describe('Screen helpers for annotation engine', () => {
+    it('isWideScreen returns true when width is above BREAKPOINT_WIDE', () => {
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: BREAKPOINT_WIDE + 10 });
+        expect(isWideScreen()).toBe(true);
+        expect(isNearWideScreen()).toBe(false);
+    });
+
+    it('isNearWideScreen returns true when width is below BREAKPOINT_WIDE but above BREAKPOINT_MOBILE', () => {
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: BREAKPOINT_WIDE - 10 });
+        expect(isWideScreen()).toBe(false);
+        expect(isNearWideScreen()).toBe(true);
+
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: BREAKPOINT_MOBILE });
+        expect(isNearWideScreen()).toBe(true);
+    });
+
+    it('isNearWideScreen returns false when width is below BREAKPOINT_MOBILE', () => {
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: BREAKPOINT_MOBILE - 10 });
+        expect(isWideScreen()).toBe(false);
+        expect(isNearWideScreen()).toBe(false);
+    });
+});
