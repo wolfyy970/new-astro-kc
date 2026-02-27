@@ -186,7 +186,9 @@ const popovers = await optimizePopoverImages(popoversRaw, getImage);
             href="#widen-path-left"
             text-anchor="start"
           >
-            Expand window
+            <tspan class="chevron chevron-left">&lt;&lt; </tspan><tspan
+              id="widen-label-left">Expand window</tspan
+            >
           </textPath>
         </text>
       </svg>
@@ -205,7 +207,11 @@ const popovers = await optimizePopoverImages(popoversRaw, getImage);
             href="#widen-path-right"
             text-anchor="start"
           >
-            For marginalia
+            <tspan id="widen-label-right">For marginalia</tspan><tspan
+              class="chevron chevron-right"
+            >
+              &gt;&gt;</tspan
+            >
           </textPath>
         </text>
       </svg>

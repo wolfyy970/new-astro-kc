@@ -42,28 +42,46 @@ let successTriggered = false;
 function triggerSuccessFeedback(): void {
     if (successTriggered) return;
     const hint = document.getElementById(ID_WIDEN_HINT);
-    const textLeft = document.getElementById('widen-textpath-left');
-    const textRight = document.getElementById('widen-textpath-right');
+    const textLeft = document.getElementById('widen-label-left');
+    const textRight = document.getElementById('widen-label-right');
     if (!hint || !textLeft || !textRight) return;
 
     successTriggered = true;
 
-    textLeft.textContent = "Success";
-    textRight.textContent = "Marginalia Active";
+    // Check if any annotations are in the current viewport
+    const visibleAnnotations = document.querySelectorAll('.scroll-annotation.revealed');
+    let isInView = false;
+    visibleAnnotations.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+            isInView = true;
+        }
+    });
 
-    hint.classList.add('success-mode');
-
-    // Fade out and cleanup
-    setTimeout(() => {
+    if (isInView) {
+        // Annotations physically popped in. We don't need UI text. Fade out hint immediately.
         hint.classList.remove(CLS_VISIBLE);
         setTimeout(() => {
-            hint.classList.remove('success-mode');
-            textLeft.textContent = "Expand window";
-            textRight.textContent = "For marginalia";
-            successTriggered = false;
+            hint.classList.remove('success-mode'); // Clean state
         }, 1000);
-    }, 2500);
+    } else {
+        // Empty gap on screen. Use contextual text to tell the user they were successful.
+        textLeft.textContent = "Marginalia";
+        textRight.textContent = "Active - Scroll down";
+        hint.classList.add('success-mode');
+
+        // Fade out after reading time
+        setTimeout(() => {
+            hint.classList.remove(CLS_VISIBLE);
+            setTimeout(() => {
+                hint.classList.remove('success-mode');
+                textLeft.textContent = "Expand window";
+                textRight.textContent = "For marginalia";
+            }, 1000);
+        }, 3000);
+    }
 }
+
 
 // ── Engine state ───────────────────────────────────────────────────────────────
 
@@ -298,11 +316,9 @@ export function initAnnotationEngine(
                 hint.classList.add(CLS_VISIBLE);
                 if (hint.classList.contains('success-mode')) {
                     hint.classList.remove('success-mode'); // Cancel success if shrunk back early
-                    const textLeft = document.querySelector('.widen-text.text-left');
-                    const textRight = document.querySelector('.widen-text.text-right');
                     // Need to reset the original text that triggerSuccessFeedback overwrites
-                    const pathLeft = document.getElementById('widen-textpath-left');
-                    const pathRight = document.getElementById('widen-textpath-right');
+                    const pathLeft = document.getElementById('widen-label-left');
+                    const pathRight = document.getElementById('widen-label-right');
                     if (pathLeft) pathLeft.textContent = 'Expand window';
                     if (pathRight) pathRight.textContent = 'For marginalia';
                 }

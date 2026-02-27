@@ -827,6 +827,38 @@ body.popover-open {
   transition: opacity 0.4s ease, fill 0.4s ease;
 }
 
+.chevron.chevron-left {
+  animation: pulse-chevron-left 2s infinite ease-in-out;
+}
+
+.chevron.chevron-right {
+  animation: pulse-chevron-right 2s infinite ease-in-out;
+}
+
+@keyframes pulse-chevron-left {
+
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-chevron-right {
+
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
 /* Success Mode (When fully expanded) */
 .widen-hint.success-mode {
   opacity: 1 !important;
@@ -838,6 +870,10 @@ body.popover-open {
   opacity: 1;
   font-weight: 600;
   letter-spacing: 3px;
+}
+
+.widen-hint.success-mode .chevron {
+  display: none;
 }
 
 @media (min-width: 1460px) {
