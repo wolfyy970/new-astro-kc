@@ -803,26 +803,18 @@ body.popover-open {
 
 .widen-side.left {
   justify-content: flex-end;
-  margin-right: 460px;
+  margin-right: 360px;
 }
 
 .widen-side.right {
   justify-content: flex-start;
-  margin-left: 460px;
+  margin-left: 360px;
 }
 
 .widen-svg {
   width: 200px;
   height: 400px;
   overflow: visible;
-}
-
-.widen-side.left .widen-svg {
-  margin-right: -20px;
-}
-
-.widen-side.right .widen-svg {
-  margin-left: -20px;
 }
 
 .widen-text {
@@ -856,11 +848,11 @@ body.popover-open {
 
 @media (max-width: 1459px) and (min-width: 1024px) {
   .widen-side.left {
-    margin-right: 440px;
+    margin-right: 360px;
   }
 
   .widen-side.right {
-    margin-left: 440px;
+    margin-left: 360px;
   }
 }
 
