@@ -846,7 +846,7 @@ body.popover-open {
   }
 }
 
-@media (max-width: 1459px) and (min-width: 1024px) {
+@media (max-width: 1459px) {
   .widen-side.left {
     margin-right: 360px;
   }
@@ -856,7 +856,7 @@ body.popover-open {
   }
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 599px) {
   .widen-hint {
     display: none !important;
   }

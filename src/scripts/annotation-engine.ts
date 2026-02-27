@@ -9,7 +9,7 @@
 import type { PopoverMap } from '../types/content.ts';
 import { requireEl, buildContentNode } from './dom.ts';
 import {
-    BREAKPOINT_WIDE, BREAKPOINT_NEAR,
+    BREAKPOINT_WIDE, BREAKPOINT_NEAR, BREAKPOINT_MOBILE,
     ANNOTATION_MIN_GAP, ANNOTATION_ROOT_MARGIN, ANNOTATION_TEXT_SENTENCES,
     NUDGE_DURATION_MS,
     ID_WIDEN_HINT,
@@ -25,7 +25,7 @@ export function isWideScreen(): boolean {
 
 export function isNearWideScreen(): boolean {
     const w = window.innerWidth;
-    return w >= BREAKPOINT_NEAR && w < BREAKPOINT_WIDE;
+    return w >= BREAKPOINT_MOBILE && w < BREAKPOINT_WIDE;
 }
 
 // ── Widen hint ────────────────────────────────────────────────────────────────
