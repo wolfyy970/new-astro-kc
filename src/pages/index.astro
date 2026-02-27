@@ -1,10 +1,19 @@
 ---
+import { getImage } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import resume from "../content/resume.json";
-import popovers from "../content/popovers.json";
+import popoversRaw from "../content/popovers.json";
 import { renderHotspots } from "../utils/render";
-import type { Education } from "../types/content";
+import type { Education, PopoverData } from "../types/content";
 import "../styles/global.css";
+
+import { optimizePopoverImages } from "../utils/images";
+
+// ── Image Optimization Pipeline ──────────────────────────────────────────────
+// Pre-optimise all images in the popover inventory at build time.
+// This swaps raw /public paths for optimized, content-hashed WebP assets.
+
+const popovers = await optimizePopoverImages(popoversRaw, getImage);
 ---
 
 <BaseLayout
@@ -163,8 +172,17 @@ import "../styles/global.css";
 
   <!-- Discovery Hint (Desktop, < 1400px) -->
   <div id="widen-hint" class="widen-hint" role="presentation">
-    <div class="widen-hint-text">Expand for Marginalia</div>
-    <div class="widen-hint-arrow">→</div>
+    <div class="widen-side left" aria-hidden="true">
+      <div class="widen-line"></div>
+      <div class="widen-line pulse"></div>
+    </div>
+    <div class="widen-content">
+      <div class="widen-hint-text">Expand viewport to reveal marginalia</div>
+    </div>
+    <div class="widen-side right" aria-hidden="true">
+      <div class="widen-line"></div>
+      <div class="widen-line pulse"></div>
+    </div>
   </div>
 
   <!-- ═══════ PAGE DATA → window globals ═══════ -->

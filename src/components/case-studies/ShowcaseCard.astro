@@ -1,0 +1,85 @@
+---
+import { Image } from "astro:assets";
+
+interface Props {
+    title: string;
+    description: string;
+    image: string;
+    imageAlt: string;
+    isDark?: boolean;
+}
+
+const { title, description, image, imageAlt, isDark = false } = Astro.props;
+---
+
+<div class={`showcase-card ${isDark ? "is-dark" : ""}`}>
+    <Image
+        src={image}
+        alt={imageAlt}
+        width={800}
+        height={500}
+        format="webp"
+        quality="mid"
+    />
+    <div class="card-text">
+        <h3>{title}</h3>
+        <p>{description}</p>
+    </div>
+</div>
+
+<style>
+    .showcase-card {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 32px rgba(0, 0, 0, 0.05);
+        transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        border: 1px solid rgba(0, 0, 0, 0.03);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .showcase-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 32px 64px rgba(0, 0, 0, 0.1);
+    }
+
+    .showcase-card.is-dark {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: none;
+    }
+
+    .showcase-card.is-dark .card-text h3 {
+        color: #fff;
+    }
+
+    .showcase-card.is-dark .card-text p {
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    img {
+        width: 100%;
+        display: block;
+        aspect-ratio: 16/10;
+        object-fit: cover;
+    }
+
+    .card-text {
+        padding: 32px;
+    }
+
+    h3 {
+        font-size: 18px;
+        font-weight: 500;
+        color: #1a1a1a;
+        margin-bottom: 8px;
+    }
+
+    p {
+        font-size: 14px;
+        font-weight: 300;
+        color: #5a5a5a;
+        line-height: 1.6;
+    }
+</style>

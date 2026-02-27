@@ -10,14 +10,20 @@ High-fidelity Design Leadership Portfolio built with Astro 5.0. This project dem
 - **Accessible Editorial Design:** WCAG AA compliant contrast calibration and semantic ARIA 1.1 structure.
 - **Mobile-First Bottom Sheets:** Optimized mobile interactions with full focus trapping and touch-aware dismissals.
 
+- **Executive Elegance Hotspots:** Refined interaction model with subtle underlines and semantic opacity control.
+- **Content Integrity Suite:** Automated validation of hotspot links and media paths to prevent regression.
+- **Image Optimization Pipeline:** Build-time asset processing using Astro 5.0 for high-performance WebP delivery.
+- **Component-Based Case Studies:** A modular template architecture for rapid, consistent content authoring.
+
 ## Quick Start
 
 ```bash
 npm install     # Install dependencies
 npm run setup   # Clean demo content to start fresh
-npm run dev     # Start development server (http://localhost:4321)
-npm run test    # Run WCAG-aligned test suite
-npm run build   # Production-ready build
+npm run verify  # Validate content integrity (hotspots & images)
+npm run dev     # Start development server
+npm run test    # Run unit tests
+npm run build   # Production-ready build (runs verify automatically)
 ```
 
 ## Documentation Map

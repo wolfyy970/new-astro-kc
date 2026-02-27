@@ -1,5 +1,12 @@
 ---
 import CaseStudyLayout from "../layouts/CaseStudyLayout.astro";
+import CaseStudyHero from "../components/case-studies/CaseStudyHero.astro";
+import ContextGrid from "../components/case-studies/ContextGrid.astro";
+import ShowcaseSection from "../components/case-studies/ShowcaseSection.astro";
+import ShowcaseGrid from "../components/case-studies/ShowcaseGrid.astro";
+import ShowcaseCard from "../components/case-studies/ShowcaseCard.astro";
+import FeatureRow from "../components/case-studies/FeatureRow.astro";
+import { Image } from "astro:assets";
 ---
 
 <CaseStudyLayout
@@ -12,210 +19,17 @@ import CaseStudyLayout from "../layouts/CaseStudyLayout.astro";
       --truist-purple: #3b1a5a;
       --truist-deep: #2d1446;
       --truist-teal: #00b4a0;
-      --warm-white: #f7f5f2;
       --soft-purple: #f3eff8;
-      --text-primary: #1a1a1a;
-      --text-secondary: #5a5a5a;
-      --text-light: rgba(255, 255, 255, 0.85);
+      --warm-white: #f7f5f2;
       --accent: #3b1a5a;
     }
 
-    /* ── Hero ── */
-    .hero {
-      position: relative;
-      min-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      background: linear-gradient(
-        135deg,
-        #1d0b2e 0%,
-        var(--truist-purple) 50%,
-        #512678 100%
-      );
-      overflow: hidden;
-      padding: 160px 80px;
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      top: -20%;
-      right: -10%;
-      width: 800px;
-      height: 800px;
-      border-radius: 50%;
-      background: radial-gradient(
-        circle,
-        rgba(0, 180, 160, 0.1) 0%,
-        transparent 70%
-      );
-      pointer-events: none;
-    }
-
-    .hero-left {
-      max-width: 840px;
-      z-index: 1;
-      margin-bottom: 80px;
-    }
-
-    .hero-right {
-      z-index: 1;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-
-    .hero-right img {
-      max-height: 520px;
-      width: auto;
-      border-radius: 32px;
-      box-shadow: 0 64px 128px rgba(0, 0, 0, 0.5);
-      background: #000;
-    }
-
-    .hero-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--truist-teal);
-      margin-bottom: 32px;
-    }
-
-    .hero-title {
-      font-family: "Playfair Display", serif;
-      font-size: clamp(48px, 6vw, 80px);
-      font-weight: 400;
-      color: #fff;
-      line-height: 1.05;
-      margin-bottom: 40px;
-    }
-
-    .hero-subtitle {
-      font-size: 20px;
-      font-weight: 300;
-      color: var(--text-light);
-      line-height: 1.75;
-      max-width: 640px;
-      margin: 0 auto;
-    }
-
-    /* ── Ecosystem Strip ── */
-    .ecosystem {
+    .ecosystem-bg {
       background: var(--soft-purple);
-      padding: 160px 80px;
     }
 
-    .ecosystem-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 40px;
-      margin-top: 80px;
-      max-width: 1300px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .eco-card {
-      background: #fff;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 32px rgba(59, 26, 90, 0.05);
-      transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-      border: 1px solid rgba(0, 0, 0, 0.03);
-    }
-
-    .eco-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 32px 64px rgba(59, 26, 90, 0.1);
-    }
-
-    .eco-card img {
-      width: 100%;
-      display: block;
-    }
-
-    .eco-card-text {
-      padding: 32px;
-    }
-
-    .eco-card-text h3 {
-      font-size: 18px;
-      font-weight: 500;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-    }
-
-    .eco-card-text p {
-      font-size: 15px;
-      font-weight: 300;
-      color: var(--text-secondary);
-      line-height: 1.6;
-    }
-
-    /* ── Dark showcase ── */
-    .showcase-dark {
-      background: var(--truist-deep);
-      padding: 160px 80px;
-    }
-
-    .showcase-dark .section-label {
-      color: var(--truist-teal);
-    }
-    .showcase-dark .section-heading {
-      color: #fff;
-    }
-    .showcase-dark .section-body {
-      color: var(--text-light);
-    }
-
-    .showcase-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      margin-top: 80px;
-      max-width: 1300px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .showcase-card {
-      border-radius: 8px;
-      overflow: hidden;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      transition: all 0.4s ease;
-    }
-
-    .showcase-card img {
-      width: 100%;
-      display: block;
-    }
-
-    .showcase-card-text {
-      padding: 32px;
-    }
-
-    .showcase-card-text h3 {
-      font-size: 18px;
-      font-weight: 500;
-      color: #fff;
-      margin-bottom: 6px;
-    }
-
-    .showcase-card-text p {
-      font-size: 14px;
-      font-weight: 300;
-      color: rgba(255, 255, 255, 0.4);
-    }
-
-    /* ── Wealth / Enterprise ── */
-    .wealth {
+    .wealth-bg {
       background: var(--warm-white);
-      padding: 160px 80px;
     }
 
     .wealth-hero-img {
@@ -233,261 +47,123 @@ import CaseStudyLayout from "../layouts/CaseStudyLayout.astro";
       width: 100%;
       display: block;
     }
-
-    /* ── Responsive ── */
-    @media (max-width: 1024px) {
-      .hero {
-        padding: 120px 32px;
-      }
-      .hero-left {
-        margin-bottom: 48px;
-      }
-      .hero-right img {
-        max-height: 480px;
-      }
-      .ecosystem-grid {
-        grid-template-columns: 1fr;
-      }
-      .ecosystem {
-        padding: 100px 32px;
-      }
-      .showcase-dark {
-        padding: 100px 32px;
-      }
-      .showcase-row {
-        grid-template-columns: 1fr;
-        gap: 48px;
-      }
-      .wealth {
-        padding: 100px 32px;
-      }
-    }
   </style>
 
-  <!-- Hero -->
-  <div class="hero">
-    <div class="hero-left">
-      <div class="hero-label">Truist Financial</div>
-      <h1 class="hero-title">
-        Defining the Digital Experience for America's 7th Largest Bank
-      </h1>
-      <p class="hero-subtitle">
-        I built and scaled a 30-person design organization at SunTrust — owning
-        every line of business — then led business and commercial banking design
-        through the largest bank merger since 2008.
-      </p>
-    </div>
-    <div class="hero-right">
-      <img
-        src="/images/truist/truist-mobile-app-tour-620x1150.jpg"
-        alt="Truist mobile app screens"
+  <CaseStudyHero
+    label="Truist Financial"
+    title="Defining the Digital Experience for America's 7th Largest Bank"
+    subtitle="I built and scaled a 30-person design organization at SunTrust — owning every line of business — then led business and commercial banking design through the largest bank merger since 2008."
+    image="/images/truist/truist-mobile-app-tour-620x1150.jpg"
+    imageAlt="Truist mobile app screens"
+  />
+
+  <ContextGrid
+    challenge="Scaling a design practice ahead of a $66B merger."
+    role="Head of UX Design & Research"
+    company="SunTrust → Truist Financial"
+    scope="All lines of business (SunTrust); Business & Commercial Banking (Truist); Design System"
+    team="UX/UI Designers, Researchers, Product Managers, Engineering"
+  >
+    I inherited a nascent UX team at SunTrust with no research function and no
+    independent design voice. I scaled it to a 30-person multidisciplinary
+    organization covering Consumer, Small Business, Wealth Management, and
+    Commercial Banking. I rebooted the SunTrust Innovation Accelerator
+    Studio—introducing strategic foresight and presenting future-of-banking
+    scenarios to the C-Suite that informed merger strategy. When the $66B merger
+    with BB&T created Truist, I led the UX methodology and design execution for
+    business and commercial banking across the newly merged entity.
+  </ContextGrid>
+
+  <div class="ecosystem-bg">
+    <ShowcaseSection
+      label="The Ecosystem"
+      title="Architecting experience at scale."
+      description="I led UX design and research across the entirety of SunTrust's digital footprint. Managing at this scale required establishing an evidence-based design methodology and successfully integrating the voice of the customer into a Scaled Agile Framework (SAFe) environment."
+    >
+      <ShowcaseGrid columns={3}>
+        <ShowcaseCard
+          title="Consumer Mobile"
+          description="Account management, transfers, and day-to-day banking designed for speed and clarity."
+          image="/images/truist/1771246123096-e2ad64a0.png"
+          imageAlt="Truist mobile home screen"
+        />
+        <ShowcaseCard
+          title="Business Banking"
+          description="Multi-account management, notifications, and commercial tools for business clients."
+          image="/images/truist/f6b34fae57ddb0e3fc45c70cca0e5130.webp"
+          imageAlt="Truist business banking dashboard"
+        />
+        <ShowcaseCard
+          title="Web Platform"
+          description="Full-featured dashboard with spending analytics, account activity, and cross-product visibility."
+          image="/images/truist/1771246117084-2367c12e.png"
+          imageAlt="Truist dashboard on laptop"
+        />
+      </ShowcaseGrid>
+    </ShowcaseSection>
+  </div>
+
+  <ShowcaseSection
+    label="Post-Merger Integration"
+    title="Translating brand into a universal design system."
+    description="Following the merger, I directed the teams responsible for translating the new Truist brand into comprehensive visual design and UI standards. We defined and deployed the Truist design system across all digital products for the newly merged entity."
+    isDark
+  >
+    <ShowcaseGrid columns={2}>
+      <ShowcaseCard
+        isDark
+        title="Systems Architecture"
+        description="Oversaw the structural integration of two legacy banking systems into a unified UI pattern library."
+        image="/images/truist/1771281467064-e8609008.png"
+        imageAlt="Truist app interaction flows"
       />
-    </div>
-  </div>
-
-  <!-- Context -->
-  <section class="context">
-    <div class="context-inner">
-      <div>
-        <div class="section-label">The Challenge</div>
-        <h2 class="section-heading">
-          Scaling a design practice ahead of a $66B merger.
-        </h2>
-        <p class="section-body">
-          I inherited a nascent UX team at SunTrust with no research function
-          and no independent design voice. I scaled it to a 30-person
-          multidisciplinary organization covering Consumer, Small Business,
-          Wealth Management, and Commercial Banking. I rebooted the SunTrust
-          Innovation Accelerator Studio—introducing strategic foresight and
-          presenting future-of-banking scenarios to the C-Suite that informed
-          merger strategy. When the $66B merger with BB&T created Truist, I led
-          the UX methodology and design execution for business and commercial
-          banking across the newly merged entity.
-        </p>
-      </div>
-      <div>
-        <div class="meta-grid">
-          <div class="meta-item">
-            <h4>My Role</h4>
-            <p>Head of UX Design &amp; Research</p>
-          </div>
-          <div class="meta-item">
-            <h4>Company</h4>
-            <p>SunTrust → Truist Financial</p>
-          </div>
-          <div class="meta-item">
-            <h4>Scope</h4>
-            <p>
-              All lines of business (SunTrust); Business &amp; Commercial
-              Banking (Truist); Design System
-            </p>
-          </div>
-          <div class="meta-item">
-            <h4>Team</h4>
-            <p>UX/UI Designers, Researchers, Product Managers, Engineering</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Ecosystem -->
-  <div class="ecosystem">
-    <div class="section-label">The Ecosystem</div>
-    <h2 class="section-heading">Architecting experience at scale.</h2>
-    <p class="section-body">
-      I led UX design and research across the entirety of SunTrust's digital
-      footprint. Managing at this scale required establishing an evidence-based
-      design methodology and successfully integrating the voice of the customer
-      into a Scaled Agile Framework (SAFe) environment.
-    </p>
-
-    <div class="ecosystem-grid">
-      <div class="eco-card">
-        <img
-          src="/images/truist/1771246123096-e2ad64a0.png"
-          alt="Truist mobile home screen"
-        />
-        <div class="eco-card-text">
-          <h3>Consumer Mobile</h3>
-          <p>
-            Account management, transfers, and day-to-day banking designed for
-            speed and clarity.
-          </p>
-        </div>
-      </div>
-      <div class="eco-card">
-        <img
-          src="/images/truist/f6b34fae57ddb0e3fc45c70cca0e5130.webp"
-          alt="Truist business banking dashboard"
-        />
-        <div class="eco-card-text">
-          <h3>Business Banking</h3>
-          <p>
-            Multi-account management, notifications, and commercial tools for
-            business clients.
-          </p>
-        </div>
-      </div>
-      <div class="eco-card">
-        <img
-          src="/images/truist/1771246117084-2367c12e.png"
-          alt="Truist dashboard on laptop"
-        />
-        <div class="eco-card-text">
-          <h3>Web Platform</h3>
-          <p>
-            Full-featured dashboard with spending analytics, account activity,
-            and cross-product visibility.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Dark Showcase: App Depth -->
-  <div class="showcase-dark">
-    <div class="section-label">Post-Merger Integration</div>
-    <h2 class="section-heading">
-      Translating brand into a universal design system.
-    </h2>
-    <p class="section-body">
-      Following the merger, I directed the teams responsible for translating the
-      new Truist brand into comprehensive visual design and UI standards. We
-      defined and deployed the Truist design system across all digital products
-      for the newly merged entity.
-    </p>
-
-    <div class="showcase-row">
-      <div class="showcase-card">
-        <img
-          src="/images/truist/1771281467064-e8609008.png"
-          alt="Truist app interaction flows"
-        />
-        <div class="showcase-card-text">
-          <h3>Systems Architecture</h3>
-          <p>
-            Oversaw the structural integration of two legacy banking systems
-            into a unified UI pattern library.
-          </p>
-        </div>
-      </div>
-      <div class="showcase-card">
-        <img
-          src="/images/truist/1771281469482-048153c4.png"
-          alt="Truist cross-device payments"
-        />
-        <div class="showcase-card-text">
-          <h3>Cross-Platform Scale</h3>
-          <p>
-            Managed strategy for responsive deployment across mobile, web, and
-            internal banking portals.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <div class="showcase-row" style="margin-top: 48px;">
-      <div class="showcase-card">
-        <img
-          src="/images/truist/1771281472014-694a3592.png"
-          alt="Truist biometric security"
-        />
-        <div class="showcase-card-text">
-          <h3>Methodology Integration</h3>
-          <p>
-            Embedded dedicated research and design roles into SAFe agile pods.
-          </p>
-        </div>
-      </div>
-      <div class="showcase-card">
-        <img
-          src="/images/truist/1771246115132-cd678175.png"
-          alt="Truist responsive design system"
-        />
-        <div class="showcase-card-text">
-          <h3>Enterprise Standards</h3>
-          <p>Established the governance models for the Truist design system.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Accelerator Feature -->
-  <div class="feature-row">
-    <div class="feature-image">
-      <img
-        src="/images/truist/1771281481615-23cda954.jpg"
-        alt="Truist onboarding flow on laptop"
+      <ShowcaseCard
+        isDark
+        title="Cross-Platform Scale"
+        description="Managed strategy for responsive deployment across mobile, web, and internal banking portals."
+        image="/images/truist/1771281469482-048153c4.png"
+        imageAlt="Truist cross-device payments"
       />
-    </div>
-    <div class="feature-text">
-      <div class="section-label">Innovation Leadership</div>
-      <h2 class="section-heading">The Innovation Accelerator Studio.</h2>
-      <p class="section-body">
-        Beyond production software, I rebooted and repositioned the SunTrust
-        Innovation Accelerator Studio. I introduced service design, customer
-        journey mapping, and strategic foresight as core
-        competencies—culminating in an executive foresight exercise that shaped
-        the organizational vision ahead of the merger.
-      </p>
-    </div>
-  </div>
-
-  <!-- Wealth Management -->
-  <section class="wealth">
-    <div class="section-label">Commercial & Wealth</div>
-    <h2 class="section-heading">Strategic Business Lines.</h2>
-    <p class="section-body">
-      I exclusively led the UX domain for Small Business and Commercial Banking
-      through the Truist transition, directing teams to design the tools that
-      manage high-value portfolios and enterprise operational capital.
-    </p>
-    <div class="wealth-hero-img">
-      <img
-        src="/images/truist/original.png"
-        alt="Truist wealth management dashboard"
+      <ShowcaseCard
+        isDark
+        title="Methodology Integration"
+        description="Embedded dedicated research and design roles into SAFe agile pods."
+        image="/images/truist/1771281472014-694a3592.png"
+        imageAlt="Truist biometric security"
       />
-    </div>
-  </section>
+      <ShowcaseCard
+        isDark
+        title="Enterprise Standards"
+        description="Established the governance models for the Truist design system."
+        image="/images/truist/1771246115132-cd678175.png"
+        imageAlt="Truist responsive design system"
+      />
+    </ShowcaseGrid>
+  </ShowcaseSection>
+
+  <FeatureRow
+    title="The Innovation Accelerator Studio."
+    description="Beyond production software, I rebooted and repositioned the SunTrust Innovation Accelerator Studio. I introduced service design, customer journey mapping, and strategic foresight as core competencies—culminating in an executive foresight exercise that shaped the organizational vision ahead of the merger."
+    image="/images/truist/1771281481615-23cda954.jpg"
+    imageAlt="Truist onboarding flow on laptop"
+    label="Innovation Leadership"
+  />
+
+  <div class="wealth-bg">
+    <ShowcaseSection
+      label="Commercial & Wealth"
+      title="Strategic Business Lines."
+      description="I exclusively led the UX domain for Small Business and Commercial Banking through the Truist transition, directing teams to design the tools that manage high-value portfolios and enterprise operational capital."
+    >
+      <div class="wealth-hero-img">
+        <Image
+          src="/images/truist/original.png"
+          alt="Truist wealth management dashboard"
+          width={1300}
+          height={800}
+          format="webp"
+        />
+      </div>
+    </ShowcaseSection>
+  </div>
 </CaseStudyLayout>

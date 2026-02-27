@@ -1,0 +1,104 @@
+---
+import { Image } from "astro:assets";
+
+interface Props {
+    title: string;
+    description: string;
+    image: string;
+    imageAlt: string;
+    label?: string;
+    reverse?: boolean;
+}
+
+const {
+    title,
+    description,
+    image,
+    imageAlt,
+    label,
+    reverse = false,
+} = Astro.props;
+---
+
+<section class={`feature-row ${reverse ? "reverse" : ""}`}>
+    <div class="feature-image">
+        <Image
+            src={image}
+            alt={imageAlt}
+            width={800}
+            height={600}
+            format="webp"
+            quality="mid"
+        />
+    </div>
+    <div class="feature-text">
+        {label && <div class="section-label">{label}</div>}
+        <h2 class="section-heading">{title}</h2>
+        <p class="section-body">{description}</p>
+        <slot />
+    </div>
+</section>
+
+<style>
+    .feature-row {
+        display: flex;
+        align-items: center;
+        gap: 80px;
+        padding: 160px 80px;
+        background: #fff;
+        max-width: 1300px;
+        margin: 0 auto;
+    }
+
+    .feature-row.reverse {
+        flex-direction: row-reverse;
+    }
+
+    .feature-image {
+        flex: 1;
+    }
+
+    .feature-image img {
+        width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 32px 64px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-text {
+        flex: 1;
+    }
+
+    .section-label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--accent, #3b1a5a);
+        margin-bottom: 24px;
+    }
+
+    .section-heading {
+        font-family: "Playfair Display", serif;
+        font-size: 32px;
+        font-weight: 400;
+        color: #1a1a1a;
+        line-height: 1.25;
+        margin-bottom: 32px;
+    }
+
+    .section-body {
+        font-family: "Inter", sans-serif;
+        font-size: 16px;
+        font-weight: 300;
+        color: #5a5a5a;
+        line-height: 1.8;
+    }
+
+    @media (max-width: 1024px) {
+        .feature-row {
+            flex-direction: column !important;
+            padding: 100px 32px;
+            gap: 48px;
+        }
+    }
+</style>

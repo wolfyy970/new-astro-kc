@@ -4,10 +4,11 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "npm run verify && astro build",
     "preview": "astro preview",
     "test": "vitest run",
-    "setup": "node scripts/setup.js"
+    "setup": "node scripts/setup.js",
+    "verify": "tsx scripts/verify-content.ts"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.0",
@@ -16,6 +17,7 @@
   },
   "devDependencies": {
     "jsdom": "^28.1.0",
+    "tsx": "^4.21.0",
     "vitest": "^4.0.18"
   }
 }

@@ -1,5 +1,10 @@
 ---
 import CaseStudyLayout from "../layouts/CaseStudyLayout.astro";
+import CaseStudyHero from "../components/case-studies/CaseStudyHero.astro";
+import ContextGrid from "../components/case-studies/ContextGrid.astro";
+import ShowcaseSection from "../components/case-studies/ShowcaseSection.astro";
+import ShowcaseGrid from "../components/case-studies/ShowcaseGrid.astro";
+import ShowcaseCard from "../components/case-studies/ShowcaseCard.astro";
 ---
 
 <CaseStudyLayout
@@ -13,446 +18,114 @@ import CaseStudyLayout from "../layouts/CaseStudyLayout.astro";
       --upwave-red: #c83c2c;
       --upwave-gold: #f5a623;
       --upwave-dark: #1e1e1e;
-      --warm-white: #f7f5f2;
       --soft-cream: #fff8f4;
-      --text-primary: #1a1a1a;
-      --text-secondary: #5a5a5a;
-      --text-light: rgba(255, 255, 255, 0.85);
       --accent: #f26522;
     }
 
-    /* ── Hero ── */
-    .hero {
-      position: relative;
-      min-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      background: linear-gradient(
-        160deg,
-        #1a1a1a 0%,
-        #202020 40%,
-        #151515 100%
-      );
-      overflow: hidden;
-      padding: 160px 80px;
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      bottom: -10%;
-      left: -10%;
-      width: 800px;
-      height: 800px;
-      border-radius: 50%;
-      background: radial-gradient(
-        circle,
-        rgba(242, 101, 34, 0.12) 0%,
-        transparent 70%
-      );
-      pointer-events: none;
-    }
-
-    .hero-left {
-      max-width: 800px;
-      z-index: 1;
-      margin-bottom: 80px;
-    }
-
-    .hero-right {
-      z-index: 1;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      position: relative;
-    }
-
-    .hero-right img {
-      max-width: 900px;
-      width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 64px 128px rgba(0, 0, 0, 0.5);
-    }
-
-    .hero-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--upwave-orange);
-      margin-bottom: 32px;
-    }
-
-    .hero-title {
-      font-family: "Playfair Display", serif;
-      font-size: clamp(48px, 6vw, 84px);
-      font-weight: 400;
-      color: #fff;
-      line-height: 1.05;
-      margin-bottom: 40px;
-    }
-
-    .hero-subtitle {
-      font-size: 20px;
-      font-weight: 300;
-      color: var(--text-light);
-      line-height: 1.75;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    /* ── Platform Showcase (warm bg) ── */
-    .platform {
+    .platform-bg {
       background: var(--soft-cream);
-      padding: 160px 80px;
     }
 
-    .platform-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 80px;
-      margin-top: 80px;
-      max-width: 1300px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .platform-card {
-      background: #fff;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 32px rgba(242, 101, 34, 0.06);
-      transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-      border: 1px solid rgba(0, 0, 0, 0.03);
-    }
-
-    .platform-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 32px 64px rgba(242, 101, 34, 0.1);
-    }
-
-    .platform-card img {
-      width: 100%;
-      display: block;
-    }
-
-    .platform-card-text {
-      padding: 40px;
-    }
-
-    .platform-card-text h3 {
-      font-size: 18px;
-      font-weight: 500;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-    }
-
-    .platform-card-text p {
-      font-size: 15px;
-      font-weight: 300;
-      color: var(--text-secondary);
-      line-height: 1.6;
-    }
-
-    /* ── Dark section ── */
-    .dark-section {
-      background: var(--upwave-dark);
-      padding: 160px 80px;
-    }
-
-    .dark-section .section-label {
-      color: var(--upwave-gold);
-    }
-    .dark-section .section-heading {
-      color: #fff;
-    }
-    .dark-section .section-body {
-      color: var(--text-light);
-    }
-
-    .dark-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-      margin-top: 80px;
-      max-width: 1300px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .dark-card {
-      border-radius: 8px;
-      overflow: hidden;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      transition: all 0.4s ease;
-    }
-
-    .dark-card img {
-      width: 100%;
-      display: block;
-    }
-
-    .dark-card-text {
-      padding: 32px;
-    }
-
-    .dark-card-text h3 {
-      font-size: 18px;
-      font-weight: 500;
-      color: #fff;
-      margin-bottom: 6px;
-    }
-
-    .dark-card-text p {
-      font-size: 14px;
-      font-weight: 300;
-      color: rgba(255, 255, 255, 0.4);
-    }
-
-    /* ── Campaign / Brand ── */
-    .campaign {
+    .tech-bg {
       background: linear-gradient(135deg, #1a1a1a 0%, #2e1d1a 100%);
       padding: 160px 80px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 100px;
-      align-items: center;
     }
 
-    .campaign-image {
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 32px 64px rgba(0, 0, 0, 0.4);
-    }
-
-    .campaign-image img {
-      width: 100%;
-      display: block;
-    }
-
-    .campaign-text .section-heading {
-      color: #fff;
-    }
-    .campaign-text .section-body {
-      color: rgba(255, 255, 255, 0.65);
-    }
-
-    /* ── Responsive ── */
     @media (max-width: 1024px) {
-      .hero {
-        padding: 120px 32px;
-      }
-      .hero-left {
-        margin-bottom: 48px;
-      }
-      .platform {
+      .tech-bg {
         padding: 100px 32px;
-      }
-      .platform-grid {
-        gap: 48px;
-      }
-      .dark-section {
-        padding: 100px 32px;
-      }
-      .dark-grid {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-      .campaign {
-        grid-template-columns: 1fr;
-        padding: 100px 32px;
-        gap: 64px;
       }
     }
   </style>
 
-  <!-- Hero -->
-  <div class="hero">
-    <div class="hero-left">
-      <div class="hero-label">Upwave</div>
-      <h1 class="hero-title">Building a Platform That Makes Wellness Stick</h1>
-      <p class="hero-subtitle">
-        I led product and design for Turner's health and wellness venture —
-        partnering with IDEO on market validation, then taking it from concept
-        to 1M monthly users in eight months.
-      </p>
-    </div>
-    <div class="hero-right">
-      <img
-        src="/images/upwave/turner-upwave-site.png"
-        alt="Upwave homepage on desktop and mobile"
-      />
-    </div>
-  </div>
+  <CaseStudyHero
+    label="Upwave"
+    title="Building a Platform That Makes Wellness Stick"
+    subtitle="I led product and design for Turner's health and wellness venture — partnering with IDEO on market validation, then taking it from concept to 1M monthly users in eight months."
+    image="/images/upwave/turner-upwave-site.png"
+    imageAlt="Upwave homepage on desktop and mobile"
+  />
 
-  <!-- Context -->
-  <section class="context">
-    <div class="context-inner">
-      <div>
-        <div class="section-label">The Challenge</div>
-        <h2 class="section-heading">
-          Pioneering health and wellness in the early IoT era.
-        </h2>
-        <p class="section-body">
-          Upwave was Turner's IoT-driven digital health venture, exploring the
-          intersection of quantified-self data and personalized content. As Vice
-          President, Product & UX, I led the specialized teams responsible for
-          taking the venture from concept to market. Partnering with IDEO for
-          initial market validation, I established the product strategy and
-          introduced a lean methodology that enabled daily release cycles,
-          accelerating growth to 1M monthly unique users in just eight months.
-        </p>
-      </div>
-      <div>
-        <div class="meta-grid">
-          <div class="meta-item">
-            <h4>My Role</h4>
-            <p>Vice President, Product &amp; UX</p>
-          </div>
-          <div class="meta-item">
-            <h4>Platform</h4>
-            <p>Upwave (Internal Venture)</p>
-          </div>
-          <div class="meta-item">
-            <h4>Scope</h4>
-            <p>Product Leadership, Lean Methodology, Team Directorship</p>
-          </div>
-          <div class="meta-item">
-            <h4>Outcomes</h4>
-            <p>0 to 1M Users in 8 mos, Webby Nomination</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Platform Showcase -->
-  <div class="platform">
-    <div class="section-label">The Platform</div>
-    <h2 class="section-heading">
-      An ecosystem of content, challenges, and analytics.
-    </h2>
-    <p class="section-body">
-      I directed the product roadmap and user experience strategy across the
-      entire Upwave ecosystem, guiding teams to ensure a seamless integration
-      between media consumption and health tracking behaviors.
-    </p>
-
-    <div class="platform-grid">
-      <div class="platform-card">
-        <img
-          src="/images/upwave/8dc0f0d910df1c24b3620919604df9b218d4ad07_190917_110730.png"
-          alt="Upwave content platform desktop and mobile"
-        />
-        <div class="platform-card-text">
-          <h3>Content Strategy & Platform</h3>
-          <p>
-            Directed the UX strategies for a responsive media platform built to
-            drive engagement and recirculation.
-          </p>
-        </div>
-      </div>
-      <div class="platform-card">
-        <img
-          src="/images/upwave/upwave_challenge_screens_desktop_mobile.webp"
-          alt="Upwave challenge feature"
-        />
-        <div class="platform-card-text">
-          <h3>Behavioral Challenges</h3>
-          <p>
-            Oversaw the design framework for multi-day wellness challenges,
-            applying behavioral science to daily progress tracking.
-          </p>
-        </div>
-      </div>
-      <div class="platform-card full-width">
-        <img
-          src="/images/upwave/turner-upwave-trackit.png"
-          alt="Upwave TrackIt analytics dashboard"
-        />
-        <div class="platform-card-text">
-          <h3>TrackIt Analytics</h3>
-          <p>
-            Guided the strategic integration of emerging wearables and fitness
-            trackers with a unified personal health dashboard.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Validation & Process (dark) -->
-  <div class="dark-section">
-    <div class="section-label">Market Validation & Delivery</div>
-    <h2 class="section-heading">From validation to daily releases.</h2>
-    <p class="section-body">
-      Building a platform at the forefront of quantified-self technology
-      (pre-Apple Watch) required rigorous methodology. I initiated a partnership
-      with IDEO to secure product-market fit and validate key assumptions before
-      large-scale investment. Working cross-functionally, I led the transition
-      of the teams to a lean product methodology, establishing a cadence of
-      daily release cycles that increased platform recirculation from 5% to 24%.
-    </p>
-
-    <div class="dark-grid">
-      <div class="dark-card">
-        <img
-          src="/images/upwave/turner-upwave-ux-01b-1024x587.png"
-          alt="Upwave UX wireframes"
-        />
-        <div class="dark-card-text">
-          <h3>Architecture Directorship</h3>
-          <p>
-            Directed the UX and product teams to establish the foundational
-            information architecture and component strategy.
-          </p>
-        </div>
-      </div>
-      <div class="dark-card">
-        <img
-          src="/images/upwave/turner-upwave-ux-02-1024x768.png"
-          alt="Upwave UX design documentation"
-        />
-        <div class="dark-card-text">
-          <h3>Interaction Systems</h3>
-          <p>
-            Managed multidisciplinary teams ensuring complex health data
-            intersections were logically translated into accessible interfaces.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Prior Turner Role / Innovation Leadership -->
-  <section
-    class="context"
-    style="background: linear-gradient(135deg, #1a1a1a 0%, #2e1d1a 100%);"
+  <ContextGrid
+    challenge="Pioneering health and wellness in the early IoT era."
+    role="Vice President, Product & UX"
+    company="Upwave (Internal Venture)"
+    scope="Product Leadership, Lean Methodology, Team Directorship"
+    team="0 to 1M Users in 8 mos, Webby Nomination"
   >
-    <div class="context-inner" style="grid-template-columns: 1fr;">
-      <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-        <div class="section-label" style="color: var(--upwave-gold);">
-          Emerging Technology
-        </div>
-        <h2 class="section-heading" style="color: #fff;">
-          Defining the future of broadcast.
-        </h2>
-        <p class="section-body" style="color: rgba(255, 255, 255, 0.65);">
-          Prior to leading Upwave, my tenure at Turner included serving as
-          Senior Director of Innovation & Emerging Technology spanning CNN,
-          Cartoon Network, TBS & TNT. I led multi-disciplinary R&D teams that
-          pioneered early mobile augmented reality applications and the
-          sync-to-TV technology that ultimately won a Primetime Emmy Award.
-          These efforts resulted in two granted U.S. patents for automatic
-          content recognition. I also collaborated on the design of the CNN
-          "Magic Wall," introducing a massive multi-touch paradigm that
-          redefined data storytelling across the broadcast industry.
-        </p>
-      </div>
-    </div>
-  </section>
+    Upwave was Turner's IoT-driven digital health venture, exploring the
+    intersection of quantified-self data and personalized content. As Vice
+    President, Product & UX, I led the specialized teams responsible for taking
+    the venture from concept to market. Partnering with IDEO for initial market
+    validation, I established the product strategy and introduced a lean
+    methodology that enabled daily release cycles, accelerating growth to 1M
+    monthly unique users in just eight months.
+  </ContextGrid>
+
+  <div class="platform-bg">
+    <ShowcaseSection
+      label="The Platform"
+      title="An ecosystem of content, challenges, and analytics."
+      description="I directed the product roadmap and user experience strategy across the entire Upwave ecosystem, guiding teams to ensure a seamless integration between media consumption and health tracking behaviors."
+    >
+      <ShowcaseGrid columns={1}>
+        <ShowcaseCard
+          title="Content Strategy & Platform"
+          description="Directed the UX strategies for a responsive media platform built to drive engagement and recirculation."
+          image="/images/upwave/8dc0f0d910df1c24b3620919604df9b218d4ad07_190917_110730.png"
+          imageAlt="Upwave content platform desktop and mobile"
+        />
+        <ShowcaseCard
+          title="Behavioral Challenges"
+          description="Oversaw the design framework for multi-day wellness challenges, applying behavioral science to daily progress tracking."
+          image="/images/upwave/upwave_challenge_screens_desktop_mobile.webp"
+          imageAlt="Upwave challenge feature"
+        />
+        <ShowcaseCard
+          title="TrackIt Analytics"
+          description="Guided the strategic integration of emerging wearables and fitness trackers with a unified personal health dashboard."
+          image="/images/upwave/turner-upwave-trackit.png"
+          imageAlt="Upwave TrackIt analytics dashboard"
+        />
+      </ShowcaseGrid>
+    </ShowcaseSection>
+  </div>
+
+  <ShowcaseSection
+    label="Market Validation & Delivery"
+    title="From validation to daily releases."
+    description="Building a platform at the forefront of quantified-self technology (pre-Apple Watch) required rigorous methodology. I initiated a partnership with IDEO to secure product-market fit and validate key assumptions before large-scale investment. Working cross-functionally, I led the transition of the teams to a lean product methodology, establishing a cadence of daily release cycles that increased platform recirculation from 5% to 24%."
+    isDark
+  >
+    <style>
+      .is-dark {
+        background: var(--upwave-dark) !important;
+      }
+    </style>
+    <ShowcaseGrid columns={2}>
+      <ShowcaseCard
+        isDark
+        title="Architecture Directorship"
+        description="Directed the UX and product teams to establish the foundational information architecture and component strategy."
+        image="/images/upwave/turner-upwave-ux-01b-1024x587.png"
+        imageAlt="Upwave UX wireframes"
+      />
+      <ShowcaseCard
+        isDark
+        title="Interaction Systems"
+        description="Managed multidisciplinary teams ensuring complex health data intersections were logically translated into accessible interfaces."
+        image="/images/upwave/turner-upwave-ux-02-1024x768.png"
+        imageAlt="Upwave UX design documentation"
+      />
+    </ShowcaseGrid>
+  </ShowcaseSection>
+
+  <div class="tech-bg">
+    <ShowcaseSection
+      label="Emerging Technology"
+      title="Defining the future of broadcast."
+      description="Prior to leading Upwave, my tenure at Turner included serving as Senior Director of Innovation & Emerging Technology spanning CNN, Cartoon Network, TBS & TNT. I led multi-disciplinary R&D teams that pioneered early mobile augmented reality applications and the sync-to-TV technology that ultimately won a Primetime Emmy Award. These efforts resulted in two granted U.S. patents for automatic content recognition. I also collaborated on the design of the CNN 'Magic Wall,' introducing a massive multi-touch paradigm that redefined data storytelling across the broadcast industry."
+      isDark
+    />
+  </div>
 </CaseStudyLayout>

@@ -1,0 +1,16 @@
+{
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "/src/content/popovers.json"
+            ],
+            "url": "./.vscode/popovers.schema.json"
+        },
+        {
+            "fileMatch": [
+                "/src/content/resume.json"
+            ],
+            "url": "./.vscode/resume.schema.json"
+        }
+    ]
+}

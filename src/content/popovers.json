@@ -6,11 +6,11 @@
   },
   "gpc-research": {
     "label": "Research Strategy",
-    "text": "The \"ways of finding\" concept introduced multiple paths to the same part: category search, part number lookup, job type, legacy PDF catalogs, and future visual/diagram lookup. This research-driven strategy was the foundation of the $32.8M impact — designed from evidence, not assumption."
+    "text": "The \"ways of finding\" concept introduced multiple paths to the same part: category search, part number lookup, job type, legacy PDF catalogs, and future visual/diagram lookup. This research-driven strategy was the foundation of the $32.8M impact — evidence based design."
   },
   "bolt": {
     "label": "Design System",
-    "text": "Built from scratch — no inherited design system existed. The design engineering team (front-end engineers reporting into design) owns the technical implementation. Adopted across North America, Europe, and Asia Pacific. Reduced front-end development time by approximately 25%."
+    "text": "Built from scratch — no inherited design system existed. The design engineering team (front-end engineers reporting into design) designed and built the implementation end to end. Adopted across North America, Europe, and Asia Pacific. Reduced front-end development time by approximately 25%."
   },
   "agentic": {
     "label": "The 30-Year Through-Line",
@@ -18,7 +18,7 @@
   },
   "merger": {
     "label": "Truist · $66B Merger",
-    "text": "The SunTrust–BB&T merger created Truist — the largest banking merger since 2008. Scaled the design team and improved customer satisfaction by 3.8% (CSAT). My strategic foresight work used Jobs to Be Done framework applied to business units (not products), isolating what each unit actually solves for customers, then running foresight on how those problems would be solved in the future.",
+    "text": "The SunTrust–BB&T merger created Truist — the largest banking merger since 2008. My strategic foresight work used Jobs to Be Done framework applied to business units (not products), isolating what each unit actually solves for customers, then running foresight on how those problems would be solved in the future.",
     "img": "/images/truist/1771246115132-cd678175.png",
     "link": "/truist",
     "linkText": "View Truist project →"

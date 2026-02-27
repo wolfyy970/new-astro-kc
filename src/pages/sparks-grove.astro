@@ -1,5 +1,12 @@
 ---
 import CaseStudyLayout from "../layouts/CaseStudyLayout.astro";
+import CaseStudyHero from "../components/case-studies/CaseStudyHero.astro";
+import ContextGrid from "../components/case-studies/ContextGrid.astro";
+import ShowcaseSection from "../components/case-studies/ShowcaseSection.astro";
+import ShowcaseGrid from "../components/case-studies/ShowcaseGrid.astro";
+import ShowcaseCard from "../components/case-studies/ShowcaseCard.astro";
+import FeatureRow from "../components/case-studies/FeatureRow.astro";
+import { Image } from "astro:assets";
 ---
 
 <CaseStudyLayout
@@ -11,164 +18,9 @@ import CaseStudyLayout from "../layouts/CaseStudyLayout.astro";
     :root {
       --navy: #0b1b2b;
       --delta-red: #c8102e;
-      --warm-white: #f7f5f2;
-      --text-primary: #1a1a1a;
-      --text-secondary: #5a5a5a;
-      --text-light: rgba(255, 255, 255, 0.85);
       --accent: #c8102e;
     }
 
-    /* ── Hero (full-bleed photo) ── */
-    .hero {
-      position: relative;
-      height: 90vh;
-      min-height: 800px;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 120px 40px;
-    }
-
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-    }
-
-    .hero-bg img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center 25%;
-    }
-
-    /* Global Overlay Scrim - The Middle Ground */
-    .hero-bg::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(11, 27, 43, 0.55);
-      z-index: 1;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      padding: 0 40px;
-      max-width: 900px;
-    }
-
-    .hero-label {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 5px;
-      text-transform: uppercase;
-      color: #fff;
-      margin-bottom: 32px;
-      opacity: 0.9;
-    }
-
-    .hero-title {
-      font-family: "Playfair Display", serif;
-      font-size: clamp(48px, 6vw, 84px);
-      font-weight: 400;
-      color: #fff;
-      line-height: 1.05;
-      margin-bottom: 40px;
-    }
-
-    .hero-subtitle {
-      font-size: 20px;
-      font-weight: 300;
-      color: #fff;
-      line-height: 1.7;
-      max-width: 680px;
-      margin: 0 auto;
-      opacity: 0.95;
-    }
-
-    /* ── Showcase ── */
-    .showcase {
-      background: var(--navy);
-      padding: 160px 80px;
-    }
-
-    .showcase .section-heading {
-      color: #fff;
-    }
-    .showcase .section-body {
-      color: var(--text-light);
-    }
-
-    .showcase-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 80px;
-      margin-top: 80px;
-      max-width: 1300px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .showcase-item {
-      border-radius: 8px;
-      overflow: hidden;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-
-    .showcase-item img {
-      width: 100%;
-      display: block;
-    }
-
-    .showcase-caption {
-      padding: 40px 48px;
-    }
-
-    .showcase-caption h3 {
-      font-size: 20px;
-      font-weight: 500;
-      color: #fff;
-      margin-bottom: 8px;
-    }
-
-    .showcase-caption p {
-      font-size: 15px;
-      font-weight: 300;
-      color: rgba(255, 255, 255, 0.5);
-      line-height: 1.6;
-    }
-
-    /* ── Two-up layout ── */
-    .two-up {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 64px;
-    }
-
-    /* ── Event Section ── */
-    .event-section {
-      background: #080d14;
-      padding: 160px 80px;
-      display: grid;
-      grid-template-columns: 1.3fr 0.7fr;
-      gap: 120px;
-      align-items: center;
-      max-width: 100%;
-    }
-
-    .event-text .section-heading {
-      color: #fff;
-    }
-    .event-text .section-body {
-      color: rgba(255, 255, 255, 0.6);
-    }
-
-    /* ── Full Bleed Image ── */
     .full-bleed-closing {
       height: 70vh;
       overflow: hidden;
@@ -180,167 +32,96 @@ import CaseStudyLayout from "../layouts/CaseStudyLayout.astro";
       object-fit: cover;
     }
 
-    /* ── Responsive ── */
-    @media (max-width: 1024px) {
-      .hero {
-        min-height: 600px;
-        padding: 120px 24px 80px;
-      }
-      .hero-content {
-        padding: 0;
-      }
-      .showcase {
-        padding: 100px 32px;
-      }
-      .showcase-grid {
-        gap: 48px;
-      }
-      .event-section {
-        grid-template-columns: 1fr;
-        padding: 100px 32px;
-        gap: 64px;
-      }
-      .two-up {
-        grid-template-columns: 1fr;
-        gap: 48px;
-      }
+    .event-bg {
+      background: #080d14;
+    }
+
+    .event-img-filter {
+      filter: grayscale(100%) contrast(1.1);
     }
   </style>
 
-  <!-- Hero -->
-  <div class="hero">
-    <div class="hero-bg">
-      <img
-        src="/images/sparks-grove/delta-777-right-inflight_new_livery.jpg"
-        alt="Delta 777 in flight"
-      />
-    </div>
-    <div class="hero-content">
-      <div class="hero-label">Case Study &mdash; Delta Air Lines</div>
-      <h1 class="hero-title">High-Fidelity Storytelling for an Iconic Brand</h1>
-      <p class="hero-subtitle">
-        Leading the design team that unified Delta's digital newsroom, serving
-        90,000 employees and millions of passengers annually.
-      </p>
-    </div>
+  <CaseStudyHero
+    label="Case Study — Delta Air Lines"
+    title="High-Fidelity Storytelling for an Iconic Brand"
+    subtitle="Leading the design team that unified Delta's digital newsroom, serving 90,000 employees and millions of passengers annually."
+    background="/images/sparks-grove/delta-777-right-inflight_new_livery.jpg"
+  />
+
+  <ContextGrid
+    challenge="Elevating corporate communications to match the in-flight experience."
+    role="UX Design Practice Leader"
+    company="Sparks Grove — North Highland"
+    scope="Practice Leadership, Strategic Consulting"
+    team="Secured $3M+ client engagement"
+  >
+    As UX Practice Leader for Sparks Grove (North Highland's innovation agency),
+    I led the strategic consulting engagement for the Delta News Hub. Delta's
+    internal and external communications lived across fragmented legacy systems.
+    I directed our agency teams to architect a unified platform serving
+    corporate comms, media relations, and 90,000 employees under one cohesive,
+    premium experience.
+  </ContextGrid>
+
+  <div style="background: var(--navy)">
+    <ShowcaseSection
+      label="The Work"
+      title="Delta News Hub Leadership"
+      description="I led the agency's multidisciplinary product and design teams in establishing a content-rich platform that balanced editorial storytelling with real-time operational priorities."
+      isDark
+    >
+      <ShowcaseGrid columns={1}>
+        <ShowcaseCard
+          isDark
+          title="Editorial Architecture"
+          description="Directed the strategy for a modular, category-driven framework designed to scale globally."
+          image="/images/sparks-grove/news-hub.jpg"
+          imageAlt="News Hub Desktop"
+        />
+      </ShowcaseGrid>
+
+      <ShowcaseGrid columns={2}>
+        <ShowcaseCard
+          isDark
+          title="Information Strategy"
+          description="Oversaw the IA development, prioritizing real-time audience needs."
+          image="/images/sparks-grove/DNH01.jpg"
+          imageAlt="IA & Header"
+        />
+        <ShowcaseCard
+          isDark
+          title="Design Oversight"
+          description="Managed the visual execution to ensure editorial quality was maintained across all touchpoints."
+          image="/images/sparks-grove/delta-4.jpg"
+          imageAlt="Mobile Views"
+        />
+      </ShowcaseGrid>
+    </ShowcaseSection>
   </div>
 
-  <!-- Context -->
-  <section class="context">
-    <div class="context-inner">
-      <div>
-        <div class="section-label">The Challenge</div>
-        <h2 class="section-heading">
-          Elevating corporate communications to match the in-flight experience.
-        </h2>
-        <p class="section-body">
-          As UX Practice Leader for Sparks Grove (North Highland's innovation
-          agency), I led the strategic consulting engagement for the Delta News
-          Hub. Delta's internal and external communications lived across
-          fragmented legacy systems. I directed our agency teams to architect a
-          unified platform serving corporate comms, media relations, and 90,000
-          employees under one cohesive, premium experience.
-        </p>
-      </div>
-      <div>
-        <div class="meta-grid">
-          <div class="meta-item">
-            <h4>My Role</h4>
-            <p>UX Design Practice Leader</p>
-          </div>
-          <div class="meta-item">
-            <h4>Agency</h4>
-            <p>Sparks Grove &mdash; North Highland</p>
-          </div>
-          <div class="meta-item">
-            <h4>Scope</h4>
-            <p>Practice Leadership, Strategic Consulting</p>
-          </div>
-          <div class="meta-item">
-            <h4>Impact</h4>
-            <p>Secured $3M+ client engagement</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Showcase -->
-  <div class="showcase">
-    <div class="section-label">The Work</div>
-    <h2 class="section-heading">Delta News Hub Leadership</h2>
-    <p class="section-body">
-      I led the agency's multidisciplinary product and design teams in
-      establishing a content-rich platform that balanced editorial storytelling
-      with real-time operational priorities.
-    </p>
-
-    <div class="showcase-grid">
-      <div class="showcase-item">
-        <img src="/images/sparks-grove/news-hub.jpg" alt="News Hub Desktop" />
-        <div class="showcase-caption">
-          <h3>Editorial Architecture</h3>
-          <p>
-            Directed the strategy for a modular, category-driven framework
-            designed to scale globally.
-          </p>
-        </div>
-      </div>
-
-      <div class="two-up">
-        <div class="showcase-item">
-          <img src="/images/sparks-grove/DNH01.jpg" alt="IA & Header" />
-          <div class="showcase-caption">
-            <h3>Information Strategy</h3>
-            <p>
-              Oversaw the IA development, prioritizing real-time audience needs.
-            </p>
-          </div>
-        </div>
-        <div class="showcase-item">
-          <img src="/images/sparks-grove/delta-4.jpg" alt="Mobile Views" />
-          <div class="showcase-caption">
-            <h3>Design Oversight</h3>
-            <p>
-              Managed the visual execution to ensure editorial quality was
-              maintained across all touchpoints.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="event-bg">
+    <FeatureRow
+      title="Transforming the agency."
+      description='The Delta engagement represented just one key aspect of my purview. As Practice Leader, I transformed the agency itself from a traditional waterfall model to agile software development and lean product management, repositioning the entire practice around "Human Experience Design" (HxD). Over 2.5 years, I pitched and won $4.7M+ in new business and provided product methodology coaching for executives at major Fortune 500s, including The Home Depot. This transformation earned the National Impact Award in 2016.'
+      image="/images/sparks-grove/gala_5.jpg"
+      imageAlt="Human Experience Design"
+      label="Practice Leadership"
+    >
+      <style slot="image">
+        .feature-image img {
+          filter: grayscale(100%) contrast(1.1);
+        }
+      </style>
+    </FeatureRow>
   </div>
 
-  <!-- Agency Leadership -->
-  <div class="event-section">
-    <div class="event-image">
-      <img
-        src="/images/sparks-grove/gala_5.jpg"
-        alt="Human Experience Design"
-        style="filter: grayscale(100%) contrast(1.1);"
-      />
-    </div>
-    <div class="event-text">
-      <div class="section-label">Practice Leadership</div>
-      <h2 class="section-heading">Transforming the agency.</h2>
-      <p class="section-body">
-        The Delta engagement represented just one key aspect of my purview. As
-        Practice Leader, I transformed the agency itself from a traditional
-        waterfall model to agile software development and lean product
-        management, repositioning the entire practice around "Human Experience
-        Design" (HxD). Over 2.5 years, I pitched and won $4.7M+ in new business
-        and provided product methodology coaching for executives at major
-        Fortune 500s, including The Home Depot. This transformation earned the
-        National Impact Award in 2016.
-      </p>
-    </div>
-  </div>
-
-  <!-- Closing -->
   <section class="full-bleed-closing">
-    <img
+    <Image
       src="/images/sparks-grove/20150925_a330a2a_stills_cam1-1179-v2.jpg.jpeg"
       alt="A330 Inflight"
+      width={1920}
+      height={800}
+      format="webp"
     />
   </section>
 </CaseStudyLayout>

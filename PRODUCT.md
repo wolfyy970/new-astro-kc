@@ -13,20 +13,21 @@ The primary landing experience is a "living" resume document.
   - **Integrated Close:** Consistent, easy-to-find '×' button on both desktop and mobile.
 - **Scroll Annotations:** On wide screens (≥1400px), key hotspots automatically reveal themselves as margin annotations as the user scrolls, providing a rich, "magazine-style" experience.
 - **Annotation Dissolve:** A refined visual effect where margin annotations gracefully disappear when their corresponding popover is opened, avoiding visual clutter and content duplication.
-- **Marginalia Preview (Widen Hint):** On standard desktop screens (1024px-1399px), an elegant "Expand for Marginalia" hint appears. It signals that more content is available in a wider view.
-- **High-Fidelity Highlighting:** Smooth, multi-line highlights that flow with text wrapping using native CSS `box-decoration-break: clone` for maximum performance and zero JavaScript overhead.
+- **Marginalia Discovery (Widen Hint):** On standard desktop screens (1024px-1399px), an elegant dual-sided pulsating line design signals that more content is available in a wider view, guiding users toward the full experience without being intrusive.
+- **Executive Elegance Interaction:** Refined hotspot states with subtle underlines and semantic opacity control, ensuring a premium feel that prioritizes content readability.
 
-### 2. Case Studies
-Deep dives into major projects, each with a custom thematic style while sharing a common backbone:
+### 2. Case Studies (Componentized)
+Deep dives into major projects, now powered by a modular, high-performance template system:
 - **Truist:** Focused on $66B merger strategy and C-suite foresight.
-- **Sparks Grove (Delta):** Cinematic, unobstructed editorial presentation of global media platforms.
+- **Sparks Grove (Delta):** Cinematic, editorial presentation of global media platforms.
 - **Upwave:** Quantified-self venture and IoT behavioral science.
 
-### 3. Accessibility & Presence
+### 3. Foundation & Strategy
+- **Content Integrity Suite:** Automated verification ensures that every interactive hotspot is valid and every media asset is present, preventing regressions during content updates.
 - **WCAG AA Compliance:** Rigorous color contrast calibration (4.5:1+) for all branding accents.
-- **Semantic Structure:** Full 11.21 ARIA implementation, keyboard skip-links, and focus-trapped interactive cards.
+- **Semantic Structure:** Full ARIA 1.1 implementation, keyboard skip-links, and focus-trapped interactive cards.
 - **Cinematic Pacing:** Fluid high-altitude photography blended with authoritative, accessible typography.
-- **Responsive Mastery:** From 1400px marginalia to mobile bottom-sheets with identical functional density.
+- **Performance Mastery:** From 1400px marginalia to mobile bottom-sheets with identical functional density and LCP-optimized image delivery.
 
 ## Target Audience
 - Executive recruiters and hiring managers.

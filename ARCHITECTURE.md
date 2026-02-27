@@ -34,18 +34,34 @@ Manages the "magazine-style" margin content:
 - **Widen Hint:** Triggers nudge animations between 1024px-1399px to signal hidden marginalia content.
 
 ### 3. Native CSS Highlighting
-We removed JavaScript-based highlight orchestration in favor of native CSS robustness:
-- **`box-decoration-break: clone`:** Enables precise padding and border-radius applications geometry wrapping across multiple lines.
+We've refined the interactive highlighting for "Executive Elegance":
+- **`box-decoration-break: clone`:** Enables precise padding and border-radius application across multiple lines.
+- **Semantic Opacity Control:** All hotspot states (default, hover, active) are governed by dry CSS variables in `global.css`.
 
-## Shared Infrastructure
+### 4. Case Study Template System
+A modular suite of Astro components for consistent, high-performance case study authoring:
+- **CaseStudyHero.astro:** Background-integrated hero sections with LCP-optimized images.
+- **ContextGrid.astro:** Standardized challenge/role/scope layout.
+- **ShowcaseGrid.astro / ShowcaseCard.astro:** Responsive, optimized image galleries.
+- **FeatureRow.astro:** Asymmetric layouts for deep-dive content.
 
-- **DOM Utilities (`dom.ts`):** Centralized helper for required elements, global variables, and shared HTML building logic for cards.
-- **Constants (`constants.ts`):** Single source of truth for breakpoints, timing, and visual constants. Includes WCAG-calibrated R/G/B values to ensure parity between CSS and JS-rendered elements.
-- **Global CSS:** `src/styles/global.css` defines the core design system (4px baseline) and sophisticated transitions.
+## Content Integrity & Performance
+
+### 1. Content Integrity Suite (`scripts/verify-content.ts`)
+A custom TypeScript-driven verification system that ensures 100% link safety:
+- **Hotspot Validation:** Cross-references `<hotspot>` tags in `resume.json` against `popovers.json` inventory.
+- **Media Validation:** Validates that every image path referenced in the content exists in the `public/` directory.
+- **Build Guard:** Integrated into the `npm run build` process to prevent broken deployments.
+
+### 2. Image Optimization Pipeline
+Leverages Astro's Image Service for modern asset delivery:
+- **Static Assets:** Automatic WebP conversion and resizing within case study components.
+- **Dynamic Assets:** Build-time pre-optimization of all popover images in `index.astro`, ensuring even dynamically loaded content is hashed and optimized.
 
 ## Testing Strategy
-- **Vitest + JSDOM:** Core logic is verified against a simulated browser environment.
+- **Vitest + JSDOM:** Core logic and utility functions are verified against a simulated browser environment.
 - **Key Testable Units:** 
-  - `src/utils/render.ts`: Verifies hotspot-to-span transformation logic.
-  - `src/scripts/dom.ts`: Validates shared HTML construction and global variable safety.
-  - `src/scripts/constants.ts`: Sanity checks for visual and geometric configuration.
+  - `src/utils/validation.ts`: Logic for extracting and validating hotspots.
+  - `src/utils/images.ts`: Pipeline for pre-optimizing dynamic image assets.
+  - `src/utils/render.ts`: Hotspot-to-span transformation logic.
+  - `src/scripts/annotation-engine.test.ts`: Layout and overlap resolution logic for marginalia.

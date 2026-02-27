@@ -1,0 +1,78 @@
+---
+interface Props {
+    label?: string;
+    title: string;
+    description: string;
+    isDark?: boolean;
+}
+
+const { label, title, description, isDark = false } = Astro.props;
+---
+
+<section class={`showcase-section ${isDark ? "is-dark" : ""}`}>
+    <div class="section-content">
+        {label && <div class="section-label">{label}</div>}
+        <h2 class="section-heading">{title}</h2>
+        <p class="section-body">{description}</p>
+
+        <slot />
+    </div>
+</section>
+
+<style>
+    .showcase-section {
+        padding: 160px 80px;
+        background: #fff;
+    }
+
+    .showcase-section.is-dark {
+        background: var(--truist-deep, #2d1446);
+        color: #fff;
+    }
+
+    .section-content {
+        max-width: 1300px;
+        margin: 0 auto;
+    }
+
+    .section-label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--truist-teal, #00b4a0);
+        margin-bottom: 24px;
+    }
+
+    .section-heading {
+        font-family: "Playfair Display", serif;
+        font-size: 32px;
+        font-weight: 400;
+        color: #1a1a1a;
+        line-height: 1.25;
+        margin-bottom: 32px;
+    }
+
+    .is-dark .section-heading {
+        color: #fff;
+    }
+
+    .section-body {
+        font-family: "Inter", sans-serif;
+        font-size: 16px;
+        font-weight: 300;
+        color: #5a5a5a;
+        line-height: 1.8;
+        max-width: 800px;
+    }
+
+    .is-dark .section-body {
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+    @media (max-width: 1024px) {
+        .showcase-section {
+            padding: 100px 32px;
+        }
+    }
+</style>

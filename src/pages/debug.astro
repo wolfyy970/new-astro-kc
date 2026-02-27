@@ -1,0 +1,264 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import popovers from "../content/popovers.json";
+import type { PopoverMap } from "../types/content";
+import "../styles/global.css";
+
+const popoverData = popovers as PopoverMap;
+const keys = Object.keys(popoverData);
+---
+
+<BaseLayout
+    title="Content Inventory | KC Wolff-Ingham"
+    description="Internal tool for visualizing all popover content in a single view."
+>
+    <style>
+        .inventory-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 40px;
+        }
+
+        .inventory-header {
+            margin-bottom: 64px;
+            text-align: center;
+        }
+
+        .inventory-header h1 {
+            font-family: var(--display);
+            font-size: 48px;
+            font-weight: 300;
+            color: var(--doc-heading);
+            margin-bottom: 16px;
+        }
+
+        .inventory-header p {
+            font-family: var(--doc-sans);
+            font-size: 16px;
+            color: var(--doc-light);
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--accent);
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid var(--accent-border);
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .back-link:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent);
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 32px;
+        }
+
+        .inventory-card {
+            background: var(--doc-white);
+            border-radius: 8px;
+            border: 1px solid var(--doc-rule);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .inventory-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-id-badge {
+            font-family: var(--mono);
+            font-size: 10px;
+            background: #f0f0f0;
+            color: #666;
+            padding: 4px 8px;
+            border-bottom-right-radius: 8px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+        }
+
+        .card-relative {
+            position: relative;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            background: #fdfdfd;
+            border-bottom: 1px solid var(--doc-rule);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-image-placeholder {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: #ccc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-content {
+            padding: 24px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-label {
+            font-family: var(--mono);
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-family: var(--doc-serif);
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--doc-heading);
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .card-stat {
+            font-family: var(--display);
+            font-size: 32px;
+            font-weight: 500;
+            color: var(--doc-heading);
+            margin-bottom: 12px;
+        }
+
+        .card-text {
+            font-family: var(--doc-sans);
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--doc-body);
+            margin-bottom: 16px;
+        }
+
+        .card-quote {
+            font-style: italic;
+            font-size: 13px;
+            color: var(--doc-light);
+            border-left: 2px solid var(--accent-border);
+            padding-left: 12px;
+            margin: 16px 0;
+            line-height: 1.5;
+        }
+
+        .card-footer {
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .card-link {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid var(--accent-border);
+        }
+
+        @media (max-width: 768px) {
+            .inventory-container {
+                padding: 40px 20px;
+            }
+            .inventory-header h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
+
+    <main class="inventory-container">
+        <header class="inventory-header">
+            <a href="/" class="back-link">← Back to Resume</a>
+            <h1>Content Inventory</h1>
+            <p>
+                A bird's-eye view of all interactive popovers and margin
+                annotations. Use this to audit images, stats, and thematic
+                consistency.
+            </p>
+        </header>
+
+        <div class="inventory-grid">
+            {
+                keys.map((key) => {
+                    const item = popoverData[key];
+                    return (
+                        <div class="inventory-card">
+                            <div class="card-relative">
+                                <span class="card-id-badge">{key}</span>
+                                <div class="card-image">
+                                    {item.img ? (
+                                        <img src={item.img} alt={item.label} />
+                                    ) : (
+                                        <div class="card-image-placeholder">
+                                            No Image
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div class="card-content">
+                                <div class="card-label">{item.label}</div>
+
+                                {item.stat && (
+                                    <div class="card-stat">{item.stat}</div>
+                                )}
+
+                                <div class="card-text">{item.text}</div>
+
+                                {item.quote && (
+                                    <div class="card-quote">"{item.quote}"</div>
+                                )}
+
+                                {(item.link || item.linkText) && (
+                                    <div class="card-footer">
+                                        <a href={item.link} class="card-link">
+                                            {item.linkText || "View Project →"}
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    );
+                })
+            }
+        </div>
+    </main>
+</BaseLayout>

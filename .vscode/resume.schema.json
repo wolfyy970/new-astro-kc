@@ -1,0 +1,90 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Resume Data Schema",
+    "type": "object",
+    "required": [
+        "name",
+        "displayName",
+        "titleLine",
+        "summary",
+        "experience"
+    ],
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "displayName": {
+            "type": "string"
+        },
+        "titleLine": {
+            "type": "string"
+        },
+        "summary": {
+            "type": "string",
+            "description": "Executive summary. Use <hotspot key=\"...\">text</hotspot> for interactive elements."
+        },
+        "hero": {
+            "type": "object",
+            "properties": {
+                "tagline": {
+                    "type": "string"
+                },
+                "credentials": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "keyAchievements": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "heading": {
+                        "type": "string"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "experience": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "company",
+                    "dates",
+                    "title",
+                    "bullets"
+                ],
+                "properties": {
+                    "company": {
+                        "type": "string"
+                    },
+                    "dates": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "bullets": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

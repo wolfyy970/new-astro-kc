@@ -44,10 +44,22 @@ The entire portfolio is protected by an elegant password gate powered by Astro m
 - **Privacy:** Crawler indexing is disabled project-wide via `X-Robots-Tag` headers and a global `robots.txt` exclusion.
 - **Session:** A secure, `HttpOnly` cookie maintains the session for 7 days.
 
+### 3. Content Verification & Integrity
+To ensure that the resume and its interactive layers remain synchronized, use the built-in verification suite:
+```bash
+npm run verify
+```
+This script validates that every `<hotspot>` in `resume.json` has a corresponding entry in `popovers.json` and that all referenced image paths exist on disk. It runs automatically during `npm run build`.
+
+### 4. Image Optimization
+The project leverages Astro 5.0's Image Service for high-performance delivery:
+- **Case Studies:** Use the standard `Image` component from `astro:assets`.
+- **Popovers:** Images in `popovers.json` are automatically pre-optimized and hashed during the build process in `index.astro`.
+
+## Managing Content
+
 ### Updating the Resume
 The resume content is stored in `src/content/resume.json`.
-- Modify `displayName`, `titleLine`, and `credentials`.
-- Update `summary` and `experience` bullets.
 - Use the `<hotspot key="key-name">text</hotspot>` tag within strings to create interactive elements.
 
 ### Configuring Popovers
@@ -55,13 +67,14 @@ Popover data is stored in `src/content/popovers.json`.
 - Each key corresponds to a `hotspot` key used in the resume.
 - Fields include `label`, `text`, `stat`, `img`, `quote`, `link`, and `linkText`.
 
-### Controlling Scroll Annotations
-The sequence and positioning of margin annotations are **handled automatically**.
-Whenever a `<hotspot>` tag resolves with valid configuration inside `popovers.json`, the annotation engine reads the DOM from top to bottom and automatically alternates placing the marginalia on the left and right sides of the document. You do not need to manually map or configure their placement.
-
 ## Adding Case Studies
 
+The portfolio includes a modular suite of components to ensure consistent, high-performance case study authoring:
+
 1. **Create a new page:** Add a `.astro` file in `src/pages/`.
-2. **Use CaseStudyLayout:** Import and use the `CaseStudyLayout` component.
+2. **Use Case Study Components:**
+   - `CaseStudyHero`: For the main title, subtitle, and background.
+   - `ContextGrid`: For standardized challenge, role, and scope metadata.
+   - `ShowcaseSection`, `ShowcaseGrid`, and `ShowcaseCard`: For flexible image galleries.
+   - `FeatureRow`: For asymmetric text/image layouts.
 3. **Add Images:** Place project-specific images in `public/images/[case-study-name]/`.
-4. **Style:** Use a `<style>` block for theme-specific CSS (colors, hero styles).
