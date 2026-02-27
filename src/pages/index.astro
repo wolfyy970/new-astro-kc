@@ -173,26 +173,40 @@ const popovers = await optimizePopoverImages(popoversRaw, getImage);
   <!-- Discovery Hint (Desktop, < 1400px) -->
   <div id="widen-hint" class="widen-hint" role="presentation">
     <div class="widen-side left">
+      <!-- Left side: horizontal run from X=0 to 180, corner 180 to 200, vertical run UP from 400 to 0 -->
       <svg class="widen-svg text-left" viewBox="0 0 200 400">
-        <path id="widen-path-left" d="M180,0 L180,400" fill="none" stroke="none"
-        ></path>
+        <path
+          id="widen-path-left"
+          d="M0,400 L180,400 Q200,400 200,380 L200,0"
+          fill="none"
+          stroke="none"></path>
         <text class="widen-text">
-          <textPath href="#widen-path-left" startOffset="0%" text-anchor="start"
-            >Expand window</textPath
+          <textPath
+            id="widen-textpath-left"
+            href="#widen-path-left"
+            text-anchor="start"
           >
+            Expand window
+          </textPath>
         </text>
       </svg>
     </div>
     <div class="widen-side right">
+      <!-- Right side: vertical run DOWN from 0 to 380, corner 380 to 400, horizontal run RIGHT to 200 -->
       <svg class="widen-svg text-right" viewBox="0 0 200 400">
-        <path id="widen-path-right" d="M20,0 L20,400" fill="none" stroke="none"
-        ></path>
+        <path
+          id="widen-path-right"
+          d="M0,0 L0,380 Q0,400 20,400 L200,400"
+          fill="none"
+          stroke="none"></path>
         <text class="widen-text">
           <textPath
+            id="widen-textpath-right"
             href="#widen-path-right"
-            startOffset="100%"
-            text-anchor="end">For marginalia</textPath
+            text-anchor="start"
           >
+            For marginalia
+          </textPath>
         </text>
       </svg>
     </div>

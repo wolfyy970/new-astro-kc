@@ -42,30 +42,14 @@ let successTriggered = false;
 function triggerSuccessFeedback(): void {
     if (successTriggered) return;
     const hint = document.getElementById(ID_WIDEN_HINT);
-    const textLeft = hint?.querySelector('.text-left');
-    const textRight = hint?.querySelector('.text-right');
+    const textLeft = document.getElementById('widen-textpath-left');
+    const textRight = document.getElementById('widen-textpath-right');
     if (!hint || !textLeft || !textRight) return;
 
     successTriggered = true;
 
-    // Determine if any annotations are currently in the viewport
-    const visibleAnnotations = document.querySelectorAll('.scroll-annotation.revealed');
-    let isInView = false;
-
-    visibleAnnotations.forEach(el => {
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight + 100 && rect.bottom > -100) {
-            isInView = true;
-        }
-    });
-
-    if (isInView) {
-        textLeft.textContent = "Success";
-        textRight.textContent = "Marginalia Active";
-    } else {
-        textLeft.textContent = "Expanded";
-        textRight.textContent = "Scroll to discover";
-    }
+    textLeft.textContent = "Success";
+    textRight.textContent = "Marginalia Active";
 
     hint.classList.add('success-mode');
 
@@ -252,6 +236,8 @@ export function initAnnotationEngine(
             hint.classList.remove(CLS_VISIBLE);
         }
 
+        // Disconnect and re-observe to force an immediate visibility check on the current scroll position
+        marginObserver?.disconnect();
         document.querySelectorAll<HTMLElement>(SEL_HOTSPOT).forEach(el => {
             const key = el.dataset.popover;
             if (key && annotationKeys.has(key)) marginObserver!.observe(el);
@@ -263,18 +249,22 @@ export function initAnnotationEngine(
         const progress = Math.max(0, Math.min(1, (window.innerWidth - 1024) / (1460 - 1024)));
         document.documentElement.style.setProperty('--widen-progress', progress.toString());
 
-        // Update SVG paths for text peeling effect
-        const pathLeft = document.getElementById('widen-path-left') as object as SVGPathElement;
-        const pathRight = document.getElementById('widen-path-right') as object as SVGPathElement;
+        // Update SVG textPath startOffsets for the sliding ribbon effect
+        const textPathLeft = document.getElementById('widen-textpath-left') as object as SVGTextPathElement;
+        const textPathRight = document.getElementById('widen-textpath-right') as object as SVGTextPathElement;
 
-        if (pathLeft && pathRight) {
-            // Left side logic: Pinned top right (180, 0).
-            const pullLeft = 180 - (180 * progress);
-            pathLeft.setAttribute('d', `M${pullLeft},400 Q180,400 180,0`);
+        if (textPathLeft && textPathRight) {
+            // Left track: M0,400 L180,400 Q200,400 200,380 L200,0
+            // Vert: starts around 211 (on L200,400->200,0 segment).
+            // Horiz: starts around 70 (on M0->180 segment).
+            const leftOffset = 211 - (141 * progress);
+            textPathLeft.setAttribute('startOffset', `${leftOffset}`);
 
-            // Right side logic: Pinned top left (20, 0).
-            const pullRight = 20 + (180 * progress);
-            pathRight.setAttribute('d', `M20,0 Q20,400 ${pullRight},400`);
+            // Right track: M0,0 L0,380 Q0,400 20,400 L200,400
+            // Vert: starts around 255 (on M0->380 segment).
+            // Horiz: starts around 411 (on 20->200 segment).
+            const rightOffset = 255 + (156 * progress);
+            textPathRight.setAttribute('startOffset', `${rightOffset}`);
         }
     }
 
@@ -306,7 +296,16 @@ export function initAnnotationEngine(
                 }
             } else if (isNear) {
                 hint.classList.add(CLS_VISIBLE);
-                hint.classList.remove('success-mode'); // Cancel success if shrunk back early
+                if (hint.classList.contains('success-mode')) {
+                    hint.classList.remove('success-mode'); // Cancel success if shrunk back early
+                    const textLeft = document.querySelector('.widen-text.text-left');
+                    const textRight = document.querySelector('.widen-text.text-right');
+                    // Need to reset the original text that triggerSuccessFeedback overwrites
+                    const pathLeft = document.getElementById('widen-textpath-left');
+                    const pathRight = document.getElementById('widen-textpath-right');
+                    if (pathLeft) pathLeft.textContent = 'Expand window';
+                    if (pathRight) pathRight.textContent = 'For marginalia';
+                }
                 if (annotationsBuilt) cleanupAnnotations();
                 init();
             } else {
