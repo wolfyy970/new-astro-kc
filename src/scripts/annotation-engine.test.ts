@@ -86,7 +86,7 @@ describe('Annotation Engine (DOM auto-mapping)', () => {
     });
 });
 
-import { isWideScreen, isNearWideScreen } from './annotation-engine';
+import { isWideScreen, isNearWideScreen } from '../utils/viewport';
 import { BREAKPOINT_MOBILE } from './constants';
 
 describe('Screen helpers for annotation engine', () => {

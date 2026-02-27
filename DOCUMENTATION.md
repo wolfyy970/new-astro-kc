@@ -15,7 +15,7 @@
 ```
 README.md (Hub)
 ├── PRODUCT.md        — Feature spec, what exists
-├── USER_GUIDE.md     — Setup, canvas workflow, managing orgs
+├── USER_GUIDE.md     — Setup, content management, and deployments
 ├── ARCHITECTURE.md   — System design, data flow, module boundaries
 └── DOCUMENTATION.md  — This file (meta-documentation)
 ```
@@ -28,7 +28,7 @@ README.md (Hub)
 |----------|---------|----------------|
 | **README.md** | Entry point, quick start, doc map | Major features |
 | **PRODUCT.md** | Feature source of truth (prevents hallucination) | Feature launches |
-| **USER_GUIDE.md** | Setup, canvas workflow, managing orgs | UX changes |
+| **USER_GUIDE.md** | Setup, content management, and deployments | UX changes |
 | **ARCHITECTURE.md** | System design, module boundaries, data flow | Architecture changes |
 | **DOCUMENTATION.md** | Meta: documentation philosophy and rules | Rarely |
 

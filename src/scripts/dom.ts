@@ -22,7 +22,6 @@ export function requireEl(id: string, context = 'Unknown'): HTMLElement {
 declare global {
     interface Window {
         __POPOVERS__?: import('../types/content.ts').PopoverMap;
-        __ANNOTATIONS__?: import('../types/content.ts').ScrollAnnotation[];
     }
 }
 

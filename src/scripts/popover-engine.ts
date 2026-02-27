@@ -27,6 +27,7 @@ import {
     CLS_ANNOTATION_SUPPRESSED, CLS_IS_DRAGGING,
     SEL_HOTSPOT,
 } from './constants.ts';
+import { isMobileScreen } from '../utils/viewport.ts';
 
 // ── Annotation dissolve ───────────────────────────────────────────────────────
 
@@ -98,7 +99,7 @@ function makeDraggable(popoverEl: HTMLElement): void {
         if (!target.closest('.popover-handle')) return;
         if (target.closest('button')) return;
         // Bottom-sheet mode on mobile — no drag
-        if (window.innerWidth <= BREAKPOINT_MOBILE) return;
+        if (isMobileScreen()) return;
 
         isDragging = true;
         startPtrX = e.clientX;
@@ -175,7 +176,7 @@ function injectPopoverChrome(popoverEl: HTMLElement, label: string): HTMLButtonE
 }
 
 function calculatePopoverPosition(hotspot: HTMLElement, hasImg: boolean): { top: string; left: string } {
-    if (window.innerWidth <= BREAKPOINT_MOBILE) return { top: '', left: '' };
+    if (isMobileScreen()) return { top: '', left: '' };
 
     const rect = hotspot.getBoundingClientRect();
     const scrollY = window.scrollY;
@@ -230,7 +231,7 @@ function openPopover(hotspot: HTMLElement): void {
     popoverEl.style.left = pos.left;
 
     overlay.classList.add(CLS_OPEN);
-    if (window.innerWidth <= BREAKPOINT_MOBILE) {
+    if (isMobileScreen()) {
         document.body.classList.add(CLS_POPOVER_OPEN);
     }
 

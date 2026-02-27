@@ -24,6 +24,30 @@
   --doc-serif: 'Source Serif 4', Georgia, serif;
   --doc-sans: 'Source Sans 3', -apple-system, sans-serif;
   --mono: 'JetBrains Mono', monospace;
+
+  /* Typography Utilities */
+  --type-label-size: 11px;
+  --type-label-spacing: 2px;
+}
+
+/* Metadata Typography Utilities */
+.type-mono-label,
+.doc-hint,
+.popover-label,
+.sa-label {
+  font-family: var(--mono);
+  font-size: var(--type-label-size);
+  font-weight: 500;
+  letter-spacing: var(--type-label-spacing);
+}
+
+.type-mono-label,
+.doc-hint,
+.popover-label,
+.sa-label,
+.hero-credentials,
+.doc-section-heading {
+  text-transform: uppercase;
 }
 
 html {
@@ -87,11 +111,12 @@ body {
 }
 
 .hero-credentials {
+  /* logical conceptual link */
   font-family: var(--doc-sans);
+  /* Specific override */
   font-size: 14px;
   font-weight: 400;
   letter-spacing: 1.5px;
-  text-transform: uppercase;
   color: #555;
   opacity: 0;
   animation: fadeIn 0.6s ease 0.7s forwards;
@@ -136,11 +161,6 @@ body {
   position: absolute;
   top: 20px;
   right: 24px;
-  font-family: var(--mono);
-  font-size: 11px;
-  /* Was 9px */
-  letter-spacing: 2px;
-  text-transform: uppercase;
   color: var(--doc-light);
   display: flex;
   align-items: center;
@@ -214,10 +234,10 @@ body {
 
 .doc-section-heading {
   font-family: var(--doc-serif);
+  /* Overrides mono for this specific context */
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 2.5px;
-  text-transform: uppercase;
   color: var(--doc-heading);
   margin-bottom: 16px;
   margin-top: 28px;
@@ -576,11 +596,6 @@ body.popover-open {
 }
 
 .popover-label {
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 2px;
-  text-transform: uppercase;
   color: var(--accent);
   margin-bottom: 8px;
 }
@@ -691,12 +706,6 @@ body.popover-open {
   }
 
   .sa-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    /* Was 9px */
-    font-weight: 500;
-    letter-spacing: 2px;
-    text-transform: uppercase;
     color: var(--accent);
     margin-bottom: 6px;
   }

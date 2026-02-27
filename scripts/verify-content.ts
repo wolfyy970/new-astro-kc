@@ -23,10 +23,33 @@ function verify() {
     const resume = JSON.parse(fs.readFileSync(resumePath, 'utf-8'));
     const popovers = JSON.parse(fs.readFileSync(popoversPath, 'utf-8'));
 
-    // 2. Use utility to find all <hotspot> keys
+    // 2. Schema Validation
+    console.log('📋 Validating schemas...');
+
+    const validateResume = (data: any) => {
+        const errs: string[] = [];
+        const req = ['name', 'displayName', 'summary', 'experience', 'education'];
+        req.forEach(f => { if (!data[f]) errs.push(`Resume: Missing required field "${f}"`); });
+        return errs;
+    };
+
+    const validatePopovers = (data: any) => {
+        const errs: string[] = [];
+        Object.keys(data).forEach(k => {
+            const item = data[k];
+            if (!item.label) errs.push(`Popover "${k}": Missing required field "label"`);
+            if (!item.text) errs.push(`Popover "${k}": Missing required field "text"`);
+        });
+        return errs;
+    };
+
+    errors.push(...validateResume(resume));
+    errors.push(...validatePopovers(popovers));
+
+    // 3. Use utility to find all <hotspot> keys
     const foundKeys = extractHotspotKeys(resume);
 
-    // 3. Verify Hotspots in Popovers
+    // 4. Verify Hotspots in Popovers
     console.log(`📡 Checking ${foundKeys.size} unique hotspots...`);
     foundKeys.forEach(key => {
         if (!popovers[key]) {
@@ -34,7 +57,7 @@ function verify() {
         }
     });
 
-    // 4. Verify Images in Popovers
+    // 5. Verify Images in Popovers
     console.log(`🖼️ Verifying image paths...`);
     Object.keys(popovers).forEach(key => {
         const item = popovers[key];
@@ -49,7 +72,7 @@ function verify() {
         }
     });
 
-    // 5. Report Results
+    // 6. Report Results
     if (errors.length > 0) {
         console.error('\n❌ Integrity Verification Failed:');
         errors.forEach(err => console.error(`   - ${err}`));

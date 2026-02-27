@@ -46,3 +46,12 @@ export const CLS_POPOVER_OPEN = 'popover-open';
 export const CLS_NUDGE = 'nudge';
 export const CLS_ANNOTATION_SUPPRESSED = 'annotation-suppressed'; // popover open for this key
 export const CLS_IS_DRAGGING = 'is-dragging';
+
+// ── Ribbon Animation (Sticker Peel) ──
+// These constants define the SVG textPath tracking math in annotation-engine.ts
+export const RIBBON_PROGRESS_START = 1024; // px
+export const RIBBON_PROGRESS_END = 1460;   // px
+export const RIBBON_LEFT_START_OFFSET = 211;
+export const RIBBON_LEFT_DELTA = 141;
+export const RIBBON_RIGHT_START_OFFSET = 255;
+export const RIBBON_RIGHT_DELTA = 156;

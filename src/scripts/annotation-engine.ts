@@ -15,18 +15,12 @@ import {
     ID_WIDEN_HINT,
     SEL_HOTSPOT, SEL_DOC_PAGE,
     CLS_REVEALED, CLS_SCROLL_REVEALED, CLS_VISIBLE, CLS_NUDGE,
+    RIBBON_PROGRESS_START, RIBBON_PROGRESS_END,
+    RIBBON_LEFT_START_OFFSET, RIBBON_LEFT_DELTA,
+    RIBBON_RIGHT_START_OFFSET, RIBBON_RIGHT_DELTA,
 } from './constants.ts';
+import { isWideScreen, isNearWideScreen } from '../utils/viewport.ts';
 
-// ── Screen helpers ─────────────────────────────────────────────────────────────
-
-export function isWideScreen(): boolean {
-    return window.innerWidth >= BREAKPOINT_WIDE;
-}
-
-export function isNearWideScreen(): boolean {
-    const w = window.innerWidth;
-    return w >= BREAKPOINT_MOBILE && w < BREAKPOINT_WIDE;
-}
 
 // ── Widen hint ────────────────────────────────────────────────────────────────
 
@@ -36,52 +30,6 @@ function nudgeWidenHint(): void {
     hint.classList.add(CLS_NUDGE);
     setTimeout(() => hint.classList.remove(CLS_NUDGE), NUDGE_DURATION_MS);
 }
-
-let successTriggered = false;
-
-function triggerSuccessFeedback(): void {
-    if (successTriggered) return;
-    const hint = document.getElementById(ID_WIDEN_HINT);
-    const textLeft = document.getElementById('widen-label-left');
-    const textRight = document.getElementById('widen-label-right');
-    if (!hint || !textLeft || !textRight) return;
-
-    successTriggered = true;
-
-    // Check if any annotations are in the current viewport
-    const visibleAnnotations = document.querySelectorAll('.scroll-annotation.revealed');
-    let isInView = false;
-    visibleAnnotations.forEach(el => {
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight && rect.bottom > 0) {
-            isInView = true;
-        }
-    });
-
-    if (isInView) {
-        // Annotations physically popped in. We don't need UI text. Fade out hint immediately.
-        hint.classList.remove(CLS_VISIBLE);
-        setTimeout(() => {
-            hint.classList.remove('success-mode'); // Clean state
-        }, 1000);
-    } else {
-        // Empty gap on screen. Use contextual text to tell the user they were successful.
-        textLeft.textContent = "Marginalia";
-        textRight.textContent = "Active - Scroll down";
-        hint.classList.add('success-mode');
-
-        // Fade out after reading time
-        setTimeout(() => {
-            hint.classList.remove(CLS_VISIBLE);
-            setTimeout(() => {
-                hint.classList.remove('success-mode');
-                textLeft.textContent = "Expand window";
-                textRight.textContent = "For marginalia";
-            }, 1000);
-        }, 3000);
-    }
-}
-
 
 // ── Engine state ───────────────────────────────────────────────────────────────
 
@@ -215,6 +163,9 @@ export function cleanupAnnotations(): void {
 export function initAnnotationEngine(
     popovers: PopoverMap,
 ): void {
+    // Reset state for this instance (handles View Transitions/page changes)
+    cleanupAnnotations();
+
     const annotationKeys = new Set<string>();
     document.querySelectorAll<HTMLElement>('.hotspot[data-popover]').forEach(el => {
         if (el.dataset.popover) annotationKeys.add(el.dataset.popover);
@@ -256,15 +207,32 @@ export function initAnnotationEngine(
 
         // Disconnect and re-observe to force an immediate visibility check on the current scroll position
         marginObserver?.disconnect();
-        document.querySelectorAll<HTMLElement>(SEL_HOTSPOT).forEach(el => {
+
+        const hotspots = document.querySelectorAll<HTMLElement>(SEL_HOTSPOT);
+        hotspots.forEach(el => {
             const key = el.dataset.popover;
-            if (key && annotationKeys.has(key)) marginObserver!.observe(el);
+            if (key && annotationKeys.has(key)) {
+                marginObserver!.observe(el);
+
+                // If we're wide, also do an immediate physical viewport check so 
+                // annotations "pop in" immediately on widen without waiting for 
+                // the IntersectionObserver rootMargin band.
+                if (isWideScreen()) {
+                    const rect = el.getBoundingClientRect();
+                    const inPhysicalView = rect.top < window.innerHeight && rect.bottom > 0;
+                    if (inPhysicalView) {
+                        revealAnnotation(key);
+                    }
+                }
+            }
         });
     }
 
     // Track fluid resizing progress (0 = 1024px, 1 = 1460px)
     function updateWidenProgress(): void {
-        const progress = Math.max(0, Math.min(1, (window.innerWidth - 1024) / (1460 - 1024)));
+        const progress = Math.max(0, Math.min(1,
+            (window.innerWidth - RIBBON_PROGRESS_START) / (RIBBON_PROGRESS_END - RIBBON_PROGRESS_START)
+        ));
         document.documentElement.style.setProperty('--widen-progress', progress.toString());
 
         // Update SVG textPath startOffsets for the sliding ribbon effect
@@ -275,13 +243,13 @@ export function initAnnotationEngine(
             // Left track: M0,400 L180,400 Q200,400 200,380 L200,0
             // Vert: starts around 211 (on L200,400->200,0 segment).
             // Horiz: starts around 70 (on M0->180 segment).
-            const leftOffset = 211 - (141 * progress);
+            const leftOffset = RIBBON_LEFT_START_OFFSET - (RIBBON_LEFT_DELTA * progress);
             textPathLeft.setAttribute('startOffset', `${leftOffset}`);
 
             // Right track: M0,0 L0,380 Q0,400 20,400 L200,400
             // Vert: starts around 255 (on M0->380 segment).
             // Horiz: starts around 411 (on 20->200 segment).
-            const rightOffset = 255 + (156 * progress);
+            const rightOffset = RIBBON_RIGHT_START_OFFSET + (RIBBON_RIGHT_DELTA * progress);
             textPathRight.setAttribute('startOffset', `${rightOffset}`);
         }
     }
@@ -291,8 +259,6 @@ export function initAnnotationEngine(
 
     // Handle resize
     let resizeTimer = 0;
-    let wasNearWide = isNearWideScreen();
-
     window.addEventListener('resize', () => {
         requestAnimationFrame(updateWidenProgress);
 
@@ -301,36 +267,19 @@ export function initAnnotationEngine(
             const isWide = isWideScreen();
             const isNear = isNearWideScreen();
 
-            if (isWide && wasNearWide) {
-                triggerSuccessFeedback();
-            }
-
             if (isWide && !annotationsBuilt) {
                 init();
             } else if (isWide && annotationsBuilt) {
-                // Keep success-mode hint visible until it self-destructs via its own timer
-                if (!hint.classList.contains('success-mode')) {
-                    hint.classList.remove(CLS_VISIBLE);
-                }
+                hint.classList.remove(CLS_VISIBLE);
             } else if (isNear) {
                 hint.classList.add(CLS_VISIBLE);
-                if (hint.classList.contains('success-mode')) {
-                    hint.classList.remove('success-mode'); // Cancel success if shrunk back early
-                    // Need to reset the original text that triggerSuccessFeedback overwrites
-                    const pathLeft = document.getElementById('widen-label-left');
-                    const pathRight = document.getElementById('widen-label-right');
-                    if (pathLeft) pathLeft.textContent = 'Expand window';
-                    if (pathRight) pathRight.textContent = 'For marginalia';
-                }
                 if (annotationsBuilt) cleanupAnnotations();
                 init();
             } else {
                 hint.classList.remove(CLS_VISIBLE);
                 if (annotationsBuilt) cleanupAnnotations();
             }
-
-            wasNearWide = isNear;
-        }, 0); // annotation resize runs after highlight engine redraw (see main.ts)
+        }, 0);
     });
 
     init();
