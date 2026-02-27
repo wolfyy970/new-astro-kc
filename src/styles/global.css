@@ -881,15 +881,42 @@ body.popover-open {
   color: var(--accent);
   opacity: 0.9;
   white-space: nowrap;
-  transition: opacity 0.4s ease, color 0.4s ease, transform 0.4s ease;
+  transition: opacity 0.4s ease, color 0.4s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center center;
 }
 
+/* Adjust layout so rotation happens cleanly */
+.widen-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* Adjust layout so rotation happens cleanly */
+.widen-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* 
+   Calculate rotation dynamically based on vw.
+   At 1024px: full rotation (-90 or +90)
+   At 1400px: 0 rotation
+   By pinning the transform origin appropriately, the text "rolls" out.
+*/
 .widen-side.left .widen-text {
   margin-left: 16px;
+  transform: rotate(clamp(-90deg, calc(-90deg + (100vw - 1024px) * 0.23936deg), 0deg));
+  transform-origin: left center;
 }
 
 .widen-side.right .widen-text {
   margin-right: 16px;
+  transform: rotate(clamp(0deg, calc(90deg - (100vw - 1024px) * 0.23936deg), 90deg));
+  transform-origin: right center;
 }
 
 /* Success Mode */
@@ -905,9 +932,9 @@ body.popover-open {
 
 .widen-hint.success-mode .widen-text {
   color: #000;
-  /* Sharp punchy success color */
   opacity: 1;
-  transform: scale(1.05);
+  /* Force text horizontal regardless of vw and add slight scale */
+  transform: rotate(0deg) scale(1.05) !important;
   font-weight: 600;
   letter-spacing: 3px;
 }
