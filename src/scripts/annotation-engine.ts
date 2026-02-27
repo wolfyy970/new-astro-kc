@@ -258,11 +258,22 @@ export function initAnnotationEngine(
         });
     }
 
+    // Track fluid resizing progress (0 = 1024px, 1 = 1460px)
+    function updateWidenProgress(): void {
+        const progress = Math.max(0, Math.min(1, (window.innerWidth - 1024) / (1460 - 1024)));
+        document.documentElement.style.setProperty('--widen-progress', progress.toString());
+    }
+
+    // Call once on load
+    requestAnimationFrame(updateWidenProgress);
+
     // Handle resize
     let resizeTimer = 0;
     let wasNearWide = isNearWideScreen();
 
     window.addEventListener('resize', () => {
+        requestAnimationFrame(updateWidenProgress);
+
         clearTimeout(resizeTimer);
         resizeTimer = window.setTimeout(() => {
             const isWide = isWideScreen();
