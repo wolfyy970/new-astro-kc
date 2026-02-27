@@ -42,8 +42,9 @@ let successTriggered = false;
 function triggerSuccessFeedback(): void {
     if (successTriggered) return;
     const hint = document.getElementById(ID_WIDEN_HINT);
-    const hintText = document.getElementById('widen-hint-text');
-    if (!hint || !hintText) return;
+    const textLeft = hint?.querySelector('.text-left');
+    const textRight = hint?.querySelector('.text-right');
+    if (!hint || !textLeft || !textRight) return;
 
     successTriggered = true;
 
@@ -53,12 +54,19 @@ function triggerSuccessFeedback(): void {
 
     visibleAnnotations.forEach(el => {
         const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight && rect.bottom > 0) {
+        if (rect.top < window.innerHeight + 100 && rect.bottom > -100) {
             isInView = true;
         }
     });
 
-    hintText.textContent = isInView ? "Marginalia Active" : "Viewport Expanded — Scroll to discover";
+    if (isInView) {
+        textLeft.textContent = "Success";
+        textRight.textContent = "Marginalia Active";
+    } else {
+        textLeft.textContent = "Expanded";
+        textRight.textContent = "Scroll to discover";
+    }
+
     hint.classList.add('success-mode');
 
     // Fade out and cleanup
@@ -66,6 +74,8 @@ function triggerSuccessFeedback(): void {
         hint.classList.remove(CLS_VISIBLE);
         setTimeout(() => {
             hint.classList.remove('success-mode');
+            textLeft.textContent = "Expand window";
+            textRight.textContent = "For marginalia";
             successTriggered = false;
         }, 1000);
     }, 2500);

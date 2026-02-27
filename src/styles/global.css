@@ -799,8 +799,6 @@ body.popover-open {
   flex: 1;
   display: flex;
   align-items: center;
-  height: 400px;
-  /* Large vertical span */
 }
 
 .widen-side.left {
@@ -813,91 +811,112 @@ body.popover-open {
   margin-left: 460px;
 }
 
-.widen-bracket {
-  font-family: var(--doc-serif);
-  font-size: 320px;
-  font-weight: 200;
-  color: var(--accent);
-  opacity: 0.08;
-  line-height: 1;
-  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 1s ease;
-  animation: bracket-breath 6s ease-in-out infinite;
+.widen-indicator {
+  position: relative;
+  width: 48px;
+  height: 24px;
+  display: flex;
+  align-items: center;
 }
 
-.widen-side.left .widen-bracket {
+.widen-arrow {
+  width: 16px;
+  height: 16px;
+  color: var(--accent);
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.widen-line {
+  height: 1px;
+  background: var(--accent);
+}
+
+.widen-line.pulse {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  opacity: 0;
+  animation: pulse-line 2.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.widen-side.left .widen-line.pulse {
+  right: 16px;
+  /* Offset by arrow width */
   transform-origin: right center;
 }
 
-.widen-side.right .widen-bracket {
+.widen-side.right .widen-line.pulse {
+  left: 16px;
+  /* Offset by arrow width */
   transform-origin: left center;
 }
 
-.widen-content {
-  position: absolute;
-  bottom: 12%;
-  text-align: center;
-  transition: transform 1s ease;
+@keyframes pulse-line {
+  0% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 0.8;
+  }
+
+  80% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
 }
 
-.widen-hint-text {
+.widen-text {
   font-family: var(--mono);
   font-size: 11px;
-  letter-spacing: 4px;
+  letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--accent);
-  opacity: 0.4;
-  transition: opacity 0.6s ease, color 0.6s ease;
+  opacity: 0.9;
+  white-space: nowrap;
+  transition: opacity 0.4s ease, color 0.4s ease, transform 0.4s ease;
 }
 
-/* Success Mode: The "Pop" */
+.widen-side.left .widen-text {
+  margin-left: 16px;
+}
+
+.widen-side.right .widen-text {
+  margin-right: 16px;
+}
+
+/* Success Mode */
 .widen-hint.success-mode {
   opacity: 1 !important;
   display: flex !important;
-  /* Force display during animation if JS triggered */
 }
 
-.widen-hint.success-mode .widen-bracket {
-  opacity: 0.25;
-  color: var(--accent);
-}
-
-.widen-hint.success-mode .widen-side.left .widen-bracket {
-  transform: translateX(-100px) scale(1.1);
+.widen-hint.success-mode .widen-indicator {
   opacity: 0;
+  /* hide the lines during success msg */
 }
 
-.widen-hint.success-mode .widen-side.right .widen-bracket {
-  transform: translateX(100px) scale(1.1);
-  opacity: 0;
-}
-
-.widen-hint.success-mode .widen-hint-text {
-  opacity: 0.9;
+.widen-hint.success-mode .widen-text {
   color: #000;
-  /* Sharp black for the success message */
-  letter-spacing: 6px;
+  /* Sharp punchy success color */
+  opacity: 1;
   transform: scale(1.05);
+  font-weight: 600;
+  letter-spacing: 3px;
 }
 
 /* Nudge: Subtle animation on scroll */
-.widen-hint.nudge .widen-bracket {
+.widen-hint.nudge .widen-arrow {
   animation: none;
-  transform: scaleX(1.15);
-  opacity: 0.15;
-}
-
-@keyframes bracket-breath {
-
-  0%,
-  100% {
-    transform: scaleX(1);
-    opacity: 0.08;
-  }
-
-  50% {
-    transform: scaleX(1.1);
-    opacity: 0.12;
-  }
+  transform: scaleX(1.2);
+  opacity: 1;
 }
 
 @media (min-width: 1460px) {

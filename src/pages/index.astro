@@ -172,16 +172,32 @@ const popovers = await optimizePopoverImages(popoversRaw, getImage);
 
   <!-- Discovery Hint (Desktop, < 1400px) -->
   <div id="widen-hint" class="widen-hint" role="presentation">
-    <div class="widen-side left" aria-hidden="true">
-      <div class="widen-bracket">[</div>
-    </div>
-    <div class="widen-content">
-      <div class="widen-hint-text" id="widen-hint-text">
-        Expand for Marginalia
+    <div class="widen-side left">
+      <div class="widen-indicator">
+        <svg viewBox="0 0 24 24" class="widen-arrow"
+          ><path
+            d="M19 12H5M5 12L12 19M5 12L12 5"
+            stroke="currentColor"
+            fill="none"
+            stroke-width="1.5"></path></svg
+        >
+        <div class="widen-line pulse"></div>
       </div>
+      <div class="widen-text text-left">Expand window</div>
     </div>
-    <div class="widen-side right" aria-hidden="true">
-      <div class="widen-bracket">]</div>
+
+    <div class="widen-side right">
+      <div class="widen-text text-right">For marginalia</div>
+      <div class="widen-indicator">
+        <div class="widen-line pulse"></div>
+        <svg viewBox="0 0 24 24" class="widen-arrow"
+          ><path
+            d="M5 12H19M19 12L12 5M19 12L12 19"
+            stroke="currentColor"
+            fill="none"
+            stroke-width="1.5"></path></svg
+        >
+      </div>
     </div>
   </div>
 
