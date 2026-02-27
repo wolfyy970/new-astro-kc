@@ -137,7 +137,8 @@ body {
   top: 20px;
   right: 24px;
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 11px;
+  /* Was 9px */
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--doc-light);
@@ -359,7 +360,8 @@ body {
   margin-top: 40px;
   padding-top: 16px;
   border-top: 1px solid var(--doc-rule);
-  font-size: 10px;
+  font-size: 12px;
+  /* Was 10px */
   color: #BBB;
   text-align: center;
   letter-spacing: 0.5px;
@@ -638,7 +640,8 @@ body.popover-open {
   .scroll-annotation {
     display: block;
     position: absolute;
-    width: 210px;
+    width: 240px;
+    /* Was 210px */
     /* Narrowed to ensure clearance on 1440p displays */
     opacity: 0;
     transform: translateY(6px);
@@ -689,7 +692,8 @@ body.popover-open {
 
   .sa-label {
     font-family: var(--mono);
-    font-size: 9px;
+    font-size: 11px;
+    /* Was 9px */
     font-weight: 500;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -699,7 +703,8 @@ body.popover-open {
 
   .sa-stat {
     font-family: var(--display);
-    font-size: 24px;
+    font-size: 28px;
+    /* Was 24px */
     font-weight: 500;
     color: var(--doc-heading);
     margin-bottom: 4px;
@@ -708,7 +713,8 @@ body.popover-open {
 
   .sa-text {
     font-family: var(--doc-sans);
-    font-size: 12px;
+    font-size: 15px;
+    /* Was 12px */
     font-weight: 400;
     color: #555;
     /* lifted from #888 — passes WCAG AA (5.1:1 on white) */
@@ -719,7 +725,8 @@ body.popover-open {
   .sa-quote {
     font-family: var(--display);
     font-style: italic;
-    font-size: 12.5px;
+    font-size: 15.5px;
+    /* Was 12.5px */
     color: #555;
     border-left: 1.5px solid var(--accent-border);
     padding-left: 10px;
@@ -741,7 +748,8 @@ body.popover-open {
 
   .sa-link {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 13px;
+    /* Was 10px */
     letter-spacing: 1px;
     color: var(--accent);
     text-decoration: none;
