@@ -811,43 +811,28 @@ body.popover-open {
   margin-left: 460px;
 }
 
+.widen-svg {
+  width: 200px;
+  height: 400px;
+  overflow: visible;
+}
+
+.widen-side.left .widen-svg {
+  margin-right: -20px;
+}
+
+.widen-side.right .widen-svg {
+  margin-left: -20px;
+}
+
 .widen-text {
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--accent);
+  fill: var(--accent);
   opacity: 0.9;
-  white-space: nowrap;
-  /* Transform is pure inline mapping, no transition duration needed to avoid fighting JS reqAnimFrame */
-  transition: opacity 0.4s ease, color 0.4s ease;
-}
-
-/* Adjust layout so rotation happens cleanly */
-.widen-side {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-/* 
-   Calculate rotation dynamically based on javascript-provided `--widen-progress`.
-   0 = Narrow (Vertical), 1 = Wide (Horizontal).
-   By pinning the transform origin appropriately, the text "rolls" out like a drawbridge.
-*/
-.widen-side.left .widen-text {
-  margin-right: 16px;
-  /* Rotate from -90deg to 0deg */
-  transform: rotate(calc(-90deg * (1 - var(--widen-progress, 0))));
-  transform-origin: center right;
-}
-
-.widen-side.right .widen-text {
-  margin-left: 16px;
-  /* Rotate from 90deg to 0deg */
-  transform: rotate(calc(90deg * (1 - var(--widen-progress, 0))));
-  transform-origin: center left;
+  transition: opacity 0.4s ease, fill 0.4s ease;
 }
 
 /* Success Mode (When fully expanded) */
@@ -857,10 +842,8 @@ body.popover-open {
 }
 
 .widen-hint.success-mode .widen-text {
-  color: #000;
+  fill: #000;
   opacity: 1;
-  /* Force text horizontal regardless of vw and add slight scale */
-  transform: rotate(0deg) scale(1.05) !important;
   font-weight: 600;
   letter-spacing: 3px;
 }

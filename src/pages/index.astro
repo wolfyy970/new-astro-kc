@@ -173,10 +173,28 @@ const popovers = await optimizePopoverImages(popoversRaw, getImage);
   <!-- Discovery Hint (Desktop, < 1400px) -->
   <div id="widen-hint" class="widen-hint" role="presentation">
     <div class="widen-side left">
-      <div class="widen-text text-left">Expand window</div>
+      <svg class="widen-svg text-left" viewBox="0 0 200 400">
+        <path id="widen-path-left" d="M180,0 L180,400" fill="none" stroke="none"
+        ></path>
+        <text class="widen-text">
+          <textPath href="#widen-path-left" startOffset="0%" text-anchor="start"
+            >Expand window</textPath
+          >
+        </text>
+      </svg>
     </div>
     <div class="widen-side right">
-      <div class="widen-text text-right">For marginalia</div>
+      <svg class="widen-svg text-right" viewBox="0 0 200 400">
+        <path id="widen-path-right" d="M20,0 L20,400" fill="none" stroke="none"
+        ></path>
+        <text class="widen-text">
+          <textPath
+            href="#widen-path-right"
+            startOffset="100%"
+            text-anchor="end">For marginalia</textPath
+          >
+        </text>
+      </svg>
     </div>
   </div>
 

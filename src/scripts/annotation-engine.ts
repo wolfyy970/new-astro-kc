@@ -262,6 +262,20 @@ export function initAnnotationEngine(
     function updateWidenProgress(): void {
         const progress = Math.max(0, Math.min(1, (window.innerWidth - 1024) / (1460 - 1024)));
         document.documentElement.style.setProperty('--widen-progress', progress.toString());
+
+        // Update SVG paths for text peeling effect
+        const pathLeft = document.getElementById('widen-path-left') as object as SVGPathElement;
+        const pathRight = document.getElementById('widen-path-right') as object as SVGPathElement;
+
+        if (pathLeft && pathRight) {
+            // Left side logic: Pinned top right (180, 0).
+            const pullLeft = 180 - (180 * progress);
+            pathLeft.setAttribute('d', `M${pullLeft},400 Q180,400 180,0`);
+
+            // Right side logic: Pinned top left (20, 0).
+            const pullRight = 20 + (180 * progress);
+            pathRight.setAttribute('d', `M20,0 Q20,400 ${pullRight},400`);
+        }
     }
 
     // Call once on load
