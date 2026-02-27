@@ -88,7 +88,7 @@ body {
 
 .hero-credentials {
   font-family: var(--doc-sans);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -172,7 +172,7 @@ body {
    ══════════════════════════════════════ */
 .doc-name {
   font-family: var(--doc-serif);
-  font-size: 28px;
+  font-size: 36px;
   font-weight: 700;
   color: var(--doc-heading);
   letter-spacing: -0.5px;
@@ -181,7 +181,7 @@ body {
 
 .doc-title-line {
   font-family: var(--doc-sans);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--doc-light);
   margin-bottom: 6px;
@@ -189,7 +189,7 @@ body {
 
 .doc-contact {
   font-family: var(--doc-sans);
-  font-size: 12px;
+  font-size: 14px;
   color: var(--doc-light);
   margin-bottom: 24px;
 }
@@ -213,7 +213,7 @@ body {
 
 .doc-section-heading {
   font-family: var(--doc-serif);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 2.5px;
   text-transform: uppercase;
@@ -223,7 +223,7 @@ body {
 }
 
 .doc-summary {
-  font-size: 14.5px;
+  font-size: 17px;
   font-weight: 400;
   color: var(--doc-body);
   line-height: 1.7;
@@ -237,7 +237,7 @@ body {
 
 .doc-achievement-cluster h4 {
   font-family: var(--doc-sans);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--doc-heading);
   margin-bottom: 6px;
@@ -249,7 +249,7 @@ body {
 }
 
 .doc-achievement-cluster li {
-  font-size: 13.5px;
+  font-size: 16px;
   color: var(--doc-body);
   line-height: 1.65;
   padding-left: 14px;
@@ -278,26 +278,26 @@ body {
 
 .doc-exp-company {
   font-family: var(--doc-sans);
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--doc-heading);
 }
 
 .doc-exp-dates {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--doc-light);
   white-space: nowrap;
 }
 
 .doc-exp-title {
-  font-size: 13.5px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--doc-light);
   margin-bottom: 8px;
 }
 
 .doc-exp-desc {
-  font-size: 13.5px;
+  font-size: 16px;
   color: var(--doc-body);
   line-height: 1.65;
   margin-bottom: 8px;
@@ -309,7 +309,7 @@ body {
 }
 
 .doc-exp li {
-  font-size: 13.5px;
+  font-size: 16px;
   color: var(--doc-body);
   line-height: 1.65;
   padding-left: 14px;
@@ -330,25 +330,25 @@ body {
 }
 
 .doc-edu-item .degree {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--doc-heading);
 }
 
 .doc-edu-item .school {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--doc-light);
 }
 
 .doc-edu-item .focus {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--doc-light);
   font-style: italic;
 }
 
 /* ── Patents & Awards ── */
 .doc-awards-line {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--doc-body);
   line-height: 1.65;
   margin-bottom: 4px;
@@ -575,7 +575,7 @@ body.popover-open {
 
 .popover-label {
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 500;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -585,7 +585,7 @@ body.popover-open {
 
 .popover-text {
   font-family: var(--doc-sans);
-  font-size: 13.5px;
+  font-size: 16px;
   font-weight: 400;
   color: var(--doc-body);
   line-height: 1.6;
@@ -595,7 +595,7 @@ body.popover-open {
 .popover-link {
   display: inline-block;
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 1px;
   color: var(--accent);
   text-decoration: none;
@@ -819,7 +819,8 @@ body.popover-open {
 
 .widen-text {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 13px;
+  /* Was 11px */
   letter-spacing: 2px;
   text-transform: uppercase;
   fill: var(--accent);
@@ -1005,44 +1006,44 @@ body.popover-open {
   }
 
   .doc-name {
-    font-size: 20px;
+    font-size: 24px;
   }
 
   .doc-title-line {
-    font-size: 12px;
+    font-size: 14px;
   }
 
   .doc-contact {
-    font-size: 11px;
+    font-size: 13px;
     line-height: 1.8;
   }
 
   .doc-summary {
-    font-size: 13.5px;
+    font-size: 16px;
   }
 
   .doc-section-heading {
-    font-size: 11px;
+    font-size: 13px;
     letter-spacing: 2px;
     margin-top: 20px;
     margin-bottom: 12px;
   }
 
   .doc-achievement-cluster h4 {
-    font-size: 12px;
+    font-size: 14px;
   }
 
   .doc-achievement-cluster li,
   .doc-exp li {
-    font-size: 12.5px;
+    font-size: 15px;
   }
 
   .doc-exp-company {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .doc-exp-title {
-    font-size: 12.5px;
+    font-size: 15px;
   }
 
   .doc-edu-item .degree {
@@ -1136,15 +1137,15 @@ body.popover-open {
   }
 
   .hero-name {
-    font-size: 32px;
+    font-size: 42px;
   }
 
   .hero-sub {
-    font-size: 15px;
+    font-size: 18px;
   }
 
   .hero-credentials {
-    font-size: 9px;
+    font-size: 12px;
   }
 
   .doc-page {
@@ -1152,12 +1153,12 @@ body.popover-open {
   }
 
   .doc-name {
-    font-size: 18px;
+    font-size: 22px;
   }
 
   .doc-achievement-cluster li,
   .doc-exp li {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.55;
   }
 }

@@ -21,7 +21,8 @@ export async function optimizePopoverImages(
                 const optimized = await getImageFn({
                     src: item.img,
                     width: 600,
-                    inferSize: true,
+                    height: 400,
+                    fit: "cover",
                     format: "webp",
                     quality: "mid",
                 });
@@ -30,7 +31,7 @@ export async function optimizePopoverImages(
                     img: optimized.src
                 };
             } catch (e) {
-                console.warn(`⚠️ Failed to optimize image for popover "${key}": ${item.img}`, e);
+                console.warn(`⚠️ Failed to optimize image for popover "${key}": ${item.img}`);
             }
         }
     }
