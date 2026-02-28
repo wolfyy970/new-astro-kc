@@ -66,7 +66,7 @@
   },
   "ar": {
     "label": "Mobile AR · 2005–2008",
-    "text": "Pioneered the first mobile augmented reality applications in the United States — for NBA (billboard advertising interactions) and Cartoon Network (gaming) — in partnership with Georgia Tech. On Nokia N90 devices, before the iPhone existed. I predicted that mobile processing power and GPU trajectories would ensure AR happened on phones first. That prediction proved correct.",
+    "text": "Pioneered the first mobile augmented reality applications in the US in partnership with Georgia Tech — for NBA (billboard advertising interactions) and Cartoon Network (gaming). Using the Nokia N90, before the iPhone existed. At the time, AR was widely assumed to require dedicated hardware or desktop-class processing. By tracking mobile GPU power trajectories, I made the non-obvious bet that phones — not strapped on PCs — would be where AR first reached scale. That prediction proved correct.",
     "media": [
       "/images/turner/nba-ar-prototype.png",
       "/media/nba-ar-prototype.mp4"
@@ -75,7 +75,8 @@
   "dissertation": {
     "label": "March 1993",
     "text": "Undergraduate dissertation \"Colonizing Cyberspace\" predicted the transformative potential of global networked information spaces — 3D visualization of internet communities, virtual worlds for business and leisure. Described concepts now called \"spatial computing\" (Apple Vision Pro, Meta Quest). Predicted virtual communities and their cultural impact.",
-    "quote": "Submitted March 1993. The Mosaic browser was publicly announced April 21, 1993 only one month later."
+    "quote": "Submitted March 1993. The Mosaic browser was publicly announced April 21, 1993 only one month later.",
+    "img": "/images/turner/colonizing-cyberspace.png"
   },
   "backprop": {
     "label": "Neural Networks · 1993",
