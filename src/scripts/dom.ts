@@ -159,6 +159,31 @@ export function buildContentNode(
             carousel.appendChild(slide);
         });
 
+        // Track current index explicitly — avoids depending on offsetWidth at build time
+        let currentIdx = 0;
+
+        const goToSlide = (idx: number) => {
+            const clamped = Math.max(0, Math.min(mediaList.length - 1, idx));
+            const targetSlide = carousel.children[clamped] as HTMLElement;
+            if (targetSlide) {
+                carousel.scrollTo({ left: targetSlide.offsetLeft, behavior: 'smooth' });
+            }
+            currentIdx = clamped;
+            syncNavState();
+        };
+
+        const syncNavState = () => {
+            btnPrev.style.opacity = currentIdx === 0 ? '0' : '1';
+            btnPrev.style.pointerEvents = currentIdx === 0 ? 'none' : 'auto';
+            btnNext.style.opacity = currentIdx === mediaList.length - 1 ? '0' : '1';
+            btnNext.style.pointerEvents = currentIdx === mediaList.length - 1 ? 'none' : 'auto';
+            const dotsArray = dotsList.children;
+            for (let j = 0; j < dotsArray.length; j++) {
+                if (j === currentIdx) dotsArray[j].classList.add('active');
+                else dotsArray[j].classList.remove('active');
+            }
+        };
+
         // Add chevrons
         const createNavButton = (dir: 'prev' | 'next') => {
             const btn = document.createElement('button');
@@ -168,11 +193,8 @@ export function buildContentNode(
             btn.innerHTML = dir === 'prev'
                 ? '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>'
                 : '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
-
             btn.addEventListener('click', () => {
-                if (!carousel.offsetWidth) return;
-                const sign = dir === 'prev' ? -1 : 1;
-                carousel.scrollBy({ left: sign * carousel.offsetWidth, behavior: 'smooth' });
+                goToSlide(dir === 'prev' ? currentIdx - 1 : currentIdx + 1);
             });
             return btn;
         };
@@ -190,36 +212,24 @@ export function buildContentNode(
             dot.type = 'button';
             dot.className = `${prefix}-carousel-dot` + (i === 0 ? ' active' : '');
             dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
-            dot.addEventListener('click', () => {
-                const targetSlide = carousel.children[i] as HTMLElement;
-                if (targetSlide) {
-                    carousel.scrollTo({ left: targetSlide.offsetLeft, behavior: 'smooth' });
-                }
-            });
+            dot.addEventListener('click', () => goToSlide(i));
             dotsList.appendChild(dot);
         });
         wrap.appendChild(dotsList);
 
-        // Simple scroll spy to update dots & nav visibility
+        // Scroll spy — re-syncs state after native swipe/scroll
         const updateNav = () => {
-            if (!carousel.offsetWidth) return;
-            const idx = Math.round(carousel.scrollLeft / carousel.offsetWidth);
-
-            btnPrev.style.opacity = idx === 0 ? '0' : '1';
-            btnPrev.style.pointerEvents = idx === 0 ? 'none' : 'auto';
-            btnNext.style.opacity = idx === mediaList.length - 1 ? '0' : '1';
-            btnNext.style.pointerEvents = idx === mediaList.length - 1 ? 'none' : 'auto';
-
-            const dotsArray = dotsList.children;
-            for (let j = 0; j < dotsArray.length; j++) {
-                if (j === idx) dotsArray[j].classList.add('active');
-                else dotsArray[j].classList.remove('active');
+            if (carousel.offsetWidth) {
+                currentIdx = Math.round(carousel.scrollLeft / carousel.offsetWidth);
             }
+            syncNavState();
         };
 
         carousel.addEventListener('scroll', updateNav, { passive: true });
-        // Initial state
-        requestAnimationFrame(updateNav);
+
+        // Set initial state synchronously — carousel starts at index 0,
+        // so prev is always hidden and next is always visible on build.
+        syncNavState();
 
         fragment.appendChild(wrap);
     }

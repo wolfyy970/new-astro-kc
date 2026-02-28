@@ -584,11 +584,11 @@ body.popover-open {
 }
 
 .popover-carousel-nav.prev {
-  left: -16px;
+  left: 8px;
 }
 
 .popover-carousel-nav.next {
-  right: -16px;
+  right: 8px;
 }
 
 .popover-carousel-nav:hover {
@@ -1392,9 +1392,10 @@ body.popover-open {
     width: 100%;
   }
 
-  /* Desktop popover hover reveals */
+  /* Mobile: no hover, so always show chevrons */
   .popover-carousel-nav {
-    opacity: 0;
+    opacity: 0.72;
+    background: rgba(255, 255, 255, 0.82);
   }
 
   .popover-carousel {
