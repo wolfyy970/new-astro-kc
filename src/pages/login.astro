@@ -64,13 +64,13 @@ if (Astro.request.method === "POST") {
             }
 
             .login-container {
-                max-width: 400px;
+                max-width: 360px;
                 width: 100%;
-                padding: 40px;
+                padding: 40px 32px;
                 text-align: center;
                 opacity: 0;
-                transform: translateY(20px);
-                animation: reveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+                transform: translateY(16px);
+                animation: reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
             }
 
             @keyframes reveal {
@@ -82,29 +82,36 @@ if (Astro.request.method === "POST") {
 
             .logo {
                 font-family: var(--display);
-                font-size: 32px;
+                font-size: 44px;
                 font-weight: 300;
-                letter-spacing: 0.05em;
-                margin-bottom: 48px;
+                letter-spacing: 0.02em;
+                line-height: 1.1;
                 color: var(--doc-heading);
+                margin-bottom: 14px;
             }
 
             .logo span {
                 display: block;
-                font-size: 13px; /* Increased for legibility */
-                font-weight: 500; /* Added weight for better rendering */
+                font-family: var(--doc-sans);
+                font-size: 11px;
+                font-weight: 400;
                 text-transform: uppercase;
-                letter-spacing: 0.25em; /* Refined tracking */
-                margin-top: 12px;
-                color: var(
-                    --doc-heading
-                ); /* Match header for maximum contrast */
+                letter-spacing: 0.28em;
+                margin-top: 14px;
+                color: rgba(0, 0, 0, 0.42);
+            }
+
+            .divider {
+                width: 24px;
+                height: 1px;
+                background: var(--accent);
+                margin: 28px auto 32px;
             }
 
             form {
                 display: flex;
                 flex-direction: column;
-                gap: 20px;
+                gap: 14px;
             }
 
             .input-wrapper {
@@ -113,15 +120,16 @@ if (Astro.request.method === "POST") {
 
             input {
                 width: 100%;
-                padding: 16px 0;
+                padding: 13px 0;
                 background: transparent;
                 border: none;
-                border-bottom: 2px solid rgba(0, 0, 0, 0.4); /* Thicker and darker */
+                border-bottom: 1px solid rgba(0, 0, 0, 0.25);
                 font-family: var(--doc-sans);
-                font-size: 16px;
+                font-size: 15px;
                 text-align: center;
                 outline: none;
-                transition: border-color 0.3s ease;
+                transition: border-color 0.25s ease;
+                color: var(--doc-heading);
             }
 
             input:focus {
@@ -129,45 +137,46 @@ if (Astro.request.method === "POST") {
             }
 
             input::placeholder {
-                color: rgba(0, 0, 0, 0.65); /* Maximized contrast */
+                color: rgba(0, 0, 0, 0.35);
                 font-style: italic;
                 opacity: 1;
             }
 
             button {
+                align-self: center;
                 background: var(--accent);
                 color: white;
                 border: none;
-                padding: 14px;
+                padding: 11px 40px;
                 font-family: var(--doc-sans);
-                font-size: 12px;
+                font-size: 11px;
                 font-weight: 600;
                 text-transform: uppercase;
-                letter-spacing: 2px;
+                letter-spacing: 2.5px;
                 cursor: pointer;
-                transition: all 0.3s ease;
-                margin-top: 10px;
+                transition: background 0.25s ease, opacity 0.25s ease;
+                margin-top: 8px;
             }
 
             button:hover {
                 background: #5a4316;
-                letter-spacing: 3px;
+                opacity: 0.92;
             }
 
             .error-msg {
                 font-family: var(--mono);
                 font-size: 10px;
                 color: #c8102e;
-                margin-top: 16px;
+                margin-top: 8px;
                 text-transform: uppercase;
                 letter-spacing: 1px;
             }
 
             .footer {
                 position: fixed;
-                bottom: 40px;
+                bottom: 36px;
                 font-size: 10px;
-                color: rgba(0, 0, 0, 0.65); /* Maximized contrast */
+                color: rgba(0, 0, 0, 0.38);
                 text-transform: uppercase;
                 letter-spacing: 2px;
             }
@@ -179,6 +188,8 @@ if (Astro.request.method === "POST") {
                 KC Wolff-Ingham
                 <span>Resume and Selected Work</span>
             </div>
+
+            <div class="divider"></div>
 
             <form method="POST">
                 <div class="input-wrapper">
