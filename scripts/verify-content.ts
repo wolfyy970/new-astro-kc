@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { extractHotspotKeys } from '../src/utils/validation.js';
+import { extractHotspotKeys, findDuplicateHotspots } from '../src/utils/validation.js';
 
 const resumePath = path.join(process.cwd(), 'src/content/resume.json');
 const popoversPath = path.join(process.cwd(), 'src/content/popovers.json');
@@ -56,6 +56,11 @@ function verify() {
             errors.push(`Missing data for hotspot key: "${key}" in popovers.json`);
         }
     });
+
+    const duplicates = findDuplicateHotspots(resume);
+    if (duplicates.length > 0) {
+        duplicates.forEach(key => errors.push(`Duplicate hotspot key found in resume: "${key}"`));
+    }
 
     // 5. Verify Images in Popovers
     console.log(`🖼️ Verifying image paths...`);

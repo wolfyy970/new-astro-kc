@@ -49,7 +49,7 @@ To ensure that the resume and its interactive layers remain synchronized, use th
 ```bash
 npm run verify
 ```
-This script validates that every `<hotspot>` in `resume.json` has a corresponding entry in `popovers.json` and that all referenced image paths exist on disk. It runs automatically during `npm run build`.
+This script validates that every `<hotspot>` in `resume.json` has a corresponding entry in `popovers.json`, that no hotspots are used more than once (enforcing a strict 1:1 mapping mapping), and that all referenced image paths exist on disk. It runs automatically during `npm run build`.
 
 ### 4. Image Optimization
 The project leverages Astro 5.0's Image Service for high-performance delivery:

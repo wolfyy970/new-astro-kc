@@ -1,40 +1,28 @@
 {
   "gpc-revenue": {
-    "label": "Business Impact",
-    "text": "Leading design for the digital transformation of a $10B ecommerce platform. Two years of customer research uncovered a key insight: B2B parts lookup is fundamentally different from traditional ecommerce. Service advisors often have the part in hand — they need to identify it, not shop for it. The \"ways of finding\" strategy delivered a 7% add-to-cart improvement representing a $32.8M lift in revenue (2025).",
+    "label": "Research & Business Impact",
+    "text": "Leading design for the digital transformation of a $8B e-commerce platform. Customer research uncovered a key insight: B2B parts lookup is fundamentally different from traditional e-commerce. Service advisors often have the part in hand — they need to identify it, not shop for it. The \"ways of finding\" strategy (keyword search, category search, part number lookup, job type, legacy PDF catalogs) delivered a 7% add-to-cart improvement representing a $32.8M lift in revenue for the pro segment (2025).",
     "stat": "$32.8M"
-  },
-  "gpc-research": {
-    "label": "Research Strategy",
-    "text": "The \"ways of finding\" concept introduced multiple paths to the same part: category search, part number lookup, job type, legacy PDF catalogs, and future visual/diagram lookup. This research-driven strategy was the foundation of the $32.8M impact — evidence based design."
   },
   "bolt": {
     "label": "Design System",
-    "text": "Built from scratch — no inherited design system existed. The design engineering team (front-end engineers reporting into design) designed and built the implementation end to end. Adopted across North America, Europe, and Asia Pacific. Reduced front-end development time by approximately 25%."
+    "text": "Built from scratch — no inherited design system existed. My design engineering team (front-end engineers reporting into design) designed and built the implementation end to end. Adopted across North America, Europe, and Asia Pacific. Reduced front-end development time by approximately 25%."
   },
   "agentic": {
-    "label": "The 30-Year Through-Line",
-    "text": "Currently leading design for an internal AI/ML startup within GPC — designing user interfaces for agentic AI systems. This connects directly back to the back-propagation work from 1993. The through-line from undergraduate neural network tools to agentic UI design spans three decades — and it's not a pivot, it's a continuation."
+    "label": "Agentic AI",
+    "text": "Currently leading design for an internal AI/ML startup within GPC — designing user interfaces for an agentic AI system."
   },
   "merger": {
     "label": "Truist · $66B Merger",
-    "text": "The SunTrust–BB&T merger created Truist — the largest banking merger since 2008. My strategic foresight work used Jobs to Be Done framework applied to business units (not products), isolating what each unit actually solves for customers, then running foresight on how those problems would be solved in the future.",
+    "text": "The SunTrust–BB&T merger created Truist — the largest banking merger since 2008. Inheriting an innovation studio with an uncertain future, I rebooted it by adding customer journey mapping and strategic foresight. This repositioning earned a partnership with Corporate Strategy to run a major foresight exercise using the Jobs to Be Done framework, ultimately presenting three future-of-banking scenarios to the CEO and C-suite.",
+    "quote": "The CEO called the work \"instrumental\" in how he thought about the merger.",
     "img": "/images/truist/1771246115132-cd678175.png",
     "link": "/truist",
     "linkText": "View Truist project →"
   },
-  "accelerator": {
-    "label": "Accelerator Studio",
-    "text": "Inherited an existing studio with an uncertain future. Interviewed every executive stakeholder on what they wanted it to be, then rebooted it with two major additions: customer journey mapping and strategic foresight. This repositioning earned a partnership with Corporate Strategy and led directly to the C-suite foresight presentations."
-  },
-  "foresight": {
-    "label": "Strategic Foresight",
-    "text": "Designed and ran a foresight exercise pulling the brightest people from all business units. Used Jobs to Be Done applied to the business units themselves — isolating identity from what they actually solve for customers. Output: three scenarios for the future of banking, presented to the CEO and C-suite.",
-    "quote": "The CEO called the work \"instrumental\" in how he thought about the merger."
-  },
   "truist-products": {
     "label": "Product Rebuilds",
-    "text": "Rebuilt Commercial Banking, Small Business, Retail, and Investment Banking products for the merged Truist entity. Each product line required unifying two distinct legacy systems under one coherent design language while maintaining continuity for millions of existing customers.",
+    "text": "Rebuilt Commercial Banking, Small Business, Retail, and Investment Banking products for the merged Truist entity. Each product line required unifying two distinct legacy systems under one coherent design language (designed by my team)while maintaining continuity for existing customers.",
     "img": "/images/truist/1771281469482-048153c4.png",
     "link": "/truist",
     "linkText": "View Truist project →"
@@ -48,23 +36,19 @@
   },
   "clients": {
     "label": "Client Work",
-    "text": "As Practice Lead at Sparks Grove (North Highland's innovation agency), won $4.7M+ in new business over 2.5 years including $3M in the first year alone. Led the shift from traditional agency model to agile software development and lean product management. Earned National Impact Award (2016) for transforming agency positioning to Human Experience Design."
+    "text": "As Practice Lead at Sparks Grove (North Highland's design & innovation agency) led the shift from traditional agency model to agile software development and lean product management. Earned National Impact Award (2016) for transforming agency positioning to Human Experience Design."
   },
   "upwave": {
     "label": "Upwave · Turner Broadcasting",
-    "text": "An IoT-driven digital health venture at the intersection of wearables and personalized content delivery. Partnered with IDEO on market validation. Introduced lean product methodology enabling daily release cycles. The product was ahead of mainstream wearable adoption — pre-Apple Watch.",
+    "text": "Zero to one product launch. An IoT-driven digital health venture at the intersection of wearables and personalized content delivery. Partnered with IDEO for market validation and product-market fit. Introduced lean product methodology enabling daily release cycles. The product was ahead of mainstream wearable adoption — pre-Apple Watch.",
     "img": "/images/upwave/turner-upwave-site.png",
     "link": "/upwave",
     "linkText": "View Upwave project →",
-    "stat": "0 → 1M users in 8 months"
-  },
-  "ideo": {
-    "label": "IDEO Partnership",
-    "text": "Partnered with IDEO for market validation and product-market fit on the Upwave health platform. The engagement helped shape the intersection of quantified-self data (wearables, health trackers) with personalized content delivery for behavior change."
+    "stat": "0 to 1M users in 8 months"
   },
   "emmy": {
     "label": "Emmy Award · 2011",
-    "text": "Primetime Creative Arts Emmy — Outstanding Creative Achievement in Interactive Media for the \"Conan O'Brien Presents: Team Coco\" app. I contributed the automatic content recognition (ACR) technology that powered the sync-to-TV interactive experience. This was a team award; my contribution was the underlying ACR platform."
+    "text": "Primetime Creative Arts Emmy — Outstanding Creative Achievement in Interactive Media for the \"Conan O'Brien Presents: Team Coco\" app. I contributed the design and led the  development of the automatic content recognition (ACR) technology that powered the sync-to-TV interactive experience. This was a team award; my contribution was the underlying ACR platform."
   },
   "patents": {
     "label": "Granted Patents",
@@ -81,10 +65,10 @@
   "dissertation": {
     "label": "March 1993",
     "text": "Undergraduate dissertation \"Colonizing Cyberspace\" predicted the transformative potential of global networked information spaces — 3D visualization of internet communities, virtual worlds for business and leisure. Described concepts now called \"spatial computing\" (Apple Vision Pro, Meta Quest). Predicted virtual communities and their cultural impact.",
-    "quote": "Submitted March 1993. The Mosaic browser was publicly announced April 21, 1993 — one month later."
+    "quote": "Submitted March 1993. The Mosaic browser was publicly announced April 21, 1993 only one month later."
   },
   "backprop": {
     "label": "Neural Networks · 1993",
-    "text": "Added external commands (XCMDs) to HyperCard's HyperScript language enabling back-propagation learning capabilities. Back-propagation is the foundational algorithm behind modern artificial neural networks and today's LLMs. This work predates the current AI wave by three decades — documented, timestamped technical AI roots."
+    "text": "Pioneered early AI tooling by building back-propagation learning capabilities into Apple's HyperCard via custom commands — the same foundational algorithm powering today's LLMs."
   }
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { extractHotspotKeys } from './validation';
+import { extractHotspotKeys, findDuplicateHotspots } from './validation';
 
 describe('extractHotspotKeys', () => {
     it('should extract single hotspot key from a string', () => {
@@ -43,5 +43,29 @@ describe('extractHotspotKeys', () => {
         const input = 'No hotspots here';
         const keys = extractHotspotKeys(input);
         expect(keys.size).toBe(0);
+    });
+});
+
+describe('findDuplicateHotspots', () => {
+    it('should return empty array when all keys are unique', () => {
+        const input = '<hotspot key="one">One</hotspot> <hotspot key="two">Two</hotspot>';
+        const duplicates = findDuplicateHotspots(input);
+        expect(duplicates).toEqual([]);
+    });
+
+    it('should identify duplicate keys', () => {
+        const input = '<hotspot key="same">One</hotspot> <hotspot key="same">Two</hotspot>';
+        const duplicates = findDuplicateHotspots(input);
+        expect(duplicates).toEqual(['same']);
+    });
+
+    it('should identify multiple duplicate keys across nested objects', () => {
+        const input = {
+            a: '<hotspot key="one">1</hotspot>',
+            b: ['<hotspot key="two">2a</hotspot>', '<hotspot key="two">2b</hotspot>'],
+            c: { deep: '<hotspot key="one">1 again</hotspot>' }
+        };
+        const duplicates = findDuplicateHotspots(input);
+        expect(duplicates).toEqual(['one', 'two']);
     });
 });

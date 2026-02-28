@@ -23,7 +23,7 @@ Deep dives into major projects, now powered by a modular, high-performance templ
 - **Upwave:** Quantified-self venture and IoT behavioral science.
 
 ### 3. Foundation & Strategy
-- **Content Integrity Suite:** Automated verification ensures that every interactive hotspot is valid and every media asset is present, preventing regressions during content updates.
+- **Content Integrity Suite:** Automated verification ensures that every interactive hotspot is valid, maps strictly one-to-one across the resume to avoid ambiguity, and every media asset is present, preventing regressions during content updates.
 - **WCAG AA Compliance:** Rigorous color contrast calibration (4.5:1+) for all branding accents.
 - **Semantic Structure:** Full ARIA 1.1 implementation, keyboard skip-links, and focus-trapped interactive cards.
 - **Cinematic Pacing:** Fluid high-altitude photography blended with authoritative, accessible typography.

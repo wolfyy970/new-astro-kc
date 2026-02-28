@@ -12,6 +12,13 @@
   --accent: #70541C;
   /* WCAG AA 4.8:1 on #E8E6E1 */
   --accent-rgb: 112, 84, 28;
+  --accent-border: rgba(112, 84, 28, 0.2);
+
+  /* Document Palette */
+  --doc-heading: #1B1B1B;
+  --doc-body: #333333;
+  --doc-light: #666666;
+  --doc-rule: #DEDCD5;
 
   /* Hotspot Design System */
   --hs-opacity-default: 0.08;
@@ -478,26 +485,24 @@ body.popover-open {
   height: auto;
   max-height: 240px;
   object-fit: contain;
-  object-position: top center;
+  object-position: center;
   display: block;
-  flex-shrink: 0;
-  border-bottom: 1px solid #F0EEEA;
-  background: #fdfdfd;
+  padding: 8px 0 0;
+  /* Space away from the chrome line */
+  background: var(--doc-white);
 }
 
-/* ── Drag handle + close button (unified chrome bar) ──────────────────────── */
 .popover-handle {
   position: relative;
-  height: 20px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: grab;
   user-select: none;
-  flex-shrink: 0;
+  background: var(--doc-white);
 }
 
-/* Single row of 3 dots — 2px each, 5px gaps */
 .popover-handle::before {
   content: '';
   display: block;
@@ -505,12 +510,9 @@ body.popover-open {
   height: 2px;
   border-radius: 50%;
   background: var(--doc-rule);
-  box-shadow:
-    7px 0 0 var(--doc-rule),
-    14px 0 0 var(--doc-rule);
+  box-shadow: -7px 0 0 var(--doc-rule), 7px 0 0 var(--doc-rule);
 }
 
-/* Separator spans nearly full width — brackets both dots AND the × button */
 .popover-handle::after {
   content: '';
   position: absolute;
@@ -523,38 +525,30 @@ body.popover-open {
   opacity: 0.4;
 }
 
-/* × close button — anchored top-right of the popover card */
 .popover-close {
   position: absolute;
-  right: 8px;
-  top: 6px;
-  /* aligned within the 20px handle area on desktop */
+  right: 6px;
+  top: 4px;
   width: 24px;
   height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
-  background: rgba(255, 255, 255, 0.4);
-  /* Glassmorphism for legibility */
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: transparent;
   cursor: pointer;
   color: var(--doc-rule);
-  border-radius: 50%;
-  transition: all 0.2s ease;
+  transition: color 0.15s ease;
   z-index: 10;
-  flex-shrink: 0;
 }
 
 .popover-close::before,
 .popover-close::after {
   content: '';
   position: absolute;
-  width: 8px;
-  height: 1.5px;
+  width: 10px;
+  height: 1.2px;
   background: currentColor;
-  border-radius: 1px;
 }
 
 .popover-close::before {
@@ -566,18 +560,12 @@ body.popover-open {
 }
 
 .popover-close:hover {
-  background: rgba(255, 255, 255, 0.8);
-  color: var(--doc-heading);
-  transform: scale(1.05);
-}
-
-.popover-close:active {
-  transform: scale(0.95);
+  color: #000;
 }
 
 .popover-close:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: none;
+  color: #000;
 }
 
 /* Dragging state */
@@ -1108,27 +1096,19 @@ body.popover-open {
   }
 
   .popover-img {
-    width: 100%;
+    width: calc(100% - 40px);
     height: auto;
-    max-height: 200px;
+    max-height: 220px;
+    margin: 20px 20px 0;
+    border-radius: 8px;
     object-fit: contain;
-    object-position: top center;
+    object-position: center;
     background: #fdfdfd;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   }
 
   .popover-body {
-    padding: 20px 20px 32px;
-  }
-
-  .popover-body::before {
-    content: '';
-    display: block;
-    width: 40px;
-    /* sheet drag pill — desktop has the JS handle, mobile gets this */
-    height: 4px;
-    background: var(--doc-rule);
-    border-radius: 2px;
-    margin: -8px auto 16px;
+    padding: 16px 20px 32px;
   }
 
   /* Drag handle is desktop-only chrome — hide its dots/line on bottom-sheet */
@@ -1137,11 +1117,10 @@ body.popover-open {
   }
 
   .popover-close {
-    top: 12px;
-    right: 12px;
-    background: rgba(255, 255, 255, 0.7);
-    /* Stronger indicator on mobile */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    top: 0;
+    right: 0;
+    background: transparent;
+    box-shadow: none;
   }
 }
 

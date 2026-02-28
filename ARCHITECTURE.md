@@ -50,7 +50,7 @@ A modular suite of Astro components for consistent, high-performance case study 
 ### 1. Content Integrity Suite (`scripts/verify-content.ts`)
 A custom TypeScript-driven verification system that ensures 100% link safety:
 - **Schema Validation:** Enforces strict structural integrity for `resume.json` and `popovers.json`, ensuring all required fields are present before building.
-- **Hotspot Validation:** Cross-references `<hotspot>` tags in `resume.json` against `popovers.json` inventory.
+- **Hotspot Validation:** Cross-references `<hotspot>` tags in `resume.json` against `popovers.json` inventory, and enforces a strict 1:1 mapping by failing the build if any duplicate hotspots are used in the resume.
 - **Media Validation:** Validates that every image path referenced in the content exists in the `public/` directory.
 - **Build Guard:** Integrated into the `npm run build` process to prevent broken deployments.
 
