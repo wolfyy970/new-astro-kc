@@ -16,7 +16,7 @@
   "merger": {
     "label": "Truist · $66B Merger",
     "text": "The SunTrust–BB&T merger created Truist — the largest banking merger since 2008. Inheriting an innovation studio with an uncertain future, I rebooted it by adding customer journey mapping and strategic foresight. This repositioning earned a partnership with Corporate Strategy to run a major foresight exercise using the Jobs to Be Done framework, ultimately presenting three future-of-banking scenarios to the CEO and C-suite.",
-    "quote": "The CEO called the work \"instrumental\" in how he thought about the merger.",
+    "quote": "Bill Rogers, the then-CEO of SunTrust, called the work \"instrumental\" in how he thought about the merger.",
     "img": "/images/truist/1771246115132-cd678175.png",
     "link": "/truist",
     "linkText": "View Truist project →"
@@ -49,7 +49,7 @@
   },
   "emmy": {
     "label": "Emmy Award · 2011",
-    "text": "Primetime Creative Arts Emmy — Outstanding Creative Achievement in Interactive Media for the \"Conan O'Brien Presents: Team Coco\" app. Team project, I led the design (live sync to tv experience) and development of the automatic content recognition (ACR) technology that powered the sync-to-TV interactive experience. This was a team award; my contribution was the underlying sync to tv platform.",
+    "text": "Primetime Creative Arts Emmy — Outstanding Creative Achievement in Interactive Media for the \"Conan O'Brien Presents: Team Coco\" app. Team project, I led the design and development of the automatic content recognition (ACR) technology that powered the live sync-to-TV interactive experience. This was a team award; my contribution was the underlying sync to tv platform.",
     "img": "/images/awards/conan-emmy.png"
   },
   "patents": {
@@ -66,7 +66,11 @@
   },
   "ar": {
     "label": "Mobile AR · 2005–2008",
-    "text": "Pioneered the first mobile augmented reality applications in the United States — for NBA (billboard advertising interactions) and Cartoon Network (gaming) — in partnership with Georgia Tech. On Nokia N90 devices, before the iPhone existed. I predicted that mobile processing power and GPU trajectories would ensure AR happened on phones first. That prediction proved correct."
+    "text": "Pioneered the first mobile augmented reality applications in the United States — for NBA (billboard advertising interactions) and Cartoon Network (gaming) — in partnership with Georgia Tech. On Nokia N90 devices, before the iPhone existed. I predicted that mobile processing power and GPU trajectories would ensure AR happened on phones first. That prediction proved correct.",
+    "media": [
+      "/images/turner/nba-ar-prototype.png",
+      "/media/nba-ar-prototype.mp4"
+    ]
   },
   "dissertation": {
     "label": "March 1993",
