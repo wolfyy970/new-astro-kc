@@ -3,12 +3,9 @@ import { defineConfig } from 'astro/config';
 import vercel from '@astrojs/vercel';
 
 export default defineConfig({
-  // placeholder — update when domain is known
-  site: 'https://example.com',
-
   output: 'server',
   security: {
-    checkOrigin: false,
+    checkOrigin: process.env.NODE_ENV !== 'development',
   },
   integrations: [],
   adapter: vercel(),

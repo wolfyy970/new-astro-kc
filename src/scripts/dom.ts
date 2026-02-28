@@ -109,6 +109,7 @@ export function buildContentNode(
                 }
 
                 const playBtn = document.createElement('button');
+                playBtn.type = 'button';
                 playBtn.className = `${prefix}-play-btn`;
                 playBtn.setAttribute('aria-label', 'Play video');
                 playBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
@@ -161,6 +162,7 @@ export function buildContentNode(
         // Add chevrons
         const createNavButton = (dir: 'prev' | 'next') => {
             const btn = document.createElement('button');
+            btn.type = 'button';
             btn.className = `${prefix}-carousel-nav ${dir}`;
             btn.setAttribute('aria-label', dir === 'prev' ? 'Previous slide' : 'Next slide');
             btn.innerHTML = dir === 'prev'
@@ -185,12 +187,13 @@ export function buildContentNode(
         dotsList.className = `${prefix}-carousel-dots`;
         mediaList.forEach((_, i) => {
             const dot = document.createElement('button');
+            dot.type = 'button';
             dot.className = `${prefix}-carousel-dot` + (i === 0 ? ' active' : '');
             dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
             dot.addEventListener('click', () => {
                 const targetSlide = carousel.children[i] as HTMLElement;
                 if (targetSlide) {
-                    carousel.scrollLeft = targetSlide.offsetLeft;
+                    carousel.scrollTo({ left: targetSlide.offsetLeft, behavior: 'smooth' });
                 }
             });
             dotsList.appendChild(dot);

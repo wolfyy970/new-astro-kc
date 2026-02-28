@@ -43,6 +43,8 @@ interface AnnotationEntry {
 let annotationEls: Record<string, AnnotationEntry> = {};
 let annotationsBuilt = false;
 let marginObserver: IntersectionObserver | null = null;
+let resizeAbortController: AbortController | null = null;
+let introAnnotationEl: HTMLElement | null = null;
 
 // ── Annotation build ──────────────────────────────────────────────────────────
 
@@ -152,7 +154,52 @@ function resolveOverlaps(side: 'left' | 'right'): void {
     }
 }
 
+// ── Intro annotation ─────────────────────────────────────────────────────────
+// Shown on cold wide-screen loads where all hotspots are below the fold,
+// so the margin isn't empty and the interactive feature isn't invisible.
+// Dismissed (animated) the moment the first real annotation scrolls into view.
+
+function showIntroAnnotation(): void {
+    if (introAnnotationEl) return;
+    const docPage = document.querySelector<HTMLElement>(SEL_DOC_PAGE);
+    if (!docPage) return;
+
+    const el = document.createElement('div');
+    el.className = `scroll-annotation side-left`;
+    el.dataset.intro = 'true';
+    el.style.top = '60px';
+
+    const rule = document.createElement('div');
+    rule.className = 'sa-rule';
+
+    const label = document.createElement('div');
+    label.className = 'sa-label';
+    label.textContent = 'Interactive';
+
+    const text = document.createElement('div');
+    text.className = 'sa-text';
+    text.textContent = 'Scroll to reveal — as you read, highlighted terms surface detail, data, and media here in the margin.';
+
+    el.appendChild(rule);
+    el.appendChild(label);
+    el.appendChild(text);
+    docPage.appendChild(el);
+    introAnnotationEl = el;
+
+    // Brief delay so the element is in the DOM before the transition fires
+    setTimeout(() => el.classList.add(CLS_REVEALED), 300);
+}
+
+function dismissIntroAnnotation(): void {
+    if (!introAnnotationEl) return;
+    const el = introAnnotationEl;
+    introAnnotationEl = null;
+    el.classList.remove(CLS_REVEALED);
+    setTimeout(() => el.remove(), 700);
+}
+
 function revealAnnotation(key: string): void {
+    dismissIntroAnnotation();
     const entry = annotationEls[key];
     if (!entry || entry.el.classList.contains(CLS_REVEALED)) return;
     entry.el.classList.add(CLS_REVEALED);
@@ -161,7 +208,14 @@ function revealAnnotation(key: string): void {
 
 // ── Cleanup ───────────────────────────────────────────────────────────────────
 
-export function cleanupAnnotations(): void {
+// Resets annotation DOM and state without touching the resize listener.
+// Used internally by the resize handler so it can clean up and re-init
+// without aborting the AbortController that's keeping the listener alive.
+function resetAnnotationState(): void {
+    if (introAnnotationEl) {
+        introAnnotationEl.remove();
+        introAnnotationEl = null;
+    }
     Object.values(annotationEls).forEach(({ el, hotspot }) => {
         el.remove();
         hotspot.classList.remove(CLS_SCROLL_REVEALED);
@@ -169,6 +223,13 @@ export function cleanupAnnotations(): void {
     annotationEls = {};
     annotationsBuilt = false;
     marginObserver?.disconnect();
+}
+
+// Full teardown — removes the resize listener too. Called on page transitions.
+export function cleanupAnnotations(): void {
+    resizeAbortController?.abort();
+    resizeAbortController = null;
+    resetAnnotationState();
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
@@ -239,6 +300,17 @@ export function initAnnotationEngine(
                 }
             }
         });
+
+        // Cold-start: wide screen but nothing yet visible (all hotspots below the fold).
+        // Show an intro annotation to set the expectation before the user scrolls.
+        if (isWideScreen() && annotationsBuilt) {
+            const anyRevealed = Object.values(annotationEls).some(
+                entry => entry.el.classList.contains(CLS_REVEALED),
+            );
+            if (!anyRevealed) {
+                showIntroAnnotation();
+            }
+        }
     }
 
     // Track fluid resizing progress (0 = 1024px, 1 = 1460px)
@@ -249,8 +321,8 @@ export function initAnnotationEngine(
         document.documentElement.style.setProperty('--widen-progress', progress.toString());
 
         // Update SVG textPath startOffsets for the sliding ribbon effect
-        const textPathLeft = document.getElementById('widen-textpath-left') as object as SVGTextPathElement;
-        const textPathRight = document.getElementById('widen-textpath-right') as object as SVGTextPathElement;
+        const textPathLeft = document.getElementById('widen-textpath-left') as SVGTextPathElement | null;
+        const textPathRight = document.getElementById('widen-textpath-right') as SVGTextPathElement | null;
 
         if (textPathLeft && textPathRight) {
             // Left track: M0,400 L180,400 Q200,400 200,380 L200,0
@@ -270,7 +342,8 @@ export function initAnnotationEngine(
     // Call once on load
     requestAnimationFrame(updateWidenProgress);
 
-    // Handle resize
+    // Handle resize — AbortController ensures this listener is removed on cleanup
+    resizeAbortController = new AbortController();
     let resizeTimer = 0;
     window.addEventListener('resize', () => {
         requestAnimationFrame(updateWidenProgress);
@@ -286,14 +359,14 @@ export function initAnnotationEngine(
                 hint.classList.remove(CLS_VISIBLE);
             } else if (isNear) {
                 hint.classList.add(CLS_VISIBLE);
-                if (annotationsBuilt) cleanupAnnotations();
+                if (annotationsBuilt) resetAnnotationState();
                 init();
             } else {
                 hint.classList.remove(CLS_VISIBLE);
-                if (annotationsBuilt) cleanupAnnotations();
+                if (annotationsBuilt) resetAnnotationState();
             }
         }, 0);
-    });
+    }, { signal: resizeAbortController.signal });
 
     init();
 }

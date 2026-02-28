@@ -5,14 +5,15 @@ High-fidelity Design Leadership Portfolio built with Astro 5.0. This project dem
 ## Core Interactive Features
 
 - **Draggable Context Overlay:** Floating desktop popovers that follow user focus, enabling persistent reference during reading.
-- **Magazine-Style Marginalia:** Margin annotations that reveal themselves during scroll on wide displays (≥1400px).
+- **Magazine-Style Marginalia:** Margin annotations that reveal as hotspots scroll into view on wide displays (≥1460px), with a cold-start intro annotation that sets the expectation when all hotspots are initially below the fold.
 - **High-Fidelity Interaction:** Fragment-based text highlighting with content-aware directional fades.
 - **Rich Media & Context-Aware Video:** Seamless inline playback of videos and arrays of mixed format images, bundled as elegant native carousels with swipe support, smart chevrons, and pagination.
 - **Accessible Editorial Design:** WCAG AA compliant contrast calibration and semantic ARIA 1.1 structure.
 - **Mobile-First Bottom Sheets:** Optimized mobile interactions with full focus trapping and touch-aware dismissals.
 
 - **Executive Elegance Hotspots:** Refined interaction model with subtle underlines and semantic opacity control.
-- **Content Integrity Suite:** Automated validation of hotspot links and media paths to prevent regression.
+- **Feature Flags:** Server-side `CASE_STUDY_LINKS` environment variable controls which case study links appear in popovers — supports incremental content publishing without code changes.
+- **Content Integrity Suite:** Automated validation of hotspot links, image paths, and media arrays to prevent regressions.
 - **Image Optimization Pipeline:** Build-time asset processing using Astro 5.0 for high-performance WebP delivery.
 - **Component-Based Case Studies:** A modular template architecture for rapid, consistent content authoring.
 

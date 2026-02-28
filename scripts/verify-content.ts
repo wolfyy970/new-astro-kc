@@ -20,8 +20,14 @@ function verify() {
         process.exit(1);
     }
 
-    const resume = JSON.parse(fs.readFileSync(resumePath, 'utf-8'));
-    const popovers = JSON.parse(fs.readFileSync(popoversPath, 'utf-8'));
+    let resume, popovers;
+    try {
+        resume = JSON.parse(fs.readFileSync(resumePath, 'utf-8'));
+        popovers = JSON.parse(fs.readFileSync(popoversPath, 'utf-8'));
+    } catch (e) {
+        console.error(`❌ Failed to parse JSON: ${(e as Error).message}`);
+        process.exit(1);
+    }
 
     // 2. Schema Validation
     console.log('📋 Validating schemas...');
@@ -74,6 +80,17 @@ function verify() {
             if (!fs.existsSync(fullPath)) {
                 errors.push(`Missing image file for "${key}": "${item.img}"`);
             }
+        }
+
+        if (Array.isArray(item.media)) {
+            item.media.forEach((mediaPath: string) => {
+                if (typeof mediaPath !== 'string') return;
+                const relativePath = mediaPath.startsWith('/') ? mediaPath.slice(1) : mediaPath;
+                const fullPath = path.join(publicDir, relativePath);
+                if (!fs.existsSync(fullPath)) {
+                    errors.push(`Missing media file for "${key}": "${mediaPath}"`);
+                }
+            });
         }
     });
 

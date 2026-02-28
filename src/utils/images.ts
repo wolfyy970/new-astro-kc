@@ -17,7 +17,8 @@ export async function optimizePopoverImages(
 
     for (const [key, item] of entries) {
         if (item.img) {
-            if (item.img.endsWith('.mp4') || item.img.endsWith('.webm')) {
+            const imgExt = item.img.toLowerCase();
+            if (imgExt.endsWith('.mp4') || imgExt.endsWith('.webm')) {
                 // skip Astro image optimization for video formats
             } else {
                 try {
@@ -42,7 +43,8 @@ export async function optimizePopoverImages(
         if (item.media && item.media.length > 0) {
             const optimizedMedia: string[] = [];
             for (const m of item.media) {
-                if (m.endsWith('.mp4') || m.endsWith('.webm')) {
+                const mExt = m.toLowerCase();
+                if (mExt.endsWith('.mp4') || mExt.endsWith('.webm')) {
                     optimizedMedia.push(m);
                 } else {
                     try {

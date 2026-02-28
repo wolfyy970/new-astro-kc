@@ -10,7 +10,8 @@
   },
   "agentic": {
     "label": "Agentic AI",
-    "text": "Leading design for an internal AI/ML venture at NAPA — an agentic system for shop management and e-commerce."
+    "text": "Leading design for an internal AI/ML venture at NAPA — an agentic system for shop management and e-commerce.",
+    "img": "/images/gpc/napa-logo.png"
   },
   "merger": {
     "label": "Truist · $66B Merger",
@@ -48,7 +49,8 @@
   },
   "emmy": {
     "label": "Emmy Award · 2011",
-    "text": "Primetime Creative Arts Emmy — Outstanding Creative Achievement in Interactive Media for the \"Conan O'Brien Presents: Team Coco\" app. Team project, I led the design (live sync to tv experience) and development of the automatic content recognition (ACR) technology that powered the sync-to-TV interactive experience. This was a team award; my contribution was the underlying sync to tv platform."
+    "text": "Primetime Creative Arts Emmy — Outstanding Creative Achievement in Interactive Media for the \"Conan O'Brien Presents: Team Coco\" app. Team project, I led the design (live sync to tv experience) and development of the automatic content recognition (ACR) technology that powered the sync-to-TV interactive experience. This was a team award; my contribution was the underlying sync to tv platform.",
+    "img": "/images/awards/conan-emmy.png"
   },
   "patents": {
     "label": "Granted Patents",
@@ -58,6 +60,7 @@
     "label": "CNN Magic Wall",
     "text": "Created the massive multi-touch screen paradigm for broadcast news visualization that became an industry standard. Designed large-format multi-touch interface that pioneered data-driven storytelling for weather and also used for election coverage at CNN.",
     "media": [
+      "/images/cnn/magic-wall-hurricane.png",
       "/media/cnn-magic-wall.mp4"
     ]
   },
@@ -78,7 +81,9 @@
     "label": "BAFTA Nomination",
     "text": "Nominated for a BAFTA Interactive Entertainment Award (Sports) in 2000 for 'Armchair Manager – Football', pioneering precursor to modern realtime interactive sports broadcasting.",
     "stat": "2000",
-    "img": "/images/awards/bafta-nomination.jpg"
+    "img": "/images/awards/bafta-nomination.jpg",
+    "link": "/two-way-tv",
+    "linkText": "View Two Way TV project →"
   },
   "apple-award": {
     "label": "Apple Design Award",

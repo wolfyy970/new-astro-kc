@@ -70,6 +70,30 @@ Popover data is stored in `src/content/popovers.json`.
   - `img` (string): For a single legacy image string payload.
   - `media` (array of strings): Use this for rich media (both `.jpg`/`.png` and `.mp4`/`.webm`). If multiple paths are provided, it automatically creates an interactive swipeable carousel natively rendering images natively alongside looping videos.
 
+## Feature Flags
+
+### Case Study Links (`CASE_STUDY_LINKS`)
+
+Controls which case study pages are linked from popover cards and margin annotations. Filtering is applied server-side — the client never receives links to pages that are not yet enabled.
+
+Set the variable in your `.env` file or Vercel Dashboard:
+
+```bash
+# All links hidden (default when variable is absent — safe while authoring)
+CASE_STUDY_LINKS=
+
+# Only Truist is ready to show
+CASE_STUDY_LINKS=truist
+
+# All current case studies enabled
+CASE_STUDY_LINKS=truist,sparks-grove,upwave,two-way-tv
+```
+
+- **Value:** Comma-separated list of case study slugs (the path segment after the leading `/`). Matching is case-insensitive.
+- **Default:** When the variable is absent or empty, all case study links are hidden.
+- **Scope:** Affects the `link`/`linkText` fields in `popovers.json` entries only. The case study pages themselves remain accessible directly.
+- **Adding a new slug:** When you add a new case study page at `/my-project`, add `my-project` to the list to enable its links.
+
 ## Adding Case Studies
 
 The portfolio includes a modular suite of components to ensure consistent, high-performance case study authoring:

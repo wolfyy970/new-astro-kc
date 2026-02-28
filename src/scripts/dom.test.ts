@@ -115,6 +115,21 @@ describe('buildContentNode', () => {
         expect(html).toContain('class="popover-carousel-dots"');
         expect(html).toContain('class="popover-carousel-dot active"');
     });
+
+    it('should set type="button" on all dynamically created buttons (nav, dots, play)', () => {
+        const multiData: PopoverData = {
+            label: 'Carousel',
+            text: 'Carousel desc',
+            media: ['/img1.jpg', '/vid1.mp4']
+        };
+        const container = document.createElement('div');
+        container.appendChild(buildContentNode(multiData, 'popover'));
+        const buttons = container.querySelectorAll('button');
+        expect(buttons.length).toBeGreaterThan(0);
+        buttons.forEach(btn => {
+            expect(btn.type).toBe('button');
+        });
+    });
 });
 
 describe('requireGlobal', () => {

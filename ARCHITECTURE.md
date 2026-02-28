@@ -12,8 +12,9 @@ The portfolio is built on **Astro 5.0**, leveraging its strengths in content-hea
 
 ### Content Flow
 1. **JSON Files:** `resume.json` and `popovers.json` act as the "database."
-2. **Page Templates:** `src/pages/index.astro` reads the JSON data.
-3. **Hotspot Processing:** `renderHotspots` converts `<hotspot>` tags into interactive `<span>` elements with appropriate ARIA attributes.
+2. **Feature Flags (`src/utils/feature-flags.ts`):** `applyFeatureFlags` strips `link`/`linkText` from any popover whose case study page is not enabled in `CASE_STUDY_LINKS`. This runs server-side in `index.astro` before data is serialised to `window.__POPOVERS__`, so the client never receives links to unpublished pages.
+3. **Page Templates:** `src/pages/index.astro` reads the JSON data, applies feature flags, then optimizes images.
+4. **Hotspot Processing:** `renderHotspots` converts `<hotspot>` tags into interactive `<span>` elements with appropriate ARIA attributes.
 
 ## Interactive Systems
 
@@ -31,7 +32,9 @@ Manages the "magazine-style" margin content:
 - **Automatic DOM Mapping:** Dynamically parses `.hotspot` anchors in the DOM and automatically alternates left/right side assignments for marginalia (decoupling content creation from configuration).
 - **Intersection Observation:** Rebuilds and positions margin annotations as hotspots scroll into view.
 - **Overlap Resolution:** Algorithmic adjustment to prevent vertical collisions between adjacent annotations.
-- **Widen Hint ("Sticker Peel"):** An intricate resize-driven interaction on laptop and tablet sizes (600px - 1399px). It features tracking SVG `<textPath>` components that physically roll out around the resume's boundaries synchronously as the user resizes the window, avoiding complex CSS transforms. It automatically resets IntersectionObservers to detect immediate visibility upon completion.
+- **Cold-Start Intro Annotation:** When the engine initializes at wide screen and no hotspots are immediately in the viewport, a native-feeling introductory annotation is injected at the top of the margin. It sets the expectation for the interactive experience and dissolves the moment the first real annotation reveals. Cleaned up immediately on resize/teardown via `resetAnnotationState`.
+- **Widen Hint ("Sticker Peel"):** An intricate resize-driven interaction on laptop sizes (1024px–1459px). It features tracking SVG `<textPath>` components that physically roll out around the resume's boundaries synchronously as the user resizes, avoiding complex CSS transforms. It automatically resets IntersectionObservers to detect immediate visibility upon completion.
+- **Lifecycle Safety:** `resetAnnotationState()` handles DOM/state cleanup without aborting the `resizeAbortController`, preserving the resize listener across intermediate resets. `cleanupAnnotations()` performs a full teardown including the controller.
 
 ### 3. Native CSS Highlighting
 We've refined the interactive highlighting for "Executive Elegance":
@@ -49,9 +52,9 @@ A modular suite of Astro components for consistent, high-performance case study 
 
 ### 1. Content Integrity Suite (`scripts/verify-content.ts`)
 A custom TypeScript-driven verification system that ensures 100% link safety:
-- **Schema Validation:** Enforces strict structural integrity for `resume.json` and `popovers.json`, ensuring all required fields are present before building.
+- **Schema Validation:** Enforces strict structural integrity for `resume.json` and `popovers.json`, with `try/catch` around JSON parsing so malformed files produce a clean error rather than a stack trace.
 - **Hotspot Validation:** Cross-references `<hotspot>` tags in `resume.json` against `popovers.json` inventory, and enforces a strict 1:1 mapping by failing the build if any duplicate hotspots are used in the resume.
-- **Media Validation:** Validates that every image path referenced in the content exists in the `public/` directory.
+- **Media Validation:** Validates that every `img` path and every path within `media` arrays exists in the `public/` directory.
 - **Build Guard:** Integrated into the `npm run build` process to prevent broken deployments.
 
 ### 2. Image Optimization Pipeline
@@ -59,10 +62,20 @@ Leverages Astro's Image Service for modern asset delivery:
 - **Static Assets:** Automatic WebP conversion and resizing within case study components.
 - **Dynamic Assets:** Build-time pre-optimization of all popover images in `index.astro`, ensuring even dynamically loaded content is hashed and optimized.
 
+## Security
+
+Authentication lives in `src/middleware.ts`:
+- **Fail-closed:** Returns `503` if `SITE_PASSWORD` is not configured (never accidentally open).
+- **Constant-time comparison:** `safeEqual()` uses XOR byte-by-byte comparison to prevent timing attacks on cookie validation.
+- **Asset bypass:** `ASSET_EXT` regex precisely matches static file extensions — avoids the overly broad `.includes('.')` approach.
+- **Security headers:** Every authenticated response sets `X-Robots-Tag`, `Cache-Control`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, and `Referrer-Policy: no-referrer`.
+
 ## Testing Strategy
 - **Vitest + JSDOM:** Core logic and utility functions are verified against a simulated browser environment.
-- **Key Testable Units:** 
+- **Key Testable Units:**
   - `src/utils/validation.ts`: Logic for extracting and validating hotspots.
-  - `src/utils/images.ts`: Pipeline for pre-optimizing dynamic image assets.
+  - `src/utils/images.ts`: Pipeline for pre-optimizing dynamic image assets, including case-insensitive extension handling.
   - `src/utils/render.ts`: Hotspot-to-span transformation logic.
-  - `src/scripts/annotation-engine.test.ts`: Layout and overlap resolution logic for marginalia.
+  - `src/utils/feature-flags.ts`: Slug parsing, `isCaseStudyLinkEnabled`, and `applyFeatureFlags` immutability.
+  - `src/scripts/annotation-engine.ts`: Side assignment, overlap resolution, and cold-start intro annotation lifecycle.
+  - `src/scripts/dom.ts`: DOM construction for popovers, carousels, and accessibility attributes.

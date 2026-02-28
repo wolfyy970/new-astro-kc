@@ -1,0 +1,98 @@
+---
+import CaseStudyLayout from "../layouts/CaseStudyLayout.astro";
+import CaseStudyHero from "../components/case-studies/CaseStudyHero.astro";
+import ContextGrid from "../components/case-studies/ContextGrid.astro";
+import ShowcaseSection from "../components/case-studies/ShowcaseSection.astro";
+import ShowcaseGrid from "../components/case-studies/ShowcaseGrid.astro";
+import ShowcaseCard from "../components/case-studies/ShowcaseCard.astro";
+import FeatureRow from "../components/case-studies/FeatureRow.astro";
+---
+
+<CaseStudyLayout
+  title="Two Way TV — Interactive Television"
+  description="How I designed and launched the world's first interactive television multiplayer games as a founding team member of Two Way TV, earning a BAFTA nomination along the way."
+  ogImage="/images/two-way-tv/fruity4some.png"
+>
+  <style>
+    :root {
+      --twv-navy: #0b1f3a;
+      --twv-deep: #060e1a;
+      --twv-teal: #00c2e0;
+      --twv-amber: #f59e0b;
+      --twv-light: #f0f7ff;
+      --accent: #00c2e0;
+    }
+
+    .pioneers-bg {
+      background: var(--twv-light);
+    }
+
+    .bafta-bg {
+      background: #fff;
+    }
+  </style>
+
+  <CaseStudyHero
+    label="Two Way TV · 1995–2003"
+    title="Inventing the Multiplayer TV Experience"
+    subtitle="Founding team member and product design lead for the world's first interactive television gaming network — built before smartphones, before streaming, and before anyone had a name for what we were doing."
+    background="/images/two-way-tv/fruity4some.png"
+  />
+
+  <ContextGrid
+    challenge="Build compelling real-time multiplayer game experiences within the severe technical and latency constraints of 1990s digital television broadcast infrastructure."
+    role="Solutions Development Manager (Founding Team)"
+    company="Two Way TV / Two Way Media"
+    scope="Interactive game design, development, and broadcast deployment across Sky Digital, cable, and international platforms in the US, Canada, and Australia"
+    team="Design, Engineering, Broadcast Technology"
+  >
+    Two Way TV was a world-leading interactive television pioneer — operating
+    dedicated gaming channels across the UK's major digital platforms and
+    licensing the technology internationally. The company held key interactive TV
+    patents and signed a strategic alliance with Microsoft to bring the platform
+    to the MSTV standard.
+
+    I joined as a founding team member in 1995, when interactive television was
+    still largely theoretical. I worked across the full stack as designer and
+    developer simultaneously — in an era when that distinction barely existed —
+    spending eight years designing and building the products that proved the
+    medium was real.
+  </ContextGrid>
+
+  <ShowcaseSection
+    label="The Multiplayer Breakthrough"
+    title="The UK's first head-to-head multiplayer game."
+    description="In November 2001, Two Way TV launched Fruity4some on the nti digital cable service — the UK's first head-to-head interactive multiplayer game on cable television. Players could challenge other subscribers in real time, from the same household or across the network, with in-game chat, live leaderboards, and a pay-to-play model that established a template for interactive entertainment billing. I designed the game interaction model and the full television user experience, navigating remote-control interaction constraints with no established design language to draw from."
+    isDark
+  >
+    <ShowcaseGrid columns={1}>
+      <ShowcaseCard
+        isDark
+        title="Fruity4some · 2001"
+        description="UK's first head-to-head interactive multiplayer game on digital cable. Real-time gameplay, in-game chat, and leaderboards — all navigated with a TV remote."
+        image="/images/two-way-tv/fruity4some.png"
+        imageAlt="Fruity4some multiplayer game running on Two Way TV's cable service, showing the fruit-grid gameplay, player names, timer, and chat prompt"
+      />
+    </ShowcaseGrid>
+  </ShowcaseSection>
+
+  <div class="bafta-bg">
+    <FeatureRow
+      label="BAFTA Nomination · 2000"
+      title="Armchair Manager — sport meets broadcast interactivity."
+      description="Before Fruity4some, I produced 'Armchair Manager – Football' — a real-time interactive sports experience that put viewers in the manager's seat during live Sky Sports coverage. Players made tactical decisions synced to actual match events, with outcomes tied to what happened on the pitch. Interactive television had never been used this way: not as an overlay on content, but as a parallel experience woven into a live broadcast. The product earned a BAFTA Interactive Entertainment Award nomination in 2000, recognising it as a pioneering advance in broadcast interactivity."
+      image="/images/two-way-tv/fruity4some.png"
+      imageAlt="Two Way TV interactive television game interface"
+      reverse
+    />
+  </div>
+
+  <div class="pioneers-bg">
+    <ShowcaseSection
+      label="The Bigger Picture"
+      title="A platform that predicted the future of interactive media."
+      description="Two Way TV operated at a scale and ambition that few appreciated at the time. The technology that underpinned our games — real-time bidirectional communication over broadcast infrastructure, audience participation systems, second-screen interaction models — was years ahead of the mainstream. The strategic alliance with Microsoft, the international licensing, the granted patents: these were signals of an industry trying to catch up with what we'd already built. The direct line from that work to modern interactive streaming, second-screen experiences, and broadcast gamification is not subtle."
+    >
+    </ShowcaseSection>
+  </div>
+</CaseStudyLayout>

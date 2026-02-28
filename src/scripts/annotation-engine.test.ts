@@ -86,6 +86,82 @@ describe('Annotation Engine (DOM auto-mapping)', () => {
     });
 });
 
+describe('Intro annotation (cold-start)', () => {
+    beforeEach(() => {
+        vi.useFakeTimers();
+        Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: BREAKPOINT_WIDE });
+
+        document.body.innerHTML = `
+            <div id="${ID_WIDEN_HINT}"></div>
+            <div class="${SEL_DOC_PAGE.replace('.', '')}">
+                <span class="hotspot" data-popover="item1">Item 1</span>
+            </div>
+        `;
+
+        class MockIntersectionObserver {
+            observe = vi.fn();
+            unobserve = vi.fn();
+            disconnect = vi.fn();
+        }
+        (window as any).IntersectionObserver = MockIntersectionObserver;
+    });
+
+    afterEach(() => {
+        cleanupAnnotations();
+        document.body.innerHTML = '';
+        vi.restoreAllMocks();
+        vi.useRealTimers();
+    });
+
+    it('shows intro annotation when all hotspots are below the fold', () => {
+        // All hotspots below viewport (innerHeight defaults to 768 in jsdom)
+        window.HTMLElement.prototype.getBoundingClientRect = vi.fn().mockReturnValue({
+            top: 1000, bottom: 1200, height: 200, left: 0, right: 0, width: 0,
+        });
+
+        initAnnotationEngine({ item1: { label: 'Item 1', text: 'Text 1' } });
+
+        // Element is in DOM immediately, but revealed class arrives after 300ms
+        const introEl = document.querySelector('.scroll-annotation[data-intro]');
+        expect(introEl).not.toBeNull();
+        expect(introEl!.classList.contains('revealed')).toBe(false);
+
+        vi.advanceTimersByTime(300);
+        expect(introEl!.classList.contains('revealed')).toBe(true);
+        expect(introEl!.classList.contains('side-left')).toBe(true);
+        expect(introEl!.textContent).toContain('Scroll to reveal');
+    });
+
+    it('does NOT show intro annotation when at least one hotspot is in the viewport', () => {
+        // Hotspot within viewport
+        window.HTMLElement.prototype.getBoundingClientRect = vi.fn().mockReturnValue({
+            top: 100, bottom: 200, height: 100, left: 0, right: 0, width: 0,
+        });
+
+        initAnnotationEngine({ item1: { label: 'Item 1', text: 'Text 1' } });
+        vi.advanceTimersByTime(300);
+
+        const allAnnotations = document.querySelectorAll('.scroll-annotation');
+        const introAnnotations = Array.from(allAnnotations).filter(el =>
+            (el as HTMLElement).dataset.intro === 'true',
+        );
+        expect(introAnnotations.length).toBe(0);
+    });
+
+    it('removes intro annotation immediately on cleanupAnnotations', () => {
+        window.HTMLElement.prototype.getBoundingClientRect = vi.fn().mockReturnValue({
+            top: 1000, bottom: 1200, height: 200, left: 0, right: 0, width: 0,
+        });
+
+        initAnnotationEngine({ item1: { label: 'Item 1', text: 'Text 1' } });
+        vi.advanceTimersByTime(300);
+        expect(document.querySelector('.scroll-annotation')).not.toBeNull();
+
+        cleanupAnnotations();
+        expect(document.querySelector('.scroll-annotation[data-intro]')).toBeNull();
+    });
+});
+
 import { isWideScreen, isNearWideScreen } from '../utils/viewport';
 import { BREAKPOINT_MOBILE } from './constants';
 

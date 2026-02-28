@@ -107,7 +107,7 @@ body {
 .hero-sub {
   font-family: var(--display);
   font-size: clamp(18px, 2.4vw, 24px);
-  font-weight: 300;
+  font-weight: 400;
   font-style: italic;
   color: var(--doc-light);
   max-width: 580px;
@@ -132,6 +132,10 @@ body {
 .hero-credentials span {
   margin: 0 8px;
   color: #AAA;
+}
+
+.hero-mobile-hint {
+  display: none;
 }
 
 /* ══════════════════════════════════════
@@ -1237,7 +1241,7 @@ body.popover-open {
   }
 
   .hero-sub {
-    font-size: 16px;
+    font-size: 18px;
     max-width: 100%;
   }
 
@@ -1245,6 +1249,23 @@ body.popover-open {
     font-size: 10px;
     letter-spacing: 1px;
     line-height: 2;
+  }
+
+  .hero-mobile-hint {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 24px;
+    padding: 9px 16px;
+    background: rgba(0, 0, 0, 0.055);
+    border-radius: 100px;
+    font-family: var(--doc-sans);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    color: #888;
+    opacity: 0;
+    animation: fadeIn 0.6s ease 0.9s forwards;
   }
 
   .doc-wrapper {

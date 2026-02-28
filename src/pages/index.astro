@@ -8,12 +8,15 @@ import type { Education, PopoverData } from "../types/content";
 import "../styles/global.css";
 
 import { optimizePopoverImages } from "../utils/images";
+import { applyFeatureFlags } from "../utils/feature-flags";
 
-// ── Image Optimization Pipeline ──────────────────────────────────────────────
-// Pre-optimise all images in the popover inventory at build time.
-// This swaps raw /public paths for optimized, content-hashed WebP assets.
+// ── Image Optimization + Feature Flags ───────────────────────────────────────
+// 1. Pre-optimise all images in the popover inventory (swap raw paths for
+//    content-hashed WebP assets).
+// 2. Strip case study links whose slug is not in CASE_STUDY_LINKS env var,
+//    so the client never receives links to unpublished pages.
 
-const popovers = await optimizePopoverImages(popoversRaw, getImage);
+const popovers = applyFeatureFlags(await optimizePopoverImages(popoversRaw, getImage));
 ---
 
 <BaseLayout
@@ -34,6 +37,14 @@ const popovers = await optimizePopoverImages(popoversRaw, getImage);
           </>
         ))
       }
+    </div>
+    <div class="hero-mobile-hint" aria-label="Best viewed on desktop">
+      <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+        <line x1="8" y1="21" x2="16" y2="21"></line>
+        <line x1="12" y1="17" x2="12" y2="21"></line>
+      </svg>
+      Best on desktop — highlights are interactive
     </div>
   </header>
 
