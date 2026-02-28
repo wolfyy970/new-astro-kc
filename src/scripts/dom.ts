@@ -66,9 +66,16 @@ export function buildContentNode(
     const { truncateText = false, wrapBody = false, prependRule = false } = options;
     const fragment = document.createDocumentFragment();
 
-    const text = truncateText
-        ? data.text.split('. ').slice(0, 2).join('. ') + '.'
-        : data.text;
+    let text = data.text;
+    if (truncateText) {
+        const sentences = data.text.split('. ');
+        if (sentences.length > 2) {
+            text = sentences.slice(0, 2).join('. ');
+            if (!text.endsWith('.')) {
+                text += '.';
+            }
+        }
+    }
 
     if (prependRule) {
         const rule = document.createElement('div');

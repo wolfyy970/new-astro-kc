@@ -10,7 +10,7 @@
   },
   "agentic": {
     "label": "Agentic AI",
-    "text": "Currently leading design for an internal AI/ML startup within GPC — designing user interfaces for an agentic AI system."
+    "text": "Currently leading design for an internal AI/ML startup within GPC — designing user interfaces for an agentic shop management and e-commerceAI system."
   },
   "merger": {
     "label": "Truist · $66B Merger",
@@ -56,7 +56,7 @@
   },
   "magicwall": {
     "label": "CNN Magic Wall",
-    "text": "Co-designed large-format multi-touch interface that pioneered data-driven storytelling for election coverage at CNN. Introduced the massive multi-touch screen paradigm for broadcast news visualization that became an industry standard.",
+    "text": "Created the massive multi-touch screen paradigm for broadcast news visualization that became an industry standardDesigned large-format multi-touch interface that pioneered data-driven storytelling weather and also used for election coverage at CNN",
     "media": [
       "/media/cnn-magic-wall.mp4"
     ]
@@ -88,7 +88,7 @@
   },
   "rts-award": {
     "label": "RTS Innovation Award",
-    "text": "Winner of the UK Royal Television Society (RTS) Innovation Award for CNN's World Cup Twitter Buzz — a realtime interactive data visualization experience.",
+    "text": "Winner of the UK Royal Television Society (RTS) Innovation Award for CNN's World Cup Twitter Buzz — a realtime interactive data visualization experience",
     "stat": "2010",
     "media": [
       "/images/awards/world-cup-twitter.png",
