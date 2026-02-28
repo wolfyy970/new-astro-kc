@@ -17,21 +17,25 @@ export async function optimizePopoverImages(
 
     for (const [key, item] of entries) {
         if (item.img) {
-            try {
-                const optimized = await getImageFn({
-                    src: item.img,
-                    width: 600,
-                    height: 400,
-                    fit: "cover",
-                    format: "webp",
-                    quality: "mid",
-                });
-                popovers[key] = {
-                    ...popovers[key],
-                    img: optimized.src
-                };
-            } catch (e) {
-                console.warn(`⚠️ Failed to optimize image for popover "${key}": ${item.img}`);
+            if (item.img.endsWith('.mp4') || item.img.endsWith('.webm')) {
+                // skip Astro image optimization for video formats
+            } else {
+                try {
+                    const optimized = await getImageFn({
+                        src: item.img,
+                        width: 600,
+                        height: 400,
+                        fit: "cover",
+                        format: "webp",
+                        quality: "mid",
+                    });
+                    popovers[key] = {
+                        ...popovers[key],
+                        img: optimized.src
+                    };
+                } catch (e) {
+                    console.warn(`⚠️ Failed to optimize image for popover "${key}": ${item.img}`);
+                }
             }
         }
 

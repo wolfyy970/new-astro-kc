@@ -56,7 +56,10 @@
   },
   "magicwall": {
     "label": "CNN Magic Wall",
-    "text": "Co-designed large-format multi-touch interface that pioneered data-driven storytelling for election coverage at CNN. Introduced the massive multi-touch screen paradigm for broadcast news visualization that became an industry standard."
+    "text": "Co-designed large-format multi-touch interface that pioneered data-driven storytelling for election coverage at CNN. Introduced the massive multi-touch screen paradigm for broadcast news visualization that became an industry standard.",
+    "media": [
+      "/media/cnn-magic-wall.mp4"
+    ]
   },
   "ar": {
     "label": "Mobile AR · 2005–2008",
