@@ -533,11 +533,11 @@ body.popover-open {
 }
 
 .popover-carousel-nav.prev {
-  left: 8px;
+  left: -16px;
 }
 
 .popover-carousel-nav.next {
-  right: 8px;
+  right: -16px;
 }
 
 .popover-carousel-nav:hover {
@@ -885,11 +885,11 @@ body.popover-open {
   }
 
   .sa-carousel-nav.prev {
-    left: 4px;
+    left: -32px;
   }
 
   .sa-carousel-nav.next {
-    right: 4px;
+    right: -32px;
   }
 
   .sa-carousel-nav:hover {
