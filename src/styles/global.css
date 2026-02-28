@@ -741,7 +741,8 @@ body.popover-open {
     border-radius: 3px;
     margin-bottom: 8px;
     opacity: 0.85;
-    background: #fdfdfd;
+    background: transparent;
+    mix-blend-mode: multiply;
   }
 
   .sa-link {
