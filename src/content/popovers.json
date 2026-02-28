@@ -70,5 +70,17 @@
   "backprop": {
     "label": "Neural Networks · 1993",
     "text": "Pioneered early AI tooling by building back-propagation learning capabilities into Apple's HyperCard via custom commands — the same foundational algorithm powering today's LLMs."
+  },
+  "bafta": {
+    "label": "BAFTA Nomination",
+    "text": "Nominated for a BAFTA Interactive Entertainment Award (Sports) in 2000 for 'Armchair Manager – Football', pioneering precursor to modern realtime interactive sports broadcasting.",
+    "stat": "2000",
+    "img": "/images/awards/bafta-nomination.jpg"
+  },
+  "apple-award": {
+    "label": "Apple Design Award",
+    "text": "Winner of the Apple Design Project Award (Problem Analysis) in an international inter-university competition.",
+    "stat": "1994",
+    "img": "/images/awards/apple-design-award.jpg"
   }
 }

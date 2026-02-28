@@ -40,7 +40,7 @@
       "items": [
         "Rebooted and led Innovation Studio at SunTrust and partnered with Corporate Strategy to explore future of banking through strategic foresight, delivering CEO and C-suite presentation that shaped organizational vision and subsequent merger.",
         "Led R&D function at Turner Broadcasting exploring emerging platforms and technologies, resulting in Emmy Award-winning products and two granted patents in automatic content recognition.",
-        "Pioneered interactive broadcast technologies including <hotspot key=\"magicwall\">CNN \"Magic Wall\"</hotspot> and sync-to-TV platforms that redefined industry standards for data storytelling and audience engagement."
+        "Pioneered interactive broadcast technologies including CNN \"Magic Wall\" and sync-to-TV platforms that redefined industry standards for data storytelling and audience engagement."
       ]
     }
   ],
@@ -103,26 +103,60 @@
       "company": "TURNER (Time Warner)",
       "dates": "Dec 2008 – Oct 2012",
       "title": "Senior Director, Innovation & Emerging Technology · Atlanta, GA",
-      "description": "Led multi-disciplinary (Product, UX & Engineering) R&D and innovation team focused on innovation across emerging platforms for Turner properties — CNN, Cartoon Network, TBS & TNT networks.",
+      "description": "Led multi-disciplinary (Product, UX, Engineering) R&D team driving innovation across emerging platforms for CNN, Cartoon Network, TBS, and TNT.",
       "bullets": [
-        "Pioneered <hotspot key=\"ar\">mobile augmented reality applications</hotspot> for NBA and Cartoon Network in partnership with Georgia Tech. Led development of on-air augmented reality application for CNN elections coverage and large format multitouch weather reporting application.",
-        "Designed and led development for CNN World Cup Twitter Buzz — Realtime twitter data visualization — Royal Television Society Award and Fast Company's \"Infographic of the Day\".",
-        "Collaborated on two <hotspot key=\"patents\">patents</hotspot> for interactive content to broadcast TV sync technology (embedded into SmartTV's) and managed the development of the software development. <hotspot key=\"emmy\">Emmy award</hotspot> for Conan Team CoCo app (iPad) that utilized it."
+        "Contributed to an <hotspot key=\"emmy\">Emmy Award</hotspot> (Outstanding Creative Achievement in Interactive Media) by developing the underlying automatic content recognition (ACR) platform that powered the Team Coco sync-to-TV application.",
+        "Granted two <hotspot key=\"patents\">U.S. patents</hotspot> for automatic content recognition and audience engagement technologies that synchronized interactive content with live broadcast television.",
+        "Co-designed the large-format multi-touch <hotspot key=\"magicwall\">CNN \"Magic Wall\"</hotspot>, pioneering data-driven storytelling for election coverage and establishing a new industry paradigm."
+      ]
+    },
+    {
+      "company": "TURNER (Time Warner)",
+      "dates": "Apr 2005 – Dec 2008",
+      "title": "Director, Games & Entertainment Technology · Atlanta, GA",
+      "description": "R&D exploration role focused on emerging platforms prior to mainstream adoption.",
+      "bullets": [
+        "Pioneered the first <hotspot key=\"ar\">mobile augmented reality applications</hotspot> in the U.S. for NBA and Cartoon Network in an academic partnership with Georgia Tech. Built on pre-iPhone Nokia devices, successfully predicting mobile's path to AR dominance.",
+        "Legitimized virtual item sales as an incremental revenue stream for Cartoon Network and Adult Swim properties on Sony PlayStation Home's early virtual economies.",
+        "Prototyped early cloud streaming games for GameTap using instant-on video technology."
+      ]
+    },
+    {
+      "company": "ENSEQUENCE INTERNATIONAL",
+      "dates": "Mar 2003 – Apr 2005",
+      "title": "Interactive TV Architect · London, UK",
+      "description": "Interactive TV technology company developing authoring solutions.",
+      "bullets": [
+        "Led product management for the \"on-Q\" Authoring System in the UK market.",
+        "Designed technical solutions for broadcast deployments targeting major clients including BSkyB and the BBC."
+      ]
+    },
+    {
+      "company": "TWO WAY MEDIA",
+      "dates": "Sep 1995 – Mar 2003",
+      "title": "Solutions Development Manager · London, UK",
+      "description": "Founding team member of interactive television pioneer, progressing from Game Developer through Senior Producer.",
+      "bullets": [
+        "Produced \"Armchair Manager – Football,\" earning a <hotspot key=\"bafta\">BAFTA Interactive Entertainment Award</hotspot> Nomination (2000) for realtime interactive sports broadcasting.",
+        "Pioneered the first interactive television multiplayer game service globally via the Challenge TV network on Sky."
       ]
     }
   ],
   "education": [
     {
       "degree": "Executive MBA",
-      "school": "Brown University & IE Business School, US & Spain"
+      "school": "Brown University & IE Business School, US & Spain",
+      "focus": "Focus: Strategic management, innovation, and global business"
     },
     {
-      "degree": "M.S. Human-Centered Design",
-      "school": "University of Sussex, UK"
+      "degree": "M.Sc. Human-Centered Computing Systems (HCI)",
+      "school": "University of Sussex, UK",
+      "focus": "Focus: AI and Intelligent Tutoring Systems. <hotspot key=\"apple-award\">Apple Design Project Award</hotspot> winner."
     },
     {
-      "degree": "B.S. Computer Science (2:1 Honors)",
-      "school": "University of Brighton, UK"
+      "degree": "B.Sc. Computer Science (2:1 Honors)",
+      "school": "University of Brighton, UK",
+      "focus": "Dissertation: <hotspot key=\"dissertation\">\"Colonizing Cyberspace\"</hotspot>. Built <hotspot key=\"backprop\">neural network capabilities</hotspot> for HyperCard."
     }
   ],
   "patentsAndRecognition": {
