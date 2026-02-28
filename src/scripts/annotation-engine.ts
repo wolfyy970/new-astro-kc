@@ -100,16 +100,29 @@ function buildAllAnnotations(popovers: PopoverMap): void {
     resolveOverlaps('left');
     resolveOverlaps('right');
 
-    docPage.querySelectorAll('.sa-img').forEach(img => {
-        const image = img as HTMLImageElement;
-        if (image.complete) {
-            resolveOverlaps('left');
-            resolveOverlaps('right');
-        } else {
-            image.addEventListener('load', () => {
+    docPage.querySelectorAll('.sa-img, .sa-vid').forEach(media => {
+        if (media.tagName.toLowerCase() === 'img') {
+            const image = media as HTMLImageElement;
+            if (image.complete) {
                 resolveOverlaps('left');
                 resolveOverlaps('right');
-            });
+            } else {
+                image.addEventListener('load', () => {
+                    resolveOverlaps('left');
+                    resolveOverlaps('right');
+                });
+            }
+        } else if (media.tagName.toLowerCase() === 'video') {
+            const video = media as HTMLVideoElement;
+            if (video.readyState >= 1) { // HAVE_METADATA
+                resolveOverlaps('left');
+                resolveOverlaps('right');
+            } else {
+                video.addEventListener('loadeddata', () => {
+                    resolveOverlaps('left');
+                    resolveOverlaps('right');
+                });
+            }
         }
     });
 

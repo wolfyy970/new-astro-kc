@@ -226,7 +226,8 @@ function openPopover(hotspot: HTMLElement): void {
     popoverEl.replaceChildren(buildContentNode(data, 'popover', { wrapBody: true }));
     const closeBtn = injectPopoverChrome(popoverEl, data.label);
 
-    const pos = calculatePopoverPosition(hotspot, !!data.img);
+    const hasMedia = !!data.img || (!!data.media && data.media.length > 0);
+    const pos = calculatePopoverPosition(hotspot, hasMedia);
     popoverEl.style.top = pos.top;
     popoverEl.style.left = pos.left;
 

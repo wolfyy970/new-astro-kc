@@ -27,12 +27,40 @@ export async function optimizePopoverImages(
                     quality: "mid",
                 });
                 popovers[key] = {
-                    ...item,
+                    ...popovers[key],
                     img: optimized.src
                 };
             } catch (e) {
                 console.warn(`⚠️ Failed to optimize image for popover "${key}": ${item.img}`);
             }
+        }
+
+        if (item.media && item.media.length > 0) {
+            const optimizedMedia: string[] = [];
+            for (const m of item.media) {
+                if (m.endsWith('.mp4') || m.endsWith('.webm')) {
+                    optimizedMedia.push(m);
+                } else {
+                    try {
+                        const optimized = await getImageFn({
+                            src: m,
+                            width: 600,
+                            height: 400,
+                            fit: "cover",
+                            format: "webp",
+                            quality: "mid",
+                        });
+                        optimizedMedia.push(optimized.src);
+                    } catch (e) {
+                        console.warn(`⚠️ Failed to optimize media item "${m}" for popover "${key}"`);
+                        optimizedMedia.push(m);
+                    }
+                }
+            }
+            popovers[key] = {
+                ...popovers[key],
+                media: optimizedMedia
+            };
         }
     }
 

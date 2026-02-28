@@ -87,6 +87,9 @@
     "label": "RTS Innovation Award",
     "text": "Winner of the UK Royal Television Society (RTS) Innovation Award for CNN's World Cup Twitter Buzz — a realtime interactive data visualization experience.",
     "stat": "2010",
-    "img": "/images/awards/world-cup-twitter.png"
+    "media": [
+      "/images/awards/world-cup-twitter.png",
+      "/media/world-cup-twitter.mp4"
+    ]
   }
 }

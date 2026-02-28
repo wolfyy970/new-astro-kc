@@ -480,7 +480,8 @@ body.popover-open {
   pointer-events: auto;
 }
 
-.popover-img {
+.popover-img,
+.popover-vid {
   width: 100%;
   height: auto;
   max-height: 240px;
@@ -491,6 +492,30 @@ body.popover-open {
   /* Space away from the chrome line */
   background: transparent;
   mix-blend-mode: multiply;
+}
+
+.popover-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  gap: 16px;
+  padding: 8px 0 0;
+}
+
+.popover-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.popover-carousel-slide {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+}
+
+.popover-carousel .popover-img,
+.popover-carousel .popover-vid {
+  padding: 0;
 }
 
 .popover-handle {
@@ -732,7 +757,8 @@ body.popover-open {
     line-height: 1.5;
   }
 
-  .sa-img {
+  .sa-img,
+  .sa-vid {
     width: 100%;
     height: auto;
     max-height: 160px;
@@ -743,6 +769,30 @@ body.popover-open {
     opacity: 0.85;
     background: transparent;
     mix-blend-mode: multiply;
+  }
+
+  .sa-carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .sa-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sa-carousel-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+  }
+
+  .sa-carousel .sa-img,
+  .sa-carousel .sa-vid {
+    margin-bottom: 0;
   }
 
   .sa-link {
@@ -1097,7 +1147,8 @@ body.popover-open {
     opacity: 1;
   }
 
-  .popover-img {
+  .popover-img,
+  .popover-vid {
     width: calc(100% - 40px);
     height: auto;
     max-height: 220px;
@@ -1107,6 +1158,31 @@ body.popover-open {
     object-position: center;
     background: transparent;
     mix-blend-mode: multiply;
+  }
+
+  .popover-carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 16px;
+    margin: 20px 20px 0;
+  }
+
+  .popover-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .popover-carousel-slide {
+    flex: 0 0 calc(100% - 40px);
+    scroll-snap-align: center;
+  }
+
+  .popover-carousel .popover-img,
+  .popover-carousel .popover-vid {
+    margin: 0;
+    width: 100%;
   }
 
   .popover-body {

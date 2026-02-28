@@ -76,12 +76,41 @@ export function buildContentNode(
         fragment.appendChild(rule);
     }
 
-    if (data.img) {
-        const img = document.createElement('img');
-        img.className = `${prefix}-img`;
-        img.src = data.img;
-        img.alt = data.label;
-        fragment.appendChild(img);
+    const createMediaElement = (src: string, isCarouselItem = false) => {
+        const isVideo = src.endsWith('.mp4') || src.endsWith('.webm');
+        const el = document.createElement(isVideo ? 'video' : 'img');
+        const baseClass = isVideo ? `${prefix}-vid` : `${prefix}-img`;
+        el.className = isCarouselItem ? `${baseClass} ${prefix}-carousel-item` : baseClass;
+
+        if (isVideo) {
+            const vid = el as HTMLVideoElement;
+            vid.src = src;
+            vid.autoplay = true;
+            vid.loop = true;
+            vid.muted = true;
+            vid.playsInline = true;
+        } else {
+            const imgEl = el as HTMLImageElement;
+            imgEl.src = src;
+            imgEl.alt = data.label;
+        }
+        return el;
+    };
+
+    const mediaList = data.media && data.media.length > 0 ? data.media : (data.img ? [data.img] : []);
+
+    if (mediaList.length === 1) {
+        fragment.appendChild(createMediaElement(mediaList[0]));
+    } else if (mediaList.length > 1) {
+        const carousel = document.createElement('div');
+        carousel.className = `${prefix}-carousel`;
+        mediaList.forEach(src => {
+            const wrap = document.createElement('div');
+            wrap.className = `${prefix}-carousel-slide`;
+            wrap.appendChild(createMediaElement(src, true));
+            carousel.appendChild(wrap);
+        });
+        fragment.appendChild(carousel);
     }
 
     const bodyContainer = wrapBody ? document.createElement('div') : fragment;

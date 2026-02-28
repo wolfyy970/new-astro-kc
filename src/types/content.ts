@@ -57,6 +57,7 @@ export interface PopoverData {
   text: string;
   stat?: string;
   img?: string;
+  media?: string[];
   quote?: string;
   link?: string;
   linkText?: string;
