@@ -105,15 +105,49 @@ export function buildContentNode(
     if (mediaList.length === 1) {
         fragment.appendChild(createMediaElement(mediaList[0]));
     } else if (mediaList.length > 1) {
+        const wrap = document.createElement('div');
+        wrap.className = `${prefix}-carousel-wrap`;
+
         const carousel = document.createElement('div');
         carousel.className = `${prefix}-carousel`;
+        wrap.appendChild(carousel);
+
         mediaList.forEach(src => {
-            const wrap = document.createElement('div');
-            wrap.className = `${prefix}-carousel-slide`;
-            wrap.appendChild(createMediaElement(src, true));
-            carousel.appendChild(wrap);
+            const slide = document.createElement('div');
+            slide.className = `${prefix}-carousel-slide`;
+            slide.appendChild(createMediaElement(src, true));
+            carousel.appendChild(slide);
         });
-        fragment.appendChild(carousel);
+
+        // Add elegant pagination dots
+        const dotsList = document.createElement('div');
+        dotsList.className = `${prefix}-carousel-dots`;
+        mediaList.forEach((_, i) => {
+            const dot = document.createElement('button');
+            dot.className = `${prefix}-carousel-dot` + (i === 0 ? ' active' : '');
+            dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+            dot.addEventListener('click', () => {
+                const targetSlide = carousel.children[i] as HTMLElement;
+                if (targetSlide) {
+                    carousel.scrollLeft = targetSlide.offsetLeft;
+                }
+            });
+            dotsList.appendChild(dot);
+        });
+        wrap.appendChild(dotsList);
+
+        // Simple scroll spy to update dots
+        carousel.addEventListener('scroll', () => {
+            if (!carousel.offsetWidth) return;
+            const idx = Math.round(carousel.scrollLeft / carousel.offsetWidth);
+            const dotsArray = dotsList.children;
+            for (let j = 0; j < dotsArray.length; j++) {
+                if (j === idx) dotsArray[j].classList.add('active');
+                else dotsArray[j].classList.remove('active');
+            }
+        }, { passive: true });
+
+        fragment.appendChild(wrap);
     }
 
     const bodyContainer = wrapBody ? document.createElement('div') : fragment;

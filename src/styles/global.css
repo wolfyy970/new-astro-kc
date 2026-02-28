@@ -494,14 +494,22 @@ body.popover-open {
   mix-blend-mode: multiply;
 }
 
+.popover-carousel-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .popover-carousel {
   display: flex;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  scroll-behavior: smooth;
   gap: 16px;
   padding: 8px 0 0;
+  width: 100%;
 }
 
 .popover-carousel::-webkit-scrollbar {
@@ -516,6 +524,29 @@ body.popover-open {
 .popover-carousel .popover-img,
 .popover-carousel .popover-vid {
   padding: 0;
+}
+
+.popover-carousel-dots {
+  display: flex;
+  gap: 6px;
+  padding-top: 12px;
+  justify-content: center;
+}
+
+.popover-carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent-border);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.popover-carousel-dot.active {
+  background-color: var(--accent);
+  transform: scale(1.2);
 }
 
 .popover-handle {
@@ -771,14 +802,22 @@ body.popover-open {
     mix-blend-mode: multiply;
   }
 
+  .sa-carousel-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
   .sa-carousel {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    scroll-behavior: smooth;
     gap: 12px;
-    margin-bottom: 8px;
+    width: 100%;
   }
 
   .sa-carousel::-webkit-scrollbar {
@@ -793,6 +832,29 @@ body.popover-open {
   .sa-carousel .sa-img,
   .sa-carousel .sa-vid {
     margin-bottom: 0;
+  }
+
+  .sa-carousel-dots {
+    display: flex;
+    gap: 6px;
+    padding-top: 10px;
+    justify-content: center;
+  }
+
+  .sa-carousel-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: var(--accent-border);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .sa-carousel-dot.active {
+    background-color: var(--accent);
+    transform: scale(1.2);
   }
 
   .sa-link {
@@ -1160,14 +1222,22 @@ body.popover-open {
     mix-blend-mode: multiply;
   }
 
+  .popover-carousel-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 20px 0;
+  }
+
   .popover-carousel {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    scroll-behavior: smooth;
     gap: 16px;
-    margin: 20px 20px 0;
+    width: 100%;
   }
 
   .popover-carousel::-webkit-scrollbar {
@@ -1175,7 +1245,7 @@ body.popover-open {
   }
 
   .popover-carousel-slide {
-    flex: 0 0 calc(100% - 40px);
+    flex: 0 0 100%;
     scroll-snap-align: center;
   }
 
@@ -1183,6 +1253,12 @@ body.popover-open {
   .popover-carousel .popover-vid {
     margin: 0;
     width: 100%;
+  }
+
+  /* Dots override for desktop popovers */
+  .popover-carousel-dots {
+    padding-top: 14px;
+    margin-bottom: -4px;
   }
 
   .popover-body {
