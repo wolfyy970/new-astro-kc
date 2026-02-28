@@ -489,7 +489,8 @@ body.popover-open {
   display: block;
   padding: 8px 0 0;
   /* Space away from the chrome line */
-  background: var(--doc-white);
+  background: transparent;
+  mix-blend-mode: multiply;
 }
 
 .popover-handle {
@@ -1103,8 +1104,8 @@ body.popover-open {
     border-radius: 8px;
     object-fit: contain;
     object-position: center;
-    background: #fdfdfd;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    background: transparent;
+    mix-blend-mode: multiply;
   }
 
   .popover-body {
