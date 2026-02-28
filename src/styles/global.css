@@ -500,6 +500,53 @@ body.popover-open {
   align-items: center;
 }
 
+.popover-carousel-inner {
+  position: relative;
+  width: 100%;
+}
+
+.popover-carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  color: var(--doc-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.2s ease;
+  padding: 0;
+  opacity: 0;
+}
+
+.popover-carousel-wrap:hover .popover-carousel-nav {
+  opacity: 1;
+  /* reveal on hover for clean look */
+}
+
+.popover-carousel-nav.prev {
+  left: 8px;
+}
+
+.popover-carousel-nav.next {
+  right: 8px;
+}
+
+.popover-carousel-nav:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 0, 0, 0.15);
+  color: var(--accent);
+  transform: translateY(-50%) scale(1.05);
+}
+
 .popover-carousel {
   display: flex;
   overflow-x: auto;
@@ -807,6 +854,49 @@ body.popover-open {
     flex-direction: column;
     align-items: center;
     margin-bottom: 12px;
+  }
+
+  .sa-carousel-inner {
+    position: relative;
+    width: 100%;
+  }
+
+  .sa-carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    color: var(--doc-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.2s ease;
+    padding: 0;
+    opacity: 0;
+    /* JS manages inline opacity for first/last logic, this serves as base */
+  }
+
+  .sa-carousel-nav.prev {
+    left: 4px;
+  }
+
+  .sa-carousel-nav.next {
+    right: 4px;
+  }
+
+  .sa-carousel-nav:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.15);
+    color: var(--accent);
+    transform: translateY(-50%) scale(1.05);
   }
 
   .sa-carousel {
@@ -1227,6 +1317,16 @@ body.popover-open {
     flex-direction: column;
     align-items: center;
     margin: 20px 20px 0;
+  }
+
+  .popover-carousel-inner {
+    position: relative;
+    width: 100%;
+  }
+
+  /* Desktop popover hover reveals */
+  .popover-carousel-nav {
+    opacity: 0;
   }
 
   .popover-carousel {

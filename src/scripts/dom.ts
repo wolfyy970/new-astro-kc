@@ -108,9 +108,13 @@ export function buildContentNode(
         const wrap = document.createElement('div');
         wrap.className = `${prefix}-carousel-wrap`;
 
+        const inner = document.createElement('div');
+        inner.className = `${prefix}-carousel-inner`;
+        wrap.appendChild(inner);
+
         const carousel = document.createElement('div');
         carousel.className = `${prefix}-carousel`;
-        wrap.appendChild(carousel);
+        inner.appendChild(carousel);
 
         mediaList.forEach(src => {
             const slide = document.createElement('div');
@@ -118,6 +122,28 @@ export function buildContentNode(
             slide.appendChild(createMediaElement(src, true));
             carousel.appendChild(slide);
         });
+
+        // Add chevrons
+        const createNavButton = (dir: 'prev' | 'next') => {
+            const btn = document.createElement('button');
+            btn.className = `${prefix}-carousel-nav ${dir}`;
+            btn.setAttribute('aria-label', dir === 'prev' ? 'Previous slide' : 'Next slide');
+            btn.innerHTML = dir === 'prev'
+                ? '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>'
+                : '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+
+            btn.addEventListener('click', () => {
+                if (!carousel.offsetWidth) return;
+                const sign = dir === 'prev' ? -1 : 1;
+                carousel.scrollBy({ left: sign * carousel.offsetWidth, behavior: 'smooth' });
+            });
+            return btn;
+        };
+
+        const btnPrev = createNavButton('prev');
+        const btnNext = createNavButton('next');
+        inner.appendChild(btnPrev);
+        inner.appendChild(btnNext);
 
         // Add elegant pagination dots
         const dotsList = document.createElement('div');
@@ -136,16 +162,26 @@ export function buildContentNode(
         });
         wrap.appendChild(dotsList);
 
-        // Simple scroll spy to update dots
-        carousel.addEventListener('scroll', () => {
+        // Simple scroll spy to update dots & nav visibility
+        const updateNav = () => {
             if (!carousel.offsetWidth) return;
             const idx = Math.round(carousel.scrollLeft / carousel.offsetWidth);
+
+            btnPrev.style.opacity = idx === 0 ? '0' : '1';
+            btnPrev.style.pointerEvents = idx === 0 ? 'none' : 'auto';
+            btnNext.style.opacity = idx === mediaList.length - 1 ? '0' : '1';
+            btnNext.style.pointerEvents = idx === mediaList.length - 1 ? 'none' : 'auto';
+
             const dotsArray = dotsList.children;
             for (let j = 0; j < dotsArray.length; j++) {
                 if (j === idx) dotsArray[j].classList.add('active');
                 else dotsArray[j].classList.remove('active');
             }
-        }, { passive: true });
+        };
+
+        carousel.addEventListener('scroll', updateNav, { passive: true });
+        // Initial state
+        requestAnimationFrame(updateNav);
 
         fragment.appendChild(wrap);
     }
