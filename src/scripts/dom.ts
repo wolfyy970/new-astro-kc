@@ -76,34 +76,62 @@ export function buildContentNode(
         fragment.appendChild(rule);
     }
 
-    const createMediaElement = (src: string, isCarouselItem = false) => {
+    const createMediaElement = (src: string, isCarouselItem = false, autoPlay = true) => {
         const isVideo = src.endsWith('.mp4') || src.endsWith('.webm');
-        const el = document.createElement(isVideo ? 'video' : 'img');
+        const mediaEl = document.createElement(isVideo ? 'video' : 'img');
         const baseClass = isVideo ? `${prefix}-vid` : `${prefix}-img`;
-        el.className = isCarouselItem ? `${baseClass} ${prefix}-carousel-item` : baseClass;
+        mediaEl.className = isCarouselItem ? `${baseClass} ${prefix}-carousel-item` : baseClass;
 
         if (isVideo) {
-            const vid = el as HTMLVideoElement;
+            const vid = mediaEl as HTMLVideoElement;
             vid.src = src;
-            vid.autoplay = true;
+            vid.autoplay = autoPlay;
             vid.loop = true;
             vid.muted = true;
             vid.playsInline = true;
             vid.setAttribute('aria-label', data.label);
             vid.setAttribute('title', data.label);
             vid.setAttribute('role', 'img');
+
+            if (!autoPlay) {
+                const wrap = document.createElement('div');
+                wrap.className = `${prefix}-vid-wrap`;
+                if (isCarouselItem) {
+                    wrap.classList.add(`${prefix}-carousel-item`);
+                    vid.classList.remove(`${prefix}-carousel-item`);
+                }
+
+                const playBtn = document.createElement('button');
+                playBtn.className = `${prefix}-play-btn`;
+                playBtn.setAttribute('aria-label', 'Play video');
+                playBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+
+                const togglePlay = () => {
+                    if (vid.paused) { vid.play(); } else { vid.pause(); }
+                };
+                vid.addEventListener('click', togglePlay);
+                vid.style.cursor = 'pointer';
+                playBtn.addEventListener('click', togglePlay);
+
+                vid.addEventListener('play', () => playBtn.classList.add('playing'));
+                vid.addEventListener('pause', () => playBtn.classList.remove('playing'));
+
+                wrap.appendChild(vid);
+                wrap.appendChild(playBtn);
+                return wrap;
+            }
         } else {
-            const imgEl = el as HTMLImageElement;
+            const imgEl = mediaEl as HTMLImageElement;
             imgEl.src = src;
             imgEl.alt = data.label;
         }
-        return el;
+        return mediaEl;
     };
 
     const mediaList = data.media && data.media.length > 0 ? data.media : (data.img ? [data.img] : []);
 
     if (mediaList.length === 1) {
-        fragment.appendChild(createMediaElement(mediaList[0]));
+        fragment.appendChild(createMediaElement(mediaList[0], false, false));
     } else if (mediaList.length > 1) {
         const wrap = document.createElement('div');
         wrap.className = `${prefix}-carousel-wrap`;
@@ -116,10 +144,10 @@ export function buildContentNode(
         carousel.className = `${prefix}-carousel`;
         inner.appendChild(carousel);
 
-        mediaList.forEach(src => {
+        mediaList.forEach((src, i) => {
             const slide = document.createElement('div');
             slide.className = `${prefix}-carousel-slide`;
-            slide.appendChild(createMediaElement(src, true));
+            slide.appendChild(createMediaElement(src, true, i !== 0));
             carousel.appendChild(slide);
         });
 
