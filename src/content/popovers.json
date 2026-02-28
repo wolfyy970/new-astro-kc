@@ -82,5 +82,11 @@
     "text": "Winner of the Apple Design Project Award (Problem Analysis) in an international inter-university competition.",
     "stat": "1994",
     "img": "/images/awards/apple-design-award.jpg"
+  },
+  "rts-award": {
+    "label": "RTS Innovation Award",
+    "text": "Winner of the UK Royal Television Society (RTS) Innovation Award for CNN's World Cup Twitter Buzz — a realtime interactive data visualization experience.",
+    "stat": "2010",
+    "img": "/images/awards/world-cup-twitter.png"
   }
 }
