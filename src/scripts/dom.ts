@@ -89,6 +89,9 @@ export function buildContentNode(
             vid.loop = true;
             vid.muted = true;
             vid.playsInline = true;
+            vid.setAttribute('aria-label', data.label);
+            vid.setAttribute('title', data.label);
+            vid.setAttribute('role', 'img');
         } else {
             const imgEl = el as HTMLImageElement;
             imgEl.src = src;
