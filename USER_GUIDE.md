@@ -65,7 +65,10 @@ The resume content is stored in `src/content/resume.json`.
 ### Configuring Popovers
 Popover data is stored in `src/content/popovers.json`.
 - Each key corresponds to a `hotspot` key used in the resume.
-- Fields include `label`, `text`, `stat`, `img`, `quote`, `link`, and `linkText`.
+- Fields include `label`, `text`, `stat`, `quote`, `link`, and `linkText`.
+- Media support:
+  - `img` (string): For a single legacy image string payload.
+  - `media` (array of strings): Use this for rich media (both `.jpg`/`.png` and `.mp4`/`.webm`). If multiple paths are provided, it automatically creates an interactive swipeable carousel natively rendering images natively alongside looping videos.
 
 ## Adding Case Studies
 

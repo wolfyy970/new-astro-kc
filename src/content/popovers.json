@@ -5,12 +5,12 @@
     "stat": "$32.8M"
   },
   "bolt": {
-    "label": "Design System",
-    "text": "Built from scratch — no inherited design system existed. My design engineering team (front-end engineers reporting into design) designed and built the implementation end to end. Adopted across North America, Europe, and Asia Pacific. Reduced front-end development time by approximately 25%."
+    "label": "Bolt Design System",
+    "text": "Built from scratch — no design system existed at GPC. My design engineering team (front-end engineers reporting into design) designed and built a global themeable design system end to end. Adopted across North America, Europe, and Asia Pacific. Reduced front-end development time by approximately 25%."
   },
   "agentic": {
     "label": "Agentic AI",
-    "text": "Currently leading design for an internal AI/ML startup within GPC — designing user interfaces for an agentic shop management and e-commerceAI system."
+    "text": "Leading design for an internal AI/ML venture at NAPA — an agentic system for shop management and e-commerce."
   },
   "merger": {
     "label": "Truist · $66B Merger",
@@ -22,14 +22,14 @@
   },
   "truist-products": {
     "label": "Product Rebuilds",
-    "text": "Rebuilt Commercial Banking, Small Business, Retail, and Investment Banking products for the merged Truist entity. Each product line required unifying two distinct legacy systems under one coherent design language (designed by my team)while maintaining continuity for existing customers.",
+    "text": "Rebuilt Commercial Banking, Small Business, Retail, and Investment Banking products for the merged Truist entity. Each product line required unifying two distinct legacy systems under one coherent design language (designed by my team) while maintaining continuity for existing customers.",
     "img": "/images/truist/1771281469482-048153c4.png",
     "link": "/truist",
     "linkText": "View Truist project →"
   },
   "delta": {
     "label": "Delta Air Lines",
-    "text": "Created news.delta.com — the corporate communications platform that serves Delta's media relations, employee engagement, and storytelling. A unified editorial system for a global airline with 90,000 employees. The site is still live today.",
+    "text": "Created news.delta.com — the corporate communications platform that serves Delta's media relations, employee engagement, and storytelling. A unified editorial system for a global airline with 90,000 employees.",
     "img": "/images/sparks-grove/news-hub.jpg",
     "link": "/sparks-grove",
     "linkText": "View Delta project →"
@@ -48,7 +48,7 @@
   },
   "emmy": {
     "label": "Emmy Award · 2011",
-    "text": "Primetime Creative Arts Emmy — Outstanding Creative Achievement in Interactive Media for the \"Conan O'Brien Presents: Team Coco\" app. I contributed the design and led the  development of the automatic content recognition (ACR) technology that powered the sync-to-TV interactive experience. This was a team award; my contribution was the underlying ACR platform."
+    "text": "Primetime Creative Arts Emmy — Outstanding Creative Achievement in Interactive Media for the \"Conan O'Brien Presents: Team Coco\" app. Team project, I led the design (live sync to tv experience) and development of the automatic content recognition (ACR) technology that powered the sync-to-TV interactive experience. This was a team award; my contribution was the underlying sync to tv platform."
   },
   "patents": {
     "label": "Granted Patents",
@@ -56,7 +56,7 @@
   },
   "magicwall": {
     "label": "CNN Magic Wall",
-    "text": "Created the massive multi-touch screen paradigm for broadcast news visualization that became an industry standardDesigned large-format multi-touch interface that pioneered data-driven storytelling weather and also used for election coverage at CNN",
+    "text": "Created the massive multi-touch screen paradigm for broadcast news visualization that became an industry standard. Designed large-format multi-touch interface that pioneered data-driven storytelling for weather and also used for election coverage at CNN.",
     "media": [
       "/media/cnn-magic-wall.mp4"
     ]

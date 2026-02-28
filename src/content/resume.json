@@ -30,15 +30,15 @@
       "heading": "Building & Scaling Design Organizations",
       "items": [
         "Established design and research as strategic function at GPC, reporting to CIO and transforming multi-billion-dollar e-commerce platform.",
-        "Scaled SunTrust design team prior to largest banking merger since 2008 ($66B), improving customer satisfaction by 3.8% (CSAT) and positioning design as strategic differentiator.",
-        "Led and transformed UX practice for North Highland, serving <hotspot key=\"clients\">Delta, Coca-Cola, T-Mobile, Disney, Universal Studios, Home Depot</hotspot> and other Fortune companies. Won $4.7M+ in new business.",
+        "Scaled SunTrust design team prior to largest banking merger since 2008 ($66B) and positioned design as strategic differentiator.",
+        "Led and transformed UX practice for North Highland, serving <hotspot key=\"clients\">Delta, Coca-Cola, T-Mobile, Disney, Universal Studios, Home Depot</hotspot> and other Fortune companies",
         "Built \"Bolt\" global design system adopted across North America, Europe, and APAC."
       ]
     },
     {
       "heading": "Innovation Leadership & Strategic Foresight",
       "items": [
-        "Rebooted and led Innovation Studio at SunTrust and partnered with Corporate Strategy to explore future of banking through strategic foresight, delivering CEO and C-suite presentation that shaped organizational vision and subsequent merger.",
+        "Rebooted and led Innovation Studio at SunTrust and then partnered with Corporate Strategy to explore future of banking through strategic foresight, delivering CEO and C-suite presentation that shaped organizational vision and subsequent merger.",
         "Led R&D function at Turner Broadcasting exploring emerging platforms and technologies, resulting in Emmy Award-winning products and two granted patents in automatic content recognition.",
         "Pioneered interactive broadcast technologies including CNN \"Magic Wall\" and sync-to-TV platforms that redefined industry standards for data storytelling and audience engagement."
       ]
@@ -64,14 +64,14 @@
       "description": "Boutique product and design consultancy bridging strategy and execution for clients across fitness, media analytics, and automotive sectors.",
       "bullets": [
         "Conducted yearlong strategic foresight engagement for GPC CIO on the future of automotive retail and repair - including primary research and journey mapping across drivers, repair shops, parts stores, and supply chain. Work directly informed the company's digital transformation roadmap and led to recruitment as Head of UX Design and Research.",
-        "Redesigned FitRadio's workout music streaming app. Product methodology coaching for Comscore. Mobile app redesign for Gold's Gym."
+        "Redesigned FitRadio's workout music streaming app. Product coaching for Comscore. Mobile app redesign for Gold's Gym."
       ]
     },
     {
       "company": "TRUIST (SunTrust prior to SunTrust BB&T Merger)",
       "dates": "July 2017 – June 2021",
       "title": "Head of UX Design & Research · Atlanta, GA",
-      "description": "Inherited small nascent UX design team (SunTrust) with no research or UI and no independent design voice. Scaled to 30-person multidisciplinary team and established evidence-based design methodology through the SunTrust-BB&T merger.",
+      "description": "Inherited small nascent UX design team (SunTrust) with no research or UI capability and no independent design voice. Scaled to 30-person multidisciplinary team and established evidence-based design methodology through the SunTrust-BB&T merger.",
       "bullets": [
         "Rebooted and repositioned the <hotspot key=\"merger\">SunTrust Innovation Accelerator Studio</hotspot>, introducing service design, customer journey mapping and strategic foresight as core capabilities. Partnered with Corporate Strategy on a foresight exercise - presenting three future-of-banking scenarios to CEO and C-Suite; CEO called the work \"instrumental\" in shaping merger strategy.",
         "Led UX design and research across Consumer Banking, Small Business, Wealth Management, Small Business and Commercial Banking for SunTrust and Small Business and Commercial Banking for Truist.",
@@ -83,10 +83,10 @@
       "company": "NORTH HIGHLAND",
       "dates": "September 2014 – March 2017",
       "title": "UX Design Practice Leader, Experience Design · Atlanta, GA",
-      "description": "Led UX and emerging interactions practice for Sparks Grove, North Highland's innovation agency. Served Fortune 500 clients including Delta Air Lines, The Coca-Cola Company, Disney, Universal Studios, T-Mobile, and The Home Depot.",
+      "description": "Led UX and emerging interactions practice for Sparks Grove, North Highland's design and innovation agency. Served Fortune 500 clients including Delta Air Lines, The Coca-Cola Company, Disney, Universal Studios, T-Mobile, and The Home Depot.",
       "bullets": [
         "Led transformation of agency from traditional waterfall delivery to agile software development and lean product management — repositioning the practice around \"Human Experience Design\" (HxD). Earned National Impact Award (2016) for the transformation.",
-        "Pitched and won $4.7M+ in new business over 2.5 years, including $3M in client projects during first year. Key engagements included building <hotspot key=\"delta\">news.delta.com</hotspot> for Delta Air Lines and consulting with The Home Depot for lean product development and design in their product organization."
+        "Key engagements included building <hotspot key=\"delta\">news.delta.com</hotspot> for Delta Air Lines and consulting with The Home Depot for lean product development and design in their enterprise product organization."
       ]
     },
     {
@@ -115,28 +115,28 @@
       "company": "TURNER (Time Warner)",
       "dates": "Apr 2005 – Dec 2008",
       "title": "Director, Games & Entertainment Technology · Atlanta, GA",
-      "description": "R&D exploration role focused on emerging platforms prior to mainstream adoption.",
+      "description": "R&D exploration role focused on piloting and promoting emerging platforms into Turner Brands (CNN, Cartoon Network, TBS, TNT)prior to mainstream adoption.",
       "bullets": [
         "Pioneered the first <hotspot key=\"ar\">mobile augmented reality applications</hotspot> in the U.S. for NBA and Cartoon Network in an academic partnership with Georgia Tech. Built on pre-iPhone Nokia devices, successfully predicting mobile's path to AR dominance.",
-        "Legitimized virtual item sales as an incremental revenue stream for Cartoon Network and Adult Swim properties on Sony PlayStation Home's early virtual economies.",
-        "Prototyped early cloud streaming games for GameTap using instant-on video technology."
+        "Established virtual item sales as an incremental revenue stream for Cartoon Network and Adult Swim properties on Sony PlayStation Home's early virtual economies.",
+        "Prototyped early cloud streaming games technology for GameTap using instant-on video technology. Pre-cursor to cloud gaming services like Google Stadia and Nvidia GeForce Now."
       ]
     },
     {
       "company": "ENSEQUENCE INTERNATIONAL",
       "dates": "Mar 2003 – Apr 2005",
-      "title": "Interactive TV Architect · London, UK",
-      "description": "Interactive TV technology company developing authoring solutions.",
+      "title": "Interactive TV Architect · Portland, OR / London, UK",
+      "description": "Ensequence was the dominant interactive TV software platform from the US, powering interactive shows and commercials across more than 20 million homes worldwide. Client roster included NBCUniversal, ESPN, MTV Networks, HBO, BSkyB, BBC.",
       "bullets": [
-        "Led product management for the \"on-Q\" Authoring System in the UK market.",
-        "Designed technical solutions for broadcast deployments targeting major clients including BSkyB and the BBC."
+        "UK product manager for the \"on-Q\" Interactive TV Authoring System.",
+        "Designed, engineered, and deployed solutions and applications for broadcast deployments for major clients."
       ]
     },
     {
       "company": "TWO WAY MEDIA",
       "dates": "Sep 1995 – Mar 2003",
       "title": "Solutions Development Manager · London, UK",
-      "description": "Founding team member of interactive television pioneer, progressing from Game Developer through Senior Producer.",
+      "description": "Founding team member of Two Way TV, a world-leading interactive television pioneer that operated dedicated gaming channels across the UK's major digital platforms and internationally in the US/Canada and Australia. The company held key interactive TV patents, and signed a strategic alliance with Microsoft to bring the technology to the MSTV platform.",
       "bullets": [
         "Produced \"Armchair Manager – Football,\" earning a <hotspot key=\"bafta\">BAFTA Interactive Entertainment Award</hotspot> Nomination (2000) for realtime interactive sports broadcasting.",
         "Pioneered the first interactive television multiplayer game service globally via the Challenge TV network on Sky."
@@ -152,7 +152,7 @@
     {
       "degree": "M.Sc. Human-Centered Computing Systems (HCI)",
       "school": "University of Sussex, UK",
-      "focus": "Focus: AI and Intelligent Tutoring Systems. <hotspot key=\"apple-award\">Apple Design Project Award</hotspot> winner."
+      "focus": "Focus: Human Computer InteractionAI and Intelligent Tutoring Systems. <hotspot key=\"apple-award\">Apple Design Project Award</hotspot> winner."
     },
     {
       "degree": "B.Sc. Computer Science (2:1 Honors)",

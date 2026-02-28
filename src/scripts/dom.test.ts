@@ -66,6 +66,55 @@ describe('buildContentNode', () => {
         const html = fragmentToHTML(frag);
         expect(html).not.toContain('href');
     });
+
+    it('should correctly format truncated text with existing periods', () => {
+        const punctuationData: PopoverData = {
+            label: 'Text Fix',
+            text: 'Short sentence one. Short sentence two'
+        };
+        // Should NOT append a period since it wasn't truncated down from 3+
+        const frag = buildContentNode(punctuationData, 'popover', { truncateText: true });
+        const html = fragmentToHTML(frag);
+        expect(html).toContain('Short sentence one. Short sentence two');
+        expect(html).not.toContain('Short sentence two.');
+    });
+
+    it('should render a video element properly with correct fallback and autoplay disable structure', () => {
+        const videoData: PopoverData = {
+            label: 'A Video',
+            text: 'Video summary',
+            media: ['/vid1.mp4']
+        };
+        const frag = buildContentNode(videoData, 'popover');
+        const html = fragmentToHTML(frag);
+
+        // Assert single video wraps in play button since play is disabled for single/first items
+        expect(html).toContain('class="popover-vid-wrap"');
+        expect(html).toContain('class="popover-play-btn"');
+        expect(html).toContain('vid1.mp4');
+    });
+
+    it('should gracefully build the full carousel structure when multiple items are present', () => {
+        const multiData: PopoverData = {
+            label: 'Carousel',
+            text: 'Carousel desc',
+            media: ['/img1.js', '/vid1.mp4'] // Testing mixed format
+        };
+        const frag = buildContentNode(multiData, 'popover');
+        const html = fragmentToHTML(frag);
+
+        // Assert carousel wrapper presence
+        expect(html).toContain('class="popover-carousel-wrap"');
+        expect(html).toContain('class="popover-carousel-inner"');
+
+        // Assert chevrons
+        expect(html).toContain('class="popover-carousel-nav prev"');
+        expect(html).toContain('class="popover-carousel-nav next"');
+
+        // Assert dots
+        expect(html).toContain('class="popover-carousel-dots"');
+        expect(html).toContain('class="popover-carousel-dot active"');
+    });
 });
 
 describe('requireGlobal', () => {

@@ -8,6 +8,8 @@ KC Wolff-Ingham's portfolio is a high-impact, interactive digital presence for a
 The primary landing experience is a "living" resume document.
 - **Editorial Hero Section:** A clean, high-contrast introduction with smooth fade-in animations and a sharp tagline: "Design leadership, product depth, and technical savvy."
 - **Popovers (Hotspots):** Inline links that trigger detailed context overlays.
+  - **Rich Media & Carousels:** Popovers and marginalia support arrays of mixed media (images and video). Multiple items automatically render as swipeable carousels featuring elegant pagination dots and subtle chevron navigation that dynamically appear and fade out when navigating.
+  - **Context-Aware Video Playback:** Videos embedded in arrays natively autoplay silently, while standalone videos or those in the first position start paused with a custom UI overlay play button, respecting user intent.
   - **Draggable Context:** Popovers can be moved around the screen on desktop, allowing persistent reference while reading.
   - **Focus Management:** Full keyboard support and focus trapping for an accessible experience.
   - **Integrated Close:** Consistent, easy-to-find '×' button on both desktop and mobile.

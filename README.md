@@ -7,6 +7,7 @@ High-fidelity Design Leadership Portfolio built with Astro 5.0. This project dem
 - **Draggable Context Overlay:** Floating desktop popovers that follow user focus, enabling persistent reference during reading.
 - **Magazine-Style Marginalia:** Margin annotations that reveal themselves during scroll on wide displays (≥1400px).
 - **High-Fidelity Interaction:** Fragment-based text highlighting with content-aware directional fades.
+- **Rich Media & Context-Aware Video:** Seamless inline playback of videos and arrays of mixed format images, bundled as elegant native carousels with swipe support, smart chevrons, and pagination.
 - **Accessible Editorial Design:** WCAG AA compliant contrast calibration and semantic ARIA 1.1 structure.
 - **Mobile-First Bottom Sheets:** Optimized mobile interactions with full focus trapping and touch-aware dismissals.
 
