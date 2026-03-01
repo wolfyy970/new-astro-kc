@@ -1,42 +1,33 @@
 ---
 /**
- * CaptionedImage — Full-width image with a single caption line.
+ * CaptionedImage — Image at its native aspect ratio with a single caption line.
  *
- * The image takes up the full content width. The caption is one short line
- * of context — a chapter marker, not a description. No title, no body copy.
+ * The image renders at its intrinsic proportions — no cropping, no forcing.
+ * Landscape images fill the content width. Portrait images center themselves
+ * at their natural width (capped at the content area).
+ *
  * Use this when the work should speak for itself.
  */
-import { Image } from "astro:assets";
 
 interface Props {
     image: string;
     imageAlt: string;
     caption?: string;
     label?: string;
-    imageWidth?: number;
-    imageHeight?: number;
 }
 
-const {
-    image,
-    imageAlt,
-    caption,
-    label,
-    imageWidth = 1800,
-    imageHeight = 1000,
-} = Astro.props;
+const { image, imageAlt, caption, label } = Astro.props;
 ---
 
 <section class="captioned-image-section">
     <div class="captioned-image-inner">
         {label && <p class="image-label">{label}</p>}
         <div class="captioned-image-frame">
-            <Image
+            <img
                 src={image}
                 alt={imageAlt}
-                width={imageWidth}
-                height={imageHeight}
-                format="webp"
+                loading="lazy"
+                decoding="async"
             />
         </div>
         {caption && <p class="image-caption">{caption}</p>}
@@ -63,16 +54,28 @@ const {
         opacity: 0.8;
     }
 
+    /*
+     * The frame is a flex container so portrait images center themselves
+     * rather than stretching. The image never exceeds its container and
+     * never exceeds its natural pixel width — it renders at exactly what
+     * the source deserves.
+     */
     .captioned-image-frame {
         border-radius: 12px;
         overflow: hidden;
         background: #f0ede8;
         line-height: 0;
+        display: flex;
+        justify-content: center;
     }
 
     .captioned-image-frame img {
-        width: 100%;
+        /* Landscape: fills the container width.
+           Portrait:  capped at its natural width, centered. */
+        max-width: 100%;
+        height: auto;
         display: block;
+        border-radius: inherit;
     }
 
     .image-caption {
@@ -86,14 +89,10 @@ const {
     }
 
     @media (max-width: 1024px) {
-        .captioned-image-section {
-            padding: 64px 32px;
-        }
+        .captioned-image-section { padding: 64px 32px; }
     }
 
     @media (max-width: 600px) {
-        .captioned-image-section {
-            padding: 48px 24px;
-        }
+        .captioned-image-section { padding: 48px 24px; }
     }
 </style>

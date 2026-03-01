@@ -2,13 +2,15 @@
 /**
  * PhotoGrid — A grid of images with no per-image text.
  *
- * Images are arranged in a tight grid and shown in full — no card chrome,
- * no captions per image, no forced cropping. The section may carry a short
- * label and title for context, but the images do the talking.
+ * Images render at their native aspect ratio — no cropping, no forced fit.
+ * Each image fills the full width of its column; height follows naturally.
+ *
+ * IMPORTANT: only group images with similar aspect ratios (all portrait or
+ * all landscape) in the same PhotoGrid. Mixing portrait and landscape images
+ * in one grid creates uneven row heights.
  *
  * Use when you want to show a body of work as a coherent visual statement.
  */
-import { Image } from "astro:assets";
 
 interface PhotoItem {
     src: string;
@@ -25,19 +27,9 @@ interface Props {
     title?: string;
     /** Inter-image gap size. Default: "normal" (16px). */
     gap?: "tight" | "normal" | "loose";
-    imageWidth?: number;
-    imageHeight?: number;
 }
 
-const {
-    images,
-    columns = 2,
-    label,
-    title,
-    gap = "normal",
-    imageWidth = 900,
-    imageHeight = 675,
-} = Astro.props;
+const { images, columns = 2, label, title, gap = "normal" } = Astro.props;
 ---
 
 <section class={`photo-grid-section photo-grid-section--gap-${gap}`}>
@@ -51,12 +43,11 @@ const {
         <div class={`photo-grid photo-grid--cols-${columns}`}>
             {images.map(img => (
                 <div class="photo-item">
-                    <Image
+                    <img
                         src={img.src}
                         alt={img.alt}
-                        width={imageWidth}
-                        height={imageHeight}
-                        format="webp"
+                        loading="lazy"
+                        decoding="async"
                     />
                 </div>
             ))}
@@ -117,8 +108,13 @@ const {
         line-height: 0;
     }
 
+    /*
+     * Images fill their column width. Height follows the native aspect ratio.
+     * No cropping. No object-fit forcing.
+     */
     .photo-item img {
         width: 100%;
+        height: auto;
         display: block;
     }
 

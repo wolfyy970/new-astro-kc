@@ -22,51 +22,36 @@
   },
   "sections": [
     {
-      "key": "consumer-mobile",
-      "type": "photoGrid",
-      "columns": 3,
+      "key": "consumer-home",
+      "type": "captionedImage",
       "bg": "#f3eff8",
       "label": "Consumer Banking",
-      "gap": "normal",
-      "images": [
-        {
-          "src": "/images/truist/1771246123096-e2ad64a0.png",
-          "alt": "Truist mobile home screen showing accounts, cards, and quick links"
-        },
-        {
-          "src": "/images/truist/1771281467706-585c83de.png",
-          "alt": "Truist Assist AI chatbot in light and dark mode with conversational banking flow"
-        },
-        {
-          "src": "/images/truist/1771179209528-3596892b.png",
-          "alt": "Truist checking account detail screen showing balance and activity"
-        }
-      ]
+      "image": "/images/truist/1771246123096-e2ad64a0.png",
+      "imageAlt": "Truist mobile home screen showing accounts, cards, and quick links for Janet",
+      "caption": "The everyday banking experience. Accounts, transfers, and Zelle — designed for speed."
     },
     {
-      "key": "web-platform",
+      "key": "truist-assist",
       "type": "captionedImage",
-      "label": "Web Platform",
-      "image": "/images/truist/1771246117739-a469a233.png",
-      "imageAlt": "Truist banking dashboard on iPad showing spending analytics and account management",
-      "imageWidth": 1800,
-      "imageHeight": 1200,
-      "caption": "Account management and spending analytics, at any screen size."
+      "label": "AI-Assisted Banking",
+      "image": "/images/truist/1771281467706-585c83de.png",
+      "imageAlt": "Truist Assist chatbot in light and dark mode showing conversation flow from home screen through credit card offers to agent escalation",
+      "caption": "Truist Assist. Conversational banking with contextual card controls and a live-agent handoff path."
     },
     {
       "key": "platform-scale",
       "type": "photoGrid",
       "columns": 2,
-      "gap": "normal",
       "label": "Platform Scale",
+      "gap": "normal",
       "images": [
         {
           "src": "/images/truist/1771281472014-694a3592.png",
-          "alt": "Truist Apple Watch banking app showing Transfer and Pay with micro-banking widgets"
+          "alt": "Truist Apple Watch banking app showing Transfer and Pay with micro-banking widgets for balance, bills, and recent payments"
         },
         {
-          "src": "/images/truist/1771281467710-eb73fe7f.png",
-          "alt": "Top 10 U.S. Bank composite with Truist mobile home, Face ID sign-in, and Digital Feature Toggle System"
+          "src": "/images/truist/1771246117739-a469a233.png",
+          "alt": "Truist banking dashboard on iPad showing recent activity, weekly spending chart, and credit card management"
         }
       ]
     },
@@ -82,14 +67,21 @@
       ]
     },
     {
-      "key": "truist-one",
-      "type": "captionedImage",
-      "label": "Product Strategy",
-      "image": "/images/truist/1771281491304-7ab9939c.png",
-      "imageAlt": "Truist One Checking account opening flow showing application start, multi-account upsell, and personal information form",
-      "imageWidth": 1800,
-      "imageHeight": 1000,
-      "caption": "Truist One Banking. Purpose-driven design shaped by client research. $300M in projected annual savings. Launched July 2022."
+      "key": "infrastructure-strategy",
+      "type": "photoGrid",
+      "columns": 2,
+      "label": "Infrastructure & Strategy",
+      "gap": "normal",
+      "images": [
+        {
+          "src": "/images/truist/1771281467710-eb73fe7f.png",
+          "alt": "Top 10 U.S. Bank composite showing Truist mobile home screen, Face ID sign-in, and the Digital Feature Toggle System dashboard"
+        },
+        {
+          "src": "/images/truist/1771281491304-7ab9939c.png",
+          "alt": "Truist One Checking account opening flow showing application start, multi-account upsell for savings and money market, and personal information form"
+        }
+      ]
     },
     {
       "key": "commercial",
@@ -97,14 +89,15 @@
       "columns": 2,
       "isDark": true,
       "label": "Commercial & Wealth",
+      "gap": "normal",
       "images": [
         {
           "src": "/images/truist/original.png",
-          "alt": "Truist commercial wealth management portal showing a $149M institutional portfolio across desktop and mobile"
+          "alt": "Truist commercial wealth management portal showing a $149M institutional portfolio with holdings breakdown across desktop and mobile"
         },
         {
           "src": "/images/truist/1771281491725-0f1b64fd.png",
-          "alt": "Truist internal banker portal showing commercial application pipeline with 256 new applications and performance metrics"
+          "alt": "Truist internal banker portal showing commercial application pipeline with pipeline metrics, completion rate, and top performer tracking"
         }
       ]
     }
