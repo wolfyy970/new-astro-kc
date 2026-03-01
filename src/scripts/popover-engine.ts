@@ -160,8 +160,9 @@ function makeDraggable(popoverEl: HTMLElement): void {
 
 // ── Mobile swipe-to-dismiss ───────────────────────────────────────────────────
 // Attach once on the popover element. Engages only when isMobileScreen() is
-// true and the user drags downward from the top of the sheet (respects content
-// scroll — only fires when scrollTop === 0 so normal scrolling isn't captured).
+// true and the user drags downward from the top of the sheet (scrollTop === 0).
+// The touchmove listener is intentionally non-passive so it can call
+// preventDefault() to stop the page beneath from scrolling during a dismiss.
 
 function makeMobileSwipeable(popoverEl: HTMLElement): void {
     let touchStartY = 0;
@@ -177,13 +178,15 @@ function makeMobileSwipeable(popoverEl: HTMLElement): void {
         isSwiping = false;
     }, { passive: true });
 
+    // NOT passive — we must call preventDefault() to stop page scroll when a
+    // valid dismiss swipe is in progress. The call is scoped tightly: only when
+    // delta > 0 (downward) AND scrollTop === 0 (at top of sheet content), so
+    // normal in-sheet scrolling and all upward drags remain unaffected.
     popoverEl.addEventListener('touchmove', (e: TouchEvent) => {
         if (!isMobileScreen()) return;
         touchCurrentY = e.touches[0].clientY;
         const delta = touchCurrentY - touchStartY;
 
-        // Only initiate dismiss gesture when dragging downward from the scroll top.
-        // This ensures normal content scrolling inside the sheet is never hijacked.
         if (delta <= 0 || popoverEl.scrollTop > 0) {
             if (isSwiping) {
                 // User scrolled back up mid-gesture — cancel
@@ -194,13 +197,17 @@ function makeMobileSwipeable(popoverEl: HTMLElement): void {
             return;
         }
 
+        // Confirmed downward swipe from scroll-top: own the gesture so the page
+        // beneath doesn't scroll simultaneously.
+        e.preventDefault();
+
         isSwiping = true;
         popoverEl.classList.add(CLS_IS_DRAGGING); // disables CSS transition while dragging
 
         // Slight resistance gives a rubber-band feel and signals the pull direction
         const offset = delta * 0.65;
         popoverEl.style.setProperty(CSS_PROP_SHEET_OFFSET, `${offset}px`);
-    }, { passive: true });
+    });
 
     const endSwipe = () => {
         if (!isMobileScreen() || !isSwiping) return;
