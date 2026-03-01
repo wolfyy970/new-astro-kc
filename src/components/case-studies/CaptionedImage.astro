@@ -1,0 +1,99 @@
+---
+/**
+ * CaptionedImage — Full-width image with a single caption line.
+ *
+ * The image takes up the full content width. The caption is one short line
+ * of context — a chapter marker, not a description. No title, no body copy.
+ * Use this when the work should speak for itself.
+ */
+import { Image } from "astro:assets";
+
+interface Props {
+    image: string;
+    imageAlt: string;
+    caption?: string;
+    label?: string;
+    imageWidth?: number;
+    imageHeight?: number;
+}
+
+const {
+    image,
+    imageAlt,
+    caption,
+    label,
+    imageWidth = 1800,
+    imageHeight = 1000,
+} = Astro.props;
+---
+
+<section class="captioned-image-section">
+    <div class="captioned-image-inner">
+        {label && <p class="image-label">{label}</p>}
+        <div class="captioned-image-frame">
+            <Image
+                src={image}
+                alt={imageAlt}
+                width={imageWidth}
+                height={imageHeight}
+                format="webp"
+            />
+        </div>
+        {caption && <p class="image-caption">{caption}</p>}
+    </div>
+</section>
+
+<style>
+    .captioned-image-section {
+        padding: 80px;
+    }
+
+    .captioned-image-inner {
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+
+    .image-label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--accent, currentColor);
+        margin-bottom: 24px;
+        opacity: 0.8;
+    }
+
+    .captioned-image-frame {
+        border-radius: 12px;
+        overflow: hidden;
+        background: #f0ede8;
+        line-height: 0;
+    }
+
+    .captioned-image-frame img {
+        width: 100%;
+        display: block;
+    }
+
+    .image-caption {
+        margin-top: 20px;
+        font-size: 14px;
+        font-weight: 400;
+        color: var(--text-secondary, #666);
+        line-height: 1.5;
+        max-width: 680px;
+        font-style: italic;
+    }
+
+    @media (max-width: 1024px) {
+        .captioned-image-section {
+            padding: 64px 32px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .captioned-image-section {
+            padding: 48px 24px;
+        }
+    }
+</style>

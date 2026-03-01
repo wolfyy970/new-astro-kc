@@ -22,82 +22,89 @@
   },
   "sections": [
     {
-      "key": "consumer-suite",
-      "type": "cardGrid",
+      "key": "consumer-mobile",
+      "type": "photoGrid",
       "columns": 3,
       "bg": "#f3eff8",
-      "label": "The Consumer Suite",
-      "title": "Banking designed for every surface.",
-      "description": "At SunTrust, I owned UX across the full consumer digital footprint — establishing the design language, components, and interaction models that carried forward into Truist. The portfolio spanned the core mobile app, an Apple Watch experience surfacing the most actionable banking moments at a glance, and Truist Assist, an AI-powered in-app assistant that guided customers through spending insights, card controls, and escalation to live agents — designed in both light and dark modes.",
-      "cards": [
+      "label": "Consumer Banking",
+      "gap": "normal",
+      "images": [
         {
-          "title": "Consumer Mobile",
-          "description": "Core account management and day-to-day banking — accounts, transfers, and Zelle — designed for speed and clarity.",
-          "image": "/images/truist/1771246123096-e2ad64a0.png",
-          "imageAlt": "Truist mobile home screen showing accounts, cards, and quick links for Janet"
+          "src": "/images/truist/1771246123096-e2ad64a0.png",
+          "alt": "Truist mobile home screen showing accounts, cards, and quick links"
         },
         {
-          "title": "Wearable Banking",
-          "description": "An Apple Watch experience delivering balance, upcoming bills, Zelle activity, and QR payments — the right information, at the right moment.",
-          "image": "/images/truist/1771281472014-694a3592.png",
-          "imageAlt": "Truist Apple Watch app showing Transfer and Pay with micro-banking widgets for balance, bills, and recent payments"
+          "src": "/images/truist/1771281467706-585c83de.png",
+          "alt": "Truist Assist AI chatbot in light and dark mode with conversational banking flow"
         },
         {
-          "title": "Truist Assist",
-          "description": "A conversational AI assistant built into the app — with contextual menus for spending insights and card controls, and a graceful handoff path to a live agent.",
-          "image": "/images/truist/1771281467706-585c83de.png",
-          "imageAlt": "Truist Assist chatbot screens in light and dark mode showing conversation flow from home screen through credit card offers to agent escalation"
+          "src": "/images/truist/1771179209528-3596892b.png",
+          "alt": "Truist checking account detail screen showing balance and activity"
         }
       ]
     },
     {
       "key": "web-platform",
-      "type": "featureRow",
-      "label": "The Web Platform",
-      "title": "The full picture, at any screen size.",
-      "description": "The web banking experience extended the same design system to larger screens — giving customers a richer view of their finances. Spending analytics, account activity, and credit card management surface together in a layout scaled for tablet and desktop. At SunTrust, I established the responsive grid system governing how these layouts adapted across breakpoints, from 4-column mobile through 8-column tablet to 12-column desktop.",
+      "type": "captionedImage",
+      "label": "Web Platform",
       "image": "/images/truist/1771246117739-a469a233.png",
-      "imageAlt": "Truist banking dashboard on iPad showing recent activity, weekly spending chart, and credit card management alongside AirPods and Apple Watch"
+      "imageAlt": "Truist banking dashboard on iPad showing spending analytics and account management",
+      "imageWidth": 1800,
+      "imageHeight": 1200,
+      "caption": "Account management and spending analytics, at any screen size."
     },
     {
-      "key": "infrastructure",
-      "type": "featureRow",
-      "reverse": true,
-      "label": "Design Infrastructure",
-      "title": "A design system scaled to a Top 10 bank.",
-      "description": "Scaling design across a Top 10 U.S. bank requires more than visual standards — it requires platform infrastructure. The Digital Feature Toggle System (DFTS) is an internal tool used by product and engineering teams to manage feature flags, banners, and supported app versions across iOS and Android — without code deploys. This gave product teams direct control over phased feature delivery to Truist's millions of customers, reducing deployment risk and accelerating the pace of iteration.",
-      "image": "/images/truist/1771281467710-eb73fe7f.png",
-      "imageAlt": "Top 10 U.S. Bank composite showing Truist mobile home screen, Face ID sign-in, and the Digital Feature Toggle System dashboard"
+      "key": "platform-scale",
+      "type": "photoGrid",
+      "columns": 2,
+      "gap": "normal",
+      "label": "Platform Scale",
+      "images": [
+        {
+          "src": "/images/truist/1771281472014-694a3592.png",
+          "alt": "Truist Apple Watch banking app showing Transfer and Pay with micro-banking widgets"
+        },
+        {
+          "src": "/images/truist/1771281467710-eb73fe7f.png",
+          "alt": "Top 10 U.S. Bank composite with Truist mobile home, Face ID sign-in, and Digital Feature Toggle System"
+        }
+      ]
+    },
+    {
+      "key": "outcomes",
+      "type": "statRow",
+      "label": "Impact",
+      "stats": [
+        { "value": "30", "label": "Designers" },
+        { "value": "4.4M", "label": "Mobile Users" },
+        { "value": "60%", "label": "Transactions Digital" },
+        { "value": "$300M", "label": "Projected Client Savings" }
+      ]
     },
     {
       "key": "truist-one",
-      "type": "featureRow",
+      "type": "captionedImage",
       "label": "Product Strategy",
-      "title": "Designing out overdraft fees.",
-      "description": "Truist One Banking was shaped by direct client research: customers asked for less complexity and freedom from overdraft anxiety. The resulting product eliminated overdraft fees entirely, introduced a $100 negative balance buffer for eligible clients, and distilled account opening into a streamlined, multi-account onboarding flow. It launched in July 2022. Truist projected the changes would deliver $300 million in annual savings for clients by 2024.",
       "image": "/images/truist/1771281491304-7ab9939c.png",
-      "imageAlt": "Truist One Checking account opening flow showing application start, multi-account upsell for savings and money market, and personal information form"
+      "imageAlt": "Truist One Checking account opening flow showing application start, multi-account upsell, and personal information form",
+      "imageWidth": 1800,
+      "imageHeight": 1000,
+      "caption": "Truist One Banking. Purpose-driven design shaped by client research. $300M in projected annual savings. Launched July 2022."
     },
     {
       "key": "commercial",
-      "type": "cardGrid",
+      "type": "photoGrid",
       "columns": 2,
       "isDark": true,
       "label": "Commercial & Wealth",
-      "title": "Designing for institutional complexity.",
-      "description": "At Truist, I exclusively owned UX for Business and Commercial Banking. The commercial wealth management portal gave institutional clients a unified view across banking and investment accounts — tracking portfolios at nine-figure scale across holdings, balances, and daily performance. Alongside the client-facing experience, the internal applications management portal gave commercial bankers real-time visibility into their account origination pipeline: new, open, terminated, and completed applications, with performance metrics down to the individual banker.",
-      "cards": [
+      "images": [
         {
-          "title": "Wealth Management",
-          "description": "A unified portfolio view for institutional clients tracking total value, unrealized gains, cash position, and account groups across desktop and mobile.",
-          "image": "/images/truist/original.png",
-          "imageAlt": "Truist commercial wealth management dashboard showing a portfolio of $149 million with holdings breakdown across desktop and mobile"
+          "src": "/images/truist/original.png",
+          "alt": "Truist commercial wealth management portal showing a $149M institutional portfolio across desktop and mobile"
         },
         {
-          "title": "Commercial Origination",
-          "description": "An internal operations portal giving bankers real-time visibility into the commercial account application pipeline — 256 new, 132 open — with completion rate analytics and team performance tracking.",
-          "image": "/images/truist/1771281491725-0f1b64fd.png",
-          "imageAlt": "Truist internal banker portal showing applications overview dashboard with pipeline metrics, completion rate, and top performer tracking"
+          "src": "/images/truist/1771281491725-0f1b64fd.png",
+          "alt": "Truist internal banker portal showing commercial application pipeline with 256 new applications and performance metrics"
         }
       ]
     }

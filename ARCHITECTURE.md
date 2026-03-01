@@ -86,6 +86,9 @@ src/components/case-studies/
   ShowcaseGrid.astro     ← 1/2/3-column CSS grid
   ShowcaseCard.astro     ← image + title + description card
   FeatureRow.astro       ← 50/50 image-beside-text row
+  CaptionedImage.astro   ← full-width image + one caption line
+  PhotoGrid.astro        ← image-only grid, no per-image text
+  StatRow.astro          ← typographic outcome numbers band
 ```
 
 **Data flows like this:**
@@ -107,6 +110,9 @@ Every section in a study JSON file must have a `type` field. `CaseStudySection.a
 | `textOnly` | ShowcaseSection with no child grid | `title`, `description` | `label`, `isDark`, `bg`, `darkBg` |
 | `largeImage` | ShowcaseSection + constrained full-width Image | `image`, `imageAlt` | `label`, `title`, `description`, `imageWidth`, `imageHeight`, `bg` |
 | `fullBleed` | Full-viewport `<section>` + Image (no text) | `image`, `imageAlt` | `bg` |
+| `captionedImage` | Full content-width image + single caption line | `image`, `imageAlt` | `caption` (one short sentence), `label`, `imageWidth`, `imageHeight`, `bg` |
+| `photoGrid` | Grid of images with no per-image text — use when the work speaks for itself | `images[]` (each: `src`, `alt`) | `columns` (1-4, default 2), `gap` (tight/normal/loose), `label`, `title`, `bg`, `isDark` |
+| `statRow` | Horizontal band of large typographic outcome numbers | `stats[]` (each: `value`, `label`) | `label`, `bg`, `isDark` |
 
 **Shared optional fields on every section:** `key` (identifier, not rendered), `label` (eyebrow text), `bg` (any CSS color or gradient), `isDark` (dark variant), `darkBg` (overrides accent-derived dark background).
 

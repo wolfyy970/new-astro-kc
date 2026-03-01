@@ -17,6 +17,9 @@ import ShowcaseSection from "./ShowcaseSection.astro";
 import ShowcaseGrid from "./ShowcaseGrid.astro";
 import ShowcaseCard from "./ShowcaseCard.astro";
 import FeatureRow from "./FeatureRow.astro";
+import CaptionedImage from "./CaptionedImage.astro";
+import PhotoGrid from "./PhotoGrid.astro";
+import StatRow from "./StatRow.astro";
 import { Image } from "astro:assets";
 
 type SectionType =
@@ -25,13 +28,26 @@ type SectionType =
     | "featureRow"
     | "textOnly"
     | "largeImage"
-    | "fullBleed";
+    | "fullBleed"
+    | "captionedImage"
+    | "photoGrid"
+    | "statRow";
 
 interface Card {
     title: string;
     description: string;
     image: string;
     imageAlt: string;
+}
+
+interface PhotoItem {
+    src: string;
+    alt: string;
+}
+
+interface StatItem {
+    value: string;
+    label: string;
 }
 
 interface Props {
@@ -82,6 +98,20 @@ interface Props {
     imageWidth?: number;
     /** Intrinsic height for Astro image optimisation. Defaults to 800. */
     imageHeight?: number;
+
+    // ── captionedImage ──────────────────────────────────────────────────
+    /** Single caption line below the image. Keep to one short sentence. */
+    caption?: string;
+
+    // ── photoGrid ────────────────────────────────────────────────────────
+    /** Array of image/alt pairs for photo-only grid. No per-image text. */
+    images?: PhotoItem[];
+    /** Gap between photo grid cells: tight (6px) | normal (16px) | loose (32px). */
+    gap?: "tight" | "normal" | "loose";
+
+    // ── statRow ──────────────────────────────────────────────────────────
+    /** Array of value/label pairs for the stat band. */
+    stats?: StatItem[];
 }
 
 const {
@@ -101,6 +131,10 @@ const {
     imageAlt = "",
     imageWidth = 1300,
     imageHeight = 800,
+    caption,
+    images = [],
+    gap = "normal",
+    stats = [],
 } = Astro.props;
 
 // Compose the wrapper style from bg color and optional --case-study-dark override.
@@ -196,6 +230,37 @@ const wrapperStyle = wrapperParts.join("; ") || undefined;
                 format="webp"
             />
         </section>
+    )}
+
+    {type === "captionedImage" && image && (
+        <CaptionedImage
+            image={image}
+            imageAlt={imageAlt}
+            caption={caption}
+            label={label}
+            imageWidth={imageWidth}
+            imageHeight={imageHeight}
+        />
+    )}
+
+    {type === "photoGrid" && images.length > 0 && (
+        <PhotoGrid
+            images={images}
+            columns={columns}
+            label={label}
+            title={title}
+            gap={gap}
+            imageWidth={imageWidth}
+            imageHeight={imageHeight}
+        />
+    )}
+
+    {type === "statRow" && stats.length > 0 && (
+        <StatRow
+            stats={stats}
+            label={label}
+            isDark={isDark}
+        />
     )}
 
 </div>

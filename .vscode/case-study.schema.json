@@ -55,6 +55,26 @@
   },
 
   "definitions": {
+    "PhotoItem": {
+      "type": "object",
+      "required": ["src", "alt"],
+      "additionalProperties": false,
+      "properties": {
+        "src": { "type": "string", "pattern": "^/images/.*", "description": "Image path relative to /public." },
+        "alt": { "type": "string", "description": "Alt text for the image." }
+      }
+    },
+
+    "StatItem": {
+      "type": "object",
+      "required": ["value", "label"],
+      "additionalProperties": false,
+      "properties": {
+        "value": { "type": "string", "description": "Display number or text, e.g. \"4.4M\" or \"$300M\"." },
+        "label": { "type": "string", "description": "Descriptor below the value, e.g. \"Mobile Users\"." }
+      }
+    },
+
     "Card": {
       "type": "object",
       "required": ["title", "description", "image", "imageAlt"],
@@ -78,7 +98,7 @@
         },
         "type": {
           "type": "string",
-          "enum": ["cardGrid", "mixedGrid", "featureRow", "textOnly", "largeImage", "fullBleed"],
+          "enum": ["cardGrid", "mixedGrid", "featureRow", "textOnly", "largeImage", "fullBleed", "captionedImage", "photoGrid", "statRow"],
           "description": "Determines which component tree CaseStudySection renders. See ARCHITECTURE.md § Section Type Catalog for field requirements per type."
         },
         "label":       { "type": "string", "description": "Small eyebrow label above the section heading." },
@@ -167,6 +187,52 @@
                 "properties": {
                   "image":    { "type": "string", "pattern": "^/images/.*", "description": "Full-viewport cinematic image strip. No text is rendered." },
                   "imageAlt": { "type": "string" }
+                }
+              },
+              "else": {
+                "if":   { "properties": { "type": { "const": "captionedImage" } } },
+                "then": {
+                  "required": ["image", "imageAlt"],
+                  "properties": {
+                    "image":       { "type": "string", "pattern": "^/images/.*", "description": "Full content-width image. Use high-resolution source (1800px+ wide)." },
+                    "imageAlt":    { "type": "string" },
+                    "caption":     { "type": "string", "description": "Single caption line below the image. One short sentence — a chapter marker, not a description." },
+                    "imageWidth":  { "type": "integer", "default": 1800 },
+                    "imageHeight": { "type": "integer", "default": 1000 }
+                  }
+                },
+                "else": {
+                  "if":   { "properties": { "type": { "const": "photoGrid" } } },
+                  "then": {
+                    "required": ["images"],
+                    "properties": {
+                      "images": {
+                        "type": "array",
+                        "items": { "$ref": "#/definitions/PhotoItem" },
+                        "minItems": 2,
+                        "description": "Images to display in the grid. No per-image text — the images speak for themselves."
+                      },
+                      "columns": { "type": "integer", "enum": [1, 2, 3, 4], "default": 2 },
+                      "gap":     { "type": "string", "enum": ["tight", "normal", "loose"], "default": "normal" },
+                      "imageWidth":  { "type": "integer", "default": 900 },
+                      "imageHeight": { "type": "integer", "default": 675 }
+                    }
+                  },
+                  "else": {
+                    "if":   { "properties": { "type": { "const": "statRow" } } },
+                    "then": {
+                      "required": ["stats"],
+                      "properties": {
+                        "stats": {
+                          "type": "array",
+                          "items": { "$ref": "#/definitions/StatItem" },
+                          "minItems": 2,
+                          "maxItems": 5,
+                          "description": "Impact metrics displayed as large typographic numbers. Keep to 2–5 items."
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }

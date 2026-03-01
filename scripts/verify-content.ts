@@ -134,6 +134,7 @@ function verify() {
             for (const card of section.cards ?? []) checkImagePath(card.image, `${sp}.cards[]`);
             if (section.primaryCard?.image) checkImagePath(section.primaryCard.image, `${sp}.primaryCard.image`);
             for (const card of section.secondaryCards ?? []) checkImagePath(card.image, `${sp}.secondaryCards[]`);
+            for (const photo of section.images ?? []) checkImagePath(photo.src, `${sp}.images[]`);
         }
     }
 

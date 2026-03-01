@@ -1,0 +1,134 @@
+---
+/**
+ * StatRow — A horizontal band of large typographic outcome numbers.
+ *
+ * Numbers render at editorial scale; labels are small and uppercase.
+ * Use to surface impact metrics as a scannable visual break between sections.
+ */
+
+interface StatItem {
+    value: string;
+    label: string;
+}
+
+interface Props {
+    stats: StatItem[];
+    label?: string;
+    isDark?: boolean;
+}
+
+const { stats, label, isDark = false } = Astro.props;
+---
+
+<section class={`stat-row-section${isDark ? " is-dark" : ""}`}>
+    <div class="stat-row-inner">
+        {label && <p class="stat-row-label">{label}</p>}
+        <div class="stat-grid">
+            {stats.map(stat => (
+                <div class="stat-item">
+                    <span class="stat-value">{stat.value}</span>
+                    <span class="stat-label">{stat.label}</span>
+                </div>
+            ))}
+        </div>
+    </div>
+</section>
+
+<style>
+    .stat-row-section {
+        padding: 80px;
+        background: #fff;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-row-section.is-dark {
+        background: var(--case-study-dark, color-mix(in srgb, var(--accent, #3b1a5a) 80%, #000));
+        border-color: transparent;
+    }
+
+    .stat-row-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .stat-row-label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--accent, #70541C);
+        margin-bottom: 48px;
+        text-align: center;
+    }
+
+    .is-dark .stat-row-label {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 24px;
+        text-align: center;
+        border-right: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .stat-item:last-child {
+        border-right: none;
+    }
+
+    .is-dark .stat-item {
+        border-right-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .stat-value {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(40px, 5vw, 72px);
+        font-weight: 400;
+        line-height: 1;
+        color: var(--accent, #70541C);
+        display: block;
+    }
+
+    .is-dark .stat-value {
+        color: #fff;
+    }
+
+    .stat-label {
+        display: block;
+        margin-top: 16px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        color: var(--text-secondary, #666);
+        line-height: 1.4;
+        max-width: 160px;
+    }
+
+    .is-dark .stat-label {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    @media (max-width: 768px) {
+        .stat-row-section { padding: 64px 32px; }
+        .stat-grid { grid-template-columns: repeat(2, 1fr); }
+        .stat-item { border-right: none; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+        .stat-item:nth-child(odd) { border-right: 1px solid rgba(0, 0, 0, 0.06); }
+        .stat-item:last-child { border-bottom: none; }
+        .is-dark .stat-item { border-color: rgba(255, 255, 255, 0.08); }
+    }
+
+    @media (max-width: 480px) {
+        .stat-row-section { padding: 48px 24px; }
+        .stat-grid { grid-template-columns: 1fr; }
+        .stat-item { border-right: none; }
+    }
+</style>
