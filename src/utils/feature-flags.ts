@@ -9,33 +9,38 @@ import type { PopoverData, PopoverMap } from '../types/content';
  *
  * ── Environment variable ──────────────────────────────────────────────────────
  *
- *   CASE_STUDY_LINKS=truist,sparks-grove,upwave,two-way-tv
+ *   CASE_STUDY_LINKS=true|false|<comma-separated slugs>
  *
- * Comma-separated list of case study slugs (the path segment after the leading
- * slash) whose popover link buttons should be visible. Omit the variable or
- * leave it empty to hide all case study links — useful while pages are still
- * being authored.
+ * Three modes:
+ *   true   — all case study links are shown, regardless of slug names
+ *   false  — all case study links are hidden (same as omitting the variable)
+ *   <list> — only the named slugs are shown (path segment after the leading slash)
  *
  * Matching is case-insensitive and trims surrounding whitespace, so both
  * "Truist" and " truist " match the /truist page.
  *
  * ── Examples ─────────────────────────────────────────────────────────────────
  *
- *   # All links hidden (default when variable is absent)
+ *   # All links hidden (default when variable is absent or empty)
  *   CASE_STUDY_LINKS=
+ *
+ *   # All links shown — useful in local dev
+ *   CASE_STUDY_LINKS=true
  *
  *   # Only Truist is ready
  *   CASE_STUDY_LINKS=truist
  *
- *   # All current case studies enabled
+ *   # Explicit named set
  *   CASE_STUDY_LINKS=truist,sparks-grove,upwave,two-way-tv
  */
 
-function parseEnabledSlugs(): Set<string> {
+// null signals "all enabled" (CASE_STUDY_LINKS=true); an empty Set means "none".
+function parseEnabledSlugs(): Set<string> | null {
     const raw =
         (import.meta.env.CASE_STUDY_LINKS as string | undefined) ??
         process.env.CASE_STUDY_LINKS ??
         '';
+    if (raw.trim().toLowerCase() === 'true') return null;
     return new Set(
         raw
             .split(',')
@@ -50,6 +55,7 @@ function parseEnabledSlugs(): Set<string> {
  */
 export function isCaseStudyLinkEnabled(linkPath: string): boolean {
     const enabled = parseEnabledSlugs();
+    if (enabled === null) return true; // CASE_STUDY_LINKS=true — all enabled
     if (enabled.size === 0) return false;
     const slug = linkPath.replace(/^\//, '').toLowerCase();
     return enabled.has(slug);

@@ -2,130 +2,33 @@
 import CaseStudyLayout from "../layouts/CaseStudyLayout.astro";
 import CaseStudyHero from "../components/case-studies/CaseStudyHero.astro";
 import ContextGrid from "../components/case-studies/ContextGrid.astro";
-import ShowcaseSection from "../components/case-studies/ShowcaseSection.astro";
-import ShowcaseGrid from "../components/case-studies/ShowcaseGrid.astro";
-import ShowcaseCard from "../components/case-studies/ShowcaseCard.astro";
+import CaseStudySection from "../components/case-studies/CaseStudySection.astro";
+import cs from "../content/case-studies/upwave.json";
 ---
 
 <CaseStudyLayout
-  title="Upwave — Health & Wellness Platform"
-  description="How I led product and design for Upwave — Turner's health and wellness venture — from concept to 1 million users in 8 months."
-  ogImage="/images/upwave/turner-upwave-site.png"
-  accent="#f26522"
+  title={cs.meta.title}
+  description={cs.meta.description}
+  ogImage={cs.meta.ogImage}
+  accent={cs.meta.accent}
 >
-  <style>
-    :root {
-      --upwave-orange: #f26522;
-      --upwave-red: #c83c2c;
-      --upwave-gold: #f5a623;
-      --upwave-dark: #1e1e1e;
-      --soft-cream: #fff8f4;
-    }
-
-    .platform-bg {
-      background: var(--soft-cream);
-    }
-
-    .tech-bg {
-      background: linear-gradient(135deg, #1a1a1a 0%, #2e1d1a 100%);
-      padding: 160px 80px;
-    }
-
-    @media (max-width: 1024px) {
-      .tech-bg {
-        padding: 100px 32px;
-      }
-    }
-  </style>
-
   <CaseStudyHero
-    label="Upwave"
-    title="Building a Platform That Makes Wellness Stick"
-    subtitle="I led product and design for Turner's health and wellness venture — partnering with IDEO on market validation, then taking it from concept to 1M monthly users in eight months."
-    image="/images/upwave/turner-upwave-site.png"
-    imageAlt="Upwave homepage on desktop and mobile"
+    label={cs.hero.label}
+    title={cs.hero.title}
+    subtitle={cs.hero.subtitle}
+    image={cs.hero.image}
+    imageAlt={cs.hero.imageAlt}
   />
 
   <ContextGrid
-    challenge="Pioneering health and wellness in the early IoT era."
-    role="Vice President, Product & UX"
-    company="Upwave (Internal Venture)"
-    scope="Product Leadership, Lean Methodology, Team Directorship"
-    team="0 to 1M Users in 8 mos, Webby Nomination"
+    challenge={cs.context.challenge}
+    role={cs.context.role}
+    company={cs.context.company}
+    scope={cs.context.scope}
+    team={cs.context.team}
   >
-    Upwave was Turner's IoT-driven digital health venture, exploring the
-    intersection of quantified-self data and personalized content. As Vice
-    President, Product & UX, I led the specialized teams responsible for taking
-    the venture from concept to market. Partnering with IDEO for initial market
-    validation, I established the product strategy and introduced a lean
-    methodology that enabled daily release cycles, accelerating growth to 1M
-    monthly unique users in just eight months.
+    {cs.context.body}
   </ContextGrid>
 
-  <div class="platform-bg">
-    <ShowcaseSection
-      label="The Platform"
-      title="An ecosystem of content, challenges, and analytics."
-      description="I directed the product roadmap and user experience strategy across the entire Upwave ecosystem, guiding teams to ensure a seamless integration between media consumption and health tracking behaviors."
-    >
-      <ShowcaseGrid columns={1}>
-        <ShowcaseCard
-          title="Content Strategy & Platform"
-          description="Directed the UX strategies for a responsive media platform built to drive engagement and recirculation."
-          image="/images/upwave/8dc0f0d910df1c24b3620919604df9b218d4ad07_190917_110730.png"
-          imageAlt="Upwave content platform desktop and mobile"
-        />
-        <ShowcaseCard
-          title="Behavioral Challenges"
-          description="Oversaw the design framework for multi-day wellness challenges, applying behavioral science to daily progress tracking."
-          image="/images/upwave/upwave_challenge_screens_desktop_mobile.webp"
-          imageAlt="Upwave challenge feature"
-        />
-        <ShowcaseCard
-          title="TrackIt Analytics"
-          description="Guided the strategic integration of emerging wearables and fitness trackers with a unified personal health dashboard."
-          image="/images/upwave/turner-upwave-trackit.png"
-          imageAlt="Upwave TrackIt analytics dashboard"
-        />
-      </ShowcaseGrid>
-    </ShowcaseSection>
-  </div>
-
-  <ShowcaseSection
-    label="Market Validation & Delivery"
-    title="From validation to daily releases."
-    description="Building a platform at the forefront of quantified-self technology (pre-Apple Watch) required rigorous methodology. I initiated a partnership with IDEO to secure product-market fit and validate key assumptions before large-scale investment. Working cross-functionally, I led the transition of the teams to a lean product methodology, establishing a cadence of daily release cycles that increased platform recirculation from 5% to 24%."
-    isDark
-  >
-    <style>
-      .is-dark {
-        background: var(--upwave-dark) !important;
-      }
-    </style>
-    <ShowcaseGrid columns={2}>
-      <ShowcaseCard
-        isDark
-        title="Architecture Directorship"
-        description="Directed the UX and product teams to establish the foundational information architecture and component strategy."
-        image="/images/upwave/turner-upwave-ux-01b-1024x587.png"
-        imageAlt="Upwave UX wireframes"
-      />
-      <ShowcaseCard
-        isDark
-        title="Interaction Systems"
-        description="Managed multidisciplinary teams ensuring complex health data intersections were logically translated into accessible interfaces."
-        image="/images/upwave/turner-upwave-ux-02-1024x768.png"
-        imageAlt="Upwave UX design documentation"
-      />
-    </ShowcaseGrid>
-  </ShowcaseSection>
-
-  <div class="tech-bg">
-    <ShowcaseSection
-      label="Emerging Technology"
-      title="Defining the future of broadcast."
-      description="Prior to leading Upwave, my tenure at Turner included serving as Senior Director of Innovation & Emerging Technology spanning CNN, Cartoon Network, TBS & TNT. I led multi-disciplinary R&D teams that pioneered early mobile augmented reality applications and the sync-to-TV technology that ultimately won a Primetime Emmy Award. These efforts resulted in two granted U.S. patents for automatic content recognition. I also collaborated on the design of the CNN 'Magic Wall,' introducing a massive multi-touch paradigm that redefined data storytelling across the broadcast industry."
-      isDark
-    />
-  </div>
+  {cs.sections.map(section => <CaseStudySection {...section} />)}
 </CaseStudyLayout>

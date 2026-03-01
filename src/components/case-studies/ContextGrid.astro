@@ -22,19 +22,19 @@ const { challenge, role, company, scope, team } = Astro.props;
         <div>
             <div class="meta-grid">
                 <div class="meta-item">
-                    <h4>My Role</h4>
+                    <h3>My Role</h3>
                     <p>{role}</p>
                 </div>
                 <div class="meta-item">
-                    <h4>Company</h4>
+                    <h3>Company</h3>
                     <p>{company}</p>
                 </div>
                 <div class="meta-item">
-                    <h4>Scope</h4>
+                    <h3>Scope</h3>
                     <p>{scope}</p>
                 </div>
                 <div class="meta-item">
-                    <h4>Team</h4>
+                    <h3>Team</h3>
                     <p>{team}</p>
                 </div>
             </div>
@@ -88,17 +88,8 @@ const { challenge, role, company, scope, team } = Astro.props;
         gap: 48px;
     }
 
-    .meta-item h3 {
-        font-size: 22px; /* Was 18px */
-        font-weight: 500;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        color: #999;
-        margin-bottom: 12px;
-    }
-
     .meta-item p {
-        font-size: 16px; /* Was 14px */
+        font-size: 16px;
         font-weight: 300;
         color: #1a1a1a;
         line-height: 1.4;

@@ -82,17 +82,21 @@ Set the variable in your `.env` file or Vercel Dashboard:
 # All links hidden (default when variable is absent — safe while authoring)
 CASE_STUDY_LINKS=
 
+# All links shown
+CASE_STUDY_LINKS=true
+
 # Only Truist is ready to show
 CASE_STUDY_LINKS=truist
 
-# All current case studies enabled
-CASE_STUDY_LINKS=truist,sparks-grove,upwave,two-way-tv
+# Multiple specific studies
+CASE_STUDY_LINKS=truist,sparks-grove
 ```
 
-- **Value:** Comma-separated list of case study slugs (the path segment after the leading `/`). Matching is case-insensitive.
-- **Default:** When the variable is absent or empty, all case study links are hidden.
+- **`true` (case-insensitive):** Show all case study links regardless of slug list.
+- **Comma-separated slugs:** Show only the listed slugs (path segment after the leading `/`). Matching is case-insensitive.
+- **Empty or absent:** All case study links are hidden (safe default while authoring).
 - **Scope:** Affects the `link`/`linkText` fields in `popovers.json` entries only. The case study pages themselves remain accessible directly.
-- **Adding a new slug:** When you add a new case study page at `/my-project`, add `my-project` to the list to enable its links.
+- **Adding a new slug:** When you add a new case study page at `/my-project`, either set `CASE_STUDY_LINKS=true` or append `my-project` to the list.
 
 ## CSS Type Scale
 
@@ -102,18 +106,17 @@ All font sizes are driven by semantic CSS custom properties (`--type-editorial`,
 
 ## Adding Case Studies
 
-The portfolio includes a modular suite of components to ensure consistent, high-performance case study authoring:
+Case studies are data-driven: content lives in JSON files and a thin `.astro` page imports and renders them. See `ARCHITECTURE.md → Case Study Template System` for the full section type reference.
 
-1. **Create a new page:** Add a `.astro` file in `src/pages/`.
-2. **Pass the brand accent colour** to `CaseStudyLayout` via the required `accent` prop:
+1. **Create `src/content/case-studies/<slug>.json`** following the schema in `.vscode/case-study.schema.json`. Include `meta`, `hero`, `context`, and a `sections` array where each item has a `type` field (e.g. `cardGrid`, `featureRow`, `textOnly`).
+2. **Add an entry to `src/content/case-studies/manifest.json`** with `slug`, `title`, `description`, `accent` (6-digit hex), and `ogImage`.
+3. **Create `src/pages/<slug>.astro`** — copy any existing page as a template. The body is always:
    ```astro
-   <CaseStudyLayout title="..." description="..." accent="#c8102e">
+   import cs from '../content/case-studies/<slug>.json';
+   import CaseStudySection from '../components/case-studies/CaseStudySection.astro';
+   // ...
+   cs.sections.map(s => <CaseStudySection {...s} />)
    ```
-   Use a 6-digit hex value. The layout's `buildAccentStyle()` utility derives `--accent`, `--accent-rgb`, and `--accent-border` and applies them as an inline body style. If omitted or invalid, it falls back to the portfolio amber with a dev warning. Do **not** redefine `--accent` in `:root` — inline styles take precedence and page-level `:root` overrides bleed across all pages in the CSS bundle.
-3. **Use Case Study Components:**
-   - `CaseStudyHero`: For the main title, subtitle, and background.
-   - `ContextGrid`: For standardized challenge, role, and scope metadata.
-   - `ShowcaseSection`, `ShowcaseGrid`, and `ShowcaseCard`: For flexible image galleries.
-   - `FeatureRow`: For asymmetric text/image layouts.
-4. **Add Images:** Place project-specific images in `public/images/[case-study-name]/`.
-5. **Enable case study links:** Add the new page's slug to `CASE_STUDY_LINKS` in your `.env` / Vercel Dashboard to make popover links to it visible.
+4. **Register the schema** — add the file path to the `fileMatch` list in `.vscode/settings.json`.
+5. **Add images** to `public/images/<slug>/`.
+6. **Enable case study links** — set `CASE_STUDY_LINKS=true` or add the slug to the list in `.env.local` / Vercel Dashboard.

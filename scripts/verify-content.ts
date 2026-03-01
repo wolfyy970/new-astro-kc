@@ -4,6 +4,8 @@ import { extractHotspotKeys, findDuplicateHotspots } from '../src/utils/validati
 
 const resumePath = path.join(process.cwd(), 'src/content/resume.json');
 const popoversPath = path.join(process.cwd(), 'src/content/popovers.json');
+const caseStudiesDir = path.join(process.cwd(), 'src/content/case-studies');
+const caseStudiesManifestPath = path.join(caseStudiesDir, 'manifest.json');
 const publicDir = path.join(process.cwd(), 'public');
 
 function verify() {
@@ -20,10 +22,11 @@ function verify() {
         process.exit(1);
     }
 
-    let resume, popovers;
+    let resume, popovers, caseStudyManifest: Array<{ slug: string }>;
     try {
         resume = JSON.parse(fs.readFileSync(resumePath, 'utf-8'));
         popovers = JSON.parse(fs.readFileSync(popoversPath, 'utf-8'));
+        caseStudyManifest = JSON.parse(fs.readFileSync(caseStudiesManifestPath, 'utf-8'));
     } catch (e) {
         console.error(`❌ Failed to parse JSON: ${(e as Error).message}`);
         process.exit(1);
@@ -94,7 +97,47 @@ function verify() {
         }
     });
 
-    // 6. Report Results
+    // 6. Verify Case Study Files and Images
+    console.log(`🖼️ Verifying case study image paths...`);
+    const checkImagePath = (imagePath: string, context: string) => {
+        if (!imagePath) return;
+        const relative = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
+        const full = path.join(publicDir, relative);
+        if (!fs.existsSync(full)) {
+            errors.push(`Missing image for ${context}: "${imagePath}"`);
+        }
+    };
+
+    for (const { slug } of caseStudyManifest) {
+        const studyPath = path.join(caseStudiesDir, `${slug}.json`);
+        if (!fs.existsSync(studyPath)) {
+            errors.push(`Case study manifest references "${slug}" but ${slug}.json not found in case-studies/`);
+            continue;
+        }
+
+        let study: any;
+        try {
+            study = JSON.parse(fs.readFileSync(studyPath, 'utf-8'));
+        } catch (e) {
+            errors.push(`Failed to parse case-studies/${slug}.json: ${(e as Error).message}`);
+            continue;
+        }
+
+        const prefix = `case-studies/${slug}.json`;
+        if (study.meta?.ogImage) checkImagePath(study.meta.ogImage, `${prefix} meta.ogImage`);
+        if (study.hero?.image) checkImagePath(study.hero.image, `${prefix} hero.image`);
+        if (study.hero?.background) checkImagePath(study.hero.background, `${prefix} hero.background`);
+
+        for (const section of (study.sections ?? []) as Array<any>) {
+            const sp = `${prefix} sections[${section.key ?? section.type}]`;
+            if (section.image) checkImagePath(section.image, `${sp}.image`);
+            for (const card of section.cards ?? []) checkImagePath(card.image, `${sp}.cards[]`);
+            if (section.primaryCard?.image) checkImagePath(section.primaryCard.image, `${sp}.primaryCard.image`);
+            for (const card of section.secondaryCards ?? []) checkImagePath(card.image, `${sp}.secondaryCards[]`);
+        }
+    }
+
+    // 7. Report Results
     if (errors.length > 0) {
         console.error('\n❌ Integrity Verification Failed:');
         errors.forEach(err => console.error(`   - ${err}`));

@@ -2,126 +2,32 @@
 import CaseStudyLayout from "../layouts/CaseStudyLayout.astro";
 import CaseStudyHero from "../components/case-studies/CaseStudyHero.astro";
 import ContextGrid from "../components/case-studies/ContextGrid.astro";
-import ShowcaseSection from "../components/case-studies/ShowcaseSection.astro";
-import ShowcaseGrid from "../components/case-studies/ShowcaseGrid.astro";
-import ShowcaseCard from "../components/case-studies/ShowcaseCard.astro";
-import FeatureRow from "../components/case-studies/FeatureRow.astro";
-import { Image } from "astro:assets";
+import CaseStudySection from "../components/case-studies/CaseStudySection.astro";
+import cs from "../content/case-studies/sparks-grove.json";
 ---
 
 <CaseStudyLayout
-  title="Sparks Grove — Delta Air Lines"
-  description="How I led design for the Delta News Hub — a unified communications platform for the world's most-traveled airline, serving 90,000 employees and millions of customers."
-  ogImage="/images/sparks-grove/news-hub.jpg"
-  accent="#c8102e"
+  title={cs.meta.title}
+  description={cs.meta.description}
+  ogImage={cs.meta.ogImage}
+  accent={cs.meta.accent}
 >
-  <style>
-    :root {
-      --navy: #0b1b2b;
-      --delta-red: #c8102e;
-    }
-
-    .full-bleed-closing {
-      height: 70vh;
-      overflow: hidden;
-    }
-
-    .full-bleed-closing img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .event-bg {
-      background: #080d14;
-    }
-
-    .event-img-filter {
-      filter: grayscale(100%) contrast(1.1);
-    }
-  </style>
-
   <CaseStudyHero
-    label="Case Study — Delta Air Lines"
-    title="High-Fidelity Storytelling for an Iconic Brand"
-    subtitle="Leading the design team that unified Delta's digital newsroom, serving 90,000 employees and millions of passengers annually."
-    background="/images/sparks-grove/delta-777-right-inflight_new_livery.jpg"
+    label={cs.hero.label}
+    title={cs.hero.title}
+    subtitle={cs.hero.subtitle}
+    background={cs.hero.background}
   />
 
   <ContextGrid
-    challenge="Elevating corporate communications to match the in-flight experience."
-    role="UX Design Practice Leader"
-    company="Sparks Grove — North Highland"
-    scope="Practice Leadership, Strategic Consulting"
-    team="Secured $3M+ client engagement"
+    challenge={cs.context.challenge}
+    role={cs.context.role}
+    company={cs.context.company}
+    scope={cs.context.scope}
+    team={cs.context.team}
   >
-    As UX Practice Leader for Sparks Grove (North Highland's innovation agency),
-    I led the strategic consulting engagement for the Delta News Hub. Delta's
-    internal and external communications lived across fragmented legacy systems.
-    I directed our agency teams to architect a unified platform serving
-    corporate comms, media relations, and 90,000 employees under one cohesive,
-    premium experience.
+    {cs.context.body}
   </ContextGrid>
 
-  <div style="background: var(--navy)">
-    <ShowcaseSection
-      label="The Work"
-      title="Delta News Hub Leadership"
-      description="I led the agency's multidisciplinary product and design teams in establishing a content-rich platform that balanced editorial storytelling with real-time operational priorities."
-      isDark
-    >
-      <ShowcaseGrid columns={1}>
-        <ShowcaseCard
-          isDark
-          title="Editorial Architecture"
-          description="Directed the strategy for a modular, category-driven framework designed to scale globally."
-          image="/images/sparks-grove/news-hub.jpg"
-          imageAlt="News Hub Desktop"
-        />
-      </ShowcaseGrid>
-
-      <ShowcaseGrid columns={2}>
-        <ShowcaseCard
-          isDark
-          title="Information Strategy"
-          description="Oversaw the IA development, prioritizing real-time audience needs."
-          image="/images/sparks-grove/DNH01.jpg"
-          imageAlt="IA & Header"
-        />
-        <ShowcaseCard
-          isDark
-          title="Design Oversight"
-          description="Managed the visual execution to ensure editorial quality was maintained across all touchpoints."
-          image="/images/sparks-grove/delta-4.jpg"
-          imageAlt="Mobile Views"
-        />
-      </ShowcaseGrid>
-    </ShowcaseSection>
-  </div>
-
-  <div class="event-bg">
-    <FeatureRow
-      title="Transforming the agency."
-      description='The Delta engagement represented just one key aspect of my purview. As Practice Leader, I transformed the agency itself from a traditional waterfall model to agile software development and lean product management, repositioning the entire practice around "Human Experience Design" (HxD). Over 2.5 years, I pitched and won $4.7M+ in new business and provided product methodology coaching for executives at major Fortune 500s, including The Home Depot. This transformation earned the National Impact Award in 2016.'
-      image="/images/sparks-grove/gala_5.jpg"
-      imageAlt="Human Experience Design"
-      label="Practice Leadership"
-    >
-      <style slot="image">
-        .feature-image img {
-          filter: grayscale(100%) contrast(1.1);
-        }
-      </style>
-    </FeatureRow>
-  </div>
-
-  <section class="full-bleed-closing">
-    <Image
-      src="/images/sparks-grove/20150925_a330a2a_stills_cam1-1179-v2.jpg.jpeg"
-      alt="A330 Inflight"
-      width={1920}
-      height={800}
-      format="webp"
-    />
-  </section>
+  {cs.sections.map(section => <CaseStudySection {...section} />)}
 </CaseStudyLayout>

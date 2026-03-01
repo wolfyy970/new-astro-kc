@@ -54,24 +54,90 @@ All `font-size` values in `src/styles/global.css` are driven by 13 semantic CSS 
 
 **The rule:** breakpoints override `:root` variables only — never individual element `font-size`. To change how any level looks at any viewport, change one variable and it cascades everywhere. No element-level `font-size` magic numbers are permitted (one deliberate exception: `.site-footer p` at 10px watermark scale, documented inline).
 
-### 4. Native CSS Highlighting
+### 4. Native CSS Highlighting (Hotspot Highlighting)
 We've refined the interactive highlighting for "Executive Elegance":
 - **`box-decoration-break: clone`:** Enables precise padding and border-radius application across multiple lines.
 - **Semantic Opacity Control:** All hotspot states (default, hover, active) are governed by dry CSS variables in `global.css`.
 
-### 4. Case Study Template System
-A modular suite of Astro components for consistent, high-performance case study authoring:
-- **CaseStudyHero.astro:** Background-integrated hero sections with LCP-optimized images.
-- **ContextGrid.astro:** Standardized challenge/role/scope layout.
-- **ShowcaseGrid.astro / ShowcaseCard.astro:** Responsive, optimized image galleries.
-- **FeatureRow.astro:** Asymmetric layouts for deep-dive content.
+### 5. Case Study Template System
+
+The case study system has three distinct layers. Each layer has a single responsibility, and a new agent should understand all three before making changes.
+
+```
+src/content/case-studies/
+  manifest.json          ← ordered index of all published studies
+  truist.json            ← self-contained data for one study
+  upwave.json
+  sparks-grove.json
+  two-way-tv.json
+
+src/pages/
+  truist.astro           ← thin shell: imports JSON, renders hero + context + sections
+  upwave.astro
+  sparks-grove.astro
+  two-way-tv.astro
+
+src/components/case-studies/
+  CaseStudySection.astro ← dispatcher: switches on section.type
+  CaseStudyLayout.astro  ← HTML shell, fonts, back nav, accent theming
+  CaseStudyHero.astro    ← full-bleed or device-mockup hero
+  ContextGrid.astro      ← challenge/role/scope/team grid
+  ShowcaseSection.astro  ← section wrapper (light or dark)
+  ShowcaseGrid.astro     ← 1/2/3-column CSS grid
+  ShowcaseCard.astro     ← image + title + description card
+  FeatureRow.astro       ← 50/50 image-beside-text row
+```
+
+**Data flows like this:**
+
+1. `manifest.json` — used by `verify-content.ts` to enumerate all studies and check image paths at build time. Also available for future nav/listing components.
+2. `truist.json` (etc.) — imported directly by the page file. Contains `meta`, `hero`, `context`, and an ordered `sections` array.
+3. `truist.astro` — passes `meta` to `CaseStudyLayout`, `hero` to `CaseStudyHero`, `context` to `ContextGrid`, then maps `cs.sections` through `CaseStudySection`.
+4. `CaseStudySection.astro` — reads `section.type` and renders the correct component tree. Also handles `bg` (background color/gradient wrapper) and `darkBg` (`--case-study-dark` override).
+
+#### Section Type Catalog
+
+Every section in a study JSON file must have a `type` field. `CaseStudySection.astro` switches on this value.
+
+| `type` | What renders | Required JSON fields | Optional JSON fields |
+|---|---|---|---|
+| `cardGrid` | ShowcaseSection + ShowcaseGrid + ShowcaseCard[] | `cards[]` | `columns` (1-3, default 2), `isDark`, `bg`, `darkBg` |
+| `mixedGrid` | ShowcaseSection + 1-col grid (primaryCard) + 2-col grid (secondaryCards) | `primaryCard`, `secondaryCards[]` | `isDark`, `bg`, `darkBg` |
+| `featureRow` | FeatureRow (image beside text, optionally reversed) | `title`, `description`, `image`, `imageAlt` | `reverse`, `label`, `bg` |
+| `textOnly` | ShowcaseSection with no child grid | `title`, `description` | `label`, `isDark`, `bg`, `darkBg` |
+| `largeImage` | ShowcaseSection + constrained full-width Image | `image`, `imageAlt` | `label`, `title`, `description`, `imageWidth`, `imageHeight`, `bg` |
+| `fullBleed` | Full-viewport `<section>` + Image (no text) | `image`, `imageAlt` | `bg` |
+
+**Shared optional fields on every section:** `key` (identifier, not rendered), `label` (eyebrow text), `bg` (any CSS color or gradient), `isDark` (dark variant), `darkBg` (overrides accent-derived dark background).
 
 #### Brand Colour Theming
+
 `CaseStudyLayout` accepts a required `accent` prop (6-digit hex string). The layout passes this to `src/utils/color.ts → buildAccentStyle()`, which validates the hex, derives an RGB triplet and border variant, and emits all three as an inline `style` on `<body>`:
+
 ```
 --accent: #3b1a5a; --accent-rgb: 59, 26, 90; --accent-border: rgba(59, 26, 90, 0.2);
 ```
+
 Inline styles take precedence over any stylesheet rule, so brand colours cannot bleed between pages regardless of CSS bundle concatenation order. If `accent` is omitted or malformed, `resolveHexColor()` falls back to the portfolio amber (`#70541C`) and emits a dev-mode console warning. Components should use `var(--accent, currentColor)` rather than any brand-specific hardcoded fallback.
+
+Dark sections (`isDark: true`) compute their background using `color-mix(in srgb, var(--accent) 80%, #000)`. When this produces an unsuitable result (e.g. Upwave's orange accent yields a dark orange, not the intended charcoal), set `darkBg` on the section to override it — this sets `--case-study-dark` on the wrapper div, which `ShowcaseSection` reads as a fallback before the color-mix computation.
+
+#### How to add a new case study
+
+1. Create `src/content/case-studies/<slug>.json` following the schema in `.vscode/case-study.schema.json`.
+2. Add one entry to `src/content/case-studies/manifest.json` (slug, title, description, accent, ogImage).
+3. Create `src/pages/<slug>.astro` — copy any existing page as a template. The body is always: import JSON, render `CaseStudyHero`, `ContextGrid`, then `cs.sections.map(s => <CaseStudySection {...s} />)`.
+4. Add the new page's filename to the `fileMatch` list in `.vscode/settings.json` so the JSON schema activates in the editor.
+5. Set `CASE_STUDY_LINKS=true` (or add the slug) in your `.env.local` to enable the popover link.
+6. Run `npm run verify` — the script reads from `manifest.json` to discover and validate all image paths.
+
+#### How to add a new section type
+
+1. Add the new type string to the `enum` in `.vscode/case-study.schema.json` → `definitions.Section.allOf[0].properties.type`.
+2. Add an `if/then` rule block in the same file to enforce required fields for the new type.
+3. Add a conditional branch in `src/components/case-studies/CaseStudySection.astro` (follow the existing pattern).
+4. Add a row to the Section Type Catalog table above.
+5. Add any required props to the `Props` interface and destructuring block in `CaseStudySection.astro`.
 
 ## Content Integrity & Performance
 
@@ -80,6 +146,7 @@ A custom TypeScript-driven verification system that ensures 100% link safety:
 - **Schema Validation:** Enforces strict structural integrity for `resume.json` and `popovers.json`, with `try/catch` around JSON parsing so malformed files produce a clean error rather than a stack trace.
 - **Hotspot Validation:** Cross-references `<hotspot>` tags in `resume.json` against `popovers.json` inventory, and enforces a strict 1:1 mapping by failing the build if any duplicate hotspots are used in the resume.
 - **Media Validation:** Validates that every `img` path and every path within `media` arrays exists in the `public/` directory.
+- **Case Study Validation:** Reads `src/content/case-studies/manifest.json` to enumerate all studies, then for each slug verifies that the individual `<slug>.json` file exists and that every image referenced in `meta`, `hero`, and all `sections` entries resolves to a real file in `public/`.
 - **Build Guard:** Integrated into the `npm run build` process to prevent broken deployments.
 
 ### 2. Image Optimization Pipeline

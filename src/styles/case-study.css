@@ -15,8 +15,10 @@
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -65,13 +67,12 @@ section {
 }
 
 .section-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--accent);
   margin-bottom: 20px;
-  opacity: 0.9;
 }
 
 .section-heading {
@@ -134,14 +135,13 @@ section {
   opacity: 0.2;
 }
 
-.meta-item h4 {
-  font-size: 10px;
+.meta-item h3 {
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--text-secondary);
+  color: #767676;
   margin-bottom: 10px;
-  opacity: 0.6;
 }
 
 .meta-item p {

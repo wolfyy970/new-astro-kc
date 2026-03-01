@@ -1,0 +1,233 @@
+---
+/**
+ * CaseStudySection — Section type dispatcher
+ *
+ * Reads the `type` field from a case study section JSON entry and renders
+ * the correct component composition. This is the single place that maps
+ * content intent to component structure.
+ *
+ * ── Adding a new section type ──────────────────────────────────────────────
+ * 1. Add the new type string to the SectionType union below
+ * 2. Add a conditional branch in the template below
+ * 3. Add `if/then` constraints to .vscode/case-study.schema.json
+ * 4. Add a row to the Section Type Catalog in ARCHITECTURE.md
+ * ──────────────────────────────────────────────────────────────────────────
+ */
+import ShowcaseSection from "./ShowcaseSection.astro";
+import ShowcaseGrid from "./ShowcaseGrid.astro";
+import ShowcaseCard from "./ShowcaseCard.astro";
+import FeatureRow from "./FeatureRow.astro";
+import { Image } from "astro:assets";
+
+type SectionType =
+    | "cardGrid"
+    | "mixedGrid"
+    | "featureRow"
+    | "textOnly"
+    | "largeImage"
+    | "fullBleed";
+
+interface Card {
+    title: string;
+    description: string;
+    image: string;
+    imageAlt: string;
+}
+
+interface Props {
+    /** Discriminator — determines which component tree is rendered. */
+    type: SectionType;
+    /** Unique identifier for this section within the study (not rendered). */
+    key?: string;
+
+    // ── Shared text fields ──────────────────────────────────────────────
+    label?: string;
+    title?: string;
+    description?: string;
+
+    // ── Visual / theming ────────────────────────────────────────────────
+    /** Any CSS color or gradient applied as the section background. */
+    bg?: string;
+    /** Use the dark variant of ShowcaseSection / ShowcaseCard. */
+    isDark?: boolean;
+    /**
+     * Overrides the accent-derived dark background on dark sections.
+     * Sets --case-study-dark on the wrapper. Use when the brand accent
+     * color does not produce a suitable dark via color-mix.
+     */
+    darkBg?: string;
+
+    // ── cardGrid ────────────────────────────────────────────────────────
+    /** Grid column count. Defaults to 2. Only used by cardGrid. */
+    columns?: 1 | 2 | 3;
+    /** Cards rendered in the grid. Required for cardGrid. */
+    cards?: Card[];
+
+    // ── mixedGrid ───────────────────────────────────────────────────────
+    /** Lead card rendered full-width above secondaryCards. */
+    primaryCard?: Card;
+    /** Supporting cards rendered in a 2-column grid. */
+    secondaryCards?: Card[];
+
+    // ── featureRow ──────────────────────────────────────────────────────
+    /** Flip image/text order so the image appears on the right. */
+    reverse?: boolean;
+
+    // ── featureRow | largeImage | fullBleed ─────────────────────────────
+    image?: string;
+    imageAlt?: string;
+
+    // ── largeImage ──────────────────────────────────────────────────────
+    /** Intrinsic width for Astro image optimisation. Defaults to 1300. */
+    imageWidth?: number;
+    /** Intrinsic height for Astro image optimisation. Defaults to 800. */
+    imageHeight?: number;
+}
+
+const {
+    type,
+    label,
+    title = "",
+    description = "",
+    bg,
+    isDark = false,
+    darkBg,
+    columns = 2,
+    reverse = false,
+    cards = [],
+    primaryCard,
+    secondaryCards = [],
+    image,
+    imageAlt = "",
+    imageWidth = 1300,
+    imageHeight = 800,
+} = Astro.props;
+
+// Compose the wrapper style from bg color and optional --case-study-dark override.
+const wrapperParts: string[] = [];
+if (bg) wrapperParts.push(`background: ${bg}`);
+if (darkBg) wrapperParts.push(`--case-study-dark: ${darkBg}`);
+const wrapperStyle = wrapperParts.join("; ") || undefined;
+---
+
+<!--
+  The outer div carries optional bg/darkBg styles. An unstyled div has no
+  visual or layout effect, so we always render it for simplicity.
+-->
+<div style={wrapperStyle}>
+
+    {type === "cardGrid" && (
+        <ShowcaseSection label={label} title={title} description={description} isDark={isDark}>
+            <ShowcaseGrid columns={columns}>
+                {cards.map(card => (
+                    <ShowcaseCard
+                        title={card.title}
+                        description={card.description}
+                        image={card.image}
+                        imageAlt={card.imageAlt}
+                        isDark={isDark}
+                    />
+                ))}
+            </ShowcaseGrid>
+        </ShowcaseSection>
+    )}
+
+    {type === "mixedGrid" && primaryCard && (
+        <ShowcaseSection label={label} title={title} description={description} isDark={isDark}>
+            <ShowcaseGrid columns={1}>
+                <ShowcaseCard
+                    title={primaryCard.title}
+                    description={primaryCard.description}
+                    image={primaryCard.image}
+                    imageAlt={primaryCard.imageAlt}
+                    isDark={isDark}
+                />
+            </ShowcaseGrid>
+            <ShowcaseGrid columns={2}>
+                {secondaryCards.map(card => (
+                    <ShowcaseCard
+                        title={card.title}
+                        description={card.description}
+                        image={card.image}
+                        imageAlt={card.imageAlt}
+                        isDark={isDark}
+                    />
+                ))}
+            </ShowcaseGrid>
+        </ShowcaseSection>
+    )}
+
+    {type === "featureRow" && image && (
+        <FeatureRow
+            label={label}
+            title={title}
+            description={description}
+            image={image}
+            imageAlt={imageAlt}
+            reverse={reverse}
+        />
+    )}
+
+    {type === "textOnly" && (
+        <ShowcaseSection label={label} title={title} description={description} isDark={isDark} />
+    )}
+
+    {type === "largeImage" && image && (
+        <ShowcaseSection label={label} title={title} description={description} isDark={isDark}>
+            <div class="large-image-container">
+                <Image
+                    src={image}
+                    alt={imageAlt}
+                    width={imageWidth}
+                    height={imageHeight}
+                    format="webp"
+                />
+            </div>
+        </ShowcaseSection>
+    )}
+
+    {type === "fullBleed" && image && (
+        <section class="full-bleed">
+            <Image
+                src={image}
+                alt={imageAlt}
+                width={1920}
+                height={800}
+                format="webp"
+            />
+        </section>
+    )}
+
+</div>
+
+<style>
+    /* largeImage: constrained, elevated image inside a ShowcaseSection */
+    .large-image-container {
+        margin-top: 80px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 32px 100px rgba(0, 0, 0, 0.12);
+        max-width: 1300px;
+        margin-left: auto;
+        margin-right: auto;
+        background: #fff;
+    }
+
+    .large-image-container img {
+        width: 100%;
+        display: block;
+    }
+
+    /* fullBleed: viewport-height cinematic image strip */
+    .full-bleed {
+        height: 70vh;
+        overflow: hidden;
+    }
+
+    .full-bleed img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+</style>

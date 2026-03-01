@@ -63,8 +63,10 @@ const accentStyle = buildAccentStyle(accent);
   </head>
   <body style={accentStyle}>
     <a href="#main-content" class="skip-link">Skip to main content</a>
-    <nav class="back-nav">
-      <a class="back-link" href="/">&larr; Back</a>
+    <nav class="back-nav" aria-label="Primary">
+      <a class="back-link" href="/" aria-label="Back to resume">
+        <span aria-hidden="true">&larr;</span> Back
+      </a>
     </nav>
 
     <main id="main-content">

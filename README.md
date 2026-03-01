@@ -16,7 +16,7 @@ High-fidelity Design Leadership Portfolio built with Astro 5.0. This project dem
 - **Content Integrity Suite:** Automated validation of hotspot links, image paths, and media arrays to prevent regressions.
 - **Image Optimization Pipeline:** Build-time asset processing using Astro 5.0 for high-performance WebP delivery.
 - **Brand-Accurate Case Study Theming:** Each case study page carries its own `accent` color via `CaseStudyLayout`. A validated server-side utility (`src/utils/color.ts`) derives `--accent`, `--accent-rgb`, and `--accent-border` CSS custom properties, applied as an inline body style so brand colours can never bleed between pages regardless of CSS bundle order.
-- **Component-Based Case Studies:** A modular template architecture for rapid, consistent content authoring.
+- **Data-Driven Case Studies:** Content-separated architecture — each study is a self-contained `<slug>.json` file; a dispatcher component (`CaseStudySection.astro`) switches on a `type` field to render the correct layout composition. Adding a new case study or a new section type requires no changes to existing pages.
 
 ## Quick Start
 

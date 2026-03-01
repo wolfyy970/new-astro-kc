@@ -1,0 +1,30 @@
+[
+  {
+    "slug": "truist",
+    "title": "Truist Financial",
+    "description": "30-person design org · $66B merger · America's 7th largest bank",
+    "accent": "#3b1a5a",
+    "ogImage": "/images/truist/1771246115132-cd678175.png"
+  },
+  {
+    "slug": "upwave",
+    "title": "Upwave",
+    "description": "0 → 1M users in 8 months · Turner internal venture · Webby nomination",
+    "accent": "#f26522",
+    "ogImage": "/images/upwave/turner-upwave-site.png"
+  },
+  {
+    "slug": "sparks-grove",
+    "title": "Sparks Grove — Delta Air Lines",
+    "description": "$4.7M in new business · Delta News Hub · National Impact Award",
+    "accent": "#c8102e",
+    "ogImage": "/images/sparks-grove/news-hub.jpg"
+  },
+  {
+    "slug": "two-way-tv",
+    "title": "Two Way TV",
+    "description": "Founding team · World's first multiplayer TV games · BAFTA nomination",
+    "accent": "#00c2e0",
+    "ogImage": "/images/two-way-tv/fruity4some.png"
+  }
+]

@@ -26,7 +26,8 @@ const { label, title, description, isDark = false } = Astro.props;
     }
 
     .showcase-section.is-dark {
-        background: var(--truist-deep, #2d1446);
+        /* Pages can set --case-study-dark to override the computed dark bg */
+        background: var(--case-study-dark, color-mix(in srgb, var(--accent, #2d1446) 80%, #000));
         color: #fff;
     }
 
@@ -36,12 +37,16 @@ const { label, title, description, isDark = false } = Astro.props;
     }
 
     .section-label {
-        font-size: 13px; /* Was 11px */
+        font-size: 12px;
         font-weight: 600;
         letter-spacing: 4px;
         text-transform: uppercase;
-        color: var(--truist-teal, #00b4a0);
+        color: var(--accent, currentColor);
         margin-bottom: 24px;
+    }
+
+    .is-dark .section-label {
+        color: rgba(255, 255, 255, 0.9);
     }
 
     .section-heading {

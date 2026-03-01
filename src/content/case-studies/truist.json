@@ -1,0 +1,99 @@
+{
+  "meta": {
+    "title": "Truist — Digital Banking Platform",
+    "description": "I built and scaled a 30-person design org at SunTrust across all lines of business, then led business and commercial banking design through the $66B merger to Truist.",
+    "ogImage": "/images/truist/1771246115132-cd678175.png",
+    "accent": "#3b1a5a"
+  },
+  "hero": {
+    "label": "Truist Financial",
+    "title": "Defining the Digital Experience for America's 7th Largest Bank",
+    "subtitle": "I built and scaled a 30-person design organization at SunTrust — owning every line of business — then led business and commercial banking design through the largest bank merger since 2008.",
+    "image": "/images/truist/truist-mobile-app-tour-620x1150.jpg",
+    "imageAlt": "Truist mobile app screens"
+  },
+  "context": {
+    "challenge": "Scaling a design practice ahead of a $66B merger.",
+    "role": "Head of UX Design & Research",
+    "company": "SunTrust → Truist Financial",
+    "scope": "All lines of business (SunTrust); Business & Commercial Banking (Truist); Design System",
+    "team": "UX/UI Designers, Researchers",
+    "body": "I inherited a nascent UX team at SunTrust with no research function and no independent design voice. I scaled it to a 30-person design organization covering Consumer, Small Business, Wealth Management, and Commercial Banking. When the $66B merger with BB&T created Truist, I led the UX methodology and design execution for business and commercial banking across the newly merged entity."
+  },
+  "sections": [
+    {
+      "key": "ecosystem",
+      "type": "cardGrid",
+      "columns": 3,
+      "bg": "#f3eff8",
+      "label": "The Ecosystem",
+      "title": "Architecting experience at scale.",
+      "description": "I led UX design and research across the entirety of SunTrust's digital footprint. Managing at this scale required establishing an evidence-based design methodology and successfully integrating the voice of the customer into the Scaled Agile Framework (SAFe).",
+      "cards": [
+        {
+          "title": "Consumer Mobile",
+          "description": "Account management, transfers, and day-to-day banking designed for speed and clarity.",
+          "image": "/images/truist/1771246123096-e2ad64a0.png",
+          "imageAlt": "Truist mobile home screen"
+        },
+        {
+          "title": "Business Banking",
+          "description": "Multi-account management, notifications, and commercial tools for business clients.",
+          "image": "/images/truist/f6b34fae57ddb0e3fc45c70cca0e5130.webp",
+          "imageAlt": "Truist business banking dashboard"
+        },
+        {
+          "title": "Web Platform",
+          "description": "Full-featured dashboard with spending analytics, account activity, and cross-product visibility.",
+          "image": "/images/truist/1771246117084-2367c12e.png",
+          "imageAlt": "Truist dashboard on laptop"
+        }
+      ]
+    },
+    {
+      "key": "merger",
+      "type": "cardGrid",
+      "columns": 2,
+      "isDark": true,
+      "label": "Post-Merger Integration",
+      "title": "Translating brand into a universal design system.",
+      "description": "Following the merger, I directed the creative team responsible for translating the new Truist brand into comprehensive visual design and UI standards. The brand's digital palette was heavily constrained, dominated by Truist Purple — the signature hue born from BB&T burgundy and SunTrust blue — which made establishing sufficient contrast, hierarchy, and range across UI states a real design challenge. We defined the Truist design system and UI standards across all digital products for the newly merged entity.",
+      "cards": [
+        {
+          "title": "Systems Architecture",
+          "description": "Oversaw the structural integration of two legacy banking systems into a unified UI pattern library.",
+          "image": "/images/truist/1771281467064-e8609008.png",
+          "imageAlt": "Truist app interaction flows"
+        },
+        {
+          "title": "Cross-Platform Scale",
+          "description": "Managed strategy for responsive deployment across mobile, web, and internal banking portals.",
+          "image": "/images/truist/1771281469482-048153c4.png",
+          "imageAlt": "Truist cross-device payments"
+        },
+        {
+          "title": "Methodology Integration",
+          "description": "Embedded dedicated research and design roles into SAFe agile pods.",
+          "image": "/images/truist/1771281472014-694a3592.png",
+          "imageAlt": "Truist biometric security"
+        },
+        {
+          "title": "Enterprise Standards",
+          "description": "Established the governance models for the Truist design system.",
+          "image": "/images/truist/1771246115132-cd678175.png",
+          "imageAlt": "Truist responsive design system"
+        }
+      ]
+    },
+    {
+      "key": "wealth",
+      "type": "largeImage",
+      "bg": "#f7f5f2",
+      "label": "Commercial & Wealth",
+      "title": "Strategic Business Lines.",
+      "description": "I exclusively led the UX domain for Small Business and Commercial Banking through the Truist transition, directing teams to design the tools that manage high-value portfolios and enterprise operational capital.",
+      "image": "/images/truist/original.png",
+      "imageAlt": "Truist wealth management dashboard"
+    }
+  ]
+}

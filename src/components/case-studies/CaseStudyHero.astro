@@ -62,9 +62,9 @@ const { title, subtitle, label, image, imageAlt, background } = Astro.props;
         text-align: center;
         background: linear-gradient(
             135deg,
-            #1d0b2e 0%,
-            var(--hero-bg-color, #3b1a5a) 50%,
-            #512678 100%
+            color-mix(in srgb, var(--accent, #3b1a5a) 60%, #000) 0%,
+            var(--accent, #3b1a5a) 50%,
+            color-mix(in srgb, var(--accent, #3b1a5a) 80%, #fff) 100%
         );
         overflow: hidden;
         padding: 160px 80px;
@@ -122,11 +122,11 @@ const { title, subtitle, label, image, imageAlt, background } = Astro.props;
     }
 
     .hero-label {
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 600;
         letter-spacing: 4px;
         text-transform: uppercase;
-        color: var(--hero-accent-color, #00b4a0);
+        color: rgba(255, 255, 255, 0.9);
         margin-bottom: 32px;
     }
 

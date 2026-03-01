@@ -44,6 +44,12 @@ const { title, description, image, imageAlt, isDark = false } = Astro.props;
         box-shadow: 0 32px 64px rgba(0, 0, 0, 0.1);
     }
 
+    @media (prefers-reduced-motion: reduce) {
+        .showcase-card:hover {
+            transform: none;
+        }
+    }
+
     .showcase-card.is-dark {
         background: rgba(255, 255, 255, 0.03);
         border: 1px solid rgba(255, 255, 255, 0.05);
@@ -55,7 +61,7 @@ const { title, description, image, imageAlt, isDark = false } = Astro.props;
     }
 
     .showcase-card.is-dark .card-text p {
-        color: rgba(255, 255, 255, 0.4);
+        color: rgba(255, 255, 255, 0.75);
     }
 
     img {

@@ -1,0 +1,178 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Case Study Content",
+  "description": "Self-contained data for a single case study. The page template imports this file and iterates cs.sections, passing each entry to CaseStudySection.astro which dispatches on `type`. To add a new case study: create a new file here and add a one-line entry to manifest.json. To add a new section type: add the enum value here, add a branch in CaseStudySection.astro, and add a row to the type catalog in ARCHITECTURE.md.",
+  "type": "object",
+  "required": ["meta", "hero", "context", "sections"],
+  "additionalProperties": false,
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["title", "description", "accent"],
+      "additionalProperties": false,
+      "properties": {
+        "title":       { "type": "string", "description": "Browser tab title and OG title." },
+        "description": { "type": "string", "description": "Meta description and OG description." },
+        "ogImage":     { "type": "string", "pattern": "^/images/.*", "description": "OG share image path (relative to /public)." },
+        "accent":      { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$", "description": "Brand accent color as a 6-digit hex, e.g. \"#3b1a5a\"." }
+      }
+    },
+
+    "hero": {
+      "type": "object",
+      "required": ["label", "title", "subtitle"],
+      "additionalProperties": false,
+      "properties": {
+        "label":      { "type": "string", "description": "Small eyebrow label above the title." },
+        "title":      { "type": "string", "description": "Primary hero heading (rendered as h1)." },
+        "subtitle":   { "type": "string", "description": "Supporting paragraph beneath the title." },
+        "image":      { "type": "string", "pattern": "^/images/.*", "description": "Standalone hero image (right-side device mockup). Use either image or background, not both." },
+        "imageAlt":   { "type": "string", "description": "Alt text for the standalone hero image." },
+        "background": { "type": "string", "pattern": "^/images/.*", "description": "Full-bleed background photograph. Use either image or background, not both." }
+      }
+    },
+
+    "context": {
+      "type": "object",
+      "required": ["challenge", "role", "company", "scope", "team", "body"],
+      "additionalProperties": false,
+      "properties": {
+        "challenge": { "type": "string", "description": "One-line challenge statement, displayed as the section heading." },
+        "role":      { "type": "string", "description": "Job title for the meta grid." },
+        "company":   { "type": "string", "description": "Company or client name for the meta grid." },
+        "scope":     { "type": "string", "description": "Scope of work for the meta grid." },
+        "team":      { "type": "string", "description": "Team composition or key outcome for the meta grid." },
+        "body":      { "type": "string", "description": "Full prose paragraph describing the engagement." }
+      }
+    },
+
+    "sections": {
+      "type": "array",
+      "description": "Ordered list of sections. Render order follows array order. Each entry is dispatched by CaseStudySection.astro based on its `type` field.",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/Section" }
+    }
+  },
+
+  "definitions": {
+    "Card": {
+      "type": "object",
+      "required": ["title", "description", "image", "imageAlt"],
+      "additionalProperties": false,
+      "properties": {
+        "title":       { "type": "string" },
+        "description": { "type": "string" },
+        "image":       { "type": "string", "pattern": "^/images/.*" },
+        "imageAlt":    { "type": "string" }
+      }
+    },
+
+    "SectionBase": {
+      "type": "object",
+      "required": ["key", "type"],
+      "properties": {
+        "key": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+          "description": "Unique identifier for this section within the study. Used for debugging and future anchor links. Not rendered."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["cardGrid", "mixedGrid", "featureRow", "textOnly", "largeImage", "fullBleed"],
+          "description": "Determines which component tree CaseStudySection renders. See ARCHITECTURE.md § Section Type Catalog for field requirements per type."
+        },
+        "label":       { "type": "string", "description": "Small eyebrow label above the section heading." },
+        "title":       { "type": "string", "description": "Section heading (rendered as h2)." },
+        "description": { "type": "string", "description": "Section body copy." },
+        "bg": {
+          "type": "string",
+          "description": "Background color or CSS gradient for the section. Any valid CSS value: hex (#f3eff8), named color, gradient, etc."
+        },
+        "isDark": {
+          "type": "boolean",
+          "description": "Activate the dark variant of ShowcaseSection and ShowcaseCard. Background defaults to color-mix(accent, 80%, black) unless darkBg is set."
+        },
+        "darkBg": {
+          "type": "string",
+          "description": "Overrides the computed dark background. Use when the accent-derived dark doesn't match the brand palette (e.g. Upwave charcoal #1e1e1e, Sparks Grove navy #0b1b2b). Sets --case-study-dark on the wrapper."
+        }
+      }
+    },
+
+    "Section": {
+      "allOf": [
+        { "$ref": "#/definitions/SectionBase" }
+      ],
+      "if":   { "properties": { "type": { "const": "cardGrid" } } },
+      "then": {
+        "required": ["cards"],
+        "properties": {
+          "columns": {
+            "type": "integer",
+            "enum": [1, 2, 3],
+            "default": 2,
+            "description": "Grid column count. Collapses to 1 column below 1024px regardless."
+          },
+          "cards": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/Card" },
+            "minItems": 1,
+            "description": "Cards rendered inside the grid."
+          }
+        }
+      },
+      "else": {
+        "if":   { "properties": { "type": { "const": "mixedGrid" } } },
+        "then": {
+          "required": ["primaryCard", "secondaryCards"],
+          "properties": {
+            "primaryCard":    { "$ref": "#/definitions/Card", "description": "Lead card rendered full-width (1-column grid) above secondaryCards." },
+            "secondaryCards": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Card" },
+              "minItems": 1,
+              "description": "Supporting cards rendered in a 2-column grid beneath primaryCard."
+            }
+          }
+        },
+        "else": {
+          "if":   { "properties": { "type": { "const": "featureRow" } } },
+          "then": {
+            "required": ["title", "description", "image", "imageAlt"],
+            "properties": {
+              "reverse": {
+                "type": "boolean",
+                "default": false,
+                "description": "Flip image and text order so the image appears on the right."
+              },
+              "image":    { "type": "string", "pattern": "^/images/.*" },
+              "imageAlt": { "type": "string" }
+            }
+          },
+          "else": {
+            "if":   { "properties": { "type": { "const": "largeImage" } } },
+            "then": {
+              "required": ["image", "imageAlt"],
+              "properties": {
+                "image":       { "type": "string", "pattern": "^/images/.*", "description": "Full-width constrained image rendered inside the section." },
+                "imageAlt":    { "type": "string" },
+                "imageWidth":  { "type": "integer", "default": 1300, "description": "Intrinsic width hint for Astro image optimisation." },
+                "imageHeight": { "type": "integer", "default": 800,  "description": "Intrinsic height hint for Astro image optimisation." }
+              }
+            },
+            "else": {
+              "if":   { "properties": { "type": { "const": "fullBleed" } } },
+              "then": {
+                "required": ["image", "imageAlt"],
+                "properties": {
+                  "image":    { "type": "string", "pattern": "^/images/.*", "description": "Full-viewport cinematic image strip. No text is rendered." },
+                  "imageAlt": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

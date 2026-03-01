@@ -11,6 +11,21 @@
                 "/src/content/resume.json"
             ],
             "url": "./.vscode/resume.schema.json"
+        },
+        {
+            "fileMatch": [
+                "/src/content/case-studies/manifest.json"
+            ],
+            "url": "./.vscode/case-study-manifest.schema.json"
+        },
+        {
+            "fileMatch": [
+                "/src/content/case-studies/truist.json",
+                "/src/content/case-studies/upwave.json",
+                "/src/content/case-studies/sparks-grove.json",
+                "/src/content/case-studies/two-way-tv.json"
+            ],
+            "url": "./.vscode/case-study.schema.json"
         }
     ]
 }

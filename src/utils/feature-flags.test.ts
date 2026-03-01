@@ -43,6 +43,18 @@ describe('isCaseStudyLinkEnabled', () => {
         vi.stubEnv('CASE_STUDY_LINKS', 'false');
         expect(isCaseStudyLinkEnabled('/two-way-tv')).toBe(false);
     });
+
+    it('returns true for any slug when CASE_STUDY_LINKS is the literal string "true"', () => {
+        vi.stubEnv('CASE_STUDY_LINKS', 'true');
+        expect(isCaseStudyLinkEnabled('/truist')).toBe(true);
+        expect(isCaseStudyLinkEnabled('/sparks-grove')).toBe(true);
+        expect(isCaseStudyLinkEnabled('/some-future-page')).toBe(true);
+    });
+
+    it('is case-insensitive for the "true" shorthand', () => {
+        vi.stubEnv('CASE_STUDY_LINKS', 'TRUE');
+        expect(isCaseStudyLinkEnabled('/truist')).toBe(true);
+    });
 });
 
 describe('applyFeatureFlags', () => {
@@ -88,6 +100,17 @@ describe('applyFeatureFlags', () => {
         };
         const result = applyFeatureFlags(popovers);
         expect(result.magicwall).toEqual(popovers.magicwall);
+    });
+
+    it('preserves all links when CASE_STUDY_LINKS is "true"', () => {
+        vi.stubEnv('CASE_STUDY_LINKS', 'true');
+        const popovers: PopoverMap = {
+            bafta: { label: 'BAFTA', text: 'Won a BAFTA.', link: '/two-way-tv', linkText: 'View →' },
+            other: { label: 'Other', text: 'Other text.', link: '/some-page', linkText: 'View →' },
+        };
+        const result = applyFeatureFlags(popovers);
+        expect(result.bafta.link).toBe('/two-way-tv');
+        expect(result.other.link).toBe('/some-page');
     });
 
     it('handles a mixed map — strips disabled, preserves enabled', () => {

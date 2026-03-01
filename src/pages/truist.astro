@@ -2,168 +2,33 @@
 import CaseStudyLayout from "../layouts/CaseStudyLayout.astro";
 import CaseStudyHero from "../components/case-studies/CaseStudyHero.astro";
 import ContextGrid from "../components/case-studies/ContextGrid.astro";
-import ShowcaseSection from "../components/case-studies/ShowcaseSection.astro";
-import ShowcaseGrid from "../components/case-studies/ShowcaseGrid.astro";
-import ShowcaseCard from "../components/case-studies/ShowcaseCard.astro";
-import FeatureRow from "../components/case-studies/FeatureRow.astro";
-import { Image } from "astro:assets";
+import CaseStudySection from "../components/case-studies/CaseStudySection.astro";
+import cs from "../content/case-studies/truist.json";
 ---
 
 <CaseStudyLayout
-  title="Truist — Digital Banking Platform"
-  description="How I built and scaled a 30-person design org at SunTrust across all lines of business, then led business and commercial banking design through the $66B merger to Truist."
-  ogImage="/images/truist/1771246115132-cd678175.png"
-  accent="#3b1a5a"
+  title={cs.meta.title}
+  description={cs.meta.description}
+  ogImage={cs.meta.ogImage}
+  accent={cs.meta.accent}
 >
-  <style>
-    :root {
-      --truist-purple: #3b1a5a;
-      --truist-deep: #2d1446;
-      --truist-teal: #00b4a0;
-      --soft-purple: #f3eff8;
-      --warm-white: #f7f5f2;
-    }
-
-    .ecosystem-bg {
-      background: var(--soft-purple);
-    }
-
-    .wealth-bg {
-      background: var(--warm-white);
-    }
-
-    .wealth-hero-img {
-      margin-top: 80px;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 32px 100px rgba(0, 0, 0, 0.12);
-      max-width: 1300px;
-      margin-left: auto;
-      margin-right: auto;
-      background: #fff;
-    }
-
-    .wealth-hero-img img {
-      width: 100%;
-      display: block;
-    }
-  </style>
-
   <CaseStudyHero
-    label="Truist Financial"
-    title="Defining the Digital Experience for America's 7th Largest Bank"
-    subtitle="I built and scaled a 30-person design organization at SunTrust — owning every line of business — then led business and commercial banking design through the largest bank merger since 2008."
-    image="/images/truist/truist-mobile-app-tour-620x1150.jpg"
-    imageAlt="Truist mobile app screens"
+    label={cs.hero.label}
+    title={cs.hero.title}
+    subtitle={cs.hero.subtitle}
+    image={cs.hero.image}
+    imageAlt={cs.hero.imageAlt}
   />
 
   <ContextGrid
-    challenge="Scaling a design practice ahead of a $66B merger."
-    role="Head of UX Design & Research"
-    company="SunTrust → Truist Financial"
-    scope="All lines of business (SunTrust); Business & Commercial Banking (Truist); Design System"
-    team="UX/UI Designers, Researchers, Product Managers, Engineering"
+    challenge={cs.context.challenge}
+    role={cs.context.role}
+    company={cs.context.company}
+    scope={cs.context.scope}
+    team={cs.context.team}
   >
-    I inherited a nascent UX team at SunTrust with no research function and no
-    independent design voice. I scaled it to a 30-person multidisciplinary
-    organization covering Consumer, Small Business, Wealth Management, and
-    Commercial Banking. I rebooted the SunTrust Innovation Accelerator
-    Studio—introducing strategic foresight and presenting future-of-banking
-    scenarios to the C-Suite that informed merger strategy. When the $66B merger
-    with BB&T created Truist, I led the UX methodology and design execution for
-    business and commercial banking across the newly merged entity.
+    {cs.context.body}
   </ContextGrid>
 
-  <div class="ecosystem-bg">
-    <ShowcaseSection
-      label="The Ecosystem"
-      title="Architecting experience at scale."
-      description="I led UX design and research across the entirety of SunTrust's digital footprint. Managing at this scale required establishing an evidence-based design methodology and successfully integrating the voice of the customer into a Scaled Agile Framework (SAFe) environment."
-    >
-      <ShowcaseGrid columns={3}>
-        <ShowcaseCard
-          title="Consumer Mobile"
-          description="Account management, transfers, and day-to-day banking designed for speed and clarity."
-          image="/images/truist/1771246123096-e2ad64a0.png"
-          imageAlt="Truist mobile home screen"
-        />
-        <ShowcaseCard
-          title="Business Banking"
-          description="Multi-account management, notifications, and commercial tools for business clients."
-          image="/images/truist/f6b34fae57ddb0e3fc45c70cca0e5130.webp"
-          imageAlt="Truist business banking dashboard"
-        />
-        <ShowcaseCard
-          title="Web Platform"
-          description="Full-featured dashboard with spending analytics, account activity, and cross-product visibility."
-          image="/images/truist/1771246117084-2367c12e.png"
-          imageAlt="Truist dashboard on laptop"
-        />
-      </ShowcaseGrid>
-    </ShowcaseSection>
-  </div>
-
-  <ShowcaseSection
-    label="Post-Merger Integration"
-    title="Translating brand into a universal design system."
-    description="Following the merger, I directed the teams responsible for translating the new Truist brand into comprehensive visual design and UI standards. We defined and deployed the Truist design system across all digital products for the newly merged entity."
-    isDark
-  >
-    <ShowcaseGrid columns={2}>
-      <ShowcaseCard
-        isDark
-        title="Systems Architecture"
-        description="Oversaw the structural integration of two legacy banking systems into a unified UI pattern library."
-        image="/images/truist/1771281467064-e8609008.png"
-        imageAlt="Truist app interaction flows"
-      />
-      <ShowcaseCard
-        isDark
-        title="Cross-Platform Scale"
-        description="Managed strategy for responsive deployment across mobile, web, and internal banking portals."
-        image="/images/truist/1771281469482-048153c4.png"
-        imageAlt="Truist cross-device payments"
-      />
-      <ShowcaseCard
-        isDark
-        title="Methodology Integration"
-        description="Embedded dedicated research and design roles into SAFe agile pods."
-        image="/images/truist/1771281472014-694a3592.png"
-        imageAlt="Truist biometric security"
-      />
-      <ShowcaseCard
-        isDark
-        title="Enterprise Standards"
-        description="Established the governance models for the Truist design system."
-        image="/images/truist/1771246115132-cd678175.png"
-        imageAlt="Truist responsive design system"
-      />
-    </ShowcaseGrid>
-  </ShowcaseSection>
-
-  <FeatureRow
-    title="The Innovation Accelerator Studio."
-    description="Beyond production software, I rebooted and repositioned the SunTrust Innovation Accelerator Studio. I introduced service design, customer journey mapping, and strategic foresight as core competencies—culminating in an executive foresight exercise that shaped the organizational vision ahead of the merger."
-    image="/images/truist/1771281481615-23cda954.jpg"
-    imageAlt="Truist onboarding flow on laptop"
-    label="Innovation Leadership"
-  />
-
-  <div class="wealth-bg">
-    <ShowcaseSection
-      label="Commercial & Wealth"
-      title="Strategic Business Lines."
-      description="I exclusively led the UX domain for Small Business and Commercial Banking through the Truist transition, directing teams to design the tools that manage high-value portfolios and enterprise operational capital."
-    >
-      <div class="wealth-hero-img">
-        <Image
-          src="/images/truist/original.png"
-          alt="Truist wealth management dashboard"
-          width={1300}
-          height={800}
-          format="webp"
-        />
-      </div>
-    </ShowcaseSection>
-  </div>
+  {cs.sections.map(section => <CaseStudySection {...section} />)}
 </CaseStudyLayout>

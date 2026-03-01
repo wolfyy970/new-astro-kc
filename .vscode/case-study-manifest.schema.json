@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Case Study Manifest",
+  "description": "Ordered list of all case studies. This is the single authoritative index used by navigation, listing components, and the content verification script. Add one entry here when creating a new case study.",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "required": ["slug", "title", "description", "accent"],
+    "additionalProperties": false,
+    "properties": {
+      "slug": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]+$",
+        "description": "URL slug matching the page filename and the individual JSON filename, e.g. \"truist\" for /truist and case-studies/truist.json."
+      },
+      "title": {
+        "type": "string",
+        "description": "Short display title used in navigation and listing contexts."
+      },
+      "description": {
+        "type": "string",
+        "description": "One-line summary shown in listing/navigation cards."
+      },
+      "accent": {
+        "type": "string",
+        "pattern": "^#[0-9a-fA-F]{6}$",
+        "description": "Brand accent color. Must match the accent field in the individual study file."
+      },
+      "ogImage": {
+        "type": "string",
+        "pattern": "^/images/.*",
+        "description": "Optional thumbnail for listing cards. Mirrors the ogImage from the individual study file."
+      }
+    }
+  }
+}
