@@ -22,78 +22,84 @@
   },
   "sections": [
     {
-      "key": "ecosystem",
+      "key": "consumer-suite",
       "type": "cardGrid",
       "columns": 3,
       "bg": "#f3eff8",
-      "label": "The Ecosystem",
-      "title": "Architecting experience at scale.",
-      "description": "I led UX design and research across the entirety of SunTrust's digital footprint. Managing at this scale required establishing an evidence-based design methodology and successfully integrating the voice of the customer into the Scaled Agile Framework (SAFe).",
+      "label": "The Consumer Suite",
+      "title": "Banking designed for every surface.",
+      "description": "At SunTrust, I owned UX across the full consumer digital footprint — establishing the design language, components, and interaction models that carried forward into Truist. The portfolio spanned the core mobile app, an Apple Watch experience surfacing the most actionable banking moments at a glance, and Truist Assist, an AI-powered in-app assistant that guided customers through spending insights, card controls, and escalation to live agents — designed in both light and dark modes.",
       "cards": [
         {
           "title": "Consumer Mobile",
-          "description": "Account management, transfers, and day-to-day banking designed for speed and clarity.",
+          "description": "Core account management and day-to-day banking — accounts, transfers, and Zelle — designed for speed and clarity.",
           "image": "/images/truist/1771246123096-e2ad64a0.png",
-          "imageAlt": "Truist mobile home screen"
+          "imageAlt": "Truist mobile home screen showing accounts, cards, and quick links for Janet"
         },
         {
-          "title": "Business Banking",
-          "description": "Multi-account management, notifications, and commercial tools for business clients.",
-          "image": "/images/truist/f6b34fae57ddb0e3fc45c70cca0e5130.webp",
-          "imageAlt": "Truist business banking dashboard"
+          "title": "Wearable Banking",
+          "description": "An Apple Watch experience delivering balance, upcoming bills, Zelle activity, and QR payments — the right information, at the right moment.",
+          "image": "/images/truist/1771281472014-694a3592.png",
+          "imageAlt": "Truist Apple Watch app showing Transfer and Pay with micro-banking widgets for balance, bills, and recent payments"
         },
         {
-          "title": "Web Platform",
-          "description": "Full-featured dashboard with spending analytics, account activity, and cross-product visibility.",
-          "image": "/images/truist/1771246117084-2367c12e.png",
-          "imageAlt": "Truist dashboard on laptop"
+          "title": "Truist Assist",
+          "description": "A conversational AI assistant built into the app — with contextual menus for spending insights and card controls, and a graceful handoff path to a live agent.",
+          "image": "/images/truist/1771281467706-585c83de.png",
+          "imageAlt": "Truist Assist chatbot screens in light and dark mode showing conversation flow from home screen through credit card offers to agent escalation"
         }
       ]
     },
     {
-      "key": "merger",
+      "key": "web-platform",
+      "type": "featureRow",
+      "label": "The Web Platform",
+      "title": "The full picture, at any screen size.",
+      "description": "The web banking experience extended the same design system to larger screens — giving customers a richer view of their finances. Spending analytics, account activity, and credit card management surface together in a layout scaled for tablet and desktop. At SunTrust, I established the responsive grid system governing how these layouts adapted across breakpoints, from 4-column mobile through 8-column tablet to 12-column desktop.",
+      "image": "/images/truist/1771246117739-a469a233.png",
+      "imageAlt": "Truist banking dashboard on iPad showing recent activity, weekly spending chart, and credit card management alongside AirPods and Apple Watch"
+    },
+    {
+      "key": "infrastructure",
+      "type": "featureRow",
+      "reverse": true,
+      "label": "Design Infrastructure",
+      "title": "A design system scaled to a Top 10 bank.",
+      "description": "Scaling design across a Top 10 U.S. bank requires more than visual standards — it requires platform infrastructure. The Digital Feature Toggle System (DFTS) is an internal tool used by product and engineering teams to manage feature flags, banners, and supported app versions across iOS and Android — without code deploys. This gave product teams direct control over phased feature delivery to Truist's millions of customers, reducing deployment risk and accelerating the pace of iteration.",
+      "image": "/images/truist/1771281467710-eb73fe7f.png",
+      "imageAlt": "Top 10 U.S. Bank composite showing Truist mobile home screen, Face ID sign-in, and the Digital Feature Toggle System dashboard"
+    },
+    {
+      "key": "truist-one",
+      "type": "featureRow",
+      "label": "Product Strategy",
+      "title": "Designing out overdraft fees.",
+      "description": "Truist One Banking was shaped by direct client research: customers asked for less complexity and freedom from overdraft anxiety. The resulting product eliminated overdraft fees entirely, introduced a $100 negative balance buffer for eligible clients, and distilled account opening into a streamlined, multi-account onboarding flow. It launched in July 2022. Truist projected the changes would deliver $300 million in annual savings for clients by 2024.",
+      "image": "/images/truist/1771281491304-7ab9939c.png",
+      "imageAlt": "Truist One Checking account opening flow showing application start, multi-account upsell for savings and money market, and personal information form"
+    },
+    {
+      "key": "commercial",
       "type": "cardGrid",
       "columns": 2,
       "isDark": true,
-      "label": "Post-Merger Integration",
-      "title": "Translating brand into a universal design system.",
-      "description": "Following the merger, I directed the creative team responsible for translating the new Truist brand into comprehensive visual design and UI standards. The brand's digital palette was heavily constrained, dominated by Truist Purple — the signature hue born from BB&T burgundy and SunTrust blue — which made establishing sufficient contrast, hierarchy, and range across UI states a real design challenge. We defined the Truist design system and UI standards across all digital products for the newly merged entity.",
+      "label": "Commercial & Wealth",
+      "title": "Designing for institutional complexity.",
+      "description": "At Truist, I exclusively owned UX for Business and Commercial Banking. The commercial wealth management portal gave institutional clients a unified view across banking and investment accounts — tracking portfolios at nine-figure scale across holdings, balances, and daily performance. Alongside the client-facing experience, the internal applications management portal gave commercial bankers real-time visibility into their account origination pipeline: new, open, terminated, and completed applications, with performance metrics down to the individual banker.",
       "cards": [
         {
-          "title": "Systems Architecture",
-          "description": "Oversaw the structural integration of two legacy banking systems into a unified UI pattern library.",
-          "image": "/images/truist/1771281467064-e8609008.png",
-          "imageAlt": "Truist app interaction flows"
+          "title": "Wealth Management",
+          "description": "A unified portfolio view for institutional clients tracking total value, unrealized gains, cash position, and account groups across desktop and mobile.",
+          "image": "/images/truist/original.png",
+          "imageAlt": "Truist commercial wealth management dashboard showing a portfolio of $149 million with holdings breakdown across desktop and mobile"
         },
         {
-          "title": "Cross-Platform Scale",
-          "description": "Managed strategy for responsive deployment across mobile, web, and internal banking portals.",
-          "image": "/images/truist/1771281469482-048153c4.png",
-          "imageAlt": "Truist cross-device payments"
-        },
-        {
-          "title": "Methodology Integration",
-          "description": "Embedded dedicated research and design roles into SAFe agile pods.",
-          "image": "/images/truist/1771281472014-694a3592.png",
-          "imageAlt": "Truist biometric security"
-        },
-        {
-          "title": "Enterprise Standards",
-          "description": "Established the governance models for the Truist design system.",
-          "image": "/images/truist/1771246115132-cd678175.png",
-          "imageAlt": "Truist responsive design system"
+          "title": "Commercial Origination",
+          "description": "An internal operations portal giving bankers real-time visibility into the commercial account application pipeline — 256 new, 132 open — with completion rate analytics and team performance tracking.",
+          "image": "/images/truist/1771281491725-0f1b64fd.png",
+          "imageAlt": "Truist internal banker portal showing applications overview dashboard with pipeline metrics, completion rate, and top performer tracking"
         }
       ]
-    },
-    {
-      "key": "wealth",
-      "type": "largeImage",
-      "bg": "#f7f5f2",
-      "label": "Commercial & Wealth",
-      "title": "Strategic Business Lines.",
-      "description": "I exclusively led the UX domain for Small Business and Commercial Banking through the Truist transition, directing teams to design the tools that manage high-value portfolios and enterprise operational capital.",
-      "image": "/images/truist/original.png",
-      "imageAlt": "Truist wealth management dashboard"
     }
   ]
 }
