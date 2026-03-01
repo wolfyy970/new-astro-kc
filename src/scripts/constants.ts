@@ -13,6 +13,8 @@ export const POPOVER_MARGIN_MIN = 16;       // px — min distance from viewport
 export const POPOVER_OFFSET_Y = 10;        // px — vertical gap below hotspot
 export const POPOVER_MAX_HEIGHT_VH = 0.80; // fraction — must match `max-height: 80vh` in .popover CSS rule
 export const DRAG_MIN_VISIBLE = 48;        // px — minimum panel area that must stay on-screen
+export const SWIPE_DISMISS_THRESHOLD = 80; // px — downward swipe distance to dismiss mobile sheet
+export const SWIPE_DISMISS_VELOCITY = 0.4; // px/ms — flick velocity that also triggers dismiss
 
 // ── Annotation layout ──
 export const ANNOTATION_MIN_GAP = 80;      // px — minimum vertical gap between annotations

@@ -9,7 +9,7 @@ High-fidelity Design Leadership Portfolio built with Astro 5.0. This project dem
 - **High-Fidelity Interaction:** Fragment-based text highlighting with content-aware directional fades.
 - **Rich Media & Context-Aware Video:** Seamless inline playback of videos and arrays of mixed format images, bundled as elegant native carousels with swipe support, smart chevrons, and pagination.
 - **Accessible Editorial Design:** WCAG AA compliant contrast calibration and semantic ARIA 1.1 structure.
-- **Mobile-First Bottom Sheets:** Optimized mobile interactions with full focus trapping and touch-aware dismissals.
+- **Mobile-First Bottom Sheets:** Native-feeling bottom sheet with swipe-down dismiss (velocity-aware flick detection), tap-outside-to-close, a visible pill drag handle, and a 44×44px close button meeting Apple HIG and WCAG touch-target standards.
 
 - **Executive Elegance Hotspots:** Refined interaction model with subtle underlines and semantic opacity control.
 - **Feature Flags:** Server-side `CASE_STUDY_LINKS` environment variable controls which case study links appear in popovers — supports incremental content publishing without code changes.

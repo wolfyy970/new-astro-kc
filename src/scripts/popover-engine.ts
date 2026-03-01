@@ -21,11 +21,17 @@ import { requireEl, buildContentNode } from './dom.ts';
 import {
     BREAKPOINT_MOBILE,
     POPOVER_WIDTH, POPOVER_MARGIN_MIN, POPOVER_OFFSET_Y, POPOVER_MAX_HEIGHT_VH, DRAG_MIN_VISIBLE,
+    SWIPE_DISMISS_THRESHOLD, SWIPE_DISMISS_VELOCITY,
     ID_OVERLAY, ID_POPOVER,
     CLS_ACTIVE, CLS_VISIBLE, CLS_OPEN, CLS_POPOVER_OPEN, CLS_HOVERED,
     CLS_ANNOTATION_SUPPRESSED, CLS_IS_DRAGGING,
     SEL_HOTSPOT,
 } from './constants.ts';
+
+// CSS custom property used to animate the bottom-sheet during swipe-to-dismiss.
+// The mobile transform rules reference this variable so JS can drive the offset
+// without fighting the `!important` declarations directly.
+const CSS_PROP_SHEET_OFFSET = '--sheet-drag-offset';
 import { isMobileScreen } from '../utils/viewport.ts';
 
 // ── Annotation dissolve ───────────────────────────────────────────────────────
@@ -150,6 +156,74 @@ function makeDraggable(popoverEl: HTMLElement): void {
 
     popoverEl.addEventListener('pointerup', stopDrag);
     popoverEl.addEventListener('pointercancel', stopDrag);
+}
+
+// ── Mobile swipe-to-dismiss ───────────────────────────────────────────────────
+// Attach once on the popover element. Engages only when isMobileScreen() is
+// true and the user drags downward from the top of the sheet (respects content
+// scroll — only fires when scrollTop === 0 so normal scrolling isn't captured).
+
+function makeMobileSwipeable(popoverEl: HTMLElement): void {
+    let touchStartY = 0;
+    let touchCurrentY = 0;
+    let touchStartTime = 0;
+    let isSwiping = false;
+
+    popoverEl.addEventListener('touchstart', (e: TouchEvent) => {
+        if (!isMobileScreen()) return;
+        touchStartY = e.touches[0].clientY;
+        touchCurrentY = touchStartY;
+        touchStartTime = Date.now();
+        isSwiping = false;
+    }, { passive: true });
+
+    popoverEl.addEventListener('touchmove', (e: TouchEvent) => {
+        if (!isMobileScreen()) return;
+        touchCurrentY = e.touches[0].clientY;
+        const delta = touchCurrentY - touchStartY;
+
+        // Only initiate dismiss gesture when dragging downward from the scroll top.
+        // This ensures normal content scrolling inside the sheet is never hijacked.
+        if (delta <= 0 || popoverEl.scrollTop > 0) {
+            if (isSwiping) {
+                // User scrolled back up mid-gesture — cancel
+                isSwiping = false;
+                popoverEl.classList.remove(CLS_IS_DRAGGING);
+                popoverEl.style.removeProperty(CSS_PROP_SHEET_OFFSET);
+            }
+            return;
+        }
+
+        isSwiping = true;
+        popoverEl.classList.add(CLS_IS_DRAGGING); // disables CSS transition while dragging
+
+        // Slight resistance gives a rubber-band feel and signals the pull direction
+        const offset = delta * 0.65;
+        popoverEl.style.setProperty(CSS_PROP_SHEET_OFFSET, `${offset}px`);
+    }, { passive: true });
+
+    const endSwipe = () => {
+        if (!isMobileScreen() || !isSwiping) return;
+        isSwiping = false;
+        popoverEl.classList.remove(CLS_IS_DRAGGING); // re-enable CSS transitions
+
+        const delta = touchCurrentY - touchStartY;
+        const elapsed = Math.max(1, Date.now() - touchStartTime); // guard /0
+        const velocity = delta / elapsed; // px/ms
+
+        if (delta > SWIPE_DISMISS_THRESHOLD || velocity > SWIPE_DISMISS_VELOCITY) {
+            // Animate the sheet down off-screen, then clean up
+            popoverEl.style.setProperty(CSS_PROP_SHEET_OFFSET, '100vh');
+            setTimeout(() => closePopover(), 300);
+        } else {
+            // Not far/fast enough — snap back to resting position
+            popoverEl.style.setProperty(CSS_PROP_SHEET_OFFSET, '0px');
+            setTimeout(() => popoverEl.style.removeProperty(CSS_PROP_SHEET_OFFSET), 350);
+        }
+    };
+
+    popoverEl.addEventListener('touchend', endSwipe, { passive: true });
+    popoverEl.addEventListener('touchcancel', endSwipe, { passive: true });
 }
 
 let activeHotspot: HTMLElement | null = null;
@@ -284,6 +358,7 @@ export function closePopover(options: CloseOptions = {}): void {
 
     disableFocusTrap(popoverEl);
     popoverEl.classList.remove(CLS_VISIBLE);
+    popoverEl.style.removeProperty(CSS_PROP_SHEET_OFFSET); // clean up any swipe-dismiss offset
     overlay.classList.remove(CLS_OPEN);
     document.body.classList.remove(CLS_POPOVER_OPEN);
 
@@ -308,8 +383,9 @@ export function initPopoverEngine(popoverData: PopoverMap): void {
     const overlay = requireEl(ID_OVERLAY, 'PopoverEngine');
     const popoverEl = requireEl(ID_POPOVER, 'PopoverEngine');
 
-    // Wire up drag — once, persistent across open/close cycles
+    // Wire up interactions — once, persistent across open/close cycles
     makeDraggable(popoverEl);
+    makeMobileSwipeable(popoverEl);
 
     document.querySelectorAll<HTMLElement>(SEL_HOTSPOT).forEach(el => {
         el.addEventListener('pointerenter', () => toggleHotspotState(el, true));

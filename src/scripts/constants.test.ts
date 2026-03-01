@@ -44,6 +44,19 @@ describe('Constants', () => {
         expect(constants.SEL_HOTSPOT.startsWith('.')).toBe(true);
     });
 
+    it('SWIPE_DISMISS_THRESHOLD should be a positive pixel distance', () => {
+        expect(constants.SWIPE_DISMISS_THRESHOLD).toBeGreaterThan(0);
+        // Sanity: should feel intentional — not so small it fires on a tap, not so large it's unreachable
+        expect(constants.SWIPE_DISMISS_THRESHOLD).toBeGreaterThanOrEqual(40);
+        expect(constants.SWIPE_DISMISS_THRESHOLD).toBeLessThanOrEqual(200);
+    });
+
+    it('SWIPE_DISMISS_VELOCITY should be a positive px/ms value', () => {
+        expect(constants.SWIPE_DISMISS_VELOCITY).toBeGreaterThan(0);
+        // Should be a sub-1 px/ms value (1 px/ms = 1000 px/s — extremely fast flick)
+        expect(constants.SWIPE_DISMISS_VELOCITY).toBeLessThan(1);
+    });
+
     it('CSS class constants should be non-empty strings without leading dots', () => {
         const classConstants = [
             constants.CLS_ACTIVE, constants.CLS_VISIBLE, constants.CLS_OPEN,

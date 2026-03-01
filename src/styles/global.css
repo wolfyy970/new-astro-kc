@@ -1361,14 +1361,15 @@ body.popover-open {
     max-height: 75vh;
     overflow-y: auto;
     border-radius: 16px 16px 0 0;
-    transform: translateY(100%) !important;
+    /* --sheet-drag-offset is set by JS during swipe-to-dismiss gesture */
+    transform: translateY(calc(100% + var(--sheet-drag-offset, 0px))) !important;
     transition: opacity 0.3s cubic-bezier(0.32, 0.72, 0, 1),
       transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
     -webkit-overflow-scrolling: touch;
   }
 
   .popover.visible {
-    transform: translateY(0) !important;
+    transform: translateY(var(--sheet-drag-offset, 0px)) !important;
     opacity: 1;
   }
 
@@ -1439,14 +1440,35 @@ body.popover-open {
     padding: 16px 20px 32px;
   }
 
-  /* Drag handle is desktop-only chrome — hide its dots/line on bottom-sheet */
+  /* Mobile: repurpose the handle strip as a swipe-to-dismiss affordance */
   .popover-handle {
+    display: flex;
+    height: 48px;
+    border-radius: 16px 16px 0 0;
+    cursor: default; /* not draggable on mobile */
+  }
+
+  /* Pill indicator replacing the three desktop dots */
+  .popover-handle::before {
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: #ccc;
+    box-shadow: none;
+  }
+
+  /* Remove desktop rule line */
+  .popover-handle::after {
     display: none;
   }
 
+  /* 44×44 px touch target aligned to the right side of the handle strip */
   .popover-close {
-    top: 0;
-    right: 0;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
     background: transparent;
     box-shadow: none;
   }

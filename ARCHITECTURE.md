@@ -24,7 +24,8 @@ The interactive layer is decomposed into modular engines for maintainability and
 Handles the heavy lifting for the contextual overlay system:
 - **Draggable Context:** Desktop popovers are draggable via a dedicated chrome handle, allowing users to move them while browsing.
 - **Focus Management:** Implements full focus trapping and keyboard navigation (Tab/Shift-Tab, Escape to close).
-- **Responsive Handling:** Swaps between floating draggable panels and mobile "bottom-sheets."
+- **Responsive Handling:** Swaps between floating draggable panels and mobile "bottom-sheets." The handle strip is repurposed on mobile as a visible pill-and-swipe affordance (48px tall, centered pill indicator) rather than hidden.
+- **Mobile Swipe-to-Dismiss:** `makeMobileSwipeable()` attaches touch event listeners once at init. It only engages when `isMobileScreen()` is true, the drag direction is downward, and `scrollTop === 0` (so in-sheet content scrolling is never hijacked). During the gesture, `CLS_IS_DRAGGING` disables CSS transitions and a `--sheet-drag-offset` CSS custom property drives the live transform. On release, a velocity check (`SWIPE_DISMISS_VELOCITY = 0.4 px/ms`) or distance check (`SWIPE_DISMISS_THRESHOLD = 80px`) decides dismiss vs. snap-back. The CSS variable approach is required because the mobile transform rules use `!important`; since custom properties resolve before `!important` is evaluated, JS can set `--sheet-drag-offset` via `style.setProperty()` to override the value without fighting specificity. `closePopover()` always resets the property so the next open starts clean.
 - **Annotation Sync:** "Dissolves" (suppresses) the corresponding margin annotation when a popover is open to prevent content duplication.
 - **Viewport-Aware Positioning:** Initial placement uses `POPOVER_MAX_HEIGHT_VH` (matching the CSS `max-height` rule) as the worst-case height estimate for the above/below flip decision. After the first render frame, a post-render clamp measures the actual `offsetHeight` and re-adjusts `top` if the popover overflows the viewport — ensuring tall carousels always stay on screen without relying on hardcoded height estimates.
 
@@ -88,4 +89,4 @@ Authentication lives in `src/middleware.ts`:
   - `src/utils/feature-flags.ts`: Slug parsing, `isCaseStudyLinkEnabled`, and `applyFeatureFlags` immutability.
   - `src/scripts/annotation-engine.ts`: Side assignment, overlap resolution, and cold-start intro annotation lifecycle.
   - `src/scripts/dom.ts`: DOM construction for popovers, carousels, and accessibility attributes.
-  - `src/scripts/constants.ts`: Structural invariants — breakpoint ordering, value ranges, `VIDEO_EXTENSIONS` contents, CSS class/selector format.
+  - `src/scripts/constants.ts`: Structural invariants — breakpoint ordering, value ranges, `VIDEO_EXTENSIONS` contents, CSS class/selector format, and swipe-gesture thresholds (`SWIPE_DISMISS_THRESHOLD`, `SWIPE_DISMISS_VELOCITY`).
