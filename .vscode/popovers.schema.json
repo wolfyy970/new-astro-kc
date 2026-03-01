@@ -8,6 +8,7 @@
             "label",
             "text"
         ],
+        "additionalProperties": false,
         "properties": {
             "label": {
                 "type": "string",
@@ -23,8 +24,17 @@
             },
             "img": {
                 "type": "string",
-                "description": "Path to the image (relative to public directory).",
+                "description": "Path to a single image asset (relative to public directory). Use 'media' for videos or multiple items.",
                 "pattern": "^/images/.*"
+            },
+            "media": {
+                "type": "array",
+                "description": "Ordered list of image or video paths for a carousel. Images must start with /images/, videos with /media/.",
+                "items": {
+                    "type": "string",
+                    "pattern": "^/(images|media)/.*"
+                },
+                "minItems": 1
             },
             "quote": {
                 "type": "string",
@@ -32,12 +42,16 @@
             },
             "link": {
                 "type": "string",
-                "description": "Internal or external URL."
+                "description": "Internal or external URL. Requires 'linkText' to be present."
             },
             "linkText": {
                 "type": "string",
-                "description": "Label for the link button."
+                "description": "Label for the link button. Required when 'link' is present."
             }
+        },
+        "dependencies": {
+            "link": ["linkText"],
+            "linkText": ["link"]
         }
     }
 }

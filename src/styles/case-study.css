@@ -1,9 +1,10 @@
 /* ══════════════════════════════════════
    CASE STUDY — SHARED STYLES
    ══════════════════════════════════════
-   Each page defines its own :root {} with
-   --accent, --warm-white, --text-primary,
-   --text-secondary, --text-light.
+   Brand accent is set as an inline style on <body> by CaseStudyLayout,
+   which derives --accent, --accent-rgb, and --accent-border from the
+   page's `accent` prop via src/utils/color.ts. Do not redefine --accent
+   in :root — inline styles take precedence and cannot bleed across pages.
    ══════════════════════════════════════ */
 
 *,

@@ -9,9 +9,14 @@
     "text": "Design engineering team designed and built aglobal themeable design system end to end - Figma 1 to 1 with code. Adopted across North America, Europe, and Asia Pacific. Reduced front-end development time by approximately 25%."
   },
   "agentic": {
-    "label": "Agentic AI",
-    "text": "Leading design for a new AI/ML product at NAPA — an agentic system for shop management and e-commerce.",
-    "img": "/images/gpc/napa-logo.png"
+    "label": "Agentic AI · 3 Months Early",
+    "stat": "Aug 2022",
+    "text": "In August 2022 — three months before ChatGPT launched — I designed a foresight roadmap for the Future of NAPA AutoCare predicting AI-assisted issue diagnosis (NATE: NAPA Automated Technology Expert), AR-guided repair walkthroughs, and agentic shop management. Now leading design to build it.",
+    "media": [
+      "/images/gpc/napa-autocare-future-cover.png",
+      "/images/gpc/napa-ai-diagnosis.png",
+      "/images/gpc/napa-ar-repair.png"
+    ]
   },
   "merger": {
     "label": "Truist · $66B Merger",
@@ -102,7 +107,7 @@
     "label": "Apple Design Award",
     "text": "Winner of the Apple Design Project Award (Problem Analysis) in an international inter-university competition.",
     "stat": "1994",
-    "img": "/images/awards/apple-design-award.jpg"
+    "img": "/images/awards/apple-design-award.png"
   },
   "rts-award": {
     "label": "RTS Innovation Award",

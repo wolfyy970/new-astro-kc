@@ -15,6 +15,7 @@ High-fidelity Design Leadership Portfolio built with Astro 5.0. This project dem
 - **Feature Flags:** Server-side `CASE_STUDY_LINKS` environment variable controls which case study links appear in popovers — supports incremental content publishing without code changes.
 - **Content Integrity Suite:** Automated validation of hotspot links, image paths, and media arrays to prevent regressions.
 - **Image Optimization Pipeline:** Build-time asset processing using Astro 5.0 for high-performance WebP delivery.
+- **Brand-Accurate Case Study Theming:** Each case study page carries its own `accent` color via `CaseStudyLayout`. A validated server-side utility (`src/utils/color.ts`) derives `--accent`, `--accent-rgb`, and `--accent-border` CSS custom properties, applied as an inline body style so brand colours can never bleed between pages regardless of CSS bundle order.
 - **Component-Based Case Studies:** A modular template architecture for rapid, consistent content authoring.
 
 ## Quick Start

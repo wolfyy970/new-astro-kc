@@ -35,6 +35,11 @@
   /* Typography Utilities */
   --type-label-size: 11px;
   --type-label-spacing: 2px;
+
+  /* Layout — must match JS constants in src/scripts/constants.ts */
+  --doc-max-width: 820px;      /* matches no JS constant — shared by .hero and .doc-page */
+  --popover-width: 380px;      /* matches POPOVER_WIDTH = 380 */
+  --popover-max-height: 80vh;  /* matches POPOVER_MAX_HEIGHT_VH = 0.80 */
 }
 
 /* Metadata Typography Utilities */
@@ -79,7 +84,7 @@ body {
   text-align: center;
   padding: 100px 40px 72px;
   position: relative;
-  max-width: 820px;
+  max-width: var(--doc-max-width);
   margin: 0 auto;
 }
 
@@ -152,7 +157,7 @@ body {
 .doc-page {
   background: var(--doc-white);
   width: 100%;
-  max-width: 820px;
+  max-width: var(--doc-max-width);
   padding: 64px 72px 56px;
   border-radius: 4px;
   box-shadow:
@@ -460,8 +465,8 @@ body.popover-open {
 .popover {
   position: absolute;
   z-index: 1000;
-  width: 380px;
-  max-height: 80vh;
+  width: var(--popover-width);
+  max-height: var(--popover-max-height);
   overflow-y: auto;
   background: var(--doc-white);
   border: 1px solid #E0DED9;
@@ -1153,7 +1158,7 @@ body.popover-open {
   }
 }
 
-@media (max-width: 599px) {
+@media (max-width: 600px) {
   .widen-hint {
     display: none !important;
   }

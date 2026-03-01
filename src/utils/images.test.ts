@@ -21,6 +21,21 @@ describe('optimizePopoverImages', () => {
         expect(optimized.item2.img).toBeUndefined();
     });
 
+    it('should pass the standard IMAGE_OPTIMIZE_OPTIONS fields to getImage', async () => {
+        const raw: Record<string, PopoverData> = {
+            item1: { label: 'Item 1', text: 'Text 1', img: '/img1.jpg' },
+        };
+        const mockGetImage = vi.fn().mockImplementation(async ({ src }) => ({ src: `/opt${src}` }));
+
+        await optimizePopoverImages(raw, mockGetImage);
+
+        expect(mockGetImage).toHaveBeenCalledWith(expect.objectContaining({
+            format: 'webp',
+            width: 600,
+            height: 400,
+        }));
+    });
+
     it('should skip optimization for uppercase video extensions (.MP4, .WEBM) in img and media', async () => {
         const raw: Record<string, PopoverData> = {
             item1: { label: 'Video', text: 'Text', img: '/clip.MP4' },

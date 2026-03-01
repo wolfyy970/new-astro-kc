@@ -10,11 +10,12 @@ import type { PopoverMap } from '../types/content.ts';
 import { requireEl, buildContentNode } from './dom.ts';
 import {
     BREAKPOINT_WIDE, BREAKPOINT_NEAR, BREAKPOINT_MOBILE,
-    ANNOTATION_MIN_GAP, ANNOTATION_ROOT_MARGIN, ANNOTATION_TEXT_SENTENCES,
-    NUDGE_DURATION_MS,
+    ANNOTATION_MIN_GAP, ANNOTATION_ROOT_MARGIN,
+    NUDGE_DURATION_MS, RESIZE_DEBOUNCE_MS,
     ID_WIDEN_HINT,
     SEL_HOTSPOT, SEL_DOC_PAGE,
-    CLS_REVEALED, CLS_SCROLL_REVEALED, CLS_VISIBLE, CLS_NUDGE,
+    CLS_ACTIVE, CLS_REVEALED, CLS_SCROLL_REVEALED, CLS_VISIBLE, CLS_NUDGE,
+    CLS_ANNOTATION_SUPPRESSED,
     RIBBON_PROGRESS_START, RIBBON_PROGRESS_END,
     RIBBON_LEFT_START_OFFSET, RIBBON_LEFT_DELTA,
     RIBBON_RIGHT_START_OFFSET, RIBBON_RIGHT_DELTA,
@@ -58,7 +59,7 @@ function buildAllAnnotations(popovers: PopoverMap): void {
 
     // Pass 1: create all annotations at natural hotspot positions
     let nextSide: 'left' | 'right' = 'right';
-    document.querySelectorAll<HTMLElement>(`.hotspot[data-popover]`).forEach(hotspot => {
+    document.querySelectorAll<HTMLElement>(`${SEL_HOTSPOT}[data-popover]`).forEach(hotspot => {
         const key = hotspot.dataset.popover;
         if (!key) return;
 
@@ -90,8 +91,8 @@ function buildAllAnnotations(popovers: PopoverMap): void {
 
         // Edge case: popover may already be open for this key (narrow→wide resize
         // while the popover was open). Suppress immediately — no flash.
-        if (hotspot.classList.contains('active')) {
-            el.classList.add('annotation-suppressed');
+        if (hotspot.classList.contains(CLS_ACTIVE)) {
+            el.classList.add(CLS_ANNOTATION_SUPPRESSED);
         }
 
         annotationEls[key] = { el, hotspot, side, naturalTop };
@@ -241,7 +242,7 @@ export function initAnnotationEngine(
     cleanupAnnotations();
 
     const annotationKeys = new Set<string>();
-    document.querySelectorAll<HTMLElement>('.hotspot[data-popover]').forEach(el => {
+    document.querySelectorAll<HTMLElement>(`${SEL_HOTSPOT}[data-popover]`).forEach(el => {
         if (el.dataset.popover) annotationKeys.add(el.dataset.popover);
     });
     const hint = requireEl(ID_WIDEN_HINT, 'AnnotationEngine');
@@ -365,7 +366,7 @@ export function initAnnotationEngine(
                 hint.classList.remove(CLS_VISIBLE);
                 if (annotationsBuilt) resetAnnotationState();
             }
-        }, 0);
+        }, RESIZE_DEBOUNCE_MS);
     }, { signal: resizeAbortController.signal });
 
     init();

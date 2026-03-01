@@ -17,12 +17,12 @@
       "Executive MBA"
     ]
   },
-  "summary": "I've been a designer-developer (BS Computer Science & MS Human Centered Design) since before the role had a name — writing code and designing interfaces as one continuous act. What the industry now calls a \"design technologist\".image.png\n\nThe value of that combination - technical fluency, human-centered design, and now business leadership — has always been real. But the AI moment has made it urgent. When AI can execute narrow expertise on demand, the competitive advantage shifts to people who integrate across disciplines: who understand the system, the user, the business, and the technology simultaneously. Driving that intersection is the work I've been doing my entire career.\n\nProven track record building and maturing design organizations, product execution and coaching,delivering measurable business growth, and leading at the intersection of emerging technology and product strategy across Fortune companies. Experience spans media, finance, e-commerce, and consulting sectors.",
+  "summary": "Full-stack leader bridging design, engineering, innovation and business strategy. In an era where AI collapses narrow expertise into a commodity. The advantage belongs to those who integrate across disciplines — who hold the system, the user, the business, and the technology in one frame. That's the intersection I've been working on my entire career. Most often through the lens of design and product strategy.\n\nProven track record building and maturing design organizations, product execution and coaching, delivering measurable business growth, and leading at the intersection of emerging technology and product strategy across Fortune companies. Experience spans media, finance, e-commerce, and consulting sectors.",
   "keyAchievements": [
     {
       "heading": "Driving Business Growth Through Design Leadership",
       "items": [
-        "Leading design for digital transformation of <hotspot key=\"gpc-revenue\">$8B e-commerce platform at Global Fortune automotive parts distribution leader</hotspot>, delivering 7% add-to-cart improvement representing $32.8M lift in revenue (2025) for Pro product.",
+        "Leading design for digital transformation of <hotspot key=\"gpc-revenue\">$8B e-commerce platform at Global Fortune automotive parts distribution leader</hotspot>, delivering 7% add-to-cart design attributed improvement, representing $32.8M lift in revenue (2025) for Pro product.",
         "Led product and design for innovative quantified self, health and wellness product — upwave, growing it from zero to 1M monthly unique users, 27K registered users, and 9.5M visits in 8 months, earning Webby nomination."
       ]
     },
@@ -51,7 +51,7 @@
       "title": "Senior Director & Head of UX Design and Research · Atlanta, GA",
       "description": "Executive design leader leading UX design and research for Fortune Global 500 automotive/industrial parts distribution leader.",
       "bullets": [
-        "Leading research-driven redesign of $8B unified commerce platform and <hotspot key=\"agentic\">AI-driven (agentic) internal venture</hotspot>, informed by prior consulting engagement.",
+        "Leading research-driven redesign of $8B unified commerce platform and <hotspot key=\"agentic\">AI-driven (agentic)new product</hotspot>, informed by prior consulting engagement.",
         "Developed <hotspot key=\"bolt\">\"Bolt\" global design system</hotspot> adopted across North America, Europe, and APAC.",
         "Introduced balanced team model embedding dedicated design and research roles in agile pods, supported by a scalable design process integrating stakeholder engagement and user research.",
         "Pioneered early 2025 assessment of and subsequent introduction of AI design and prototyping tool (v0) to optimize for exploration breadth and execution speed."
@@ -63,7 +63,7 @@
       "title": "Founder & Principal Consultant · Atlanta, GA",
       "description": "Boutique product and design consultancy bridging strategy and execution for clients across fitness, media analytics, and automotive sectors.",
       "bullets": [
-        "Conducted yearlong strategic foresight engagement for GPC CIO on the future of automotive retail and repair - including primary research and journey mapping across drivers, repair shops, parts stores, and supply chain. Work directly informed the company's digital transformation roadmap and led to recruitment as Head of UX Design and Research.",
+        "Conducted yearlong research and <hotspot key=\"agentic\">strategic foresight engagement for GPC CIO to design the future of automotive retail and repair</hotspot> — including primary research and journey mapping across drivers, repair shops, parts stores, and supply chain. Work directly informed the company's digital transformation roadmap and led to recruitment as Head of UX Design and Research.",
         "Redesigned FitRadio's workout music streaming app. Product coaching for Comscore. Mobile app redesign for Gold's Gym."
       ]
     },
@@ -71,11 +71,11 @@
       "company": "TRUIST (SunTrust prior to SunTrust BB&T Merger)",
       "dates": "July 2017 – June 2021",
       "title": "Head of UX Design & Research · Atlanta, GA",
-      "description": "Inherited small nascent UX design team (SunTrust) with no research or UI capability and no independent design voice. Scaled to 30-person multidisciplinary team and established a evidence-based design methodology through the SunTrust-BB&T merger.",
+      "description": "Inherited small nascent UX design team (SunTrust) with no research or UI capability and no independent design voice. Scaled to 30-person multidisciplinary team and established an evidence-based design methodology through the SunTrust-BB&T merger.",
       "bullets": [
         "Rebooted and repositioned the <hotspot key=\"merger\">SunTrust Innovation Accelerator Studio</hotspot>, introducing service design, customer journey mapping and strategic foresight as core capabilities. Partnered with Corporate Strategy on a foresight exercise - presenting three future-of-banking scenarios to CEO and C-Suite; CEO called the work \"instrumental\" in shaping merger strategy.",
         "Led UX design and research across Consumer Banking, Small Business, Wealth Management, Small Business and Commercial Banking for SunTrust and Small Business and Commercial Banking for Truist.",
-        "Rebuilt all <hotspot key=\"truist-products\">product experiences</hotspot> for the merged entity. Integrating design and voice of the customer into Scaled Agile Framework (SAFe).",
+        "Rebuilt all business <hotspot key=\"truist-products\">products</hotspot> for the merged entity (commercial and small business banking). Integrated design into Scaled Agile Framework (SAFe) to deliver a unified experience across all products.",
         "Translated the new Truist brand into visual design and UI standards, defining the Truist design system deployed across all digital products."
       ]
     },
@@ -105,8 +105,8 @@
       "title": "Senior Director, Innovation & Emerging Technology · Atlanta, GA",
       "description": "Led multi-disciplinary (Product, UX, Engineering) R&D team driving innovation across emerging platforms for CNN, Cartoon Network, TBS, and TNT.",
       "bullets": [
-        "Contributed to an <hotspot key=\"emmy\">Emmy Award</hotspot> (Outstanding Creative Achievement in Interactive Media) by developing the underlying automatic content recognition (ACR) platform that powered the Team Coco sync-to-TV application.",
-        "Granted two <hotspot key=\"patents\">U.S. patents</hotspot> for automatic content recognition and audience engagement technologies that synchronized interactive content with live broadcast television.",
+        "<hotspot key=\"emmy\">Emmy Award</hotspot> (Outstanding Creative Achievement in Interactive Media) by developing the underlying automatic content recognition (ACR) platform that powered the Team Coco sync-to-TV application.",
+        "Awarded two <hotspot key=\"patents\">U.S. patents</hotspot> for automatic content recognition and audience engagement technologies that synchronized interactive content with live broadcast television.",
         "Designed and led development for CNN World Cup Twitter Buzz, producing realtime data visualization that earned a <hotspot key=\"rts-award\">Royal Television Society Award</hotspot> and Fast Company's \"Infographic of the Day\".",
         "Co-designed the large-format multi-touch <hotspot key=\"magicwall\">CNN \"Magic Wall\"</hotspot>, pioneering data-driven storytelling for election coverage and establishing a new industry paradigm."
       ]
@@ -117,7 +117,7 @@
       "title": "Director, Games & Entertainment Technology · Atlanta, GA",
       "description": "R&D exploration role focused on piloting and promoting emerging platforms into Turner Brands (CNN, Cartoon Network, TBS, TNT)prior to mainstream adoption.",
       "bullets": [
-        "Pioneered the first <hotspot key=\"ar\">mobile augmented reality applications</hotspot> in the U.S. for NBA and Cartoon Network in an academic partnership with Georgia Tech. Built on pre-iPhone Nokia devices, successfully predicting mobile's path to AR dominance.",
+        "Pioneered the first <hotspot key=\"ar\">mobile augmented reality applications</hotspot> in the U.S. for NBA and Cartoon Network in an academic partnership with Georgia Tech. Built on pre-iPhone Nokia devices, successfully predicting mobile's path to AR preeminence.",
         "Established virtual item sales as an incremental revenue stream for Cartoon Network and Adult Swim properties on Sony PlayStation Home's early virtual economies.",
         "Prototyped early cloud streaming games technology for GameTap using instant-on video technology. Pre-cursor to cloud gaming services like Google Stadia and Nvidia GeForce Now."
       ]

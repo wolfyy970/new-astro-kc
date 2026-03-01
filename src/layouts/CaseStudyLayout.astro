@@ -1,13 +1,18 @@
 ---
 import "../styles/case-study.css";
+import { buildAccentStyle } from "../utils/color";
 
 interface Props {
   title: string;
   description: string;
   ogImage?: string;
+  /** Brand accent color as a 6-digit hex (e.g. `"#3b1a5a"`). Falls back to the
+   *  portfolio's default amber if omitted or invalid. */
+  accent?: string;
 }
 
-const { title, description, ogImage } = Astro.props;
+const { title, description, ogImage, accent } = Astro.props;
+const accentStyle = buildAccentStyle(accent);
 ---
 
 <!doctype html>
@@ -56,7 +61,7 @@ const { title, description, ogImage } = Astro.props;
       }
     </style>
   </head>
-  <body>
+  <body style={accentStyle}>
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <nav class="back-nav">
       <a class="back-link" href="/">&larr; Back</a>

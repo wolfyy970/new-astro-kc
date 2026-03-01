@@ -99,9 +99,15 @@ CASE_STUDY_LINKS=truist,sparks-grove,upwave,two-way-tv
 The portfolio includes a modular suite of components to ensure consistent, high-performance case study authoring:
 
 1. **Create a new page:** Add a `.astro` file in `src/pages/`.
-2. **Use Case Study Components:**
+2. **Pass the brand accent colour** to `CaseStudyLayout` via the required `accent` prop:
+   ```astro
+   <CaseStudyLayout title="..." description="..." accent="#c8102e">
+   ```
+   Use a 6-digit hex value. The layout's `buildAccentStyle()` utility derives `--accent`, `--accent-rgb`, and `--accent-border` and applies them as an inline body style. If omitted or invalid, it falls back to the portfolio amber with a dev warning. Do **not** redefine `--accent` in `:root` — inline styles take precedence and page-level `:root` overrides bleed across all pages in the CSS bundle.
+3. **Use Case Study Components:**
    - `CaseStudyHero`: For the main title, subtitle, and background.
    - `ContextGrid`: For standardized challenge, role, and scope metadata.
    - `ShowcaseSection`, `ShowcaseGrid`, and `ShowcaseCard`: For flexible image galleries.
    - `FeatureRow`: For asymmetric text/image layouts.
-3. **Add Images:** Place project-specific images in `public/images/[case-study-name]/`.
+4. **Add Images:** Place project-specific images in `public/images/[case-study-name]/`.
+5. **Enable case study links:** Add the new page's slug to `CASE_STUDY_LINKS` in your `.env` / Vercel Dashboard to make popover links to it visible.

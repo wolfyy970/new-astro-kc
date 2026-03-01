@@ -20,8 +20,7 @@ import type { PopoverMap } from '../types/content.ts';
 import { requireEl, buildContentNode } from './dom.ts';
 import {
     BREAKPOINT_MOBILE,
-    POPOVER_WIDTH, POPOVER_MARGIN_MIN, POPOVER_OFFSET_Y,
-    POPOVER_EST_HEIGHT_WITH_IMG, POPOVER_EST_HEIGHT_WITHOUT_IMG, DRAG_MIN_VISIBLE,
+    POPOVER_WIDTH, POPOVER_MARGIN_MIN, POPOVER_OFFSET_Y, POPOVER_MAX_HEIGHT_VH, DRAG_MIN_VISIBLE,
     ID_OVERLAY, ID_POPOVER,
     CLS_ACTIVE, CLS_VISIBLE, CLS_OPEN, CLS_POPOVER_OPEN, CLS_HOVERED,
     CLS_ANNOTATION_SUPPRESSED, CLS_IS_DRAGGING,
@@ -175,25 +174,32 @@ function injectPopoverChrome(popoverEl: HTMLElement, label: string): HTMLButtonE
     return closeBtn;
 }
 
-function calculatePopoverPosition(hotspot: HTMLElement, hasImg: boolean): { top: string; left: string } {
+function calculatePopoverPosition(hotspot: HTMLElement): { top: string; left: string } {
     if (isMobileScreen()) return { top: '', left: '' };
 
     const rect = hotspot.getBoundingClientRect();
     const scrollY = window.scrollY;
-    const scrollX = window.scrollX;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
 
-    let top = rect.bottom + scrollY + POPOVER_OFFSET_Y;
-    let left = rect.left + scrollX + rect.width / 2 - POPOVER_WIDTH / 2;
+    // Horizontal: centred on the hotspot, clamped to viewport edges
+    let left = rect.left + rect.width / 2 - POPOVER_WIDTH / 2;
+    left = Math.max(POPOVER_MARGIN_MIN, Math.min(left, vw - POPOVER_WIDTH - POPOVER_MARGIN_MIN));
 
-    if (left < POPOVER_MARGIN_MIN) left = POPOVER_MARGIN_MIN;
-    if (left + POPOVER_WIDTH > window.innerWidth) {
-        left = window.innerWidth - POPOVER_WIDTH - POPOVER_MARGIN_MIN;
-    }
+    // Vertical: the CSS guarantees max-height of POPOVER_MAX_HEIGHT_VH, so use that as the
+    // worst-case height for the flip decision rather than fragile hardcoded estimates.
+    const worstCaseHeight = vh * POPOVER_MAX_HEIGHT_VH;
+    const spaceBelow = vh - rect.bottom - POPOVER_OFFSET_Y;
 
-    const estimatedHeight = hasImg ? POPOVER_EST_HEIGHT_WITH_IMG : POPOVER_EST_HEIGHT_WITHOUT_IMG;
-    if (rect.bottom + estimatedHeight > window.innerHeight) {
-        top = rect.top + scrollY - estimatedHeight - POPOVER_OFFSET_Y;
-        if (top < scrollY + POPOVER_MARGIN_MIN) {
+    let top: number;
+    if (spaceBelow >= worstCaseHeight) {
+        top = rect.bottom + scrollY + POPOVER_OFFSET_Y;
+    } else {
+        const topIfAbove = rect.top + scrollY - worstCaseHeight - POPOVER_OFFSET_Y;
+        if (topIfAbove >= scrollY + POPOVER_MARGIN_MIN) {
+            top = topIfAbove;
+        } else {
+            // Neither side has full room — default below; post-render clamp handles the rest
             top = rect.bottom + scrollY + POPOVER_OFFSET_Y;
         }
     }
@@ -226,8 +232,7 @@ function openPopover(hotspot: HTMLElement): void {
     popoverEl.replaceChildren(buildContentNode(data, 'popover', { wrapBody: true }));
     const closeBtn = injectPopoverChrome(popoverEl, data.label);
 
-    const hasMedia = !!data.img || (!!data.media && data.media.length > 0);
-    const pos = calculatePopoverPosition(hotspot, hasMedia);
+    const pos = calculatePopoverPosition(hotspot);
     popoverEl.style.top = pos.top;
     popoverEl.style.left = pos.left;
 
@@ -237,6 +242,30 @@ function openPopover(hotspot: HTMLElement): void {
     }
 
     requestAnimationFrame(() => {
+        // Post-render clamp: measure the actual rendered height and ensure the bottom
+        // of the popover stays within the viewport. This catches cases where the initial
+        // position estimate placed it too low (e.g. tall carousels).
+        if (!isMobileScreen()) {
+            const actualHeight = popoverEl.offsetHeight;
+            const popoverTop = parseFloat(popoverEl.style.top);
+            const viewportBottom = window.scrollY + window.innerHeight - POPOVER_MARGIN_MIN;
+
+            if (popoverTop + actualHeight > viewportBottom) {
+                const hotspotRect = hotspot.getBoundingClientRect();
+                const topIfAbove = hotspotRect.top + window.scrollY - actualHeight - POPOVER_OFFSET_Y;
+
+                if (topIfAbove >= window.scrollY + POPOVER_MARGIN_MIN) {
+                    popoverEl.style.top = topIfAbove + 'px';
+                } else {
+                    // Neither side fits fully — align the bottom to the viewport bottom
+                    popoverEl.style.top = Math.max(
+                        window.scrollY + POPOVER_MARGIN_MIN,
+                        viewportBottom - actualHeight,
+                    ) + 'px';
+                }
+            }
+        }
+
         popoverEl.classList.add(CLS_VISIBLE);
         closeBtn.focus();
         enableFocusTrap(popoverEl);

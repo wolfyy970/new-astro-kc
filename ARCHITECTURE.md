@@ -26,6 +26,7 @@ Handles the heavy lifting for the contextual overlay system:
 - **Focus Management:** Implements full focus trapping and keyboard navigation (Tab/Shift-Tab, Escape to close).
 - **Responsive Handling:** Swaps between floating draggable panels and mobile "bottom-sheets."
 - **Annotation Sync:** "Dissolves" (suppresses) the corresponding margin annotation when a popover is open to prevent content duplication.
+- **Viewport-Aware Positioning:** Initial placement uses `POPOVER_MAX_HEIGHT_VH` (matching the CSS `max-height` rule) as the worst-case height estimate for the above/below flip decision. After the first render frame, a post-render clamp measures the actual `offsetHeight` and re-adjusts `top` if the popover overflows the viewport — ensuring tall carousels always stay on screen without relying on hardcoded height estimates.
 
 ### 2. Annotation Engine (`annotation-engine.ts`)
 Manages the "magazine-style" margin content:
@@ -47,6 +48,13 @@ A modular suite of Astro components for consistent, high-performance case study 
 - **ContextGrid.astro:** Standardized challenge/role/scope layout.
 - **ShowcaseGrid.astro / ShowcaseCard.astro:** Responsive, optimized image galleries.
 - **FeatureRow.astro:** Asymmetric layouts for deep-dive content.
+
+#### Brand Colour Theming
+`CaseStudyLayout` accepts a required `accent` prop (6-digit hex string). The layout passes this to `src/utils/color.ts → buildAccentStyle()`, which validates the hex, derives an RGB triplet and border variant, and emits all three as an inline `style` on `<body>`:
+```
+--accent: #3b1a5a; --accent-rgb: 59, 26, 90; --accent-border: rgba(59, 26, 90, 0.2);
+```
+Inline styles take precedence over any stylesheet rule, so brand colours cannot bleed between pages regardless of CSS bundle concatenation order. If `accent` is omitted or malformed, `resolveHexColor()` falls back to the portfolio amber (`#70541C`) and emits a dev-mode console warning. Components should use `var(--accent, currentColor)` rather than any brand-specific hardcoded fallback.
 
 ## Content Integrity & Performance
 
@@ -73,9 +81,11 @@ Authentication lives in `src/middleware.ts`:
 ## Testing Strategy
 - **Vitest + JSDOM:** Core logic and utility functions are verified against a simulated browser environment.
 - **Key Testable Units:**
+  - `src/utils/color.ts`: Hex validation, RGB conversion, and full `buildAccentStyle()` output for the brand theming system.
   - `src/utils/validation.ts`: Logic for extracting and validating hotspots.
-  - `src/utils/images.ts`: Pipeline for pre-optimizing dynamic image assets, including case-insensitive extension handling.
-  - `src/utils/render.ts`: Hotspot-to-span transformation logic.
+  - `src/utils/images.ts`: Pipeline for pre-optimizing dynamic image assets, including case-insensitive extension handling and forwarding of `IMAGE_OPTIMIZE_OPTIONS`.
+  - `src/utils/render.ts`: Hotspot-to-span transformation, verified to use `SEL_HOTSPOT` and `ID_POPOVER` constants.
   - `src/utils/feature-flags.ts`: Slug parsing, `isCaseStudyLinkEnabled`, and `applyFeatureFlags` immutability.
   - `src/scripts/annotation-engine.ts`: Side assignment, overlap resolution, and cold-start intro annotation lifecycle.
   - `src/scripts/dom.ts`: DOM construction for popovers, carousels, and accessibility attributes.
+  - `src/scripts/constants.ts`: Structural invariants — breakpoint ordering, value ranges, `VIDEO_EXTENSIONS` contents, CSS class/selector format.

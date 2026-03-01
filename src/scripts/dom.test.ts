@@ -34,12 +34,39 @@ describe('buildContentNode', () => {
         expect(html).toContain('This is sentence three.'); // Full text
     });
 
-    it('should build truncated HTML/DOM for annotation (truncateText: true, prependRule: true)', () => {
-        const frag = buildContentNode(mockData, 'sa', { truncateText: true, prependRule: true });
+    it('should truncate annotation text at ANNOTATION_TEXT_SENTENCES (3) when there are more', () => {
+        const fourSentenceData: PopoverData = {
+            ...mockData,
+            text: 'This is sentence one. This is sentence two. This is sentence three. This is sentence four.',
+        };
+        const frag = buildContentNode(fourSentenceData, 'sa', { truncateText: true, prependRule: true });
         const html = fragmentToHTML(frag);
         expect(html).toContain('class="sa-rule"');
-        expect(html).toContain('This is sentence two.');
-        expect(html).not.toContain('This is sentence three.'); // Truncated
+        expect(html).toContain('This is sentence three.');
+        expect(html).not.toContain('This is sentence four.'); // Truncated after 3 sentences
+    });
+
+    it('should NOT truncate annotation text when it has 3 or fewer sentences', () => {
+        const threeSentenceData: PopoverData = {
+            ...mockData,
+            text: 'This is sentence one. This is sentence two. This is sentence three.',
+        };
+        const frag = buildContentNode(threeSentenceData, 'sa', { truncateText: true });
+        const html = fragmentToHTML(frag);
+        expect(html).toContain('This is sentence three.');
+    });
+
+    it('should not split on abbreviations like U.S. when truncating', () => {
+        const abbreviationData: PopoverData = {
+            ...mockData,
+            text: 'Two U.S. patents granted in 2015. Second real sentence here. Third real sentence here. Fourth sentence to force truncation.',
+        };
+        const frag = buildContentNode(abbreviationData, 'sa', { truncateText: true });
+        const html = fragmentToHTML(frag);
+        // 'U.S.' should not have caused a split, so all three real sentences appear
+        expect(html).toContain('Two U.S. patents granted in 2015.');
+        expect(html).toContain('Third real sentence here.');
+        expect(html).not.toContain('Fourth sentence to force truncation.');
     });
 
     it('should handle missing optional fields', () => {
@@ -72,7 +99,7 @@ describe('buildContentNode', () => {
             label: 'Text Fix',
             text: 'Short sentence one. Short sentence two'
         };
-        // Should NOT append a period since it wasn't truncated down from 3+
+        // Should NOT append a period since it wasn't truncated down from 4+
         const frag = buildContentNode(punctuationData, 'popover', { truncateText: true });
         const html = fragmentToHTML(frag);
         expect(html).toContain('Short sentence one. Short sentence two');

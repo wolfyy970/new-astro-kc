@@ -2,22 +2,31 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Resume Data Schema",
     "type": "object",
+    "additionalProperties": false,
     "required": [
         "name",
         "displayName",
         "titleLine",
         "summary",
-        "experience"
+        "hero",
+        "keyAchievements",
+        "experience",
+        "education",
+        "contact",
+        "patentsAndRecognition"
     ],
     "properties": {
         "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Short name as it appears in the document header."
         },
         "displayName": {
-            "type": "string"
+            "type": "string",
+            "description": "Full name for page title, hero, and footer."
         },
         "titleLine": {
-            "type": "string"
+            "type": "string",
+            "description": "Professional title shown beneath the name."
         },
         "summary": {
             "type": "string",
@@ -25,65 +34,109 @@
         },
         "hero": {
             "type": "object",
+            "description": "Content for the hero banner above the resume document.",
+            "additionalProperties": false,
+            "required": ["tagline", "credentials"],
             "properties": {
                 "tagline": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "One-line positioning statement."
                 },
                 "credentials": {
                     "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "description": "Short credential strings shown as a dot-separated row.",
+                    "items": { "type": "string" },
+                    "minItems": 1
                 }
+            }
+        },
+        "contact": {
+            "type": "object",
+            "description": "Contact information shown in the document header.",
+            "additionalProperties": false,
+            "required": ["email", "phone", "linkedin", "linkedinUrl", "location"],
+            "properties": {
+                "email": { "type": "string", "format": "email" },
+                "phone": { "type": "string" },
+                "linkedin": { "type": "string", "description": "Display text for the LinkedIn link." },
+                "linkedinUrl": { "type": "string", "format": "uri" },
+                "location": { "type": "string" }
             }
         },
         "keyAchievements": {
             "type": "array",
+            "description": "Clusters of achievement bullets grouped by theme.",
             "items": {
                 "type": "object",
+                "additionalProperties": false,
+                "required": ["heading", "items"],
                 "properties": {
                     "heading": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "Theme heading for this cluster."
                     },
                     "items": {
                         "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
+                        "description": "Achievement bullets. May contain <hotspot> markup.",
+                        "items": { "type": "string" },
+                        "minItems": 1
                     }
                 }
-            }
+            },
+            "minItems": 1
         },
         "experience": {
             "type": "array",
+            "description": "Work history entries in reverse chronological order.",
             "items": {
                 "type": "object",
-                "required": [
-                    "company",
-                    "dates",
-                    "title",
-                    "bullets"
-                ],
+                "additionalProperties": false,
+                "required": ["company", "dates", "title", "bullets"],
                 "properties": {
-                    "company": {
-                        "type": "string"
-                    },
-                    "dates": {
-                        "type": "string"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
+                    "company": { "type": "string" },
+                    "dates": { "type": "string" },
+                    "title": { "type": "string" },
                     "description": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "Optional intro paragraph. May contain <hotspot> markup."
                     },
                     "bullets": {
                         "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
+                        "description": "Achievement bullets. May contain <hotspot> markup.",
+                        "items": { "type": "string" },
+                        "minItems": 1
                     }
                 }
+            },
+            "minItems": 1
+        },
+        "education": {
+            "type": "array",
+            "description": "Education entries in reverse chronological order.",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["degree", "school"],
+                "properties": {
+                    "degree": { "type": "string" },
+                    "school": { "type": "string" },
+                    "focus": {
+                        "type": "string",
+                        "description": "Optional focus or dissertation note. May contain <hotspot> markup."
+                    }
+                }
+            },
+            "minItems": 1
+        },
+        "patentsAndRecognition": {
+            "type": "object",
+            "description": "Awards, patents, and certifications shown at the bottom of the document.",
+            "additionalProperties": false,
+            "required": ["patents", "awards", "certifications"],
+            "properties": {
+                "patents": { "type": "string" },
+                "awards": { "type": "string" },
+                "certifications": { "type": "string" }
             }
         }
     }

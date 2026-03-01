@@ -11,4 +11,49 @@ describe('Constants', () => {
         expect(constants.RESIZE_DEBOUNCE_MS).toBeGreaterThan(0);
         expect(constants.RESIZE_DEBOUNCE_MS).toBeLessThan(2000);
     });
+
+    it('POPOVER_MAX_HEIGHT_VH should be a valid fractional viewport height (0–1)', () => {
+        expect(constants.POPOVER_MAX_HEIGHT_VH).toBeGreaterThan(0);
+        expect(constants.POPOVER_MAX_HEIGHT_VH).toBeLessThanOrEqual(1);
+    });
+
+    it('ANNOTATION_TEXT_SENTENCES should be a positive integer', () => {
+        expect(Number.isInteger(constants.ANNOTATION_TEXT_SENTENCES)).toBe(true);
+        expect(constants.ANNOTATION_TEXT_SENTENCES).toBeGreaterThanOrEqual(1);
+    });
+
+    it('VIDEO_EXTENSIONS should include .mp4 and .webm', () => {
+        expect(constants.VIDEO_EXTENSIONS).toContain('.mp4');
+        expect(constants.VIDEO_EXTENSIONS).toContain('.webm');
+    });
+
+    it('VIDEO_EXTENSIONS entries should all start with a dot', () => {
+        constants.VIDEO_EXTENSIONS.forEach(ext => {
+            expect(ext.startsWith('.')).toBe(true);
+        });
+    });
+
+    it('CSS selector and ID constants should be non-empty strings', () => {
+        expect(constants.SEL_HOTSPOT).toBeTruthy();
+        expect(constants.ID_POPOVER).toBeTruthy();
+        expect(constants.ID_OVERLAY).toBeTruthy();
+        expect(constants.ID_WIDEN_HINT).toBeTruthy();
+    });
+
+    it('SEL_HOTSPOT should be a valid CSS class selector (starts with .)', () => {
+        expect(constants.SEL_HOTSPOT.startsWith('.')).toBe(true);
+    });
+
+    it('CSS class constants should be non-empty strings without leading dots', () => {
+        const classConstants = [
+            constants.CLS_ACTIVE, constants.CLS_VISIBLE, constants.CLS_OPEN,
+            constants.CLS_REVEALED, constants.CLS_SCROLL_REVEALED,
+            constants.CLS_ANNOTATION_SUPPRESSED, constants.CLS_IS_DRAGGING,
+        ];
+        classConstants.forEach(cls => {
+            expect(typeof cls).toBe('string');
+            expect(cls.length).toBeGreaterThan(0);
+            expect(cls.startsWith('.')).toBe(false);
+        });
+    });
 });

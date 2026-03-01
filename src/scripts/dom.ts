@@ -3,6 +3,7 @@
 // Centralises DOM access patterns, window global validation, and HTML assembly.
 
 import type { PopoverData } from '../types/content.ts';
+import { ANNOTATION_TEXT_SENTENCES, VIDEO_EXTENSIONS } from './constants.ts';
 
 // ── Element access ─────────────────────────────────────────────────────────────
 
@@ -54,7 +55,7 @@ export function requireGlobal<K extends keyof Window>(key: K, context = 'Unknown
  * @param data         The popover entry (from popovers.json)
  * @param prefix       CSS class prefix: 'popover' | 'sa'
  * @param options
- *   truncateText  — clip body text to the first 2 sentences (for annotations)
+ *   truncateText  — clip body text to ANNOTATION_TEXT_SENTENCES sentences (for annotations)
  *   wrapBody      — wrap content fields in <div class="{prefix}-body"> (for popovers)
  *   prependRule   — prepend <div class="{prefix}-rule"></div> (for annotations)
  */
@@ -68,9 +69,12 @@ export function buildContentNode(
 
     let text = data.text;
     if (truncateText) {
-        const sentences = data.text.split('. ');
-        if (sentences.length > 2) {
-            text = sentences.slice(0, 2).join('. ');
+        // Split on sentence boundaries only: period NOT preceded by an uppercase letter
+        // (avoids splitting on abbreviations like U.S., No., Inc.) and followed by a
+        // capital letter (the start of a new sentence).
+        const sentences = data.text.split(/(?<![A-Z])\.\s+(?=[A-Z])/);
+        if (sentences.length > ANNOTATION_TEXT_SENTENCES) {
+            text = sentences.slice(0, ANNOTATION_TEXT_SENTENCES).join('. ');
             if (!text.endsWith('.')) {
                 text += '.';
             }
@@ -84,7 +88,7 @@ export function buildContentNode(
     }
 
     const createMediaElement = (src: string, isCarouselItem = false, autoPlay = true) => {
-        const isVideo = src.endsWith('.mp4') || src.endsWith('.webm');
+        const isVideo = VIDEO_EXTENSIONS.some(ext => src.toLowerCase().endsWith(ext));
         const mediaEl = document.createElement(isVideo ? 'video' : 'img');
         const baseClass = isVideo ? `${prefix}-vid` : `${prefix}-img`;
         mediaEl.className = isCarouselItem ? `${baseClass} ${prefix}-carousel-item` : baseClass;

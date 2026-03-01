@@ -28,6 +28,7 @@ Deep dives into major projects, now powered by a modular, high-performance templ
 
 ### 3. Foundation & Strategy
 - **Feature Flags:** `CASE_STUDY_LINKS` environment variable controls which case study links are visible in popovers. Filtering is server-side — the client never receives links to unpublished pages. Supports incremental content publishing without code changes.
+- **Brand-Accurate Case Study Theming:** Each case study page applies its own brand accent colour via `CaseStudyLayout`. The colour is validated at build time and propagated as CSS custom properties (`--accent`, `--accent-rgb`, `--accent-border`) on `<body>`, preventing any brand colour from leaking into adjacent pages regardless of CSS bundle order.
 - **Content Integrity Suite:** Automated verification ensures that every interactive hotspot is valid, maps strictly one-to-one across the resume to avoid ambiguity, and every media asset (including `media` arrays) is present, preventing regressions during content updates.
 - **Security Hardening:** Constant-time cookie comparison (timing-attack resistant), fail-closed authentication (503 if `SITE_PASSWORD` is absent), refined asset path matching, and full security header suite (`X-Robots-Tag`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`).
 - **WCAG AA Compliance:** Rigorous color contrast calibration (4.5:1+) for all branding accents.

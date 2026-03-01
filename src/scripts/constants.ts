@@ -8,17 +8,19 @@ export const BREAKPOINT_NEAR = 1024;   // px — near-wide, show widen hint
 export const BREAKPOINT_MOBILE = 600;   // px — mobile, bottom-sheet popover
 
 // ── Popover layout ──
-export const POPOVER_WIDTH = 380;   // px — desktop popover width
-export const POPOVER_MARGIN_MIN = 16;   // px — min distance from viewport edge
-export const POPOVER_OFFSET_Y = 10;   // px — vertical gap below hotspot
-export const POPOVER_EST_HEIGHT_WITH_IMG = 360; // px — estimated height with image
-export const POPOVER_EST_HEIGHT_WITHOUT_IMG = 220; // px — estimated height without image
-export const DRAG_MIN_VISIBLE = 48; // px — minimum panel area that must stay on-screen
+export const POPOVER_WIDTH = 380;           // px — desktop popover width (must match --popover-width in global.css)
+export const POPOVER_MARGIN_MIN = 16;       // px — min distance from viewport edge
+export const POPOVER_OFFSET_Y = 10;        // px — vertical gap below hotspot
+export const POPOVER_MAX_HEIGHT_VH = 0.80; // fraction — must match `max-height: 80vh` in .popover CSS rule
+export const DRAG_MIN_VISIBLE = 48;        // px — minimum panel area that must stay on-screen
 
 // ── Annotation layout ──
-export const ANNOTATION_MIN_GAP = 80;    // px — minimum vertical gap between annotations
+export const ANNOTATION_MIN_GAP = 80;      // px — minimum vertical gap between annotations
 export const ANNOTATION_ROOT_MARGIN = '-15% 0px -40% 0px'; // IntersectionObserver rootMargin
-export const ANNOTATION_TEXT_SENTENCES = 2;     // number of sentences shown in annotation cards
+export const ANNOTATION_TEXT_SENTENCES = 3; // max sentences shown in annotation cards (truncation threshold)
+
+// ── Media ──
+export const VIDEO_EXTENSIONS = ['.mp4', '.webm'] as const; // recognised video file extensions
 
 // ── Timing ──
 export const RESIZE_DEBOUNCE_MS = 250;   // ms — debounce for resize handler
