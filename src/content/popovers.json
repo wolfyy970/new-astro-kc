@@ -6,24 +6,32 @@
   },
   "bolt": {
     "label": "Bolt Design System",
-    "text": "Built from scratch — no design system existed at GPC. My design engineering team (front-end engineers reporting into design) designed and built a global themeable design system end to end. Adopted across North America, Europe, and Asia Pacific. Reduced front-end development time by approximately 25%."
+    "text": "Design engineering team designed and built aglobal themeable design system end to end - Figma 1 to 1 with code. Adopted across North America, Europe, and Asia Pacific. Reduced front-end development time by approximately 25%."
   },
   "agentic": {
     "label": "Agentic AI",
-    "text": "Leading design for an internal AI/ML venture at NAPA — an agentic system for shop management and e-commerce.",
+    "text": "Leading design for a new AI/ML product at NAPA — an agentic system for shop management and e-commerce.",
     "img": "/images/gpc/napa-logo.png"
   },
   "merger": {
     "label": "Truist · $66B Merger",
     "text": "The SunTrust–BB&T merger created Truist — the largest banking merger since 2008. Inheriting an innovation studio with an uncertain future, I rebooted it by adding customer journey mapping and strategic foresight. This repositioning earned a partnership with Corporate Strategy to run a major foresight exercise using the Jobs to Be Done framework, ultimately presenting three future-of-banking scenarios to the CEO and C-suite.",
     "quote": "Bill Rogers, the then-CEO of SunTrust, called the work \"instrumental\" in how he thought about the merger.",
-    "img": "/images/truist/1771246115132-cd678175.png",
+    "media": [
+      "/images/truist/trend-card-1.png",
+      "/images/truist/trend-card-2.png",
+      "/images/truist/trend-card-3.png",
+      "/images/truist/trend-card-4.png",
+      "/images/truist/trend-card-5.png",
+      "/images/truist/trend-card-6.png",
+      "/images/truist/trend-card-7.png"
+    ],
     "link": "/truist",
     "linkText": "View Truist project →"
   },
   "truist-products": {
-    "label": "Product Rebuilds",
-    "text": "Rebuilt Commercial Banking, Small Business, Retail, and Investment Banking products for the merged Truist entity. Each product line required unifying two distinct legacy systems under one coherent design language (designed by my team) while maintaining continuity for existing customers.",
+    "label": "Truist Commercial Banking",
+    "text": "Rebuilt Commercial and Small Business banking products for the merged Truist entity. All product lines required unifying two distinct legacy systems under one coherent design language designed by my team.",
     "img": "/images/truist/1771281469482-048153c4.png",
     "link": "/truist",
     "linkText": "View Truist project →"
@@ -41,11 +49,11 @@
   },
   "upwave": {
     "label": "Upwave · Turner Broadcasting",
-    "text": "Zero to one product launch. An IoT-driven digital health venture at the intersection of wearables and personalized content delivery. Partnered with IDEO for market validation and product-market fit. Introduced lean product methodology enabling daily release cycles. The product was ahead of mainstream wearable adoption — pre-Apple Watch.",
+    "text": "Prescient IoT-driven digital health venture at the intersection of wearables and personalized content delivery. Partnered with IDEO for market validation and product-market fit. Introduced lean product methodology enabling daily release cycles. The product was ahead of mainstream wearable adoption — pre-Apple Watch.",
     "img": "/images/upwave/turner-upwave-site.png",
     "link": "/upwave",
     "linkText": "View Upwave project →",
-    "stat": "0 to 1M users in 8 months"
+    "stat": "Zero to one product."
   },
   "emmy": {
     "label": "Emmy Award · 2011",
@@ -84,7 +92,7 @@
   },
   "bafta": {
     "label": "BAFTA Nomination",
-    "text": "Nominated for a BAFTA Interactive Entertainment Award (Sports) in 2000 for 'Armchair Manager – Football', pioneering precursor to modern realtime interactive sports broadcasting.",
+    "text": "'Armchair Manager – Football', the first ever interactive TV app nominated for a BAFTA Interactive Entertainment Award in the Sports category in 2000.",
     "stat": "2000",
     "img": "/images/awards/bafta-nomination.jpg",
     "link": "/two-way-tv",
