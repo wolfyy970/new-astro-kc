@@ -38,7 +38,23 @@ Manages the "magazine-style" margin content:
 - **Widen Hint ("Sticker Peel"):** An intricate resize-driven interaction on laptop sizes (1024px–1459px). It features tracking SVG `<textPath>` components that physically roll out around the resume's boundaries synchronously as the user resizes, avoiding complex CSS transforms. It automatically resets IntersectionObservers to detect immediate visibility upon completion.
 - **Lifecycle Safety:** `resetAnnotationState()` handles DOM/state cleanup without aborting the `resizeAbortController`, preserving the resize listener across intermediate resets. `cleanupAnnotations()` performs a full teardown including the controller.
 
-### 3. Native CSS Highlighting
+### 3. Deterministic Type Scale
+
+All `font-size` values in `src/styles/global.css` are driven by 13 semantic CSS custom properties defined once in `:root`:
+
+| Variable | Role | Desktop | Mobile | Small Mobile |
+|---|---|---|---|---|
+| `--type-editorial` | Hero name | clamp(48–88px) | clamp(36–52px) | 42px |
+| `--type-editorial-sub` | Hero subtitle | clamp(18–24px) | 18px | — |
+| `--type-h1` – `--type-h5` | Document hierarchy | 36/18/15/16/15px | 24/16/13/14/13px | 22/15px |
+| `--type-body-lg` / `--type-body` / `--type-body-sm` | Body copy | 17/16/14px | 16/16/13px | — |
+| `--type-meta` | Mono labels | 11px | 12px | — |
+| `--type-stat` | Display numbers | 28px | 28px | — |
+| `--type-legal` | Footer fine print | 12px | 11px | — |
+
+**The rule:** breakpoints override `:root` variables only — never individual element `font-size`. To change how any level looks at any viewport, change one variable and it cascades everywhere. No element-level `font-size` magic numbers are permitted (one deliberate exception: `.site-footer p` at 10px watermark scale, documented inline).
+
+### 4. Native CSS Highlighting
 We've refined the interactive highlighting for "Executive Elegance":
 - **`box-decoration-break: clone`:** Enables precise padding and border-radius application across multiple lines.
 - **Semantic Opacity Control:** All hotspot states (default, hover, active) are governed by dry CSS variables in `global.css`.

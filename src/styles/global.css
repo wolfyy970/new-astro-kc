@@ -32,8 +32,39 @@
   --doc-sans: 'Source Sans 3', -apple-system, sans-serif;
   --mono: 'JetBrains Mono', monospace;
 
-  /* Typography Utilities */
-  --type-label-size: 11px;
+  /* ── Type Scale ───────────────────────────────────────────────────────────
+     Named semantic levels — override ONLY these variables at each breakpoint.
+     Never write a font-size magic number on an element below this block.
+
+     editorial      Hero name (display, fluid clamp)
+     editorial-sub  Hero subtitle
+     h1             Document name (resume header)
+     h2             Company names
+     h3             Section labels (EXPERIENCE, EDUCATION …)
+     h4             Job title / achievement cluster heading / degree
+     h5             School name / doc-title-line
+     body-lg        Summary paragraph (slightly elevated body)
+     body           Bullets, descriptions, popover body text
+     body-sm        Contact, dates, awards, quotes, links, credentials
+     meta           Mono labels (popover-label, doc-hint, sa-label …)
+     stat           Display numbers (popover-stat, sa-stat)
+     legal          Footer fine print
+     ─────────────────────────────────────────────────────────────────────── */
+  --type-editorial:     clamp(48px, 7vw, 88px);
+  --type-editorial-sub: clamp(18px, 2.4vw, 24px);
+  --type-h1:      36px;
+  --type-h2:      18px;
+  --type-h3:      15px;
+  --type-h4:      16px;
+  --type-h5:      15px;
+  --type-body-lg: 17px;
+  --type-body:    16px;
+  --type-body-sm: 14px;
+  --type-meta:    11px;
+  --type-stat:    28px;
+  --type-legal:   12px;
+
+  /* Letter-spacing utility (shared by all mono-label elements) */
   --type-label-spacing: 2px;
 
   /* Layout — must match JS constants in src/scripts/constants.ts */
@@ -48,7 +79,7 @@
 .popover-label,
 .sa-label {
   font-family: var(--mono);
-  font-size: var(--type-label-size);
+  font-size: var(--type-meta);
   font-weight: 500;
   letter-spacing: var(--type-label-spacing);
 }
@@ -90,7 +121,7 @@ body {
 
 .hero-name {
   font-family: var(--display);
-  font-size: clamp(48px, 7vw, 88px);
+  font-size: var(--type-editorial);
   font-weight: 300;
   color: var(--doc-heading);
   letter-spacing: 0.02em;
@@ -111,7 +142,7 @@ body {
 
 .hero-sub {
   font-family: var(--display);
-  font-size: clamp(18px, 2.4vw, 24px);
+  font-size: var(--type-editorial-sub);
   font-weight: 400;
   font-style: italic;
   color: var(--doc-light);
@@ -123,10 +154,8 @@ body {
 }
 
 .hero-credentials {
-  /* logical conceptual link */
   font-family: var(--doc-sans);
-  /* Specific override */
-  font-size: 14px;
+  font-size: var(--type-body-sm);
   font-weight: 400;
   letter-spacing: 1.5px;
   color: #555;
@@ -209,7 +238,7 @@ body {
    ══════════════════════════════════════ */
 .doc-name {
   font-family: var(--doc-serif);
-  font-size: 36px;
+  font-size: var(--type-h1);
   font-weight: 700;
   color: var(--doc-heading);
   letter-spacing: -0.5px;
@@ -218,7 +247,7 @@ body {
 
 .doc-title-line {
   font-family: var(--doc-sans);
-  font-size: 16px;
+  font-size: var(--type-h5);
   font-weight: 500;
   color: var(--doc-light);
   margin-bottom: 6px;
@@ -226,7 +255,7 @@ body {
 
 .doc-contact {
   font-family: var(--doc-sans);
-  font-size: 14px;
+  font-size: var(--type-body-sm);
   color: var(--doc-light);
   margin-bottom: 24px;
 }
@@ -250,8 +279,7 @@ body {
 
 .doc-section-heading {
   font-family: var(--doc-serif);
-  /* Overrides mono for this specific context */
-  font-size: 15px;
+  font-size: var(--type-h3);
   font-weight: 700;
   letter-spacing: 2.5px;
   color: var(--doc-heading);
@@ -260,7 +288,7 @@ body {
 }
 
 .doc-summary {
-  font-size: 17px;
+  font-size: var(--type-body-lg);
   font-weight: 400;
   color: var(--doc-body);
   line-height: 1.7;
@@ -274,7 +302,7 @@ body {
 
 .doc-achievement-cluster h4 {
   font-family: var(--doc-sans);
-  font-size: 15px;
+  font-size: var(--type-h4);
   font-weight: 600;
   color: var(--doc-heading);
   margin-bottom: 6px;
@@ -286,7 +314,7 @@ body {
 }
 
 .doc-achievement-cluster li {
-  font-size: 16px;
+  font-size: var(--type-body);
   color: var(--doc-body);
   line-height: 1.65;
   padding-left: 14px;
@@ -315,26 +343,26 @@ body {
 
 .doc-exp-company {
   font-family: var(--doc-sans);
-  font-size: 18px;
+  font-size: var(--type-h2);
   font-weight: 700;
   color: var(--doc-heading);
 }
 
 .doc-exp-dates {
-  font-size: 14px;
+  font-size: var(--type-body-sm);
   color: var(--doc-light);
   white-space: nowrap;
 }
 
 .doc-exp-title {
-  font-size: 16px;
+  font-size: var(--type-h4);
   font-weight: 500;
   color: var(--doc-light);
   margin-bottom: 8px;
 }
 
 .doc-exp-desc {
-  font-size: 16px;
+  font-size: var(--type-body);
   color: var(--doc-body);
   line-height: 1.65;
   margin-bottom: 8px;
@@ -346,7 +374,7 @@ body {
 }
 
 .doc-exp li {
-  font-size: 16px;
+  font-size: var(--type-body);
   color: var(--doc-body);
   line-height: 1.65;
   padding-left: 14px;
@@ -367,25 +395,25 @@ body {
 }
 
 .doc-edu-item .degree {
-  font-size: 16px;
+  font-size: var(--type-h4);
   font-weight: 600;
   color: var(--doc-heading);
 }
 
 .doc-edu-item .school {
-  font-size: 15px;
+  font-size: var(--type-h5);
   color: var(--doc-light);
 }
 
 .doc-edu-item .focus {
-  font-size: 14px;
+  font-size: var(--type-body-sm);
   color: var(--doc-light);
   font-style: italic;
 }
 
 /* ── Patents & Awards ── */
 .doc-awards-line {
-  font-size: 15px;
+  font-size: var(--type-body-sm);
   color: var(--doc-body);
   line-height: 1.65;
   margin-bottom: 4px;
@@ -396,8 +424,7 @@ body {
   margin-top: 40px;
   padding-top: 16px;
   border-top: 1px solid var(--doc-rule);
-  font-size: 12px;
-  /* Was 10px */
+  font-size: var(--type-legal);
   color: #BBB;
   text-align: center;
   letter-spacing: 0.5px;
@@ -750,7 +777,7 @@ body.popover-open {
 
 .popover-text {
   font-family: var(--doc-sans);
-  font-size: 16px;
+  font-size: var(--type-body);
   font-weight: 400;
   color: var(--doc-body);
   line-height: 1.6;
@@ -760,7 +787,7 @@ body.popover-open {
 .popover-link {
   display: inline-block;
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: var(--type-body-sm);
   letter-spacing: 1px;
   color: var(--accent);
   text-decoration: none;
@@ -775,7 +802,7 @@ body.popover-open {
 
 .popover-quote {
   font-style: italic;
-  font-size: 13px;
+  font-size: var(--type-body-sm);
   color: var(--doc-light);
   border-left: 2px solid var(--accent-border);
   padding-left: 12px;
@@ -785,7 +812,7 @@ body.popover-open {
 
 .popover-stat {
   font-family: var(--display);
-  font-size: 28px;
+  font-size: var(--type-stat);
   font-weight: 500;
   color: var(--doc-heading);
   margin-bottom: 4px;
@@ -860,8 +887,7 @@ body.popover-open {
 
   .sa-stat {
     font-family: var(--display);
-    font-size: 28px;
-    /* Was 24px */
+    font-size: var(--type-stat);
     font-weight: 500;
     color: var(--doc-heading);
     margin-bottom: 4px;
@@ -870,11 +896,9 @@ body.popover-open {
 
   .sa-text {
     font-family: var(--doc-sans);
-    font-size: 15px;
-    /* Was 12px */
+    font-size: var(--type-body-sm);
     font-weight: 400;
     color: #555;
-    /* lifted from #888 — passes WCAG AA (5.1:1 on white) */
     line-height: 1.6;
     margin-bottom: 8px;
   }
@@ -882,8 +906,7 @@ body.popover-open {
   .sa-quote {
     font-family: var(--display);
     font-style: italic;
-    font-size: 15.5px;
-    /* Was 12.5px */
+    font-size: var(--type-body-sm);
     color: #555;
     border-left: 1.5px solid var(--accent-border);
     padding-left: 10px;
@@ -1005,8 +1028,7 @@ body.popover-open {
 
   .sa-link {
     font-family: var(--mono);
-    font-size: 13px;
-    /* Was 10px */
+    font-size: var(--type-body-sm);
     letter-spacing: 1px;
     color: var(--accent);
     text-decoration: none;
@@ -1084,8 +1106,7 @@ body.popover-open {
 
 .widen-text {
   font-family: var(--mono);
-  font-size: 13px;
-  /* Was 11px */
+  font-size: var(--type-body-sm);
   letter-spacing: 2px;
   text-transform: uppercase;
   fill: var(--accent);
@@ -1174,7 +1195,7 @@ body.popover-open {
 
 .site-footer p {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 10px; /* intentional exception: watermark-grade, below --type-legal */
   color: #999;
   letter-spacing: 2px;
 }
@@ -1232,12 +1253,24 @@ body.popover-open {
    RESPONSIVE — MOBILE
    ══════════════════════════════════════ */
 @media (max-width: 600px) {
-  .hero {
-    padding: 56px 24px 40px;
+  /* ── Type scale: mobile variable overrides ── */
+  :root {
+    --type-editorial:     clamp(36px, 11vw, 52px);
+    --type-editorial-sub: 18px;
+    --type-h1:      24px;
+    --type-h2:      16px;
+    --type-h3:      13px;
+    --type-h4:      14px;
+    --type-h5:      13px;
+    --type-body-lg: 16px;
+    --type-body:    16px;   /* intentionally at floor — no reduction */
+    --type-body-sm: 13px;
+    --type-meta:    12px;   /* accessibility floor raised from 11px */
+    --type-legal:   11px;
   }
 
-  .hero-name {
-    font-size: clamp(36px, 11vw, 52px);
+  .hero {
+    padding: 56px 24px 40px;
   }
 
   .hero-rule {
@@ -1246,12 +1279,10 @@ body.popover-open {
   }
 
   .hero-sub {
-    font-size: 18px;
     max-width: 100%;
   }
 
   .hero-credentials {
-    font-size: 10px;
     letter-spacing: 1px;
     line-height: 2;
   }
@@ -1265,7 +1296,6 @@ body.popover-open {
     background: rgba(0, 0, 0, 0.055);
     border-radius: 100px;
     font-family: var(--doc-sans);
-    font-size: 11px;
     font-weight: 400;
     letter-spacing: 0.3px;
     color: #888;
@@ -1287,61 +1317,14 @@ body.popover-open {
     display: none;
   }
 
-  .doc-name {
-    font-size: 24px;
-  }
-
-  .doc-title-line {
-    font-size: 14px;
-  }
-
   .doc-contact {
-    font-size: 13px;
     line-height: 1.8;
   }
 
-  .doc-summary {
-    font-size: 16px;
-  }
-
   .doc-section-heading {
-    font-size: 13px;
     letter-spacing: 2px;
     margin-top: 20px;
     margin-bottom: 12px;
-  }
-
-  .doc-achievement-cluster h4 {
-    font-size: 14px;
-  }
-
-  .doc-achievement-cluster li,
-  .doc-exp li {
-    font-size: 15px;
-  }
-
-  .doc-exp-company {
-    font-size: 16px;
-  }
-
-  .doc-exp-title {
-    font-size: 15px;
-  }
-
-  .doc-edu-item .degree {
-    font-size: 13px;
-  }
-
-  .doc-edu-item .school {
-    font-size: 12px;
-  }
-
-  .doc-edu-item .focus {
-    font-size: 11px;
-  }
-
-  .doc-awards-line {
-    font-size: 12px;
   }
 
   /* ── Mobile bottom-sheet popover ── */
@@ -1478,33 +1461,23 @@ body.popover-open {
    RESPONSIVE — SMALL MOBILE
    ══════════════════════════════════════ */
 @media (max-width: 380px) {
+  /* ── Type scale: small-mobile variable overrides ── */
+  :root {
+    --type-editorial: 42px;
+    --type-h1:        22px;
+    --type-h2:        15px;
+  }
+
   .hero {
     padding: 44px 20px 32px;
-  }
-
-  .hero-name {
-    font-size: 42px;
-  }
-
-  .hero-sub {
-    font-size: 18px;
-  }
-
-  .hero-credentials {
-    font-size: 12px;
   }
 
   .doc-page {
     padding: 20px 14px 24px;
   }
 
-  .doc-name {
-    font-size: 22px;
-  }
-
   .doc-achievement-cluster li,
   .doc-exp li {
-    font-size: 14px;
     line-height: 1.55;
   }
 }

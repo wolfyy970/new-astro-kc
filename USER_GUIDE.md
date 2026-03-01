@@ -94,6 +94,12 @@ CASE_STUDY_LINKS=truist,sparks-grove,upwave,two-way-tv
 - **Scope:** Affects the `link`/`linkText` fields in `popovers.json` entries only. The case study pages themselves remain accessible directly.
 - **Adding a new slug:** When you add a new case study page at `/my-project`, add `my-project` to the list to enable its links.
 
+## CSS Type Scale
+
+All font sizes are driven by semantic CSS custom properties (`--type-editorial`, `--type-h1` through `--type-h5`, `--type-body`, `--type-meta`, etc.) defined in `src/styles/global.css`.
+
+**The rule:** never write a `font-size` pixel value directly on an element. Override only the `:root` variables inside a breakpoint block. See `ARCHITECTURE.md` for the full scale table.
+
 ## Adding Case Studies
 
 The portfolio includes a modular suite of components to ensure consistent, high-performance case study authoring:
