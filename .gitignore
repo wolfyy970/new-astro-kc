@@ -4,3 +4,9 @@ dist/
 .claude/
 .DS_Store
 .vercel
+
+# Standard rules added for health
+.env
+.env.local
+build/
+*.log
