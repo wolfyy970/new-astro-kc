@@ -64,3 +64,88 @@ export interface PopoverData {
 }
 
 export type PopoverMap = Record<string, PopoverData>;
+
+export interface CaseStudyMeta {
+  title: string;
+  description: string;
+  ogImage?: string;
+  accent?: string;
+}
+
+export interface CaseStudyHeroData {
+  label?: string;
+  title: string;
+  subtitle: string;
+  image?: string;
+  imageAlt?: string;
+  background?: string;
+}
+
+export interface CaseStudyContext {
+  challenge: string;
+  role: string;
+  company: string;
+  scope: string;
+  team: string;
+  body: string;
+}
+
+export type CaseStudySectionType =
+  | "cardGrid"
+  | "mixedGrid"
+  | "featureRow"
+  | "textOnly"
+  | "largeImage"
+  | "fullBleed"
+  | "captionedImage"
+  | "photoGrid"
+  | "statRow";
+
+export interface CaseStudyCard {
+  title: string;
+  description: string;
+  image: string;
+  imageAlt: string;
+}
+
+export interface CaseStudyPhotoItem {
+  src: string;
+  alt: string;
+}
+
+export interface CaseStudyStatItem {
+  value: string;
+  label: string;
+}
+
+export interface CaseStudySectionData {
+  type: CaseStudySectionType;
+  key?: string;
+  label?: string;
+  title?: string;
+  description?: string;
+  isMobile?: boolean;
+  bg?: string;
+  isDark?: boolean;
+  darkBg?: string;
+  columns?: 1 | 2 | 3;
+  cards?: CaseStudyCard[];
+  primaryCard?: CaseStudyCard;
+  secondaryCards?: CaseStudyCard[];
+  reverse?: boolean;
+  image?: string;
+  imageAlt?: string;
+  imageWidth?: number;
+  imageHeight?: number;
+  caption?: string;
+  images?: CaseStudyPhotoItem[];
+  gap?: "tight" | "normal" | "loose";
+  stats?: CaseStudyStatItem[];
+}
+
+export interface CaseStudyData {
+  meta: CaseStudyMeta;
+  hero: CaseStudyHeroData;
+  context: CaseStudyContext;
+  sections: CaseStudySectionData[];
+}

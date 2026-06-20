@@ -29,12 +29,12 @@ const { title, description, image, imageAlt, isDark = false } = Astro.props;
 
 <style>
     .showcase-card {
-        background: #fff;
+        background: var(--doc-white, #fff);
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 4px 32px rgba(0, 0, 0, 0.05);
         transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-        border: 1px solid rgba(0, 0, 0, 0.03);
+        border: 1px solid var(--doc-rule, rgba(0, 0, 0, 0.03));
         display: flex;
         flex-direction: column;
     }
@@ -78,14 +78,14 @@ const { title, description, image, imageAlt, isDark = false } = Astro.props;
     h3 {
         font-size: 22px; /* Was 18px */
         font-weight: 500;
-        color: #1a1a1a;
+        color: var(--text-primary, var(--doc-heading, #1a1a1a));
         margin-bottom: 8px;
     }
 
     p {
         font-size: 16px; /* Was 14px */
         font-weight: 300;
-        color: #5a5a5a;
+        color: var(--text-secondary, var(--doc-body, #5a5a5a));
         line-height: 1.6;
     }
 </style>

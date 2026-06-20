@@ -1,14 +1,14 @@
 {
   "meta": {
     "title": "Truist — Digital Banking Platform",
-    "description": "I built and scaled a 30-person design org at SunTrust across all lines of business, then led business and commercial banking design through the $66B merger to Truist.",
+    "description": "I built and scaled a 50-person design org at SunTrust across all lines of business, then led business and commercial banking design through the $66B merger to Truist.",
     "ogImage": "/images/truist/1771246115132-cd678175.png",
     "accent": "#3b1a5a"
   },
   "hero": {
     "label": "Truist Financial",
     "title": "Defining the Digital Experience for America's 7th Largest Bank",
-    "subtitle": "I built and scaled a 30-person design organization at SunTrust — owning every line of business — then led business and commercial banking design through the largest bank merger since 2008.",
+    "subtitle": "I built and scaled a 50-person design organization at SunTrust — owning every line of business — then led business and commercial banking design through the largest bank merger since 2008.",
     "image": "/images/truist/truist-mobile-app-tour-620x1150.jpg",
     "imageAlt": "Truist mobile app screens"
   },
@@ -18,12 +18,13 @@
     "company": "SunTrust → Truist Financial",
     "scope": "All lines of business (SunTrust); Business & Commercial Banking (Truist); Design System",
     "team": "UX/UI Designers, Researchers",
-    "body": "I inherited a nascent UX team at SunTrust with no research function and no independent design voice. I scaled it to a 30-person design organization covering Consumer, Small Business, Wealth Management, and Commercial Banking. When the $66B merger with BB&T created Truist, I led the UX methodology and design execution for business and commercial banking across the newly merged entity."
+    "body": "I inherited a nascent UX team at SunTrust with no research function and no independent design voice. I scaled it to a 50-person design organization covering Consumer, Small Business, Wealth Management, and Commercial Banking. When the $66B merger with BB&T created Truist, I led the UX methodology and design execution for business and commercial banking across the newly merged entity."
   },
   "sections": [
     {
       "key": "consumer-home",
       "type": "captionedImage",
+      "isMobile": true,
       "bg": "#f3eff8",
       "label": "Consumer Banking",
       "image": "/images/truist/1771246123096-e2ad64a0.png",
@@ -60,7 +61,7 @@
       "type": "statRow",
       "label": "Impact",
       "stats": [
-        { "value": "30", "label": "Designers" },
+        { "value": "50", "label": "Designers" },
         { "value": "4.4M", "label": "Mobile Users" },
         { "value": "60%", "label": "Transactions Digital" },
         { "value": "$300M", "label": "Projected Client Savings" }

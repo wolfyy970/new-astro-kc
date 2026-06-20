@@ -1,4 +1,8 @@
 ---
+import ThemeScript from "../components/ThemeScript.astro";
+import ThemeToggleButton from "../components/ThemeToggleButton.astro";
+import HeadFonts from "../components/HeadFonts.astro";
+
 const password = process.env.SITE_PASSWORD || import.meta.env.SITE_PASSWORD;
 let error = false;
 
@@ -29,20 +33,86 @@ if (Astro.request.method === "POST") {
         <title>Confidential — KC Wolff-Ingham</title>
         <meta name="robots" content="noindex, nofollow" />
         <link rel="icon" href="/favicon.png" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Source+Sans+3:wght@300;400&family=JetBrains+Mono&display=swap"
-            rel="stylesheet"
-        />
+        <HeadFonts />
+        <ThemeScript />
         <style>
             :root {
-                --bg: #e8e6e1;
-                --accent: #70541c;
-                --doc-heading: #1a1a1a;
-                --display: "Cormorant Garamond", Georgia, serif;
-                --doc-sans: "Source Sans 3", -apple-system, sans-serif;
+                --bg: #111219;
+                --doc-white: #191A23;
+                --accent: #E07A5F;
+                --accent-hover: #C55E44;
+                --doc-heading: #F3F4F6;
+                --display: "Prata", Georgia, serif;
+                --doc-sans: "Inter", -apple-system, sans-serif;
                 --mono: "JetBrains Mono", monospace;
+                --subtitle-color: rgba(255, 255, 255, 0.5);
+                --input-border: rgba(255, 255, 255, 0.25);
+                --input-placeholder: rgba(255, 255, 255, 0.4);
+            }
+
+            html.theme-light {
+                --bg: #F1F3F5;
+                --doc-white: #ffffff;
+                --accent: #C24F34;
+                --accent-hover: #A53E27;
+                --doc-heading: #1E202B;
+                --subtitle-color: rgba(30, 32, 43, 0.6);
+                --input-border: rgba(30, 32, 43, 0.25);
+                --input-placeholder: rgba(30, 32, 43, 0.4);
+            }
+
+            /* ── Interactive Switcher Controls ── */
+            .theme-toggle {
+              position: fixed;
+              top: 24px;
+              right: 24px;
+              z-index: 10000;
+              font-family: var(--mono);
+              font-size: 10px;
+              font-weight: 500;
+              text-transform: uppercase;
+              letter-spacing: 1.5px;
+              color: var(--doc-heading);
+              background: var(--doc-white);
+              border: 1px solid var(--input-border);
+              padding: 8px 12px;
+              border-radius: 6px;
+              cursor: pointer;
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+              transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+              display: flex;
+              align-items: center;
+              gap: 6px;
+              user-select: none;
+            }
+
+            .theme-toggle:hover {
+              background: var(--bg);
+              border-color: var(--accent);
+              color: var(--doc-heading);
+              transform: translateY(-1px);
+            }
+
+            .theme-toggle:focus-visible {
+              outline: 2px solid var(--accent);
+              outline-offset: 2px;
+            }
+
+            .theme-toggle:active {
+              transform: translateY(0);
+            }
+
+            html.theme-light .theme-toggle {
+              border-color: var(--input-border);
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            }
+
+            @media (max-width: 1024px) {
+              .theme-toggle {
+                top: 16px;
+                right: 16px;
+                padding: 6px 10px;
+              }
             }
 
             * {
@@ -90,7 +160,12 @@ if (Astro.request.method === "POST") {
                 margin-bottom: 14px;
             }
 
-            .logo span {
+            .logo-name {
+                display: block;
+                white-space: nowrap;
+            }
+
+            .logo-subtitle {
                 display: block;
                 font-family: var(--doc-sans);
                 font-size: 11px;
@@ -98,7 +173,7 @@ if (Astro.request.method === "POST") {
                 text-transform: uppercase;
                 letter-spacing: 0.28em;
                 margin-top: 14px;
-                color: rgba(0, 0, 0, 0.42);
+                color: var(--subtitle-color);
             }
 
             .divider {
@@ -123,7 +198,7 @@ if (Astro.request.method === "POST") {
                 padding: 13px 0;
                 background: transparent;
                 border: none;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+                border-bottom: 1px solid var(--input-border);
                 font-family: var(--doc-sans);
                 font-size: 15px;
                 text-align: center;
@@ -137,7 +212,7 @@ if (Astro.request.method === "POST") {
             }
 
             input::placeholder {
-                color: rgba(0, 0, 0, 0.35);
+                color: var(--input-placeholder);
                 font-style: italic;
                 opacity: 1;
             }
@@ -159,7 +234,7 @@ if (Astro.request.method === "POST") {
             }
 
             button:hover {
-                background: #5a4316;
+                background: var(--accent-hover, #5a4316);
                 opacity: 0.92;
             }
 
@@ -172,21 +247,15 @@ if (Astro.request.method === "POST") {
                 letter-spacing: 1px;
             }
 
-            .footer {
-                position: fixed;
-                bottom: 36px;
-                font-size: 10px;
-                color: rgba(0, 0, 0, 0.38);
-                text-transform: uppercase;
-                letter-spacing: 2px;
-            }
+
         </style>
     </head>
     <body>
+        <ThemeToggleButton />
         <div class="login-container">
             <div class="logo">
-                KC Wolff-Ingham
-                <span>Resume and Selected Work</span>
+                <span class="logo-name">KC Wolff-Ingham</span>
+                <span class="logo-subtitle">Resume and Selected Work</span>
             </div>
 
             <div class="divider"></div>
@@ -196,7 +265,7 @@ if (Astro.request.method === "POST") {
                     <input
                         type="password"
                         name="password"
-                        placeholder="Enter access code"
+                        placeholder="Enter Password"
                         required
                         autofocus
                     />
@@ -205,13 +274,13 @@ if (Astro.request.method === "POST") {
                 {
                     error && (
                         <p class="error-msg">
-                            Incorrect access code. Please try again.
+                            Incorrect password. Please try again.
                         </p>
                     )
                 }
             </form>
         </div>
 
-        <div class="footer">Confidential &mdash; KC Wolff-Ingham</div>
+        
     </body>
 </html>

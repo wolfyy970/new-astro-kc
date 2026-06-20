@@ -1,0 +1,81 @@
+<script is:inline>
+  (function() {
+    const themes = ['dark', 'light', 'system'];
+    const savedTheme = localStorage.getItem('portfolio-theme') || 'dark';
+
+    function applyTheme(themeName) {
+      if (themeName === 'light') {
+        document.documentElement.classList.add('theme-light');
+      } else if (themeName === 'dark') {
+        document.documentElement.classList.remove('theme-light');
+      } else if (themeName === 'system') {
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (systemPrefersDark) {
+          document.documentElement.classList.remove('theme-light');
+        } else {
+          document.documentElement.classList.add('theme-light');
+        }
+      }
+      updateButtonLabel(themeName);
+    }
+
+    function updateButtonLabel(themeName) {
+      const btn = document.getElementById('theme-toggle');
+      if (btn) {
+        const textSpan = btn.querySelector('.theme-label-text');
+        if (textSpan) {
+          if (themeName === 'system') {
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            textSpan.textContent = `System (${systemPrefersDark ? 'Dark' : 'Light'})`;
+          } else {
+            textSpan.textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
+          }
+        }
+      }
+    }
+
+    function toggleTheme() {
+      const current = localStorage.getItem('portfolio-theme') || 'dark';
+      const next = themes[(themes.indexOf(current) + 1) % themes.length];
+      localStorage.setItem('portfolio-theme', next);
+      applyTheme(next);
+    }
+
+    // Apply immediately to prevent flash
+    applyTheme(savedTheme);
+
+    // Listen for system preference changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
+      const current = localStorage.getItem('portfolio-theme') || 'dark';
+      if (current === 'system') {
+        applyTheme('system');
+      }
+    });
+
+    // Keyboard 'c' / 'C' toggle
+    document.addEventListener('keydown', function(e) {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+      if (e.key.toLowerCase() === 'c') {
+        toggleTheme();
+      }
+    });
+
+    // DOM listener
+    function initToggle() {
+      const btn = document.getElementById('theme-toggle');
+      if (btn) {
+        btn.addEventListener('click', toggleTheme);
+        const current = localStorage.getItem('portfolio-theme') || 'dark';
+        updateButtonLabel(current);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initToggle);
+    } else {
+      initToggle();
+    }
+  })();
+</script>

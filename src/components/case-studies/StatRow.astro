@@ -37,9 +37,9 @@ const { stats, label, isDark = false } = Astro.props;
 <style>
     .stat-row-section {
         padding: 80px;
-        background: #fff;
-        border-top: 1px solid rgba(0, 0, 0, 0.05);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        background: var(--doc-white, #fff);
+        border-top: 1px solid var(--doc-rule, rgba(0, 0, 0, 0.05));
+        border-bottom: 1px solid var(--doc-rule, rgba(0, 0, 0, 0.05));
     }
 
     .stat-row-section.is-dark {
@@ -57,13 +57,9 @@ const { stats, label, isDark = false } = Astro.props;
         font-weight: 600;
         letter-spacing: 3px;
         text-transform: uppercase;
-        color: var(--accent, #70541C);
+        color: var(--label-color, var(--accent, #70541C));
         margin-bottom: 48px;
         text-align: center;
-    }
-
-    .is-dark .stat-row-label {
-        color: rgba(255, 255, 255, 0.5);
     }
 
     .stat-grid {
@@ -89,16 +85,12 @@ const { stats, label, isDark = false } = Astro.props;
     }
 
     .stat-value {
-        font-family: 'Playfair Display', serif;
+        font-family: var(--display);
         font-size: clamp(40px, 5vw, 72px);
         font-weight: 400;
         line-height: 1;
-        color: var(--accent, #70541C);
+        color: var(--stat-value-color, var(--accent, #70541C));
         display: block;
-    }
-
-    .is-dark .stat-value {
-        color: #fff;
     }
 
     .stat-label {
@@ -108,13 +100,9 @@ const { stats, label, isDark = false } = Astro.props;
         font-weight: 600;
         letter-spacing: 2.5px;
         text-transform: uppercase;
-        color: var(--text-secondary, #666);
+        color: var(--stat-label-color, var(--text-secondary, #666));
         line-height: 1.4;
         max-width: 160px;
-    }
-
-    .is-dark .stat-label {
-        color: rgba(255, 255, 255, 0.5);
     }
 
     @media (max-width: 768px) {

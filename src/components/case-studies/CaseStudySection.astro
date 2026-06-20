@@ -21,6 +21,7 @@ import CaptionedImage from "./CaptionedImage.astro";
 import PhotoGrid from "./PhotoGrid.astro";
 import StatRow from "./StatRow.astro";
 import { Image } from "astro:assets";
+import { isHexColorDark } from "../../utils/color";
 
 type SectionType =
     | "cardGrid"
@@ -60,6 +61,7 @@ interface Props {
     label?: string;
     title?: string;
     description?: string;
+    isMobile?: boolean;
 
     // ── Visual / theming ────────────────────────────────────────────────
     /** Any CSS color or gradient applied as the section background. */
@@ -119,6 +121,7 @@ const {
     label,
     title = "",
     description = "",
+    isMobile = false,
     bg,
     isDark = false,
     darkBg,
@@ -142,16 +145,19 @@ const wrapperParts: string[] = [];
 if (bg) wrapperParts.push(`background: ${bg}`);
 if (darkBg) wrapperParts.push(`--case-study-dark: ${darkBg}`);
 const wrapperStyle = wrapperParts.join("; ") || undefined;
+
+const isSectionDark = isDark || isHexColorDark(bg);
+const themeClass = isSectionDark ? "theme-dark" : (bg ? "theme-light" : undefined);
 ---
 
 <!--
-  The outer div carries optional bg/darkBg styles. An unstyled div has no
-  visual or layout effect, so we always render it for simplicity.
+  The outer div carries optional bg/darkBg styles and the computed theme class
+  (theme-light or theme-dark) to scope colors systematically.
 -->
-<div style={wrapperStyle}>
+<div class={themeClass} style={wrapperStyle}>
 
     {type === "cardGrid" && (
-        <ShowcaseSection label={label} title={title} description={description} isDark={isDark}>
+        <ShowcaseSection label={label} title={title} description={description} isDark={isSectionDark}>
             <ShowcaseGrid columns={columns}>
                 {cards.map(card => (
                     <ShowcaseCard
@@ -159,7 +165,7 @@ const wrapperStyle = wrapperParts.join("; ") || undefined;
                         description={card.description}
                         image={card.image}
                         imageAlt={card.imageAlt}
-                        isDark={isDark}
+                        isDark={isSectionDark}
                     />
                 ))}
             </ShowcaseGrid>
@@ -167,14 +173,14 @@ const wrapperStyle = wrapperParts.join("; ") || undefined;
     )}
 
     {type === "mixedGrid" && primaryCard && (
-        <ShowcaseSection label={label} title={title} description={description} isDark={isDark}>
+        <ShowcaseSection label={label} title={title} description={description} isDark={isSectionDark}>
             <ShowcaseGrid columns={1}>
                 <ShowcaseCard
                     title={primaryCard.title}
                     description={primaryCard.description}
                     image={primaryCard.image}
                     imageAlt={primaryCard.imageAlt}
-                    isDark={isDark}
+                    isDark={isSectionDark}
                 />
             </ShowcaseGrid>
             <ShowcaseGrid columns={2}>
@@ -184,7 +190,7 @@ const wrapperStyle = wrapperParts.join("; ") || undefined;
                         description={card.description}
                         image={card.image}
                         imageAlt={card.imageAlt}
-                        isDark={isDark}
+                        isDark={isSectionDark}
                     />
                 ))}
             </ShowcaseGrid>
@@ -203,11 +209,11 @@ const wrapperStyle = wrapperParts.join("; ") || undefined;
     )}
 
     {type === "textOnly" && (
-        <ShowcaseSection label={label} title={title} description={description} isDark={isDark} />
+        <ShowcaseSection label={label} title={title} description={description} isDark={isSectionDark} />
     )}
 
     {type === "largeImage" && image && (
-        <ShowcaseSection label={label} title={title} description={description} isDark={isDark}>
+        <ShowcaseSection label={label} title={title} description={description} isDark={isSectionDark}>
             <div class="large-image-container">
                 <Image
                     src={image}
@@ -238,6 +244,7 @@ const wrapperStyle = wrapperParts.join("; ") || undefined;
             imageAlt={imageAlt}
             caption={caption}
             label={label}
+            isMobile={isMobile}
         />
     )}
 
@@ -255,7 +262,7 @@ const wrapperStyle = wrapperParts.join("; ") || undefined;
         <StatRow
             stats={stats}
             label={label}
-            isDark={isDark}
+            isDark={isSectionDark}
         />
     )}
 
@@ -271,7 +278,7 @@ const wrapperStyle = wrapperParts.join("; ") || undefined;
         max-width: 1300px;
         margin-left: auto;
         margin-right: auto;
-        background: #fff;
+        background: var(--doc-white);
     }
 
     .large-image-container img {

@@ -7,183 +7,76 @@
    in :root — inline styles take precedence and cannot bleed across pages.
    ══════════════════════════════════════ */
 
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* ── Theme variables mapping ── */
+:root {
+  --warm-white: var(--bg);
+  --text-primary: var(--doc-heading);
+  --text-secondary: var(--doc-body);
+  --text-muted: var(--doc-light);
+  --label-color: var(--accent);
+  --stat-value-color: var(--accent);
+  --stat-label-color: var(--text-secondary);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
+/* If the page is in Dark mode globally, use a high contrast label color for default sections */
+html:not(.theme-light) body {
+  --label-color: rgba(255, 255, 255, 0.9);
+  --stat-value-color: var(--accent-contrast);
+  --stat-label-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Light theme container override (for sections on light background) */
+.theme-light {
+  --bg: #f1f3f5;
+  --doc-white: #ffffff;
+  --doc-heading: #1e202b;
+  --doc-body: #3a3d4d;
+  --doc-light: #686c7d;
+  --doc-rule: #e1e4eb;
+  --warm-white: var(--bg);
+  --text-primary: var(--doc-heading);
+  --text-secondary: var(--doc-body);
+  --text-muted: var(--doc-light);
+  --label-color: var(--accent); /* Brand accent has high contrast on light bg */
+  --stat-value-color: var(--accent);
+  --stat-label-color: var(--text-secondary);
+}
+
+/* Dark theme container override (for sections on dark background) */
+.theme-dark {
+  --bg: #111219;
+  --doc-white: #191a23;
+  --doc-heading: #f3f4f6;
+  --doc-body: #e5e7eb;
+  --doc-light: #9ca3af;
+  --doc-rule: #2d3142;
+  --warm-white: var(--bg);
+  --text-primary: var(--doc-heading);
+  --text-secondary: var(--doc-body);
+  --text-muted: var(--doc-light);
+  --label-color: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ); /* High contrast label color on dark bg */
+  --stat-value-color: var(--accent-contrast);
+  --stat-label-color: rgba(255, 255, 255, 0.6); /* Styled dark label color */
 }
 
 body {
-  font-family: 'Inter', -apple-system, sans-serif;
+  font-family: var(--doc-sans);
   color: var(--text-primary);
   background: var(--warm-white);
   -webkit-font-smoothing: antialiased;
   line-height: 1.5;
 }
 
-/* ── Back navigation ── */
-.back-nav {
-  position: fixed;
-  top: 32px;
-  left: 32px;
-  z-index: 100;
-}
-
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.7);
-  text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 8px 12px;
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.back-link:hover {
-  color: #fff;
-  background: rgba(0, 0, 0, 0.2);
-  transform: translateX(-4px);
-}
-
-/* ── Sections ── */
-section {
-  padding: 120px 80px;
-}
-
-.section-label {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 20px;
-}
-
-.section-heading {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(32px, 4vw, 48px);
-  font-weight: 400;
-  color: var(--text-primary);
-  line-height: 1.15;
-  margin-bottom: 32px;
-  max-width: 800px;
-}
-
-.section-body {
-  font-size: 18px;
-  font-weight: 300;
-  color: var(--text-secondary);
-  line-height: 1.75;
-  max-width: 680px;
-}
-
-/* ── Context block ── */
-.context {
-  background: #fff;
-  position: relative;
-  isolation: isolate;
-  border-top: 1px solid rgba(0, 0, 0, 0.03);
-}
-
-.context-inner {
-  display: grid;
-  grid-template-columns: 1.3fr 0.7fr;
-  gap: 100px;
-  align-items: start;
-  max-width: 1300px;
-  margin: 0 auto;
-}
-
-.meta-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 40px;
-  padding: 40px;
-  background: #fafafa;
-  border-radius: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.04);
-}
-
-.meta-item {
-  position: relative;
-}
-
-.meta-item:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  bottom: -20px;
-  left: 0;
-  width: 32px;
-  height: 1px;
-  background: var(--accent);
-  opacity: 0.2;
-}
-
-.meta-item h3 {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #767676;
-  margin-bottom: 10px;
-}
-
-.meta-item p {
-  font-size: 15px;
-  font-weight: 400;
-  color: var(--text-primary);
-  line-height: 1.5;
-  max-width: 100%;
-}
-
-/* ── Feature row (half-image, half-text) ── */
-.feature-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  min-height: 600px;
-}
-
-.feature-image {
-  overflow: hidden;
-}
-
-.feature-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.feature-text {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 100px;
-  background: #fff;
-}
-
 /* ── Footer ── */
 footer {
   padding: 80px;
-  background: #f6f6f6;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  background: var(--bg);
+  border-top: 1px solid var(--doc-rule);
   text-align: center;
 }
 
@@ -198,53 +91,7 @@ footer p {
 
 /* ── Responsive ── */
 @media (max-width: 1024px) {
-  section {
-    padding: 80px 32px;
-  }
-
-  .context-inner {
-    grid-template-columns: 1fr;
-    gap: 64px;
-  }
-
-  .feature-row {
-    grid-template-columns: 1fr;
-  }
-
-  .feature-text {
-    padding: 64px 32px;
-  }
-
   footer {
     padding: 60px 32px;
-  }
-
-  .back-nav {
-    top: 20px;
-    left: 20px;
-  }
-
-  .meta-grid {
-    padding: 32px;
-    gap: 32px;
-  }
-}
-
-@media (max-width: 600px) {
-  section {
-    padding: 64px 24px;
-  }
-
-  .section-heading {
-    font-size: 28px;
-  }
-
-  .section-body {
-    font-size: 16px;
-  }
-
-  .back-nav {
-    top: 16px;
-    left: 16px;
   }
 }

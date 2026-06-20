@@ -45,7 +45,7 @@ const {
         align-items: center;
         gap: 80px;
         padding: 160px 80px;
-        background: #fff;
+        background: var(--doc-white, #fff);
         max-width: 1300px;
         margin: 0 auto;
     }
@@ -73,24 +73,24 @@ const {
         font-weight: 600;
         letter-spacing: 4px;
         text-transform: uppercase;
-        color: var(--accent, currentColor);
+        color: var(--label-color, var(--accent, currentColor));
         margin-bottom: 24px;
     }
 
     .section-heading {
-        font-family: "Playfair Display", serif;
+        font-family: var(--display);
         font-size: 32px;
         font-weight: 400;
-        color: #1a1a1a;
+        color: var(--text-primary, var(--doc-heading, #1a1a1a));
         line-height: 1.25;
         margin-bottom: 32px;
     }
 
     .section-body {
-        font-family: "Inter", sans-serif;
+        font-family: var(--doc-sans);
         font-size: 16px;
         font-weight: 300;
-        color: #5a5a5a;
+        color: var(--text-secondary, var(--doc-body, #5a5a5a));
         line-height: 1.8;
     }
 

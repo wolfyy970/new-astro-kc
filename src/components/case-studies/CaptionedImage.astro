@@ -14,15 +14,16 @@ interface Props {
     imageAlt: string;
     caption?: string;
     label?: string;
+    isMobile?: boolean;
 }
 
-const { image, imageAlt, caption, label } = Astro.props;
+const { image, imageAlt, caption, label, isMobile } = Astro.props;
 ---
 
 <section class="captioned-image-section">
     <div class="captioned-image-inner">
         {label && <p class="image-label">{label}</p>}
-        <div class="captioned-image-frame">
+        <div class={`captioned-image-frame ${isMobile ? "is-mobile" : ""}`}>
             <img
                 src={image}
                 alt={imageAlt}
@@ -49,7 +50,7 @@ const { image, imageAlt, caption, label } = Astro.props;
         font-weight: 600;
         letter-spacing: 3px;
         text-transform: uppercase;
-        color: var(--accent, currentColor);
+        color: var(--label-color, var(--accent, currentColor));
         margin-bottom: 24px;
         opacity: 0.8;
     }
@@ -63,10 +64,17 @@ const { image, imageAlt, caption, label } = Astro.props;
     .captioned-image-frame {
         border-radius: 12px;
         overflow: hidden;
-        background: #f0ede8;
+        background: var(--bg, #f0ede8);
         line-height: 0;
         display: flex;
         justify-content: center;
+        transition: background 0.3s ease;
+    }
+
+    .captioned-image-frame.is-mobile {
+        background: transparent;
+        margin: 0 auto;
+        max-width: fit-content;
     }
 
     .captioned-image-frame img {
@@ -76,6 +84,15 @@ const { image, imageAlt, caption, label } = Astro.props;
         height: auto;
         display: block;
         border-radius: inherit;
+    }
+
+    .captioned-image-frame.is-mobile img {
+        max-width: 320px;
+        box-shadow:
+            0 4px 6px -1px rgba(0, 0, 0, 0.05),
+            0 10px 15px -3px rgba(0, 0, 0, 0.1),
+            0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--doc-rule, rgba(0, 0, 0, 0.08));
     }
 
     .image-caption {

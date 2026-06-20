@@ -16,14 +16,16 @@ const HEX6_RE = /^#[0-9a-fA-F]{6}$/;
  *                 portfolio's global accent `#70541C`.
  */
 export function resolveHexColor(
-    hex: string | null | undefined,
-    fallback = '#70541C',
+  hex: string | null | undefined,
+  fallback = "#70541C",
 ): string {
-    if (hex && HEX6_RE.test(hex)) return hex;
-    if (import.meta.env?.DEV && hex !== undefined && hex !== null) {
-        console.warn(`[color] Invalid accent color "${hex}" — falling back to "${fallback}".`);
-    }
-    return fallback;
+  if (hex && HEX6_RE.test(hex)) return hex;
+  if (import.meta.env?.DEV && hex !== undefined && hex !== null) {
+    console.warn(
+      `[color] Invalid accent color "${hex}" — falling back to "${fallback}".`,
+    );
+  }
+  return fallback;
 }
 
 /**
@@ -33,10 +35,49 @@ export function resolveHexColor(
  * @param hex  A valid `#rrggbb` hex string (run through resolveHexColor first).
  */
 export function hexToRgbString(hex: string): string {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return `${r}, ${g}, ${b}`;
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `${r}, ${g}, ${b}`;
+}
+
+/**
+ * Determines whether a color is "dark" based on the standard luminance formula.
+ *
+ * @param color      Candidate color string (hex or gradient)
+ * @param threshold  Luminance threshold (0-255). Defaults to 128.
+ */
+export function isHexColorDark(
+  color: string | null | undefined,
+  threshold = 128,
+): boolean {
+  if (!color) return false;
+  const clean = color.trim().toLowerCase();
+
+  // Gradients are treated as dark by default
+  if (clean.includes("gradient")) {
+    return true;
+  }
+
+  if (clean.startsWith("#")) {
+    const hex = clean.slice(1);
+    if (hex.length === 6) {
+      const r = parseInt(hex.slice(0, 2), 16);
+      const g = parseInt(hex.slice(2, 4), 16);
+      const b = parseInt(hex.slice(4, 6), 16);
+      const luminance = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+      return luminance < threshold;
+    }
+    if (hex.length === 3) {
+      const r = parseInt(hex[0] + hex[0], 16);
+      const g = parseInt(hex[1] + hex[1], 16);
+      const b = parseInt(hex[2] + hex[2], 16);
+      const luminance = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+      return luminance < threshold;
+    }
+  }
+
+  return false;
 }
 
 /**
@@ -50,7 +91,12 @@ export function hexToRgbString(hex: string): string {
  * @param hex  Raw accent value from the page (may be invalid or undefined).
  */
 export function buildAccentStyle(hex: string | null | undefined): string {
-    const color = resolveHexColor(hex);
-    const rgb = hexToRgbString(color);
-    return `--accent: ${color}; --accent-rgb: ${rgb}; --accent-border: rgba(${rgb}, 0.2);`;
+  const color = resolveHexColor(hex);
+  const rgb = hexToRgbString(color);
+
+  // Check if the accent color has low contrast on dark backgrounds (luminance < 130)
+  const isDark = isHexColorDark(color, 130);
+  const contrast = isDark ? "#FFFFFF" : color;
+
+  return `--accent: ${color}; --accent-rgb: ${rgb}; --accent-border: rgba(${rgb}, 0.2); --accent-contrast: ${contrast};`;
 }

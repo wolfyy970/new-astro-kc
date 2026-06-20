@@ -7,8 +7,8 @@ The portfolio is built on **Astro 5.0**, leveraging its strengths in content-hea
 ## Component & Layout Strategy
 
 ### Layouts
-- **BaseLayout.astro:** Used for the main interactive resume. Handles global fonts (Cormorant Garamond, Source Sans 3, JetBrains Mono) and the popover overlay infrastructure.
-- **CaseStudyLayout.astro:** Used for individual case study pages. It includes navigation back to home and a different font set (Inter, Playfair Display).
+- **BaseLayout.astro:** Used for the main interactive resume. Handles global fonts (Inter, Prata, JetBrains Mono) via the `<HeadFonts />` component, and sets up the popover overlay infrastructure.
+- **CaseStudyLayout.astro:** Used for individual case study pages. It includes navigation back to home, using the same `<HeadFonts />` component to enforce visual consistency.
 
 ### Content Flow
 1. **JSON Files:** `resume.json` and `popovers.json` act as the "database."

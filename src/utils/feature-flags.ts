@@ -1,4 +1,4 @@
-import type { PopoverData, PopoverMap } from '../types/content';
+import type { PopoverData, PopoverMap } from "../types/content";
 
 /**
  * Feature Flags
@@ -36,29 +36,29 @@ import type { PopoverData, PopoverMap } from '../types/content';
 
 // null signals "all enabled" (CASE_STUDY_LINKS=true); an empty Set means "none".
 function parseEnabledSlugs(): Set<string> | null {
-    const raw =
-        (import.meta.env.CASE_STUDY_LINKS as string | undefined) ??
-        process.env.CASE_STUDY_LINKS ??
-        '';
-    if (raw.trim().toLowerCase() === 'true') return null;
-    return new Set(
-        raw
-            .split(',')
-            .map((s) => s.trim().toLowerCase())
-            .filter(Boolean),
-    );
+  const raw =
+    (import.meta.env.CASE_STUDY_LINKS as string | undefined) ??
+    process.env.CASE_STUDY_LINKS ??
+    "";
+  if (raw.trim().toLowerCase() === "true") return null;
+  return new Set(
+    raw
+      .split(",")
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean),
+  );
 }
 
 /**
  * Returns true if the given popover link path points to an enabled case study.
  * Accepts absolute paths ("/truist") or bare slugs ("truist").
  */
-export function isCaseStudyLinkEnabled(linkPath: string): boolean {
-    const enabled = parseEnabledSlugs();
-    if (enabled === null) return true; // CASE_STUDY_LINKS=true — all enabled
-    if (enabled.size === 0) return false;
-    const slug = linkPath.replace(/^\//, '').toLowerCase();
-    return enabled.has(slug);
+function isCaseStudyLinkEnabled(linkPath: string): boolean {
+  const enabled = parseEnabledSlugs();
+  if (enabled === null) return true; // CASE_STUDY_LINKS=true — all enabled
+  if (enabled.size === 0) return false;
+  const slug = linkPath.replace(/^\//, "").toLowerCase();
+  return enabled.has(slug);
 }
 
 /**
@@ -66,15 +66,15 @@ export function isCaseStudyLinkEnabled(linkPath: string): boolean {
  * in the CASE_STUDY_LINKS list. Returns a new map — never mutates the input.
  */
 export function applyFeatureFlags(popovers: PopoverMap): PopoverMap {
-    const result: PopoverMap = {};
-    for (const [key, data] of Object.entries(popovers)) {
-        if (data.link && !isCaseStudyLinkEnabled(data.link)) {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { link, linkText, ...rest } = data;
-            result[key] = rest as PopoverData;
-        } else {
-            result[key] = data;
-        }
+  const result: PopoverMap = {};
+  for (const [key, data] of Object.entries(popovers)) {
+    if (data.link && !isCaseStudyLinkEnabled(data.link)) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { link, linkText, ...rest } = data;
+      result[key] = rest as PopoverData;
+    } else {
+      result[key] = data;
     }
-    return result;
+  }
+  return result;
 }

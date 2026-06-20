@@ -32,7 +32,7 @@ Deep dives into major projects, powered by a data-driven template system. Each s
 - **Content Integrity Suite:** Automated verification ensures that every interactive hotspot is valid, maps strictly one-to-one across the resume to avoid ambiguity, and every media asset (including `media` arrays) is present, preventing regressions during content updates.
 - **Security Hardening:** Constant-time cookie comparison (timing-attack resistant), fail-closed authentication (503 if `SITE_PASSWORD` is absent), refined asset path matching, and full security header suite (`X-Robots-Tag`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`).
 - **WCAG AA Compliance:** Rigorous color contrast calibration (4.5:1+) for all branding accents.
-- **Semantic Structure:** Full ARIA 1.1 implementation, keyboard skip-links, and focus-trapped interactive cards.
+- **Semantic Structure:** Full ARIA 1.1 implementation and focus-trapped interactive cards.
 - **Cinematic Pacing:** Fluid high-altitude photography blended with authoritative, accessible typography.
 - **Performance Mastery:** From 1460px marginalia to mobile bottom-sheets with identical functional density and LCP-optimized image delivery.
 

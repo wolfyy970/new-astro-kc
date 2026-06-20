@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { extractHotspotKeys, findDuplicateHotspots } from '../src/utils/validation.js';
+import type { CaseStudyData, CaseStudySectionData } from '../src/types/content.js';
 
 const resumePath = path.join(process.cwd(), 'src/content/resume.json');
 const popoversPath = path.join(process.cwd(), 'src/content/popovers.json');
@@ -115,7 +116,7 @@ function verify() {
             continue;
         }
 
-        let study: any;
+        let study: CaseStudyData;
         try {
             study = JSON.parse(fs.readFileSync(studyPath, 'utf-8'));
         } catch (e) {
@@ -128,7 +129,7 @@ function verify() {
         if (study.hero?.image) checkImagePath(study.hero.image, `${prefix} hero.image`);
         if (study.hero?.background) checkImagePath(study.hero.background, `${prefix} hero.background`);
 
-        for (const section of (study.sections ?? []) as Array<any>) {
+        for (const section of (study.sections ?? []) as CaseStudySectionData[]) {
             const sp = `${prefix} sections[${section.key ?? section.type}]`;
             if (section.image) checkImagePath(section.image, `${sp}.image`);
             for (const card of section.cards ?? []) checkImagePath(card.image, `${sp}.cards[]`);
