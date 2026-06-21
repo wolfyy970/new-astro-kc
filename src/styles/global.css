@@ -165,6 +165,9 @@ body {
   font-weight: 400;
   letter-spacing: 1.5px;
   color: var(--doc-light);
+  /* Balance the wrap so credentials split evenly across lines (e.g. the long
+     M.S. on its own line) instead of orphaning the last one, at any width. */
+  text-wrap: balance;
   opacity: 0;
   animation: fadeIn 0.6s ease 0.7s forwards;
 }

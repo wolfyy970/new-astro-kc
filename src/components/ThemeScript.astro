@@ -1,64 +1,55 @@
 <script is:inline>
-  (function() {
-    const themes = ['dark', 'light', 'system'];
-    const savedTheme = localStorage.getItem('portfolio-theme') || 'dark';
+  (function () {
+    // Two themes only: dark and light. ALWAYS default to dark — the OS
+    // `prefers-color-scheme` is intentionally ignored. The user can opt into
+    // light, but anything other than an explicit 'light' resolves to dark
+    // (including a stale 'system' value left by an earlier version).
+    function resolveTheme() {
+      return localStorage.getItem("portfolio-theme") === "light"
+        ? "light"
+        : "dark";
+    }
 
     function applyTheme(themeName) {
-      if (themeName === 'light') {
-        document.documentElement.classList.add('theme-light');
-      } else if (themeName === 'dark') {
-        document.documentElement.classList.remove('theme-light');
-      } else if (themeName === 'system') {
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (systemPrefersDark) {
-          document.documentElement.classList.remove('theme-light');
-        } else {
-          document.documentElement.classList.add('theme-light');
-        }
+      if (themeName === "light") {
+        document.documentElement.classList.add("theme-light");
+      } else {
+        document.documentElement.classList.remove("theme-light");
       }
       updateButtonLabel(themeName);
     }
 
     function updateButtonLabel(themeName) {
-      const btn = document.getElementById('theme-toggle');
+      const btn = document.getElementById("theme-toggle");
       if (btn) {
-        const textSpan = btn.querySelector('.theme-label-text');
+        const textSpan = btn.querySelector(".theme-label-text");
         if (textSpan) {
-          textSpan.textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
+          textSpan.textContent =
+            themeName.charAt(0).toUpperCase() + themeName.slice(1);
         }
       }
     }
 
     function toggleTheme() {
-      const current = localStorage.getItem('portfolio-theme') || 'dark';
-      const next = themes[(themes.indexOf(current) + 1) % themes.length];
-      localStorage.setItem('portfolio-theme', next);
+      const next = resolveTheme() === "light" ? "dark" : "light";
+      localStorage.setItem("portfolio-theme", next);
       applyTheme(next);
     }
 
-    // Apply immediately to prevent flash
-    applyTheme(savedTheme);
-
-    // Listen for system preference changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
-      const current = localStorage.getItem('portfolio-theme') || 'dark';
-      if (current === 'system') {
-        applyTheme('system');
-      }
-    });
+    // Apply immediately to prevent a flash of the wrong theme.
+    applyTheme(resolveTheme());
 
     // DOM listener
     function initToggle() {
-      const btn = document.getElementById('theme-toggle');
+      const btn = document.getElementById("theme-toggle");
       if (btn) {
-        btn.addEventListener('click', toggleTheme);
-        const current = localStorage.getItem('portfolio-theme') || 'dark';
-        updateButtonLabel(current);
+        btn.addEventListener("click", toggleTheme);
+        updateButtonLabel(resolveTheme());
       }
     }
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initToggle);
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initToggle);
     } else {
       initToggle();
     }
