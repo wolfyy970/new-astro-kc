@@ -33,12 +33,20 @@ const popovers = applyFeatureFlags(await optimizePopoverImages(popoversRaw, getI
     <p class="hero-sub">{resume.hero.tagline}</p>
     <div class="hero-credentials">
       {
-        resume.hero.credentials.map((c, i) => (
-          <>
-            {i > 0 && <span class="hero-cred-sep" aria-hidden="true">·</span>}
-            <span class="hero-cred">{c}</span>
-          </>
-        ))
+        resume.hero.credentials.map((c, i) => {
+          const last = i === resume.hero.credentials.length - 1;
+          return (
+            <>
+              <span class="hero-cred">
+                {c}
+                {!last && (
+                  <span class="hero-cred-sep" aria-hidden="true">{" ·"}</span>
+                )}
+              </span>
+              {!last && " "}
+            </>
+          );
+        })
       }
     </div>
     <div class="hero-mobile-hint" aria-label="Best viewed on desktop">

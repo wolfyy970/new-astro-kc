@@ -173,13 +173,24 @@ body {
 }
 
 .hero-credentials .hero-cred-sep {
-  margin: 0 8px;
+  /* Spacing comes from the surrounding spaces; the dot trails its credential
+     so a wrapped line never starts with an orphan separator. */
   color: var(--doc-rule);
 }
 
 /* Keep each credential intact on one line (e.g. "Computer Science" never splits). */
 .hero-credentials .hero-cred {
   white-space: nowrap;
+}
+
+/* Desktop: the three credentials fit on a single line within the 820px hero.
+   Keep them on one line so they read as one centred row — two centred lines of
+   unequal width would never share a left edge, making the shorter line look
+   indented. Below this width they wrap (balanced) as normal. */
+@media (min-width: 901px) {
+  .hero-credentials {
+    white-space: nowrap;
+  }
 }
 
 .hero-mobile-hint {
