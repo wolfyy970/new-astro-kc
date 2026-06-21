@@ -1,33 +1,6 @@
 ---
-import CaseStudyLayout from "../layouts/CaseStudyLayout.astro";
-import CaseStudyHero from "../components/case-studies/CaseStudyHero.astro";
-import ContextGrid from "../components/case-studies/ContextGrid.astro";
-import CaseStudySection from "../components/case-studies/CaseStudySection.astro";
+import CaseStudyPage from "../components/case-studies/CaseStudyPage.astro";
 import cs from "../content/case-studies/sparks-grove.json";
 ---
 
-<CaseStudyLayout
-  title={cs.meta.title}
-  description={cs.meta.description}
-  ogImage={cs.meta.ogImage}
-  accent={cs.meta.accent}
->
-  <CaseStudyHero
-    label={cs.hero.label}
-    title={cs.hero.title}
-    subtitle={cs.hero.subtitle}
-    background={cs.hero.background}
-  />
-
-  <ContextGrid
-    challenge={cs.context.challenge}
-    role={cs.context.role}
-    company={cs.context.company}
-    scope={cs.context.scope}
-    team={cs.context.team}
-  >
-    {cs.context.body}
-  </ContextGrid>
-
-  {cs.sections.map(section => <CaseStudySection {...section} />)}
-</CaseStudyLayout>
+<CaseStudyPage cs={cs} />

@@ -1,16 +1,27 @@
 import { defineMiddleware } from "astro:middleware";
+import { timingSafeEqual } from "node:crypto";
+import { SESSION_COOKIE_NAME, SECURITY_HEADERS } from "./utils/auth.ts";
+import { VIDEO_EXTENSIONS } from "./scripts/constants.ts";
 
-const ASSET_EXT =
-  /\.(jpg|jpeg|png|webp|gif|svg|ico|mp4|webm|css|js|mjs|woff2?|txt|xml|json)$/i;
+// Static assets bypass the auth gate. The video extensions are sourced from the
+// shared VIDEO_EXTENSIONS so the gate and the image optimizer can't drift.
+const VIDEO_EXT = VIDEO_EXTENSIONS.map((ext) => ext.replace(/^\./, "")).join("|");
+const ASSET_EXT = new RegExp(
+  `\\.(jpg|jpeg|png|webp|gif|svg|ico|${VIDEO_EXT}|css|js|mjs|woff2?|txt|xml|json)$`,
+  "i",
+);
 
+/**
+ * Constant-time string comparison. Returns false on length mismatch (which also
+ * sidesteps timingSafeEqual throwing on unequal-length buffers) and otherwise
+ * delegates to the vetted Node primitive.
+ */
 function safeEqual(a: string, b: string): boolean {
   const enc = new TextEncoder();
   const ab = enc.encode(a);
   const bb = enc.encode(b);
   if (ab.length !== bb.length) return false;
-  let diff = 0;
-  for (let i = 0; i < ab.length; i++) diff |= ab[i] ^ bb[i];
-  return diff === 0;
+  return timingSafeEqual(ab, bb);
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
@@ -32,20 +43,13 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 
   // 3. Validate session cookie with constant-time comparison
-  const session = cookies.get("portfolio_session")?.value ?? "";
+  const session = cookies.get(SESSION_COOKIE_NAME)?.value ?? "";
 
   if (safeEqual(session, password)) {
     const response = await next();
-    response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
-    response.headers.set(
-      "Cache-Control",
-      "no-store, no-cache, must-revalidate, proxy-revalidate",
-    );
-    response.headers.set("Pragma", "no-cache");
-    response.headers.set("Expires", "0");
-    response.headers.set("X-Content-Type-Options", "nosniff");
-    response.headers.set("X-Frame-Options", "DENY");
-    response.headers.set("Referrer-Policy", "no-referrer");
+    for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+      response.headers.set(name, value);
+    }
     return response;
   }
 

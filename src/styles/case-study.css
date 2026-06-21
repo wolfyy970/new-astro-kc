@@ -16,6 +16,39 @@
   --label-color: var(--accent);
   --stat-value-color: var(--accent);
   --stat-label-color: var(--text-secondary);
+
+  /* ── Case-study type scale ──
+     One deliberate ramp for the section-header family. Eyebrow/heading/body are
+     normalized to a single value each (previously drifted 11/12/13, 32/42, 16/18
+     across components). Distinct roles below keep their own steps. */
+  --cs-eyebrow: 12px;
+  --cs-eyebrow-tracking: 4px;
+  --cs-heading: 42px;
+  --cs-body: 18px;
+  --cs-card-title: 22px;
+  --cs-card-body: 16px;
+  --cs-photo-title: clamp(24px, 3vw, 36px);
+  --cs-hero-title: clamp(48px, 6vw, 80px);
+  --cs-hero-subtitle: 20px;
+  --cs-stat-value: clamp(40px, 5vw, 72px);
+  --cs-stat-label: 11px;
+  --cs-caption: 14px;
+
+  /* ── Case-study layout scale (values preserved from prior literals) ── */
+  --cs-pad: 160px 80px;
+  --cs-pad-tablet: 100px 32px;
+  --cs-pad-media: 80px;
+  --cs-pad-media-tablet: 64px 32px;
+  --cs-pad-media-mobile: 48px 24px;
+  --cs-max-width: 1300px;
+  --cs-max-width-wide: 1600px;
+  --cs-max-width-stat: 1400px;
+  --cs-radius: 12px;
+  --cs-radius-sm: 10px;
+
+  /* Dark-section background — single formula (collapses the #2d1446 vs #3b1a5a
+     fallback drift; --accent is always set on <body>, so the fallback is inert). */
+  --cs-dark-bg: color-mix(in srgb, var(--accent, #3b1a5a) 80%, #000);
 }
 
 /* If the page is in Dark mode globally, use a high contrast label color for default sections */

@@ -67,7 +67,7 @@ const { title, subtitle, label, image, imageAlt, background } = Astro.props;
             color-mix(in srgb, var(--accent, #3b1a5a) 80%, #fff) 100%
         );
         overflow: hidden;
-        padding: 160px 80px;
+        padding: var(--cs-pad);
     }
 
     .hero.has-bg {
@@ -122,9 +122,9 @@ const { title, subtitle, label, image, imageAlt, background } = Astro.props;
     }
 
     .hero-label {
-        font-size: 12px;
+        font-size: var(--cs-eyebrow);
         font-weight: 600;
-        letter-spacing: 4px;
+        letter-spacing: var(--cs-eyebrow-tracking);
         text-transform: uppercase;
         color: rgba(255, 255, 255, 0.9);
         margin-bottom: 32px;
@@ -132,7 +132,7 @@ const { title, subtitle, label, image, imageAlt, background } = Astro.props;
 
     .hero-title {
         font-family: var(--display);
-        font-size: clamp(48px, 6vw, 80px);
+        font-size: var(--cs-hero-title);
         font-weight: 400;
         color: #fff;
         line-height: 1.05;
@@ -140,7 +140,7 @@ const { title, subtitle, label, image, imageAlt, background } = Astro.props;
     }
 
     .hero-subtitle {
-        font-size: 20px;
+        font-size: var(--cs-hero-subtitle);
         font-weight: 300;
         color: rgba(255, 255, 255, 0.85);
         line-height: 1.75;

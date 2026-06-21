@@ -1,0 +1,42 @@
+---
+// Shared scaffolding for every case-study page. Each page file just imports its
+// JSON and renders <CaseStudyPage cs={data} />, so the layout/hero/context/section
+// composition lives in exactly one place. Spreading {...cs.hero} subsumes both
+// hero variants (image+imageAlt vs background) — absent keys pass undefined,
+// which CaseStudyHero already handles.
+//
+// The raw JSON import is validated here against the shared schema, so a malformed
+// case study fails loudly (and `cs` is correctly typed) instead of being spread
+// into components untyped.
+import { caseStudyDataSchema } from "../../content/schema.ts";
+import CaseStudyLayout from "../../layouts/CaseStudyLayout.astro";
+import CaseStudyHero from "./CaseStudyHero.astro";
+import ContextGrid from "./ContextGrid.astro";
+import CaseStudySection from "./CaseStudySection.astro";
+
+interface Props {
+  cs: unknown;
+}
+const cs = caseStudyDataSchema.parse(Astro.props.cs);
+---
+
+<CaseStudyLayout
+  title={cs.meta.title}
+  description={cs.meta.description}
+  ogImage={cs.meta.ogImage}
+  accent={cs.meta.accent}
+>
+  <CaseStudyHero {...cs.hero} />
+
+  <ContextGrid
+    challenge={cs.context.challenge}
+    role={cs.context.role}
+    company={cs.context.company}
+    scope={cs.context.scope}
+    team={cs.context.team}
+  >
+    {cs.context.body}
+  </ContextGrid>
+
+  {cs.sections.map((section) => <CaseStudySection {...section} />)}
+</CaseStudyLayout>

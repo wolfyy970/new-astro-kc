@@ -1,14 +1,14 @@
 {
   "meta": {
-    "title": "Upwave — Health & Wellness Platform",
-    "description": "How I led product and design for Upwave — Turner's health and wellness venture — from concept to 1 million users in 8 months.",
+    "title": "Upwave: Health & Wellness Platform",
+    "description": "How I led product and design for Upwave, Turner's health and wellness venture, from concept to 1 million users in 8 months.",
     "ogImage": "/images/upwave/turner-upwave-site.png",
     "accent": "#f26522"
   },
   "hero": {
     "label": "Upwave",
     "title": "Building a Platform That Makes Wellness Stick",
-    "subtitle": "I led product and design for Turner's health and wellness venture — partnering with IDEO on market validation, then taking it from concept to 1M monthly users in eight months.",
+    "subtitle": "I led product and design for Turner's health and wellness venture, partnering with IDEO on market validation, then taking it from concept to 1M monthly users in eight months.",
     "image": "/images/upwave/turner-upwave-site.png",
     "imageAlt": "Upwave homepage on desktop and mobile"
   },
@@ -82,7 +82,7 @@
       "darkBg": "#1a1a1a",
       "label": "Emerging Technology",
       "title": "Defining the future of broadcast.",
-      "description": "Prior to leading Upwave, my tenure at Turner included serving as Senior Director of Innovation & Emerging Technology spanning CNN, Cartoon Network, TBS & TNT. I led multi-disciplinary R&D teams that pioneered early mobile augmented reality applications and the sync-to-TV technology that ultimately won a Primetime Emmy Award. These efforts resulted in two granted U.S. patents for automatic content recognition. I also collaborated on the design of the CNN 'Magic Wall,' introducing a massive multi-touch paradigm that redefined data storytelling across the broadcast industry."
+      "description": "Prior to leading Upwave, my tenure at Turner included serving as Senior Director of Strategic Product spanning CNN, Cartoon Network, TBS & TNT. I led multi-disciplinary R&D teams that pioneered early mobile augmented reality applications and the sync-to-TV technology that ultimately won a Primetime Emmy Award. These efforts resulted in two granted U.S. patents for automatic content recognition. I also collaborated on the design of the CNN 'Magic Wall,' introducing a massive multi-touch paradigm that redefined data storytelling across the broadcast industry."
     }
   ]
 }

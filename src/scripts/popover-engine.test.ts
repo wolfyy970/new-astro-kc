@@ -6,6 +6,8 @@ import {
   CLS_OPEN,
   CLS_VISIBLE,
   CLS_POPOVER_OPEN,
+  DRAG_MIN_VISIBLE,
+  POPOVER_MARGIN_MIN,
 } from "./constants";
 
 describe("PopoverEngine", () => {
@@ -238,6 +240,58 @@ describe("PopoverEngine", () => {
       popoverEl.dispatchEvent(shiftTabEvent);
 
       expect(document.activeElement).toBe(link);
+    });
+  });
+
+  describe("Desktop drag (viewport clamping)", () => {
+    // Synthesises a pointer event jsdom won't construct natively, carrying the
+    // coordinate fields the drag handler reads off the event.
+    const pointerEvent = (
+      type: string,
+      props: Record<string, unknown>,
+    ): Event => {
+      const e = new Event(type, { bubbles: true });
+      Object.assign(e, props);
+      return e;
+    };
+
+    let handle: HTMLElement;
+
+    beforeEach(() => {
+      window.innerWidth = 1440;
+      // jsdom does not implement pointer capture; stub it so drag can engage.
+      popoverEl.setPointerCapture = vi.fn();
+      popoverEl.releasePointerCapture = vi.fn();
+      hotspot.click();
+      handle = popoverEl.querySelector(".popover-handle") as HTMLElement;
+      expect(handle).not.toBeNull();
+      // Establish a known starting position before dragging.
+      popoverEl.style.left = "100px";
+      popoverEl.style.top = "100px";
+    });
+
+    it("clamps left so the panel cannot be dragged past the right edge", () => {
+      handle.dispatchEvent(
+        pointerEvent("pointerdown", { clientX: 100, clientY: 100, pointerId: 1 }),
+      );
+      popoverEl.dispatchEvent(
+        pointerEvent("pointermove", { clientX: 99999, clientY: 100, pointerId: 1 }),
+      );
+
+      expect(popoverEl.style.left).toBe(
+        `${window.innerWidth - DRAG_MIN_VISIBLE}px`,
+      );
+    });
+
+    it("clamps left to the minimum margin at the left edge", () => {
+      handle.dispatchEvent(
+        pointerEvent("pointerdown", { clientX: 100, clientY: 100, pointerId: 1 }),
+      );
+      popoverEl.dispatchEvent(
+        pointerEvent("pointermove", { clientX: -99999, clientY: 100, pointerId: 1 }),
+      );
+
+      expect(popoverEl.style.left).toBe(`${POPOVER_MARGIN_MIN}px`);
     });
   });
 

@@ -1,47 +1,29 @@
 // ── Scroll Annotation Engine ──────────────────────────────────────────────────
-// Manages margin annotations that appear on wide displays (≥1400px).
+// Manages margin annotations that appear on wide displays (≥1460px).
 // Uses IntersectionObserver to reveal annotations as their paired hotspot
 // scrolls into view. Resolves vertical overlaps between adjacent annotations.
+// Below the wide tier, no margin annotations are shown.
 //
-// On near-wide displays (1024–1399px): nudges a "widen hint" UI element
-// instead of revealing annotations, encouraging users to widen the browser.
+// (The "widen hint" ribbon shown on narrower screens was extracted to the
+// parked, self-contained src/components/WidenHint.astro and is not wired here.)
 
 import type { PopoverMap } from "../types/content.ts";
-import { requireEl, buildContentNode } from "./dom.ts";
+import { buildContentNode } from "./dom.ts";
 import {
-  BREAKPOINT_WIDE,
-  BREAKPOINT_NEAR,
-  BREAKPOINT_MOBILE,
   ANNOTATION_MIN_GAP,
   ANNOTATION_ROOT_MARGIN,
-  NUDGE_DURATION_MS,
+  INTRO_TOP,
+  INTRO_REVEAL_MS,
+  INTRO_DISMISS_MS,
   RESIZE_DEBOUNCE_MS,
-  ID_WIDEN_HINT,
   SEL_HOTSPOT,
   SEL_DOC_PAGE,
   CLS_ACTIVE,
   CLS_REVEALED,
   CLS_SCROLL_REVEALED,
-  CLS_VISIBLE,
-  CLS_NUDGE,
   CLS_ANNOTATION_SUPPRESSED,
-  RIBBON_PROGRESS_START,
-  RIBBON_PROGRESS_END,
-  RIBBON_LEFT_START_OFFSET,
-  RIBBON_LEFT_DELTA,
-  RIBBON_RIGHT_START_OFFSET,
-  RIBBON_RIGHT_DELTA,
 } from "./constants.ts";
-import { isWideScreen, isNearWideScreen } from "../utils/viewport.ts";
-
-// ── Widen hint ────────────────────────────────────────────────────────────────
-
-function nudgeWidenHint(): void {
-  if (!isNearWideScreen()) return;
-  const hint = requireEl(ID_WIDEN_HINT, "AnnotationEngine");
-  hint.classList.add(CLS_NUDGE);
-  setTimeout(() => hint.classList.remove(CLS_NUDGE), NUDGE_DURATION_MS);
-}
+import { isWideScreen } from "../utils/viewport.ts";
 
 // ── Engine state ───────────────────────────────────────────────────────────────
 
@@ -76,12 +58,6 @@ function buildAllAnnotations(popovers: PopoverMap): void {
       const key = hotspot.dataset.popover;
       if (!key) return;
 
-      if (!hotspot) {
-        console.warn(
-          `[AnnotationEngine] Missing \`<hotspot data-popover="${key}">\` anchor in DOM. Cannot build annotation.`,
-        );
-        return;
-      }
       const data = popovers[key];
       if (!data) {
         console.warn(
@@ -118,44 +94,40 @@ function buildAllAnnotations(popovers: PopoverMap): void {
     });
 
   // Pass 2: resolve vertical overlaps per side so annotations don't stack.
-  // Also attach load listeners to any images so we re-resolve if they shift heights.
-  resolveOverlaps("left");
-  resolveOverlaps("right");
+  // Re-resolve whenever a media element settles, since loading can shift heights.
+  resolveAllOverlaps();
 
-  docPage.querySelectorAll(".sa-img, .sa-vid").forEach((media) => {
-    if (media.tagName.toLowerCase() === "img") {
-      const image = media as HTMLImageElement;
-      if (image.complete) {
-        resolveOverlaps("left");
-        resolveOverlaps("right");
-      } else {
-        image.addEventListener("load", () => {
-          resolveOverlaps("left");
-          resolveOverlaps("right");
-        });
-      }
-    } else if (media.tagName.toLowerCase() === "video") {
-      const video = media as HTMLVideoElement;
-      if (video.readyState >= 1) {
-        // HAVE_METADATA
-        resolveOverlaps("left");
-        resolveOverlaps("right");
-      } else {
-        video.addEventListener("loadeddata", () => {
-          resolveOverlaps("left");
-          resolveOverlaps("right");
-        });
-      }
-    }
-  });
+  docPage
+    .querySelectorAll(".sa-img, .sa-vid")
+    .forEach((media) => onMediaReady(media, resolveAllOverlaps));
 
   // Final safety pass once everything is definitely in place
-  window.addEventListener("load", () => {
-    resolveOverlaps("left");
-    resolveOverlaps("right");
-  });
+  window.addEventListener("load", resolveAllOverlaps);
 
   annotationsBuilt = true;
+}
+
+/** Resolves overlaps on both margins. */
+function resolveAllOverlaps(): void {
+  resolveOverlaps("left");
+  resolveOverlaps("right");
+}
+
+/**
+ * Invokes `cb` once the media element has its intrinsic dimensions — immediately
+ * if already loaded, otherwise on the relevant load event.
+ */
+function onMediaReady(media: Element, cb: () => void): void {
+  const tag = media.tagName.toLowerCase();
+  if (tag === "img") {
+    const image = media as HTMLImageElement;
+    if (image.complete) cb();
+    else image.addEventListener("load", cb);
+  } else if (tag === "video") {
+    const video = media as HTMLVideoElement;
+    if (video.readyState >= 1) cb(); // HAVE_METADATA
+    else video.addEventListener("loadeddata", cb);
+  }
 }
 
 function resolveOverlaps(side: "left" | "right"): void {
@@ -189,7 +161,7 @@ function showIntroAnnotation(): void {
   const el = document.createElement("div");
   el.className = `scroll-annotation side-left`;
   el.dataset.intro = "true";
-  el.style.top = "60px";
+  el.style.top = INTRO_TOP;
 
   const rule = document.createElement("div");
   rule.className = "sa-rule";
@@ -201,7 +173,7 @@ function showIntroAnnotation(): void {
   const text = document.createElement("div");
   text.className = "sa-text";
   text.textContent =
-    "Scroll to reveal — as you read, highlighted terms surface detail, data, and media here in the margin.";
+    "Scroll to reveal. As you read, highlighted terms surface detail, data, and media here in the margin.";
 
   el.appendChild(rule);
   el.appendChild(label);
@@ -210,7 +182,7 @@ function showIntroAnnotation(): void {
   introAnnotationEl = el;
 
   // Brief delay so the element is in the DOM before the transition fires
-  setTimeout(() => el.classList.add(CLS_REVEALED), 300);
+  setTimeout(() => el.classList.add(CLS_REVEALED), INTRO_REVEAL_MS);
 }
 
 function dismissIntroAnnotation(): void {
@@ -218,7 +190,7 @@ function dismissIntroAnnotation(): void {
   const el = introAnnotationEl;
   introAnnotationEl = null;
   el.classList.remove(CLS_REVEALED);
-  setTimeout(() => el.remove(), 700);
+  setTimeout(() => el.remove(), INTRO_DISMISS_MS);
 }
 
 function revealAnnotation(key: string): void {
@@ -267,26 +239,18 @@ export function initAnnotationEngine(popovers: PopoverMap): void {
     .forEach((el) => {
       if (el.dataset.popover) annotationKeys.add(el.dataset.popover);
     });
-  const hint = requireEl(ID_WIDEN_HINT, "AnnotationEngine");
 
-  // Set up the IntersectionObserver
+  // Reveal annotations as hotspots enter view on wide screens. Narrower tiers
+  // show no margin annotations, so the observer is a no-op there.
   marginObserver = new IntersectionObserver(
     (entries) => {
-      if (isWideScreen()) {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const key = (entry.target as HTMLElement).dataset.popover;
-            if (key && annotationKeys.has(key)) revealAnnotation(key);
-          }
-        });
-      } else if (isNearWideScreen()) {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const key = (entry.target as HTMLElement).dataset.popover;
-            if (key && annotationKeys.has(key)) nudgeWidenHint();
-          }
-        });
-      }
+      if (!isWideScreen()) return;
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const key = (entry.target as HTMLElement).dataset.popover;
+          if (key && annotationKeys.has(key)) revealAnnotation(key);
+        }
+      });
     },
     { rootMargin: ANNOTATION_ROOT_MARGIN, threshold: 0 },
   );
@@ -294,12 +258,6 @@ export function initAnnotationEngine(popovers: PopoverMap): void {
   function init(): void {
     if (isWideScreen()) {
       buildAllAnnotations(popovers);
-    }
-
-    if (isNearWideScreen()) {
-      hint.classList.add(CLS_VISIBLE);
-    } else {
-      hint.classList.remove(CLS_VISIBLE);
     }
 
     // Disconnect and re-observe to force an immediate visibility check on the current scroll position
@@ -337,78 +295,25 @@ export function initAnnotationEngine(popovers: PopoverMap): void {
     }
   }
 
-  // Track fluid resizing progress (0 = 1024px, 1 = 1460px)
-  function updateWidenProgress(): void {
-    const progress = Math.max(
-      0,
-      Math.min(
-        1,
-        (window.innerWidth - RIBBON_PROGRESS_START) /
-          (RIBBON_PROGRESS_END - RIBBON_PROGRESS_START),
-      ),
-    );
-    document.documentElement.style.setProperty(
-      "--widen-progress",
-      progress.toString(),
-    );
-
-    // Update SVG textPath startOffsets for the sliding ribbon effect
-    const textPathLeft = document.getElementById(
-      "widen-textpath-left",
-    ) as SVGTextPathElement | null;
-    const textPathRight = document.getElementById(
-      "widen-textpath-right",
-    ) as SVGTextPathElement | null;
-
-    if (textPathLeft && textPathRight) {
-      // Left track: M0,400 L180,400 Q200,400 200,380 L200,0
-      // Vert: starts around 211 (on L200,400->200,0 segment).
-      // Horiz: starts around 70 (on M0->180 segment).
-      const leftOffset =
-        RIBBON_LEFT_START_OFFSET - RIBBON_LEFT_DELTA * progress;
-      textPathLeft.setAttribute("startOffset", `${leftOffset}`);
-
-      // Right track: M0,0 L0,380 Q0,400 20,400 L200,400
-      // Vert: starts around 255 (on M0->380 segment).
-      // Horiz: starts around 411 (on 20->200 segment).
-      const rightOffset =
-        RIBBON_RIGHT_START_OFFSET + RIBBON_RIGHT_DELTA * progress;
-      textPathRight.setAttribute("startOffset", `${rightOffset}`);
-    }
-  }
-
-  // Call once on load
-  requestAnimationFrame(updateWidenProgress);
-
   // Handle resize — AbortController ensures this listener is removed on cleanup
   resizeAbortController = new AbortController();
   let resizeTimer = 0;
   window.addEventListener(
     "resize",
     () => {
-      requestAnimationFrame(updateWidenProgress);
-
       clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(() => {
-        const isWide = isWideScreen();
-        const isNear = isNearWideScreen();
-
-        if (isWide && !annotationsBuilt) {
-          init();
-        } else if (isWide && annotationsBuilt) {
-          hint.classList.remove(CLS_VISIBLE);
-        } else if (isNear) {
-          hint.classList.add(CLS_VISIBLE);
-          if (annotationsBuilt) resetAnnotationState();
-          init();
-        } else {
-          hint.classList.remove(CLS_VISIBLE);
-          if (annotationsBuilt) resetAnnotationState();
-        }
-      }, RESIZE_DEBOUNCE_MS);
+      resizeTimer = window.setTimeout(applyResponsiveState, RESIZE_DEBOUNCE_MS);
     },
     { signal: resizeAbortController.signal },
   );
+
+  // Reconcile annotations to the current viewport tier: build on entering the
+  // wide tier, tear down on leaving it.
+  function applyResponsiveState(): void {
+    const isWide = isWideScreen();
+    if (!isWide && annotationsBuilt) resetAnnotationState();
+    if (isWide && !annotationsBuilt) init();
+  }
 
   init();
 }

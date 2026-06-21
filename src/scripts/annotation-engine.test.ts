@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { initAnnotationEngine, cleanupAnnotations } from "./annotation-engine";
-import { ID_WIDEN_HINT, SEL_DOC_PAGE, BREAKPOINT_WIDE } from "./constants";
+import {
+  SEL_DOC_PAGE,
+  BREAKPOINT_WIDE,
+  RESIZE_DEBOUNCE_MS,
+} from "./constants";
 import type { PopoverMap } from "../types/content";
 
 describe("Annotation Engine (DOM auto-mapping)", () => {
@@ -15,7 +19,6 @@ describe("Annotation Engine (DOM auto-mapping)", () => {
     });
 
     document.body.innerHTML = `
-            <div id="${ID_WIDEN_HINT}"></div>
             <div class="${SEL_DOC_PAGE.replace(".", "")}">
                 <span class="hotspot" data-popover="item1">Item 1</span>
                 <span class="hotspot" data-popover="item2">Item 2</span>
@@ -111,7 +114,6 @@ describe("Intro annotation (cold-start)", () => {
     });
 
     document.body.innerHTML = `
-            <div id="${ID_WIDEN_HINT}"></div>
             <div class="${SEL_DOC_PAGE.replace(".", "")}">
                 <span class="hotspot" data-popover="item1">Item 1</span>
             </div>
@@ -202,44 +204,123 @@ describe("Intro annotation (cold-start)", () => {
   });
 });
 
-import { isWideScreen, isNearWideScreen } from "../utils/viewport";
-import { BREAKPOINT_MOBILE } from "./constants";
-
-describe("Screen helpers for annotation engine", () => {
-  it("isWideScreen returns true when width is above BREAKPOINT_WIDE", () => {
+describe("Resize state machine", () => {
+  const setWidth = (value: number) => {
     Object.defineProperty(window, "innerWidth", {
       writable: true,
       configurable: true,
-      value: BREAKPOINT_WIDE + 10,
+      value,
     });
-    expect(isWideScreen()).toBe(true);
-    expect(isNearWideScreen()).toBe(false);
+  };
+
+  const fireResizeSettled = () => {
+    window.dispatchEvent(new Event("resize"));
+    vi.advanceTimersByTime(RESIZE_DEBOUNCE_MS);
+  };
+
+  const annotationCount = () =>
+    document.querySelectorAll(".scroll-annotation:not([data-intro])").length;
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+    document.body.innerHTML = `
+      <div class="${SEL_DOC_PAGE.replace(".", "")}">
+        <span class="hotspot" data-popover="item1">Item 1</span>
+        <span class="hotspot" data-popover="item2">Item 2</span>
+      </div>
+    `;
+
+    // In-viewport rects so wide builds reveal immediately (no intro).
+    window.HTMLElement.prototype.getBoundingClientRect = vi
+      .fn()
+      .mockReturnValue({
+        top: 100,
+        bottom: 200,
+        height: 100,
+        left: 0,
+        right: 0,
+        width: 0,
+      });
+
+    class MockIntersectionObserver {
+      observe = vi.fn();
+      unobserve = vi.fn();
+      disconnect = vi.fn();
+    }
+    (window as any).IntersectionObserver = MockIntersectionObserver;
   });
 
-  it("isNearWideScreen returns true when width is below BREAKPOINT_WIDE but above BREAKPOINT_MOBILE", () => {
-    Object.defineProperty(window, "innerWidth", {
-      writable: true,
-      configurable: true,
-      value: BREAKPOINT_WIDE - 10,
-    });
-    expect(isWideScreen()).toBe(false);
-    expect(isNearWideScreen()).toBe(true);
-
-    Object.defineProperty(window, "innerWidth", {
-      writable: true,
-      configurable: true,
-      value: BREAKPOINT_MOBILE,
-    });
-    expect(isNearWideScreen()).toBe(true);
+  afterEach(() => {
+    cleanupAnnotations();
+    document.body.innerHTML = "";
+    vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
-  it("isNearWideScreen returns false when width is below BREAKPOINT_MOBILE", () => {
-    Object.defineProperty(window, "innerWidth", {
-      writable: true,
-      configurable: true,
-      value: BREAKPOINT_MOBILE - 10,
-    });
-    expect(isWideScreen()).toBe(false);
-    expect(isNearWideScreen()).toBe(false);
+  const mockPopovers = {
+    item1: { label: "Item 1", text: "Text 1" },
+    item2: { label: "Item 2", text: "Text 2" },
+  };
+
+  it("tears down annotations on wide → narrow (mobile)", () => {
+    setWidth(BREAKPOINT_WIDE);
+    initAnnotationEngine(mockPopovers);
+    expect(annotationCount()).toBe(2);
+
+    setWidth(400);
+    fireResizeSettled();
+
+    expect(annotationCount()).toBe(0);
+  });
+
+  it("tears down annotations on wide → near-wide", () => {
+    setWidth(BREAKPOINT_WIDE);
+    initAnnotationEngine(mockPopovers);
+    expect(annotationCount()).toBe(2);
+
+    setWidth(BREAKPOINT_WIDE - 100); // near-wide
+    fireResizeSettled();
+
+    expect(annotationCount()).toBe(0);
+  });
+
+  it("builds annotations on near-wide → wide", () => {
+    setWidth(BREAKPOINT_WIDE - 100); // start near-wide → no annotations
+    initAnnotationEngine(mockPopovers);
+    expect(annotationCount()).toBe(0);
+
+    setWidth(BREAKPOINT_WIDE);
+    fireResizeSettled();
+
+    expect(annotationCount()).toBe(2);
+  });
+
+  it("resetAnnotationState (via resize) preserves the resize listener — a later widen still rebuilds", () => {
+    setWidth(BREAKPOINT_WIDE);
+    initAnnotationEngine(mockPopovers);
+
+    // Wide → mobile triggers an internal resetAnnotationState (not full cleanup).
+    setWidth(400);
+    fireResizeSettled();
+    expect(annotationCount()).toBe(0);
+
+    // The listener must still be live: widening again rebuilds.
+    setWidth(BREAKPOINT_WIDE);
+    fireResizeSettled();
+    expect(annotationCount()).toBe(2);
+  });
+
+  it("cleanupAnnotations aborts the resize listener — a later resize is a no-op", () => {
+    setWidth(BREAKPOINT_WIDE);
+    initAnnotationEngine(mockPopovers);
+    expect(annotationCount()).toBe(2);
+
+    cleanupAnnotations();
+    expect(annotationCount()).toBe(0);
+
+    // Listener removed: resizing back to wide must NOT rebuild.
+    setWidth(BREAKPOINT_WIDE);
+    fireResizeSettled();
+    expect(annotationCount()).toBe(0);
   });
 });

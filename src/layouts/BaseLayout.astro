@@ -1,7 +1,6 @@
 ---
-import ThemeScript from "../components/ThemeScript.astro";
+import BaseHead from "../components/BaseHead.astro";
 import ThemeToggleButton from "../components/ThemeToggleButton.astro";
-import HeadFonts from "../components/HeadFonts.astro";
 
 interface Props {
   title: string;
@@ -10,7 +9,7 @@ interface Props {
 }
 const {
   title,
-  description = "KC Wolff-Ingham — Design Leadership",
+  description = "KC Wolff-Ingham, Design Leadership",
   ogImage,
 } = Astro.props;
 ---
@@ -18,24 +17,7 @@ const {
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <meta name="robots" content="noindex, nofollow" />
-
-    <!-- Open Graph -->
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-
-    <!-- Favicon -->
-    <link rel="icon" href="/favicon.png" />
-
-    <HeadFonts />
-    <ThemeScript />
+    <BaseHead title={title} description={description} ogImage={ogImage} />
   </head>
   <body>
     <ThemeToggleButton />

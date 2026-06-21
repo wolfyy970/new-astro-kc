@@ -24,12 +24,7 @@
       if (btn) {
         const textSpan = btn.querySelector('.theme-label-text');
         if (textSpan) {
-          if (themeName === 'system') {
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            textSpan.textContent = `System (${systemPrefersDark ? 'Dark' : 'Light'})`;
-          } else {
-            textSpan.textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
-          }
+          textSpan.textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
         }
       }
     }
@@ -49,16 +44,6 @@
       const current = localStorage.getItem('portfolio-theme') || 'dark';
       if (current === 'system') {
         applyTheme('system');
-      }
-    });
-
-    // Keyboard 'c' / 'C' toggle
-    document.addEventListener('keydown', function(e) {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
-        return;
-      }
-      if (e.key.toLowerCase() === 'c') {
-        toggleTheme();
       }
     });
 

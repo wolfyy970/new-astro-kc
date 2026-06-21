@@ -1,6 +1,7 @@
 ---
 import { getImage } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import WidenPrompt from "../components/WidenPrompt.astro";
 import resume from "../content/resume.json";
 import popoversRaw from "../content/popovers.json";
 import { renderHotspots } from "../utils/render";
@@ -21,8 +22,10 @@ const popovers = applyFeatureFlags(await optimizePopoverImages(popoversRaw, getI
 
 <BaseLayout
   title={resume.displayName}
-  description="Design leadership — KC Wolff-Ingham. Senior product design leader with 30 years spanning banking, health tech, and media."
+  description="Design leadership by KC Wolff-Ingham. Senior product design leader with 30 years spanning banking, health tech, and media."
 >
+  <WidenPrompt />
+
   <!-- ═══════ HERO ═══════ -->
   <header class="hero">
     <h1 class="hero-name">{resume.displayName}</h1>
@@ -32,8 +35,8 @@ const popovers = applyFeatureFlags(await optimizePopoverImages(popoversRaw, getI
       {
         resume.hero.credentials.map((c, i) => (
           <>
-            {i > 0 && <span aria-hidden="true">·</span>}
-            {c}
+            {i > 0 && <span class="hero-cred-sep" aria-hidden="true">·</span>}
+            <span class="hero-cred">{c}</span>
           </>
         ))
       }
@@ -44,7 +47,7 @@ const popovers = applyFeatureFlags(await optimizePopoverImages(popoversRaw, getI
         <line x1="8" y1="21" x2="16" y2="21"></line>
         <line x1="12" y1="17" x2="12" y2="21"></line>
       </svg>
-      Best on desktop — highlights are interactive
+      Best on desktop. Highlights are interactive
     </div>
   </header>
 
@@ -52,8 +55,7 @@ const popovers = applyFeatureFlags(await optimizePopoverImages(popoversRaw, getI
   <main class="doc-wrapper" id="main-content">
     <section class="doc-page reveal" aria-label="Resume Content">
       <div class="doc-hint">
-        <span class="doc-hint-dot" aria-hidden="true"></span> Highlighted items are
-        interactive
+        <span class="doc-hint-dot" aria-hidden="true"></span> Highlights are interactive
       </div>
 
       <!-- Header -->
@@ -179,54 +181,6 @@ const popovers = applyFeatureFlags(await optimizePopoverImages(popoversRaw, getI
 
   <div class="site-footer">
     <p>&copy; 2026 {resume.displayName}</p>
-  </div>
-
-  <!-- Discovery Hint (Desktop, < 1400px) -->
-  <div id="widen-hint" class="widen-hint" role="presentation">
-    <div class="widen-side left">
-      <!-- Left side: horizontal run from X=0 to 180, corner 180 to 200, vertical run UP from 400 to 0 -->
-      <svg class="widen-svg text-left" viewBox="0 0 200 400">
-        <path
-          id="widen-path-left"
-          d="M0,400 L180,400 Q200,400 200,380 L200,0"
-          fill="none"
-          stroke="none"></path>
-        <text class="widen-text">
-          <textPath
-            id="widen-textpath-left"
-            href="#widen-path-left"
-            text-anchor="start"
-          >
-            <tspan class="chevron chevron-left">&lt;&lt; </tspan><tspan
-              id="widen-label-left">Expand window</tspan
-            >
-          </textPath>
-        </text>
-      </svg>
-    </div>
-    <div class="widen-side right">
-      <!-- Right side: vertical run DOWN from 0 to 380, corner 380 to 400, horizontal run RIGHT to 200 -->
-      <svg class="widen-svg text-right" viewBox="0 0 200 400">
-        <path
-          id="widen-path-right"
-          d="M0,0 L0,380 Q0,400 20,400 L200,400"
-          fill="none"
-          stroke="none"></path>
-        <text class="widen-text">
-          <textPath
-            id="widen-textpath-right"
-            href="#widen-path-right"
-            text-anchor="start"
-          >
-            <tspan id="widen-label-right">For marginalia</tspan><tspan
-              class="chevron chevron-right"
-            >
-              &gt;&gt;</tspan
-            >
-          </textPath>
-        </text>
-      </svg>
-    </div>
   </div>
 
   <!-- ═══════ PAGE DATA → window globals ═══════ -->

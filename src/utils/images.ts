@@ -1,3 +1,4 @@
+import type { getImage } from "astro:assets";
 import type { PopoverData } from "../types/content";
 import { VIDEO_EXTENSIONS } from "../scripts/constants";
 
@@ -11,14 +12,9 @@ const IMAGE_OPTIMIZE_OPTIONS = {
   quality: "mid",
 } as const;
 
-type GetImageFn = (options: {
-  src: string;
-  width?: number;
-  height?: number;
-  fit?: string;
-  format?: string;
-  quality?: string;
-}) => Promise<{ src: string }>;
+// Mirror Astro's real getImage signature rather than re-declaring a looser one,
+// so the optimisation options are checked against the actual image service.
+type GetImageFn = (options: Parameters<typeof getImage>[0]) => ReturnType<typeof getImage>;
 
 /**
  * Pre-optimizes all images in the popover inventory.

@@ -1,0 +1,231 @@
+---
+/**
+ * WidenPrompt — a quiet, glassy floating header that nudges the reader to widen
+ * the window to reveal margin annotations.
+ *
+ * Behaviour (driven entirely by viewport width):
+ *   • < 600px             → hidden (a real phone — can't be widened).
+ *   • 600–1459px          → visible: a translucent pill at top-centre with a
+ *                           progress bar that fills as the window widens toward
+ *                           1460px. As progress grows the pill eases to the right
+ *                           (toward the margin). This is the range that needs the
+ *                           nudge, so it is present the whole time.
+ *   • ≥ 1460px (reached)  → a subtle "ready" beat, then it closes upward and out
+ *                           of the way as the real marginalia appear.
+ *
+ * Self-contained: markup + scoped styles + its own logic/constants. Render it on
+ * the resume page only (where marginalia exist).
+ */
+---
+
+<div id="widen-prompt" class="widen-prompt" role="status" aria-live="polite" aria-hidden="true">
+  <span class="wp-icon" aria-hidden="true">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="9 7 4 12 9 17"></polyline>
+      <polyline points="15 7 20 12 15 17"></polyline>
+    </svg>
+  </span>
+  <span class="wp-text">
+    <span class="wp-label">Widen to reveal margin notes</span>
+    <span class="wp-done">Margin notes ready</span>
+  </span>
+  <span class="wp-bar" aria-hidden="true"><span class="wp-fill"></span></span>
+</div>
+
+<style>
+  .widen-prompt {
+    --p: 0; /* 0→1 progress toward the wide threshold, set by the script */
+    position: fixed;
+    top: 18px;
+    left: 50%;
+    /* Always dead-centre, aligned with the document. */
+    transform: translate(-50%, 0);
+    z-index: 1100;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 16px;
+    border-radius: 999px;
+
+    /* Glassy: translucent surface + backdrop blur, theme-aware via --doc-white. */
+    background-color: color-mix(in srgb, var(--doc-white) 62%, transparent);
+    backdrop-filter: blur(16px) saturate(1.3);
+    -webkit-backdrop-filter: blur(16px) saturate(1.3);
+    border: 1px solid var(--doc-rule);
+    box-shadow:
+      0 10px 34px rgba(0, 0, 0, 0.14),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18);
+
+    opacity: 0;
+    pointer-events: none; /* purely informational — never intercepts clicks */
+    transition:
+      opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 0.4s ease,
+      border-color 0.4s ease,
+      box-shadow 0.4s ease;
+  }
+
+  .widen-prompt.is-visible {
+    opacity: 1;
+  }
+
+  /* "Ready" beat: invert to a solid brand-orange flash (theme-aware --accent,
+     white text — same pairing as the login button) before closing. */
+  .widen-prompt.is-done {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 12px 40px rgba(var(--accent-rgb), 0.45);
+  }
+
+  /* Reached full width: tuck straight up and out of the way (no lateral move). */
+  .widen-prompt.is-complete {
+    transform: translate(-50%, -180%);
+    opacity: 0;
+  }
+
+  .wp-icon {
+    display: flex;
+    color: var(--accent);
+    transition: color 0.4s ease;
+  }
+
+  .is-done .wp-icon {
+    color: #fff;
+  }
+
+  /* Label and the "done" message share one cell and crossfade. */
+  .wp-text {
+    display: grid;
+  }
+
+  .wp-label,
+  .wp-done {
+    grid-area: 1 / 1;
+    font-family: var(--mono);
+    font-size: var(--type-meta);
+    font-weight: 500;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--doc-heading);
+    white-space: nowrap;
+    transition: opacity 0.4s ease;
+  }
+
+  .wp-done {
+    /* Only ever shown in the inverted "ready" state — white on brand orange. */
+    color: #fff;
+    opacity: 0;
+  }
+
+  .is-done .wp-label {
+    opacity: 0;
+  }
+
+  .is-done .wp-done {
+    opacity: 1;
+  }
+
+  .wp-bar {
+    width: 54px;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--doc-rule);
+    overflow: hidden;
+    transition: opacity 0.3s ease;
+  }
+
+  /* The bar's job is done — clear it so the message reads cleanly. */
+  .is-done .wp-bar {
+    opacity: 0;
+  }
+
+  .wp-fill {
+    display: block;
+    height: 100%;
+    width: calc(var(--p) * 100%);
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.12s linear;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .widen-prompt {
+      transition: opacity 0.25s ease;
+      transform: translate(-50%, 0);
+    }
+    .widen-prompt.is-complete {
+      transform: translate(-50%, 0);
+    }
+    .wp-fill {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const VISIBLE_MIN = 600; // px — below this is a phone that can't be widened
+  const THRESHOLD = 1460; // px — wide tier: marginalia appear, prompt closes
+  const DONE_BEAT_MS = 1600; // hold the "ready" flash long enough to read it
+
+  const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
+  const el = document.getElementById("widen-prompt");
+
+  if (el) {
+    let armed = false; // has been in the visible band → a crossing earns the beat
+    let beating = false; // the "ready" flash is playing — don't disturb it
+    let beatTimer = 0;
+
+    const setHidden = (hidden: boolean) =>
+      el.setAttribute("aria-hidden", String(hidden));
+
+    const apply = () => {
+      const w = window.innerWidth;
+      // Progress fills across the whole visible band (600 → 1460).
+      el.style.setProperty("--p", String(clamp01((w - VISIBLE_MIN) / (THRESHOLD - VISIBLE_MIN))));
+
+      if (w >= THRESHOLD) {
+        // Let an in-progress flash finish even as the drag fires more resizes.
+        if (beating) return;
+        if (armed) {
+          // Genuine up-crossing while visible: play the "ready" flash once, then close.
+          armed = false;
+          beating = true;
+          el.classList.remove("is-complete");
+          el.classList.add("is-visible", "is-done");
+          setHidden(false);
+          clearTimeout(beatTimer);
+          beatTimer = window.setTimeout(() => {
+            beating = false;
+            el.classList.add("is-complete"); // keep is-done so it stays orange while sliding up
+            setHidden(true);
+          }, DONE_BEAT_MS);
+        } else {
+          // Loaded already wide, or the flash already finished: stay out of the way.
+          el.classList.add("is-complete");
+          el.classList.remove("is-done", "is-visible");
+          setHidden(true);
+        }
+      } else if (w >= VISIBLE_MIN) {
+        // The range that needs the nudge — present the whole time.
+        armed = true;
+        beating = false;
+        clearTimeout(beatTimer);
+        el.classList.remove("is-complete", "is-done");
+        el.classList.add("is-visible");
+        setHidden(false);
+      } else {
+        // A real phone — nothing to nudge toward.
+        armed = false;
+        beating = false;
+        clearTimeout(beatTimer);
+        el.classList.remove("is-visible", "is-complete", "is-done");
+        setHidden(true);
+      }
+    };
+
+    requestAnimationFrame(apply);
+    window.addEventListener("resize", () => requestAnimationFrame(apply));
+  }
+</script>

@@ -44,7 +44,7 @@ const { challenge, role, company, scope, team } = Astro.props;
 
 <style>
     .context {
-        padding: 160px 80px;
+        padding: var(--cs-pad);
         background: var(--doc-white, #fff);
     }
 
@@ -52,14 +52,14 @@ const { challenge, role, company, scope, team } = Astro.props;
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 80px;
-        max-width: 1300px;
+        max-width: var(--cs-max-width);
         margin: 0 auto;
     }
 
     .section-label {
-        font-size: 13px; /* Was 11px */
+        font-size: var(--cs-eyebrow);
         font-weight: 600;
-        letter-spacing: 4px;
+        letter-spacing: var(--cs-eyebrow-tracking);
         text-transform: uppercase;
         color: var(--label-color, var(--accent, currentColor));
         margin-bottom: 24px;
@@ -67,7 +67,7 @@ const { challenge, role, company, scope, team } = Astro.props;
 
     .section-heading {
         font-family: var(--display);
-        font-size: 42px; /* Was 32px */
+        font-size: var(--cs-heading);
         font-weight: 400;
         color: var(--text-primary, var(--doc-heading, #1a1a1a));
         line-height: 1.25;
@@ -76,7 +76,7 @@ const { challenge, role, company, scope, team } = Astro.props;
 
     .section-body {
         font-family: var(--doc-sans);
-        font-size: 18px; /* Was 16px */
+        font-size: var(--cs-body);
         font-weight: 300;
         color: var(--text-secondary, var(--doc-body, #5a5a5a));
         line-height: 1.8;
@@ -97,7 +97,7 @@ const { challenge, role, company, scope, team } = Astro.props;
 
     @media (max-width: 1024px) {
         .context {
-            padding: 100px 32px;
+            padding: var(--cs-pad-tablet);
         }
         .context-inner {
             grid-template-columns: 1fr;

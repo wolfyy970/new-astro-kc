@@ -1,0 +1,33 @@
+---
+// Shared <head> contents for every page shell (BaseLayout, CaseStudyLayout).
+// Single source for the meta/OG/robots/favicon block plus fonts and the theme
+// script, so the head can't drift between layouts.
+import HeadFonts from "./HeadFonts.astro";
+import ThemeScript from "./ThemeScript.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+}
+const { title, description, ogImage } = Astro.props;
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="robots" content="noindex, nofollow" />
+
+<!-- Open Graph -->
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+{ogImage && <meta property="og:image" content={ogImage} />}
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<!-- Favicon -->
+<link rel="icon" href="/favicon.png" />
+
+<HeadFonts />
+<ThemeScript />

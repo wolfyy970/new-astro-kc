@@ -49,7 +49,7 @@ To ensure that the resume and its interactive layers remain synchronized, use th
 ```bash
 npm run verify
 ```
-This script validates that every `<hotspot>` in `resume.json` has a corresponding entry in `popovers.json`, that no hotspots are used more than once (enforcing a strict 1:1 mapping mapping), and that all referenced image paths exist on disk. It runs automatically during `npm run build`.
+This script validates the content JSON against the shared zod schemas (`src/content/schema.ts`), confirms that every `<hotspot>` in `resume.json` has a corresponding entry in `popovers.json`, that no hotspot is used more than once (enforcing a strict 1:1 mapping), and that all referenced image paths exist on disk. It runs automatically during `npm run build`.
 
 ### 4. Image Optimization
 The project leverages Astro 5.0's Image Service for high-performance delivery:
@@ -100,9 +100,9 @@ CASE_STUDY_LINKS=truist,sparks-grove
 
 ## CSS Type Scale
 
-All font sizes are driven by semantic CSS custom properties (`--type-editorial`, `--type-h1` through `--type-h5`, `--type-body`, `--type-meta`, etc.) defined in `src/styles/global.css`.
+The resume uses semantic CSS custom properties (`--type-editorial`, `--type-h1` through `--type-h5`, `--type-body`, `--type-meta`, etc.) defined in `src/styles/global.css`. The case-study subsystem uses a parallel `--cs-*` scale in `src/styles/case-study.css`, and the shared brand palette + fonts live in `src/styles/tokens.css`.
 
-**The rule:** never write a `font-size` pixel value directly on an element. Override only the `:root` variables inside a breakpoint block. See `ARCHITECTURE.md` for the full scale table.
+**The rule:** never write a `font-size` pixel value directly on an element — use the appropriate token, and override only the `:root` variables inside a breakpoint block. See `ARCHITECTURE.md` for the full scale table.
 
 ## Adding Case Studies
 
@@ -110,13 +110,14 @@ Case studies are data-driven: content lives in JSON files and a thin `.astro` pa
 
 1. **Create `src/content/case-studies/<slug>.json`** following the schema in `.vscode/case-study.schema.json`. Include `meta`, `hero`, `context`, and a `sections` array where each item has a `type` field (e.g. `cardGrid`, `featureRow`, `textOnly`).
 2. **Add an entry to `src/content/case-studies/manifest.json`** with `slug`, `title`, `description`, `accent` (6-digit hex), and `ogImage`.
-3. **Create `src/pages/<slug>.astro`** — copy any existing page as a template. The body is always:
+3. **Create `src/pages/<slug>.astro`** — copy any existing page. The whole body is:
    ```astro
+   ---
+   import CaseStudyPage from '../components/case-studies/CaseStudyPage.astro';
    import cs from '../content/case-studies/<slug>.json';
-   import CaseStudySection from '../components/case-studies/CaseStudySection.astro';
-   // ...
-   cs.sections.map(s => <CaseStudySection {...s} />)
+   ---
+   <CaseStudyPage cs={cs} />
    ```
-4. **Register the schema** — add the file path to the `fileMatch` list in `.vscode/settings.json`.
+4. **Register the editor schema** — add the file path to the `fileMatch` list in `.vscode/settings.json` (autocomplete only; runtime validation comes from `src/content/schema.ts`).
 5. **Add images** to `public/images/<slug>/`.
 6. **Enable case study links** — set `CASE_STUDY_LINKS=true` or add the slug to the list in `.env.local` / Vercel Dashboard.

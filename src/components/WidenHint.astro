@@ -1,0 +1,232 @@
+---
+/**
+ * WidenHint — PARKED "sticker-peel" widen hint (self-contained reference copy).
+ *
+ * Not rendered anywhere right now. It was the cue shown in the near-wide tier
+ * (≈600–1459px) telling the user to widen the window to reveal margin annotations.
+ * Preserved as a single drop-in unit while a replacement is designed.
+ *
+ * The trick: two invisible L-shaped SVG paths trace the document's corners, and
+ * the "Expand window" / "For marginalia" text rides them via <textPath>. As the
+ * viewport widens (1024→1460px) a 0→1 progress value drives each textPath's
+ * `startOffset`, so the text physically rolls around the corner — no CSS transforms.
+ *
+ * To use: render <WidenHint /> on a page that has a `.doc-page` with `.hotspot`
+ * anchors. Everything it needs (markup, styles, and the resize/progress logic with
+ * its own constants) lives in this file.
+ *
+ * NOTE: the previous live version also toggled a `nudge` class on hotspot
+ * visibility, but no CSS ever targeted it — it was an inert no-op, so it is not
+ * reproduced here.
+ */
+---
+
+<div id="widen-hint" class="widen-hint" role="presentation">
+  <div class="widen-side left">
+    <!-- Left: horizontal run X=0→180, corner 180→200, vertical run UP 400→0 -->
+    <svg class="widen-svg text-left" viewBox="0 0 200 400">
+      <path
+        id="widen-path-left"
+        d="M0,400 L180,400 Q200,400 200,380 L200,0"
+        fill="none"
+        stroke="none"></path>
+      <text class="widen-text">
+        <textPath id="widen-textpath-left" href="#widen-path-left" text-anchor="start">
+          <tspan class="chevron chevron-left">&lt;&lt; </tspan><tspan
+            id="widen-label-left">Expand window</tspan
+          >
+        </textPath>
+      </text>
+    </svg>
+  </div>
+  <div class="widen-side right">
+    <!-- Right: vertical run DOWN 0→380, corner 380→400, horizontal run RIGHT to 200 -->
+    <svg class="widen-svg text-right" viewBox="0 0 200 400">
+      <path
+        id="widen-path-right"
+        d="M0,0 L0,380 Q0,400 20,400 L200,400"
+        fill="none"
+        stroke="none"></path>
+      <text class="widen-text">
+        <textPath id="widen-textpath-right" href="#widen-path-right" text-anchor="start">
+          <tspan id="widen-label-right">For marginalia</tspan><tspan
+            class="chevron chevron-right"
+          >
+            &gt;&gt;</tspan
+          >
+        </textPath>
+      </text>
+    </svg>
+  </div>
+</div>
+
+<style>
+  .widen-hint {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1);
+    padding: 0 40px;
+  }
+
+  .widen-hint.visible {
+    opacity: 1;
+  }
+
+  .widen-side {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .widen-side.left {
+    justify-content: flex-end;
+    margin-right: 414px;
+  }
+
+  .widen-side.right {
+    justify-content: flex-start;
+    margin-left: 414px;
+  }
+
+  .widen-svg {
+    width: 200px;
+    height: 400px;
+    overflow: visible;
+  }
+
+  .widen-text {
+    font-family: var(--mono);
+    font-size: var(--type-body-sm);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    fill: var(--accent);
+    opacity: 0.9;
+    transition:
+      opacity 0.4s ease,
+      fill 0.4s ease;
+  }
+
+  .chevron.chevron-left {
+    animation: pulse-chevron-left 2s infinite ease-in-out;
+  }
+
+  .chevron.chevron-right {
+    animation: pulse-chevron-right 2s infinite ease-in-out;
+  }
+
+  @keyframes pulse-chevron-left {
+    0%,
+    100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes pulse-chevron-right {
+    0%,
+    100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  /* Success mode (when fully expanded) — kept for reference. */
+  .widen-hint.success-mode {
+    opacity: 1 !important;
+    display: flex !important;
+  }
+
+  .widen-hint.success-mode .widen-text {
+    fill: var(--doc-heading);
+    opacity: 1;
+    font-weight: 600;
+    letter-spacing: 3px;
+  }
+
+  .widen-hint.success-mode .chevron {
+    display: none;
+  }
+
+  @media (min-width: 1460px) {
+    .widen-hint:not(.success-mode) {
+      display: none !important;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .widen-hint {
+      display: none !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .widen-hint {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // Self-contained widen-hint logic. Carries its own constants so this component
+  // is a single, removable unit with no engine dependencies.
+  const VISIBLE_MIN = 600; // px — below this the hint is hidden (matches CSS)
+  const VISIBLE_MAX = 1460; // px — at/above this real marginalia takes over
+  const PROGRESS_START = 1024; // px — where the ribbon begins to roll
+  const PROGRESS_END = 1460; // px — fully rolled around the corner
+  const LEFT_START_OFFSET = 211;
+  const LEFT_DELTA = 141;
+  const RIGHT_START_OFFSET = 255;
+  const RIGHT_DELTA = 156;
+
+  const hint = document.getElementById("widen-hint");
+  if (hint) {
+    const isNearWide = () => {
+      const w = window.innerWidth;
+      return w >= VISIBLE_MIN && w < VISIBLE_MAX;
+    };
+
+    const updateProgress = () => {
+      const progress = Math.max(
+        0,
+        Math.min(
+          1,
+          (window.innerWidth - PROGRESS_START) / (PROGRESS_END - PROGRESS_START),
+        ),
+      );
+      document.documentElement.style.setProperty(
+        "--widen-progress",
+        progress.toString(),
+      );
+
+      const left = document.getElementById("widen-textpath-left");
+      const right = document.getElementById("widen-textpath-right");
+      if (left && right) {
+        left.setAttribute("startOffset", `${LEFT_START_OFFSET - LEFT_DELTA * progress}`);
+        right.setAttribute("startOffset", `${RIGHT_START_OFFSET + RIGHT_DELTA * progress}`);
+      }
+    };
+
+    const sync = () => {
+      hint.classList.toggle("visible", isNearWide());
+      updateProgress();
+    };
+
+    requestAnimationFrame(updateProgress);
+    sync();
+    // Undebounced rAF so the ribbon tracks the drag smoothly.
+    window.addEventListener("resize", () => {
+      requestAnimationFrame(updateProgress);
+      sync();
+    });
+  }
+</script>

@@ -19,7 +19,6 @@
 import type { PopoverMap } from "../types/content.ts";
 import { requireEl, buildContentNode } from "./dom.ts";
 import {
-  BREAKPOINT_MOBILE,
   POPOVER_WIDTH,
   POPOVER_MARGIN_MIN,
   POPOVER_OFFSET_Y,
@@ -27,6 +26,10 @@ import {
   DRAG_MIN_VISIBLE,
   SWIPE_DISMISS_THRESHOLD,
   SWIPE_DISMISS_VELOCITY,
+  SWIPE_RESISTANCE,
+  SHEET_DISMISS_OFFSET,
+  SHEET_DISMISS_ANIM_MS,
+  SHEET_SNAPBACK_MS,
   ID_OVERLAY,
   ID_POPOVER,
   CLS_ACTIVE,
@@ -144,9 +147,6 @@ function makeDraggable(popoverEl: HTMLElement): void {
     let newTop = startElTop + dy;
 
     // Constrain to viewport (document coordinates; page is vertical-only scroll)
-    const W = popoverEl.offsetWidth;
-    const H = popoverEl.offsetHeight;
-
     newLeft = Math.max(
       POPOVER_MARGIN_MIN,
       Math.min(newLeft, window.innerWidth - DRAG_MIN_VISIBLE),
@@ -155,10 +155,6 @@ function makeDraggable(popoverEl: HTMLElement): void {
       window.scrollY + POPOVER_MARGIN_MIN,
       Math.min(newTop, window.scrollY + window.innerHeight - DRAG_MIN_VISIBLE),
     );
-    // Also prevent dragging too far right (panel body must stay visible)
-    if (newLeft + DRAG_MIN_VISIBLE > window.innerWidth) {
-      newLeft = window.innerWidth - DRAG_MIN_VISIBLE;
-    }
 
     popoverEl.style.left = newLeft + "px";
     popoverEl.style.top = newTop + "px";
@@ -226,7 +222,7 @@ function makeMobileSwipeable(popoverEl: HTMLElement): void {
     popoverEl.classList.add(CLS_IS_DRAGGING); // disables CSS transition while dragging
 
     // Slight resistance gives a rubber-band feel and signals the pull direction
-    const offset = delta * 0.65;
+    const offset = delta * SWIPE_RESISTANCE;
     popoverEl.style.setProperty(CSS_PROP_SHEET_OFFSET, `${offset}px`);
   });
 
@@ -241,14 +237,14 @@ function makeMobileSwipeable(popoverEl: HTMLElement): void {
 
     if (delta > SWIPE_DISMISS_THRESHOLD || velocity > SWIPE_DISMISS_VELOCITY) {
       // Animate the sheet down off-screen, then clean up
-      popoverEl.style.setProperty(CSS_PROP_SHEET_OFFSET, "100vh");
-      setTimeout(() => closePopover(), 300);
+      popoverEl.style.setProperty(CSS_PROP_SHEET_OFFSET, SHEET_DISMISS_OFFSET);
+      setTimeout(() => closePopover(), SHEET_DISMISS_ANIM_MS);
     } else {
       // Not far/fast enough — snap back to resting position
       popoverEl.style.setProperty(CSS_PROP_SHEET_OFFSET, "0px");
       setTimeout(
         () => popoverEl.style.removeProperty(CSS_PROP_SHEET_OFFSET),
-        350,
+        SHEET_SNAPBACK_MS,
       );
     }
   };
@@ -305,25 +301,32 @@ function calculatePopoverPosition(hotspot: HTMLElement): {
   const worstCaseHeight = vh * POPOVER_MAX_HEIGHT_VH;
   const spaceBelow = vh - rect.bottom - POPOVER_OFFSET_Y;
 
-  let top: number;
-  if (spaceBelow >= worstCaseHeight) {
-    top = rect.bottom + scrollY + POPOVER_OFFSET_Y;
-  } else {
-    const topIfAbove = rect.top + scrollY - worstCaseHeight - POPOVER_OFFSET_Y;
-    if (topIfAbove >= scrollY + POPOVER_MARGIN_MIN) {
-      top = topIfAbove;
-    } else {
-      // Neither side has full room — default below; post-render clamp handles the rest
-      top = rect.bottom + scrollY + POPOVER_OFFSET_Y;
-    }
-  }
+  const below = rect.bottom + scrollY + POPOVER_OFFSET_Y;
+  // Neither side has full room — default below; post-render clamp handles the rest.
+  const top =
+    spaceBelow >= worstCaseHeight
+      ? below
+      : (topAboveIfItFits(rect.top, worstCaseHeight, scrollY) ?? below);
 
   return { top: top + "px", left: left + "px" };
 }
 
+/**
+ * Document-coordinate `top` that places a popover of `height` above the hotspot,
+ * or null when it would not clear the top viewport margin. Shared by the
+ * build-time estimate and the post-render clamp so the flip arithmetic lives once.
+ */
+function topAboveIfItFits(
+  rectTop: number,
+  height: number,
+  scrollY: number,
+): number | null {
+  const topIfAbove = rectTop + scrollY - height - POPOVER_OFFSET_Y;
+  return topIfAbove >= scrollY + POPOVER_MARGIN_MIN ? topIfAbove : null;
+}
+
 function toggleHotspotState(el: HTMLElement, isHovered: boolean): void {
-  if (isHovered) el.classList.add(CLS_HOVERED);
-  else el.classList.remove(CLS_HOVERED);
+  el.classList.toggle(CLS_HOVERED, isHovered);
 }
 
 // ── Core open/close ────────────────────────────────────────────────────────────
@@ -369,11 +372,14 @@ function openPopover(hotspot: HTMLElement): void {
 
       if (popoverTop + actualHeight > viewportBottom) {
         const hotspotRect = hotspot.getBoundingClientRect();
-        const topIfAbove =
-          hotspotRect.top + window.scrollY - actualHeight - POPOVER_OFFSET_Y;
+        const above = topAboveIfItFits(
+          hotspotRect.top,
+          actualHeight,
+          window.scrollY,
+        );
 
-        if (topIfAbove >= window.scrollY + POPOVER_MARGIN_MIN) {
-          popoverEl.style.top = topIfAbove + "px";
+        if (above !== null) {
+          popoverEl.style.top = above + "px";
         } else {
           // Neither side fits fully — align the bottom to the viewport bottom
           popoverEl.style.top =

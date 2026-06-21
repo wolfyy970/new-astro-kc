@@ -4,7 +4,6 @@
 
 // ── Breakpoints (must match global.css) ──
 export const BREAKPOINT_WIDE = 1460; // px — wide desktop, marginalia visible
-export const BREAKPOINT_NEAR = 1024; // px — near-wide, show widen hint
 export const BREAKPOINT_MOBILE = 600; // px — mobile, bottom-sheet popover
 
 // ── Popover layout ──
@@ -15,24 +14,29 @@ export const POPOVER_MAX_HEIGHT_VH = 0.8; // fraction — must match `max-height
 export const DRAG_MIN_VISIBLE = 48; // px — minimum panel area that must stay on-screen
 export const SWIPE_DISMISS_THRESHOLD = 80; // px — downward swipe distance to dismiss mobile sheet
 export const SWIPE_DISMISS_VELOCITY = 0.4; // px/ms — flick velocity that also triggers dismiss
+export const SWIPE_RESISTANCE = 0.65; // fraction — rubber-band drag follow ratio during swipe
+export const SHEET_DISMISS_OFFSET = "100vh"; // off-screen translate applied when dismissing the sheet
+export const SHEET_DISMISS_ANIM_MS = 300; // ms — dismiss slide-out before closePopover (match CSS transition)
+export const SHEET_SNAPBACK_MS = 350; // ms — snap-back settle before clearing the drag offset
 
 // ── Annotation layout ──
 export const ANNOTATION_MIN_GAP = 80; // px — minimum vertical gap between annotations
 export const ANNOTATION_ROOT_MARGIN = "-15% 0px -40% 0px"; // IntersectionObserver rootMargin
 export const ANNOTATION_TEXT_SENTENCES = 3; // max sentences shown in annotation cards (truncation threshold)
+export const INTRO_TOP = "60px"; // resting top offset of the cold-start intro annotation
+export const INTRO_REVEAL_MS = 300; // ms — delay before the intro annotation reveals
+export const INTRO_DISMISS_MS = 700; // ms — delay before the intro annotation is removed from the DOM
 
 // ── Media ──
 export const VIDEO_EXTENSIONS = [".mp4", ".webm"] as const; // recognised video file extensions
 
 // ── Timing ──
 export const RESIZE_DEBOUNCE_MS = 250; // ms — debounce for resize handler
-export const NUDGE_DURATION_MS = 600; // ms — widen-hint nudge animation duration
 export const REVEAL_THRESHOLD = 0.05; // IntersectionObserver threshold for .reveal elements
 
 // ── DOM element IDs ──
 export const ID_OVERLAY = "popover-overlay";
 export const ID_POPOVER = "popover";
-export const ID_WIDEN_HINT = "widen-hint";
 
 // ── CSS selectors ──
 export const SEL_HOTSPOT = ".hotspot";
@@ -47,15 +51,5 @@ export const CLS_OPEN = "open";
 export const CLS_REVEALED = "revealed";
 export const CLS_SCROLL_REVEALED = "scroll-revealed";
 export const CLS_POPOVER_OPEN = "popover-open";
-export const CLS_NUDGE = "nudge";
 export const CLS_ANNOTATION_SUPPRESSED = "annotation-suppressed"; // popover open for this key
 export const CLS_IS_DRAGGING = "is-dragging";
-
-// ── Ribbon Animation (Sticker Peel) ──
-// These constants define the SVG textPath tracking math in annotation-engine.ts
-export const RIBBON_PROGRESS_START = 1024; // px
-export const RIBBON_PROGRESS_END = 1460; // px
-export const RIBBON_LEFT_START_OFFSET = 211;
-export const RIBBON_LEFT_DELTA = 141;
-export const RIBBON_RIGHT_START_OFFSET = 255;
-export const RIBBON_RIGHT_DELTA = 156;

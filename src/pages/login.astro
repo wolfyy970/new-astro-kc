@@ -1,7 +1,10 @@
 ---
+import "../styles/tokens.css";
+import "../styles/controls.css";
 import ThemeScript from "../components/ThemeScript.astro";
 import ThemeToggleButton from "../components/ThemeToggleButton.astro";
 import HeadFonts from "../components/HeadFonts.astro";
+import { SESSION_COOKIE_NAME } from "../utils/auth.ts";
 
 const password = process.env.SITE_PASSWORD || import.meta.env.SITE_PASSWORD;
 let error = false;
@@ -11,7 +14,7 @@ if (Astro.request.method === "POST") {
     const input = formData.get("password");
 
     if (input === password) {
-        Astro.cookies.set("portfolio_session", password as string, {
+        Astro.cookies.set(SESSION_COOKIE_NAME, password as string, {
             path: "/",
             httpOnly: true,
             secure: true,
@@ -30,89 +33,26 @@ if (Astro.request.method === "POST") {
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Confidential — KC Wolff-Ingham</title>
+        <title>Confidential: KC Wolff-Ingham</title>
         <meta name="robots" content="noindex, nofollow" />
         <link rel="icon" href="/favicon.png" />
         <HeadFonts />
         <ThemeScript />
         <style>
+            /* Brand palette + fonts come from tokens.css (shared with global.css).
+               Only login-specific tokens live here. */
             :root {
-                --bg: #111219;
-                --doc-white: #191A23;
-                --accent: #E07A5F;
                 --accent-hover: #C55E44;
-                --doc-heading: #F3F4F6;
-                --display: "Prata", Georgia, serif;
-                --doc-sans: "Inter", -apple-system, sans-serif;
-                --mono: "JetBrains Mono", monospace;
                 --subtitle-color: rgba(255, 255, 255, 0.5);
                 --input-border: rgba(255, 255, 255, 0.25);
                 --input-placeholder: rgba(255, 255, 255, 0.4);
             }
 
             html.theme-light {
-                --bg: #F1F3F5;
-                --doc-white: #ffffff;
-                --accent: #C24F34;
                 --accent-hover: #A53E27;
-                --doc-heading: #1E202B;
                 --subtitle-color: rgba(30, 32, 43, 0.6);
                 --input-border: rgba(30, 32, 43, 0.25);
                 --input-placeholder: rgba(30, 32, 43, 0.4);
-            }
-
-            /* ── Interactive Switcher Controls ── */
-            .theme-toggle {
-              position: fixed;
-              top: 24px;
-              right: 24px;
-              z-index: 10000;
-              font-family: var(--mono);
-              font-size: 10px;
-              font-weight: 500;
-              text-transform: uppercase;
-              letter-spacing: 1.5px;
-              color: var(--doc-heading);
-              background: var(--doc-white);
-              border: 1px solid var(--input-border);
-              padding: 8px 12px;
-              border-radius: 6px;
-              cursor: pointer;
-              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-              transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-              display: flex;
-              align-items: center;
-              gap: 6px;
-              user-select: none;
-            }
-
-            .theme-toggle:hover {
-              background: var(--bg);
-              border-color: var(--accent);
-              color: var(--doc-heading);
-              transform: translateY(-1px);
-            }
-
-            .theme-toggle:focus-visible {
-              outline: 2px solid var(--accent);
-              outline-offset: 2px;
-            }
-
-            .theme-toggle:active {
-              transform: translateY(0);
-            }
-
-            html.theme-light .theme-toggle {
-              border-color: var(--input-border);
-              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            }
-
-            @media (max-width: 1024px) {
-              .theme-toggle {
-                top: 16px;
-                right: 16px;
-                padding: 6px 10px;
-              }
             }
 
             * {
@@ -134,10 +74,12 @@ if (Astro.request.method === "POST") {
             }
 
             .login-container {
-                max-width: 360px;
                 width: 100%;
                 padding: 40px 32px;
                 text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
                 opacity: 0;
                 transform: translateY(16px);
                 animation: reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -187,6 +129,8 @@ if (Astro.request.method === "POST") {
                 display: flex;
                 flex-direction: column;
                 gap: 14px;
+                width: 100%;
+                max-width: 360px;
             }
 
             .input-wrapper {
@@ -234,7 +178,7 @@ if (Astro.request.method === "POST") {
             }
 
             button:hover {
-                background: var(--accent-hover, #5a4316);
+                background: var(--accent-hover);
                 opacity: 0.92;
             }
 

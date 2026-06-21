@@ -1,7 +1,7 @@
 {
   "gpc-revenue": {
     "label": "Research & Business Impact",
-    "text": "Leading design for the digital transformation of a $8B e-commerce platform. Customer research uncovered a key insight: B2B parts lookup is fundamentally different from traditional e-commerce. Service advisors often have the part in hand — they need to identify it, not shop for it. The \"ways of finding\" strategy (keyword search, category search, part number lookup, job type, legacy PDF catalogs) delivered a 7% add-to-cart improvement representing a $32.8M lift in revenue for the pro segment (2025).",
+    "text": "Leading design for the digital transformation of a $8B e-commerce platform. Customer research uncovered a key insight: B2B parts lookup is fundamentally different from traditional e-commerce. Service advisors often have the part in hand; they need to identify it, not shop for it. The \"ways of finding\" strategy (keyword search, category search, part number lookup, job type, legacy PDF catalogs) delivered a 7% add-to-cart improvement representing a $32.8M lift in revenue for the pro segment (2025).",
     "stat": "$32.8M"
   },
   "bolt": {
@@ -9,9 +9,8 @@
     "text": "Design engineering team designed and built aglobal themeable design system end to end - Figma 1 to 1 with code. Adopted across North America, Europe, and Asia Pacific. Reduced front-end development time by approximately 25%."
   },
   "agentic": {
-    "label": "Agentic AI · 3 Months Early",
-    "stat": "Aug 2022",
-    "text": "In August 2022 — three months before ChatGPT launched — I designed a foresight roadmap for the Future of NAPA AutoCare predicting AI-assisted issue diagnosis (NATE: NAPA Automated Technology Expert), AR-guided repair walkthroughs, and agentic shop management. Now leading design to build it.",
+    "label": "Agentic AI",
+    "text": "In August 2022 (three months before ChatGPT launched), I developed a roadmap for the Future of NAPA AutoCare built around AI-assisted issue diagnosis (NATE: NAPA Automated Technology Expert), AR-guided repair walkthroughs, and agentic shop management. The CIO hired me to execute it.",
     "media": [
       "/images/gpc/napa-autocare-future-cover.png",
       "/images/gpc/napa-ai-diagnosis.png",
@@ -20,7 +19,7 @@
   },
   "merger": {
     "label": "Truist · $66B Merger",
-    "text": "The SunTrust–BB&T merger created Truist — the largest banking merger since 2008. Inheriting an innovation studio with an uncertain future, I rebooted it by adding customer journey mapping and strategic foresight. This repositioning earned a partnership with Corporate Strategy to run a major foresight exercise using the Jobs to Be Done framework, ultimately presenting three future-of-banking scenarios to the CEO and C-suite.",
+    "text": "The SunTrust-BB&T merger created Truist, the largest banking merger since 2008. Inheriting an innovation studio with an uncertain future, I rebooted it by adding customer journey mapping and strategic foresight. This repositioning earned a partnership with Corporate Strategy to run a major foresight exercise using the Jobs to Be Done framework, ultimately presenting three future-of-banking scenarios to the CEO and C-suite.",
     "quote": "Bill Rogers, the then-CEO of SunTrust, called the work \"instrumental\" in how he thought about the merger.",
     "media": [
       "/images/truist/trend-card-1.png",
@@ -43,7 +42,7 @@
   },
   "delta": {
     "label": "Delta Air Lines",
-    "text": "Created news.delta.com — the corporate communications platform that serves Delta's media relations, employee engagement, and storytelling. A unified editorial system for a global airline with 90,000 employees.",
+    "text": "Created news.delta.com, the corporate communications platform that serves Delta's media relations, employee engagement, and storytelling. A unified editorial system for a global airline with 90,000 employees.",
     "img": "/images/sparks-grove/news-hub.jpg",
     "link": "/sparks-grove",
     "linkText": "View Delta project →"
@@ -54,7 +53,7 @@
   },
   "upwave": {
     "label": "Upwave · Turner Broadcasting",
-    "text": "Prescient IoT-driven digital health venture at the intersection of wearables and personalized content delivery. Partnered with IDEO for market validation and product-market fit. Introduced lean product methodology enabling daily release cycles. The product was ahead of mainstream wearable adoption — pre-Apple Watch.",
+    "text": "Prescient IoT-driven digital health venture at the intersection of wearables and personalized content delivery. Partnered with IDEO for market validation and product-market fit. Introduced lean product methodology enabling daily release cycles. The product was ahead of mainstream wearable adoption: pre-Apple Watch.",
     "img": "/images/upwave/turner-upwave-site.png",
     "link": "/upwave",
     "linkText": "View Upwave project →",
@@ -62,12 +61,12 @@
   },
   "emmy": {
     "label": "Emmy Award · 2011",
-    "text": "Primetime Creative Arts Emmy — Outstanding Creative Achievement in Interactive Media for the \"Conan O'Brien Presents: Team Coco\" app. Team project, I led the design and development of the automatic content recognition (ACR) technology that powered the live sync-to-TV interactive experience. This was a team award; my contribution was the underlying sync to tv platform.",
+    "text": "Primetime Creative Arts Emmy for Outstanding Creative Achievement in Interactive Media for the \"Conan O'Brien Presents: Team Coco\" app. Team project, I led the design and development of the automatic content recognition (ACR) technology that powered the live sync-to-TV interactive experience. This was a team award; my contribution was the underlying sync to tv platform.",
     "img": "/images/awards/conan-emmy.png"
   },
   "patents": {
     "label": "Granted Patents",
-    "text": "Two U.S. patents granted in 2015 for technology filed in 2011 at Turner Broadcasting. US9043821B2 covers automatic content recognition systems — the ability for a device to identify what's playing on a TV screen. US9167276B2 covers audience engagement technologies — systems for interactive second-screen experiences synchronized to live broadcast."
+    "text": "Two U.S. patents granted in 2015 for technology filed in 2011 at Turner Broadcasting. US9043821B2 covers automatic content recognition systems: the ability for a device to identify what's playing on a TV screen. US9167276B2 covers audience engagement technologies: systems for interactive second-screen experiences synchronized to live broadcast."
   },
   "magicwall": {
     "label": "CNN Magic Wall",
@@ -78,8 +77,8 @@
     ]
   },
   "ar": {
-    "label": "Mobile AR · 2005–2008",
-    "text": "Pioneered the first mobile augmented reality applications in the US in partnership with Georgia Tech — for NBA (billboard advertising interactions) and Cartoon Network (gaming). Using the Nokia N90, before the iPhone existed. At the time, AR was widely assumed to require dedicated hardware or desktop-class processing. By tracking mobile GPU power trajectories, I made the non-obvious bet that phones — not strapped on PCs — would be where AR first reached scale. That prediction proved correct.",
+    "label": "Mobile AR · 2005-2008",
+    "text": "Pioneered the first mobile augmented reality applications in the US in partnership with Georgia Tech, for NBA (billboard advertising interactions) and Cartoon Network (gaming). Using the Nokia N90, before the iPhone existed. At the time, AR was widely assumed to require dedicated hardware or desktop-class processing. By tracking mobile GPU power trajectories, I made the non-obvious bet that phones, not strapped on PCs, would be where AR first reached scale. That prediction proved correct.",
     "media": [
       "/images/turner/nba-ar-prototype.png",
       "/media/nba-ar-prototype.mp4"
@@ -87,17 +86,17 @@
   },
   "dissertation": {
     "label": "March 1993",
-    "text": "Undergraduate dissertation \"Colonizing Cyberspace\" predicted the transformative potential of global networked information spaces — 3D visualization of internet communities, virtual worlds for business and leisure. Described concepts now called \"spatial computing\" (Apple Vision Pro, Meta Quest). Predicted virtual communities and their cultural impact.",
-    "quote": "Submitted March 1993. The Mosaic browser was publicly announced April 21, 1993 only one month later.",
+    "text": "Undergraduate dissertation \"Colonizing Cyberspace\" predicted the transformative potential of global networked information spaces: 3D visualization of internet communities, virtual worlds for business and leisure. Described concepts now called \"spatial computing\" (Apple Vision Pro, Meta Quest). Predicted virtual communities and their cultural impact.",
+    "quote": "Submitted March 1993. The Mosaic browser was publicly announced April 21, 1993.",
     "img": "/images/turner/colonizing-cyberspace.png"
   },
   "backprop": {
     "label": "Neural Networks · 1993",
-    "text": "Pioneered early AI tooling by building back-propagation learning capabilities into Apple's HyperCard via custom commands — the same foundational algorithm powering today's LLMs."
+    "text": "Pioneered early AI tooling by building back-propagation learning capabilities into Apple's HyperCard via custom commands, the same foundational algorithm powering today's LLMs."
   },
   "bafta": {
     "label": "BAFTA Nomination",
-    "text": "'Armchair Manager – Football', the first ever interactive TV app nominated for a BAFTA Interactive Entertainment Award in the Sports category in 2000.",
+    "text": "'Armchair Manager - Football', the first ever interactive TV app nominated for a BAFTA Interactive Entertainment Award in the Sports category in 2000.",
     "stat": "2000",
     "img": "/images/awards/bafta-nomination.jpg",
     "link": "/two-way-tv",
@@ -111,7 +110,7 @@
   },
   "rts-award": {
     "label": "RTS Innovation Award",
-    "text": "Winner of the UK Royal Television Society (RTS) Innovation Award for CNN's World Cup Twitter Buzz — a realtime interactive data visualization experience",
+    "text": "Winner of the UK Royal Television Society (RTS) Innovation Award for CNN's World Cup Twitter Buzz, a realtime interactive data visualization experience",
     "stat": "2010",
     "media": [
       "/images/awards/world-cup-twitter.png",

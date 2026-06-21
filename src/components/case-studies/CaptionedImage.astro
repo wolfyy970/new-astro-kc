@@ -23,7 +23,7 @@ const { image, imageAlt, caption, label, isMobile } = Astro.props;
 <section class="captioned-image-section">
     <div class="captioned-image-inner">
         {label && <p class="image-label">{label}</p>}
-        <div class={`captioned-image-frame ${isMobile ? "is-mobile" : ""}`}>
+        <div class={`captioned-image-frame${isMobile ? " is-mobile" : ""}`}>
             <img
                 src={image}
                 alt={imageAlt}
@@ -37,18 +37,18 @@ const { image, imageAlt, caption, label, isMobile } = Astro.props;
 
 <style>
     .captioned-image-section {
-        padding: 80px;
+        padding: var(--cs-pad-media);
     }
 
     .captioned-image-inner {
-        max-width: 1600px;
+        max-width: var(--cs-max-width-wide);
         margin: 0 auto;
     }
 
     .image-label {
-        font-size: 11px;
+        font-size: var(--cs-eyebrow);
         font-weight: 600;
-        letter-spacing: 3px;
+        letter-spacing: var(--cs-eyebrow-tracking);
         text-transform: uppercase;
         color: var(--label-color, var(--accent, currentColor));
         margin-bottom: 24px;
@@ -62,7 +62,7 @@ const { image, imageAlt, caption, label, isMobile } = Astro.props;
      * the source deserves.
      */
     .captioned-image-frame {
-        border-radius: 12px;
+        border-radius: var(--cs-radius);
         overflow: hidden;
         background: var(--bg, #f0ede8);
         line-height: 0;
@@ -97,7 +97,7 @@ const { image, imageAlt, caption, label, isMobile } = Astro.props;
 
     .image-caption {
         margin-top: 20px;
-        font-size: 14px;
+        font-size: var(--cs-caption);
         font-weight: 400;
         color: var(--text-secondary, #666);
         line-height: 1.5;
@@ -106,10 +106,10 @@ const { image, imageAlt, caption, label, isMobile } = Astro.props;
     }
 
     @media (max-width: 1024px) {
-        .captioned-image-section { padding: 64px 32px; }
+        .captioned-image-section { padding: var(--cs-pad-media-tablet); }
     }
 
     @media (max-width: 600px) {
-        .captioned-image-section { padding: 48px 24px; }
+        .captioned-image-section { padding: var(--cs-pad-media-mobile); }
     }
 </style>

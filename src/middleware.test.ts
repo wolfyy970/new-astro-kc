@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { onRequest } from "./middleware";
+import { SESSION_COOKIE_NAME } from "./utils/auth";
 
 describe("onRequest middleware authentication gate", () => {
   const originalSitePassword = process.env.SITE_PASSWORD;
@@ -111,6 +112,28 @@ describe("onRequest middleware authentication gate", () => {
     const responseIncorrect = (await onRequest(mockContextIncorrect, mockNext)) as Response;
     expect(responseIncorrect.status).toBe(302);
     expect(await responseIncorrect.text()).toBe("Redirect to /login");
+  });
+
+  it("redirects (does not throw) when the session cookie length differs from the password", async () => {
+    // Guards the constant-time comparison: a length mismatch must resolve to a
+    // clean redirect, never a thrown error (crypto.timingSafeEqual throws on
+    // unequal-length buffers, so the length guard must short-circuit first).
+    const correctPassword = "a_password_of_known_length";
+    vi.stubEnv("SITE_PASSWORD", correctPassword);
+    process.env.SITE_PASSWORD = correctPassword;
+
+    const mockContext = {
+      url: new URL("https://example.com/some-protected-page"),
+      cookies: {
+        get: (name: string) =>
+          name === SESSION_COOKIE_NAME ? { value: "short" } : undefined,
+      },
+      redirect: mockRedirect,
+    } as any;
+
+    const response = (await onRequest(mockContext, mockNext)) as Response;
+    expect(response.status).toBe(302);
+    expect(await response.text()).toBe("Redirect to /login");
   });
 
   it("allows access and injects security headers when correct password cookie is provided", async () => {

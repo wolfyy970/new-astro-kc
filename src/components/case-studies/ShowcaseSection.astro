@@ -9,7 +9,7 @@ interface Props {
 const { label, title, description, isDark = false } = Astro.props;
 ---
 
-<section class={`showcase-section ${isDark ? "is-dark" : ""}`}>
+<section class={`showcase-section${isDark ? " is-dark" : ""}`}>
     <div class="section-content">
         {label && <div class="section-label">{label}</div>}
         <h2 class="section-heading">{title}</h2>
@@ -21,25 +21,25 @@ const { label, title, description, isDark = false } = Astro.props;
 
 <style>
     .showcase-section {
-        padding: 160px 80px;
+        padding: var(--cs-pad);
         background: var(--doc-white, #fff);
     }
 
     .showcase-section.is-dark {
         /* Pages can set --case-study-dark to override the computed dark bg */
-        background: var(--case-study-dark, color-mix(in srgb, var(--accent, #2d1446) 80%, #000));
+        background: var(--case-study-dark, var(--cs-dark-bg));
         color: #fff;
     }
 
     .section-content {
-        max-width: 1300px;
+        max-width: var(--cs-max-width);
         margin: 0 auto;
     }
 
     .section-label {
-        font-size: 12px;
+        font-size: var(--cs-eyebrow);
         font-weight: 600;
-        letter-spacing: 4px;
+        letter-spacing: var(--cs-eyebrow-tracking);
         text-transform: uppercase;
         color: var(--label-color, var(--accent, currentColor));
         margin-bottom: 24px;
@@ -47,7 +47,7 @@ const { label, title, description, isDark = false } = Astro.props;
 
     .section-heading {
         font-family: var(--display);
-        font-size: 42px; /* Was 32px */
+        font-size: var(--cs-heading);
         font-weight: 400;
         color: var(--text-primary, var(--doc-heading, #1a1a1a));
         line-height: 1.25;
@@ -60,7 +60,7 @@ const { label, title, description, isDark = false } = Astro.props;
 
     .section-body {
         font-family: var(--doc-sans);
-        font-size: 18px; /* Was 16px */
+        font-size: var(--cs-body);
         font-weight: 300;
         color: var(--text-secondary, var(--doc-body, #5a5a5a));
         line-height: 1.8;
@@ -73,7 +73,7 @@ const { label, title, description, isDark = false } = Astro.props;
 
     @media (max-width: 1024px) {
         .showcase-section {
-            padding: 100px 32px;
+            padding: var(--cs-pad-tablet);
         }
     }
 </style>

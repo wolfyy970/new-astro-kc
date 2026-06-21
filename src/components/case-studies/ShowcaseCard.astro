@@ -12,7 +12,7 @@ interface Props {
 const { title, description, image, imageAlt, isDark = false } = Astro.props;
 ---
 
-<div class={`showcase-card ${isDark ? "is-dark" : ""}`}>
+<div class={`showcase-card${isDark ? " is-dark" : ""}`}>
     <Image
         src={image}
         alt={imageAlt}
@@ -30,7 +30,7 @@ const { title, description, image, imageAlt, isDark = false } = Astro.props;
 <style>
     .showcase-card {
         background: var(--doc-white, #fff);
-        border-radius: 12px;
+        border-radius: var(--cs-radius);
         overflow: hidden;
         box-shadow: 0 4px 32px rgba(0, 0, 0, 0.05);
         transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -76,14 +76,14 @@ const { title, description, image, imageAlt, isDark = false } = Astro.props;
     }
 
     h3 {
-        font-size: 22px; /* Was 18px */
+        font-size: var(--cs-card-title);
         font-weight: 500;
         color: var(--text-primary, var(--doc-heading, #1a1a1a));
         margin-bottom: 8px;
     }
 
     p {
-        font-size: 16px; /* Was 14px */
+        font-size: var(--cs-card-body);
         font-weight: 300;
         color: var(--text-secondary, var(--doc-body, #5a5a5a));
         line-height: 1.6;

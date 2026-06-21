@@ -1,4 +1,4 @@
-import type { PopoverData, PopoverMap } from "../types/content";
+import type { PopoverMap } from "../types/content";
 
 /**
  * Feature Flags
@@ -36,10 +36,9 @@ import type { PopoverData, PopoverMap } from "../types/content";
 
 // null signals "all enabled" (CASE_STUDY_LINKS=true); an empty Set means "none".
 function parseEnabledSlugs(): Set<string> | null {
-  const raw =
-    (import.meta.env.CASE_STUDY_LINKS as string | undefined) ??
-    process.env.CASE_STUDY_LINKS ??
-    "";
+  const raw = String(
+    import.meta.env.CASE_STUDY_LINKS ?? process.env.CASE_STUDY_LINKS ?? "",
+  );
   if (raw.trim().toLowerCase() === "true") return null;
   return new Set(
     raw
@@ -71,7 +70,7 @@ export function applyFeatureFlags(popovers: PopoverMap): PopoverMap {
     if (data.link && !isCaseStudyLinkEnabled(data.link)) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { link, linkText, ...rest } = data;
-      result[key] = rest as PopoverData;
+      result[key] = rest;
     } else {
       result[key] = data;
     }

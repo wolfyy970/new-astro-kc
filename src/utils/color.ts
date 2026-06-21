@@ -4,6 +4,19 @@
 
 const HEX6_RE = /^#[0-9a-fA-F]{6}$/;
 
+/** The portfolio's global accent, used as the fallback when no valid brand
+ *  accent is supplied. */
+export const DEFAULT_ACCENT = "#70541C";
+
+/** Parses six hex digits (no leading `#`) into an `[r, g, b]` triplet. */
+function hex6ToRgb(hex6: string): [number, number, number] {
+  return [
+    parseInt(hex6.slice(0, 2), 16),
+    parseInt(hex6.slice(2, 4), 16),
+    parseInt(hex6.slice(4, 6), 16),
+  ];
+}
+
 /**
  * Validates a 6-digit hex color string and returns it, or the fallback if
  * the value is absent or malformed.
@@ -17,10 +30,13 @@ const HEX6_RE = /^#[0-9a-fA-F]{6}$/;
  */
 export function resolveHexColor(
   hex: string | null | undefined,
-  fallback = "#70541C",
+  fallback = DEFAULT_ACCENT,
 ): string {
   if (hex && HEX6_RE.test(hex)) return hex;
-  if (import.meta.env?.DEV && hex !== undefined && hex !== null) {
+  // Warn-and-degrade: a malformed accent is a content error worth surfacing at
+  // build time (a missing accent is legitimate and stays silent). Matches the
+  // render-time degrade policy in images.ts.
+  if (hex !== undefined && hex !== null) {
     console.warn(
       `[color] Invalid accent color "${hex}" — falling back to "${fallback}".`,
     );
@@ -35,9 +51,7 @@ export function resolveHexColor(
  * @param hex  A valid `#rrggbb` hex string (run through resolveHexColor first).
  */
 export function hexToRgbString(hex: string): string {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
+  const [r, g, b] = hex6ToRgb(hex.slice(1));
   return `${r}, ${g}, ${b}`;
 }
 
@@ -61,17 +75,15 @@ export function isHexColorDark(
 
   if (clean.startsWith("#")) {
     const hex = clean.slice(1);
-    if (hex.length === 6) {
-      const r = parseInt(hex.slice(0, 2), 16);
-      const g = parseInt(hex.slice(2, 4), 16);
-      const b = parseInt(hex.slice(4, 6), 16);
-      const luminance = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
-      return luminance < threshold;
-    }
-    if (hex.length === 3) {
-      const r = parseInt(hex[0] + hex[0], 16);
-      const g = parseInt(hex[1] + hex[1], 16);
-      const b = parseInt(hex[2] + hex[2], 16);
+    // Expand shorthand (#rgb → #rrggbb) so both forms share one parse path.
+    const hex6 =
+      hex.length === 3
+        ? hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
+        : hex.length === 6
+          ? hex
+          : null;
+    if (hex6) {
+      const [r, g, b] = hex6ToRgb(hex6);
       const luminance = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
       return luminance < threshold;
     }

@@ -1,0 +1,40 @@
+/* ── Shared brand tokens ──────────────────────────────────────────────────────
+   The single source of truth for the brand palette and font stacks, imported by
+   both global.css (the main app) and login.astro. App-specific tokens (type
+   scale, hotspot system, popover sizing) stay in global.css; login-specific
+   tokens (input/subtitle colors, accent-hover) stay in login.astro.
+
+   NOTE: case-study pages set --accent (and friends) as an inline style on
+   <body> via CaseStudyLayout, which takes precedence over these defaults. */
+:root {
+  --bg: #111219;
+  --doc-white: #191a23;
+  --accent: #e07a5f;
+  --accent-rgb: 224, 122, 95;
+  --accent-border: rgba(224, 122, 95, 0.2);
+
+  /* Document Palette */
+  --doc-heading: #f3f4f6;
+  --doc-body: #e5e7eb;
+  --doc-light: #9ca3af;
+  --doc-rule: #2d3142;
+
+  /* Font stacks */
+  --display: "Prata", Georgia, serif;
+  --doc-serif: "Inter", -apple-system, sans-serif;
+  --doc-sans: "Inter", -apple-system, sans-serif;
+  --mono: "JetBrains Mono", monospace;
+}
+
+/* ── Theme Overrides ─────────────────────────────────────────────────────── */
+html.theme-light {
+  --bg: #f1f3f5;
+  --doc-white: #ffffff;
+  --accent: #c24f34;
+  --accent-rgb: 194, 79, 52;
+  --accent-border: rgba(194, 79, 52, 0.15);
+  --doc-heading: #1e202b;
+  --doc-body: #3a3d4d;
+  --doc-light: #686c7d;
+  --doc-rule: #e1e4eb;
+}

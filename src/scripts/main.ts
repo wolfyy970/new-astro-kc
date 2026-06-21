@@ -10,7 +10,6 @@ import { initAnnotationEngine } from "./annotation-engine.ts";
 import {
   SEL_REVEAL,
   CLS_VISIBLE,
-  RESIZE_DEBOUNCE_MS,
   REVEAL_THRESHOLD,
 } from "./constants.ts";
 
@@ -34,9 +33,6 @@ const revealObserver = new IntersectionObserver(
 document
   .querySelectorAll(SEL_REVEAL)
   .forEach((el) => revealObserver.observe(el));
-
-// ── Resize handler ────────────────────────────────────────────────────────────
-// Other engines (annotation-engine) handle their own resize logic.
 
 // ── Boot sequence ─────────────────────────────────────────────────────────────
 // Double rAF ensures layout is fully stable before measuring ClientRects.

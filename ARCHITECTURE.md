@@ -7,8 +7,9 @@ The portfolio is built on **Astro 5.0**, leveraging its strengths in content-hea
 ## Component & Layout Strategy
 
 ### Layouts
-- **BaseLayout.astro:** Used for the main interactive resume. Handles global fonts (Inter, Prata, JetBrains Mono) via the `<HeadFonts />` component, and sets up the popover overlay infrastructure.
-- **CaseStudyLayout.astro:** Used for individual case study pages. It includes navigation back to home, using the same `<HeadFonts />` component to enforce visual consistency.
+- **BaseLayout.astro:** Used for the main interactive resume. Renders the shared `<BaseHead />` and sets up the popover overlay infrastructure.
+- **CaseStudyLayout.astro:** Used for individual case study pages. Adds back-to-home navigation and per-page accent theming, and renders the same `<BaseHead />`.
+- **BaseHead.astro:** Shared `<head>` partial (charset/viewport/title, `robots: noindex`, Open Graph + Twitter tags, favicon, fonts via `<HeadFonts />`, and the theme `<ThemeScript />`) used by both layouts so the document head can't drift between them.
 
 ### Content Flow
 1. **JSON Files:** `resume.json` and `popovers.json` act as the "database."
@@ -35,7 +36,8 @@ Manages the "magazine-style" margin content:
 - **Intersection Observation:** Rebuilds and positions margin annotations as hotspots scroll into view.
 - **Overlap Resolution:** Algorithmic adjustment to prevent vertical collisions between adjacent annotations.
 - **Cold-Start Intro Annotation:** When the engine initializes at wide screen and no hotspots are immediately in the viewport, a native-feeling introductory annotation is injected at the top of the margin. It sets the expectation for the interactive experience and dissolves the moment the first real annotation reveals. Cleaned up immediately on resize/teardown via `resetAnnotationState`.
-- **Widen Hint ("Sticker Peel"):** An intricate resize-driven interaction on laptop sizes (1024px–1459px). It features tracking SVG `<textPath>` components that physically roll out around the resume's boundaries synchronously as the user resizes, avoiding complex CSS transforms. It automatically resets IntersectionObservers to detect immediate visibility upon completion.
+- **Resize tier handling:** A debounced `resize` handler builds annotations on entering the wide tier (≥1460px) and tears them down on leaving it. (`isWide`/`isNear` are mutually exclusive.)
+- **Widen discovery is decoupled:** the engine no longer renders any "widen the window" hint. That UX is the standalone `WidenPrompt.astro` component (a centered glassy prompt with a progress bar and a brief "ready" flash, shown 600–1459px). The original edge-tracking "sticker peel" SVG `<textPath>` ribbon is preserved, unrendered, in `WidenHint.astro` for reference.
 - **Lifecycle Safety:** `resetAnnotationState()` handles DOM/state cleanup without aborting the `resizeAbortController`, preserving the resize listener across intermediate resets. `cleanupAnnotations()` performs a full teardown including the controller.
 
 ### 3. Deterministic Type Scale
@@ -53,6 +55,10 @@ All `font-size` values in `src/styles/global.css` are driven by 13 semantic CSS 
 | `--type-legal` | Footer fine print | 12px | 11px | — |
 
 **The rule:** breakpoints override `:root` variables only — never individual element `font-size`. To change how any level looks at any viewport, change one variable and it cascades everywhere. No element-level `font-size` magic numbers are permitted (one deliberate exception: `.site-footer p` at 10px watermark scale, documented inline).
+
+**Shared tokens (`tokens.css`, `controls.css`).** The brand palette and font stacks (`--bg`, `--accent`, `--accent-rgb`, `--doc-*`, `--display`/`--doc-sans`/`--mono`, plus their `html.theme-light` overrides) live in `src/styles/tokens.css`, imported by both `global.css` and `login.astro` so the palette has a single definition and the login page can't drift from the app. The floating theme toggle and case-study back link live in `src/styles/controls.css`, shared the same way. The `--type-*` scale above and the hotspot/popover variables stay in `global.css`.
+
+**Case-study type scale (`--cs-*`).** The case-study subsystem uses its own token set in `src/styles/case-study.css` — `--cs-eyebrow`/`--cs-heading`/`--cs-body` (one normalized header scale), card/hero/stat sizes, section padding, content max-widths, radii, and `--cs-dark-bg` (the `color-mix` dark-section background). Case-study components reference these instead of hardcoding pixels.
 
 ### 4. Native CSS Highlighting (Hotspot Highlighting)
 We've refined the interactive highlighting for "Executive Elegance":
@@ -72,12 +78,13 @@ src/content/case-studies/
   two-way-tv.json
 
 src/pages/
-  truist.astro           ← thin shell: imports JSON, renders hero + context + sections
+  truist.astro           ← thin wrapper: imports JSON, renders <CaseStudyPage cs={cs} />
   upwave.astro
   sparks-grove.astro
   two-way-tv.astro
 
 src/components/case-studies/
+  CaseStudyPage.astro    ← validates a study (zod) and composes Layout + Hero + Context + Sections
   CaseStudySection.astro ← dispatcher: switches on section.type
   CaseStudyLayout.astro  ← HTML shell, fonts, back nav, accent theming
   CaseStudyHero.astro    ← full-bleed or device-mockup hero
@@ -95,8 +102,9 @@ src/components/case-studies/
 
 1. `manifest.json` — used by `verify-content.ts` to enumerate all studies and check image paths at build time. Also available for future nav/listing components.
 2. `truist.json` (etc.) — imported directly by the page file. Contains `meta`, `hero`, `context`, and an ordered `sections` array.
-3. `truist.astro` — passes `meta` to `CaseStudyLayout`, `hero` to `CaseStudyHero`, `context` to `ContextGrid`, then maps `cs.sections` through `CaseStudySection`.
-4. `CaseStudySection.astro` — reads `section.type` and renders the correct component tree. Also handles `bg` (background color/gradient wrapper) and `darkBg` (`--case-study-dark` override).
+3. `truist.astro` — imports its JSON and renders `<CaseStudyPage cs={cs} />`. Nothing else.
+4. `CaseStudyPage.astro` — validates the study against `caseStudyDataSchema` (zod) at the boundary, then composes `CaseStudyLayout` (`meta` + `accent`), `CaseStudyHero` (spread `{...cs.hero}`, which subsumes both the image and background hero variants), `ContextGrid` (`cs.context`), and maps `cs.sections` through `CaseStudySection`.
+5. `CaseStudySection.astro` — reads `section.type` and renders the correct component tree. Also handles `bg` (background color/gradient wrapper) and `darkBg` (`--case-study-dark` override).
 
 #### Section Type Catalog
 
@@ -118,10 +126,10 @@ Every section in a study JSON file must have a `type` field. `CaseStudySection.a
 
 #### Brand Colour Theming
 
-`CaseStudyLayout` accepts a required `accent` prop (6-digit hex string). The layout passes this to `src/utils/color.ts → buildAccentStyle()`, which validates the hex, derives an RGB triplet and border variant, and emits all three as an inline `style` on `<body>`:
+`CaseStudyLayout` accepts a required `accent` prop (6-digit hex string). The layout passes this to `src/utils/color.ts → buildAccentStyle()`, which validates the hex, derives an RGB triplet, a border variant, and a readable contrast colour, and emits all four as an inline `style` on `<body>`:
 
 ```
---accent: #3b1a5a; --accent-rgb: 59, 26, 90; --accent-border: rgba(59, 26, 90, 0.2);
+--accent: #3b1a5a; --accent-rgb: 59, 26, 90; --accent-border: rgba(59, 26, 90, 0.2); --accent-contrast: #FFFFFF;
 ```
 
 Inline styles take precedence over any stylesheet rule, so brand colours cannot bleed between pages regardless of CSS bundle concatenation order. If `accent` is omitted or malformed, `resolveHexColor()` falls back to the portfolio amber (`#70541C`) and emits a dev-mode console warning. Components should use `var(--accent, currentColor)` rather than any brand-specific hardcoded fallback.
@@ -132,24 +140,23 @@ Dark sections (`isDark: true`) compute their background using `color-mix(in srgb
 
 1. Create `src/content/case-studies/<slug>.json` following the schema in `.vscode/case-study.schema.json`.
 2. Add one entry to `src/content/case-studies/manifest.json` (slug, title, description, accent, ogImage).
-3. Create `src/pages/<slug>.astro` — copy any existing page as a template. The body is always: import JSON, render `CaseStudyHero`, `ContextGrid`, then `cs.sections.map(s => <CaseStudySection {...s} />)`.
-4. Add the new page's filename to the `fileMatch` list in `.vscode/settings.json` so the JSON schema activates in the editor.
+3. Create `src/pages/<slug>.astro` — copy any existing page. The body is just `import cs from "../content/case-studies/<slug>.json"` and `<CaseStudyPage cs={cs} />`.
+4. Add the new page's filename to the `fileMatch` list in `.vscode/settings.json` so the editor JSON schema activates.
 5. Set `CASE_STUDY_LINKS=true` (or add the slug) in your `.env.local` to enable the popover link.
 6. Run `npm run verify` — the script reads from `manifest.json` to discover and validate all image paths.
 
 #### How to add a new section type
 
-1. Add the new type string to the `enum` in `.vscode/case-study.schema.json` → `definitions.Section.allOf[0].properties.type`.
-2. Add an `if/then` rule block in the same file to enforce required fields for the new type.
-3. Add a conditional branch in `src/components/case-studies/CaseStudySection.astro` (follow the existing pattern).
-4. Add a row to the Section Type Catalog table above.
-5. Add any required props to the `Props` interface and destructuring block in `CaseStudySection.astro`.
+1. Add the new type string to `caseStudySectionTypeSchema` in `src/content/schema.ts`, and add any new fields to `caseStudySectionSchema`. This is the runtime + type source of truth; the TS types in `src/types/content.ts` are `z.infer`'d from it, so they update automatically.
+2. Add a conditional branch in `src/components/case-studies/CaseStudySection.astro` (follow the existing pattern), plus any new props to its `Props` interface and destructuring block.
+3. Add a row to the Section Type Catalog table above.
+4. (Optional, editor autocomplete only) mirror the type's `enum`/required fields in `.vscode/case-study.schema.json`.
 
 ## Content Integrity & Performance
 
 ### 1. Content Integrity Suite (`scripts/verify-content.ts`)
 A custom TypeScript-driven verification system that ensures 100% link safety:
-- **Schema Validation:** Enforces strict structural integrity for `resume.json` and `popovers.json`, with `try/catch` around JSON parsing so malformed files produce a clean error rather than a stack trace.
+- **Schema Validation:** Parses `resume.json`, `popovers.json`, `manifest.json`, and every case-study JSON against the shared **zod** schemas in `src/content/schema.ts` — the same schemas that back `content.config.ts` and the `z.infer`'d TS types in `src/types/content.ts`, so validation, runtime config, and compile-time types are one source of truth. A `try/catch` around `JSON.parse` turns malformed files into a clean error rather than a stack trace.
 - **Hotspot Validation:** Cross-references `<hotspot>` tags in `resume.json` against `popovers.json` inventory, and enforces a strict 1:1 mapping by failing the build if any duplicate hotspots are used in the resume.
 - **Media Validation:** Validates that every `img` path and every path within `media` arrays exists in the `public/` directory.
 - **Case Study Validation:** Reads `src/content/case-studies/manifest.json` to enumerate all studies, then for each slug verifies that the individual `<slug>.json` file exists and that every image referenced in `meta`, `hero`, and all `sections` entries resolves to a real file in `public/`.
@@ -162,11 +169,27 @@ Leverages Astro's Image Service for modern asset delivery:
 
 ## Security
 
-Authentication lives in `src/middleware.ts`:
+Authentication lives in `src/middleware.ts`; the session cookie name (`SESSION_COOKIE_NAME`) and security-header set (`SECURITY_HEADERS`) are defined once in `src/utils/auth.ts` and shared with the login page so they can't drift.
 - **Fail-closed:** Returns `503` if `SITE_PASSWORD` is not configured (never accidentally open).
-- **Constant-time comparison:** `safeEqual()` uses XOR byte-by-byte comparison to prevent timing attacks on cookie validation.
-- **Asset bypass:** `ASSET_EXT` regex precisely matches static file extensions — avoids the overly broad `.includes('.')` approach.
-- **Security headers:** Every authenticated response sets `X-Robots-Tag`, `Cache-Control`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, and `Referrer-Policy: no-referrer`.
+- **Constant-time comparison:** `safeEqual()` wraps Node's `crypto.timingSafeEqual`, short-circuiting on a length mismatch first (since `timingSafeEqual` throws on unequal-length buffers), to resist timing attacks on cookie validation.
+- **Asset bypass:** the `ASSET_EXT` regex (its video extensions sourced from the shared `VIDEO_EXTENSIONS` constant) matches static file extensions, plus a `/_astro` prefix check — avoiding the overly broad `.includes('.')` approach.
+- **Security headers:** every authenticated response applies the full `SECURITY_HEADERS` set — `X-Robots-Tag`, `Cache-Control`, `Pragma`, `Expires`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, and `Referrer-Policy: no-referrer`.
+
+## Error-Handling Convention
+
+The codebase uses three deliberate strategies, chosen by failure context — not ad hoc:
+
+- **Build-time content validators collect and fail loud.** `scripts/verify-content.ts` accumulates every problem into an `errors[]` array and `process.exit(1)` so a broken deploy is impossible. Schema parsing (`src/content/schema.ts`) throws on malformed data at the page boundary (`CaseStudyPage.astro`).
+- **The request gate fails closed.** `src/middleware.ts` returns `503` if `SITE_PASSWORD` is absent and redirects on any auth failure — never an open default.
+- **Render/build-time asset helpers warn and degrade.** `src/utils/images.ts` and `src/utils/color.ts` log a `console.warn` and fall back to the original/default value rather than throwing, so one bad asset never blanks a page. (A *legitimately absent* value stays silent; only a malformed one warns.)
+
+## Case-Study Prop Vocabulary
+
+The vocabulary difference between `CaseStudyHero` and the section components is intentional, not drift:
+- **Hero** (`CaseStudyHero`): `subtitle` (lead paragraph), `background` (full-bleed hero image), `image` (device-mockup image).
+- **Sections** (`ShowcaseSection`, `FeatureRow`, …): `description` (body copy), `bg` (CSS background color/gradient), `image` (content image).
+
+`bg` is a section *color*; `background` is the hero *image* — keep them distinct.
 
 ## Testing Strategy
 - **Vitest + JSDOM:** Core logic and utility functions are verified against a simulated browser environment.
@@ -176,6 +199,9 @@ Authentication lives in `src/middleware.ts`:
   - `src/utils/images.ts`: Pipeline for pre-optimizing dynamic image assets, including case-insensitive extension handling and forwarding of `IMAGE_OPTIMIZE_OPTIONS`.
   - `src/utils/render.ts`: Hotspot-to-span transformation, verified to use `SEL_HOTSPOT` and `ID_POPOVER` constants.
   - `src/utils/feature-flags.ts`: Slug parsing, `isCaseStudyLinkEnabled`, and `applyFeatureFlags` immutability.
-  - `src/scripts/annotation-engine.ts`: Side assignment, overlap resolution, and cold-start intro annotation lifecycle.
+  - `src/content/schema.ts`: the zod content schemas, parsed against the real `resume.json`/`popovers.json`/`manifest.json`/case-study JSON plus negative (malformed) cases.
+  - `src/middleware.ts`: the auth gate — `/login` and static-asset bypass, fail-closed `503`, redirect on missing/incorrect cookie, the length-mismatch guard around `timingSafeEqual`, and security-header injection.
+  - `src/scripts/annotation-engine.ts`: side assignment, cold-start intro lifecycle, and the resize state machine (build on entering the wide tier, tear down on leaving; `resetAnnotationState` preserves the resize listener while `cleanupAnnotations` aborts it).
+  - `src/scripts/popover-engine.ts`: above/below flip positioning and horizontal clamp, open/close lifecycle, focus trap, mobile swipe-to-dismiss, and desktop drag clamping.
   - `src/scripts/dom.ts`: DOM construction for popovers, carousels, and accessibility attributes.
   - `src/scripts/constants.ts`: Structural invariants — breakpoint ordering, value ranges, `VIDEO_EXTENSIONS` contents, CSS class/selector format, and swipe-gesture thresholds (`SWIPE_DISMISS_THRESHOLD`, `SWIPE_DISMISS_VELOCITY`).

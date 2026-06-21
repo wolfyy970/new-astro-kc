@@ -1,7 +1,29 @@
 import fs from 'fs';
 import path from 'path';
 import { extractHotspotKeys, findDuplicateHotspots } from '../src/utils/validation.js';
+import {
+    resumeSchema,
+    popoverMapSchema,
+    caseStudyDataSchema,
+    manifestSchema,
+} from '../src/content/schema.js';
 import type { CaseStudyData, CaseStudySectionData } from '../src/types/content.js';
+
+/**
+ * Runs a zod schema against parsed JSON and returns flat, prefixed error
+ * strings (one per failing field path) for the integrity report.
+ */
+function schemaErrors(
+    schema: { safeParse: (d: unknown) => { success: boolean; error?: { issues: Array<{ path: PropertyKey[]; message: string }> } } },
+    data: unknown,
+    label: string,
+): string[] {
+    const result = schema.safeParse(data);
+    if (result.success) return [];
+    return (result.error?.issues ?? []).map(
+        (issue) => `${label}: ${issue.path.join('.') || '(root)'} — ${issue.message}`,
+    );
+}
 
 const resumePath = path.join(process.cwd(), 'src/content/resume.json');
 const popoversPath = path.join(process.cwd(), 'src/content/popovers.json');
@@ -33,28 +55,12 @@ function verify() {
         process.exit(1);
     }
 
-    // 2. Schema Validation
+    // 2. Schema Validation (shared zod schemas — single source of truth)
     console.log('📋 Validating schemas...');
 
-    const validateResume = (data: any) => {
-        const errs: string[] = [];
-        const req = ['name', 'displayName', 'summary', 'experience', 'education'];
-        req.forEach(f => { if (!data[f]) errs.push(`Resume: Missing required field "${f}"`); });
-        return errs;
-    };
-
-    const validatePopovers = (data: any) => {
-        const errs: string[] = [];
-        Object.keys(data).forEach(k => {
-            const item = data[k];
-            if (!item.label) errs.push(`Popover "${k}": Missing required field "label"`);
-            if (!item.text) errs.push(`Popover "${k}": Missing required field "text"`);
-        });
-        return errs;
-    };
-
-    errors.push(...validateResume(resume));
-    errors.push(...validatePopovers(popovers));
+    errors.push(...schemaErrors(resumeSchema, resume, 'Resume'));
+    errors.push(...schemaErrors(popoverMapSchema, popovers, 'Popovers'));
+    errors.push(...schemaErrors(manifestSchema, caseStudyManifest, 'Manifest'));
 
     // 3. Use utility to find all <hotspot> keys
     const foundKeys = extractHotspotKeys(resume);
@@ -125,6 +131,7 @@ function verify() {
         }
 
         const prefix = `case-studies/${slug}.json`;
+        errors.push(...schemaErrors(caseStudyDataSchema, study, prefix));
         if (study.meta?.ogImage) checkImagePath(study.meta.ogImage, `${prefix} meta.ogImage`);
         if (study.hero?.image) checkImagePath(study.hero.image, `${prefix} hero.image`);
         if (study.hero?.background) checkImagePath(study.hero.background, `${prefix} hero.background`);

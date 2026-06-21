@@ -1,3 +1,6 @@
+@import "./tokens.css";
+@import "./controls.css";
+
 *,
 *::before,
 *::after {
@@ -7,17 +10,7 @@
 }
 
 :root {
-  --bg: #111219;
-  --doc-white: #191a23;
-  --accent: #e07a5f;
-  --accent-rgb: 224, 122, 95;
-  --accent-border: rgba(224, 122, 95, 0.2);
-
-  /* Document Palette */
-  --doc-heading: #f3f4f6;
-  --doc-body: #e5e7eb;
-  --doc-light: #9ca3af;
-  --doc-rule: #2d3142;
+  /* Brand palette + fonts live in tokens.css (shared with login). */
 
   /* Hotspot Design System */
   --hs-opacity-default: 0.15;
@@ -25,24 +18,10 @@
   --hs-opacity-active: 0.35;
   --hs-border-opacity: 0.3;
   --hs-transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-
-  --display: "Prata", Georgia, serif;
-  --doc-serif: "Inter", -apple-system, sans-serif;
-  --doc-sans: "Inter", -apple-system, sans-serif;
-  --mono: "JetBrains Mono", monospace;
 }
 
-/* ── Theme Overrides ─────────────────────────────────────────────────────── */
+/* ── Theme Overrides (app-specific; brand tokens overridden in tokens.css) ── */
 html.theme-light {
-  --bg: #f1f3f5;
-  --doc-white: #ffffff;
-  --accent: #c24f34;
-  --accent-rgb: 194, 79, 52;
-  --accent-border: rgba(194, 79, 52, 0.15);
-  --doc-heading: #1e202b;
-  --doc-body: #3a3d4d;
-  --doc-light: #686c7d;
-  --doc-rule: #e1e4eb;
   --hs-opacity-default: 0.08;
   --hs-opacity-hover: 0.08;
   --hs-opacity-active: 0.162;
@@ -55,89 +34,6 @@ html.theme-light .popover-vid,
 html.theme-light .sa-img,
 html.theme-light .sa-vid {
   mix-blend-mode: multiply !important;
-}
-
-/* ── Interactive Switcher & Navigation Controls ── */
-.theme-toggle,
-.back-link {
-  position: fixed;
-  top: 24px;
-  z-index: 10000;
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--doc-heading);
-  background: var(--doc-white);
-  border: 1px solid var(--doc-rule);
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  user-select: none;
-  text-decoration: none; /* For link back button */
-}
-
-.theme-toggle {
-  right: 24px;
-}
-
-.back-link {
-  left: 24px;
-}
-
-.theme-toggle:hover,
-.back-link:hover {
-  background: var(--bg);
-  border-color: var(--accent);
-  color: var(--doc-heading);
-}
-
-.theme-toggle:hover {
-  transform: translateY(-1px);
-}
-
-.back-link:hover {
-  transform: translateX(-4px);
-}
-
-.theme-toggle:focus-visible,
-.back-link:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.theme-toggle:active,
-.back-link:active {
-  transform: translateY(0);
-}
-
-.back-link:active {
-  transform: translateX(0);
-}
-
-html.theme-dark .theme-toggle,
-html.theme-dark .back-link {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-}
-
-@media (max-width: 1024px) {
-  .theme-toggle,
-  .back-link {
-    top: 16px;
-    padding: 6px 10px;
-  }
-  .theme-toggle {
-    right: 16px;
-  }
-  .back-link {
-    left: 16px;
-  }
 }
 
 :root {
@@ -273,9 +169,14 @@ body {
   animation: fadeIn 0.6s ease 0.7s forwards;
 }
 
-.hero-credentials span {
+.hero-credentials .hero-cred-sep {
   margin: 0 8px;
   color: var(--doc-rule);
+}
+
+/* Keep each credential intact on one line (e.g. "Computer Science" never splits). */
+.hero-credentials .hero-cred {
+  white-space: nowrap;
 }
 
 .hero-mobile-hint {
@@ -1171,129 +1072,9 @@ body.popover-open {
   /* Shared active style logic handled by global .hotspot definition */
 }
 
-/* ══════════════════════════════════════
-   WIDEN HINT (Desktop discovery)
-   ══════════════════════════════════════ */
-/* ── Discovery Interaction (Widen Hint) ── */
-.widen-hint {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1);
-  padding: 0 40px;
-}
-
-.widen-hint.visible {
-  opacity: 1;
-}
-
-.widen-side {
-  flex: 1;
-  display: flex;
-  align-items: center;
-}
-
-.widen-side.left {
-  justify-content: flex-end;
-  margin-right: 414px;
-}
-
-.widen-side.right {
-  justify-content: flex-start;
-  margin-left: 414px;
-}
-
-.widen-svg {
-  width: 200px;
-  height: 400px;
-  overflow: visible;
-}
-
-.widen-text {
-  font-family: var(--mono);
-  font-size: var(--type-body-sm);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  fill: var(--accent);
-  opacity: 0.9;
-  transition:
-    opacity 0.4s ease,
-    fill 0.4s ease;
-}
-
-.chevron.chevron-left {
-  animation: pulse-chevron-left 2s infinite ease-in-out;
-}
-
-.chevron.chevron-right {
-  animation: pulse-chevron-right 2s infinite ease-in-out;
-}
-
-@keyframes pulse-chevron-left {
-  0%,
-  100% {
-    opacity: 0;
-  }
-
-  50% {
-    opacity: 1;
-  }
-}
-
-@keyframes pulse-chevron-right {
-  0%,
-  100% {
-    opacity: 0;
-  }
-
-  50% {
-    opacity: 1;
-  }
-}
-
-/* Success Mode (When fully expanded) */
-.widen-hint.success-mode {
-  opacity: 1 !important;
-  display: flex !important;
-}
-
-.widen-hint.success-mode .widen-text {
-  fill: var(--doc-heading);
-  opacity: 1;
-  font-weight: 600;
-  letter-spacing: 3px;
-}
-
-.widen-hint.success-mode .chevron {
-  display: none;
-}
-
-@media (min-width: 1460px) {
-  .widen-hint:not(.success-mode) {
-    display: none !important;
-  }
-}
-
-@media (max-width: 1459px) {
-  .widen-side.left {
-    margin-right: 414px;
-  }
-
-  .widen-side.right {
-    margin-left: 414px;
-  }
-}
-
-@media (max-width: 600px) {
-  .widen-hint {
-    display: none !important;
-  }
-}
+/* The live "widen the window" UX is the self-contained WidenPrompt.astro
+   component. The original edge-tracking ribbon styles were extracted to the
+   parked WidenHint.astro (not currently rendered). */
 
 /* ══════════════════════════════════════
    SITE FOOTER
@@ -1623,11 +1404,6 @@ body.popover-open {
   .scroll-annotation,
   .scroll-annotation.annotation-suppressed {
     transform: none;
-    transition: none;
-  }
-
-  /* Widen hint: no motion */
-  .widen-hint {
     transition: none;
   }
 }

@@ -4,9 +4,6 @@ import * as constants from "./constants";
 describe("Constants", () => {
   it("should have breakpoints in descending order", () => {
     expect(constants.BREAKPOINT_WIDE).toBeGreaterThan(
-      constants.BREAKPOINT_NEAR,
-    );
-    expect(constants.BREAKPOINT_NEAR).toBeGreaterThan(
       constants.BREAKPOINT_MOBILE,
     );
   });
@@ -41,7 +38,6 @@ describe("Constants", () => {
     expect(constants.SEL_HOTSPOT).toBeTruthy();
     expect(constants.ID_POPOVER).toBeTruthy();
     expect(constants.ID_OVERLAY).toBeTruthy();
-    expect(constants.ID_WIDEN_HINT).toBeTruthy();
   });
 
   it("SEL_HOTSPOT should be a valid CSS class selector (starts with .)", () => {

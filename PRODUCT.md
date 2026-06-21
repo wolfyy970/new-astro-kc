@@ -6,7 +6,7 @@ KC Wolff-Ingham's portfolio is a high-impact, interactive digital presence for a
 
 ### 1. Interactive Resume (Home Page)
 The primary landing experience is a "living" resume document.
-- **Editorial Hero Section:** A clean, high-contrast introduction with smooth fade-in animations and a sharp tagline: "Design leadership, product depth, and technical savvy."
+- **Editorial Hero Section:** A clean, high-contrast introduction with smooth fade-in animations and a sharp editorial tagline (the tagline text lives in `resume.json`).
 - **Popovers (Hotspots):** Inline links that trigger detailed context overlays.
   - **Rich Media & Carousels:** Popovers and marginalia support arrays of mixed media (images and video). Multiple items automatically render as swipeable carousels featuring elegant pagination dots and subtle chevron navigation that dynamically appear and fade out when navigating.
   - **Context-Aware Video Playback:** Videos embedded in arrays natively autoplay silently, while standalone videos or those in the first position start paused with a custom UI overlay play button, respecting user intent.
@@ -16,7 +16,7 @@ The primary landing experience is a "living" resume document.
 - **Scroll Annotations:** On wide screens (≥1460px), key hotspots automatically reveal themselves as margin annotations as the user scrolls, providing a rich, "magazine-style" experience.
 - **Cold-Start Intro Annotation:** When the page first loads at wide screen with all hotspots below the fold (the margin would otherwise be empty), a native-feeling introductory annotation automatically appears in the left margin. It sets the expectation — "Scroll to reveal..." — then gracefully dissolves the moment the first real annotation scrolls into view.
 - **Annotation Dissolve:** A refined visual effect where margin annotations gracefully disappear when their corresponding popover is opened, avoiding visual clutter and content duplication.
-- **Marginalia Discovery (Widen Hint):** On standard laptop/desktop screens (≥1024px and <1460px), an elegant "sticker peel" animation guides the user to widen their browser. Animated directional chevrons naturally slide around the edge of the resume document as the user resizes. Upon expanding past 1460px, the margin annotations reveal themselves immediately.
+- **Marginalia Discovery (Widen Prompt):** Below the marginalia threshold (600px up to 1460px), a centered, glassy floating prompt invites the user to widen the window. A slim progress bar fills as the viewport approaches 1460px; on reaching it, the prompt briefly inverts to a brand-orange "ready" confirmation, then recedes straight upward as the margin annotations take over. (The original edge-tracking "sticker peel" ribbon is preserved, unused, in `src/components/WidenHint.astro` for reference.)
 - **Executive Elegance Interaction:** Refined hotspot states with subtle underlines and semantic opacity control, ensuring a premium feel that prioritizes content readability.
 
 ### 2. Case Studies (Data-Driven)
@@ -28,7 +28,7 @@ Deep dives into major projects, powered by a data-driven template system. Each s
 
 ### 3. Foundation & Strategy
 - **Feature Flags:** `CASE_STUDY_LINKS` environment variable controls which case study links are visible in popovers. Set to `true` to show all links, a comma-separated list of slugs to show specific ones, or leave empty to hide all. Filtering is server-side — the client never receives links to unpublished pages. Supports incremental content publishing without code changes.
-- **Brand-Accurate Case Study Theming:** Each case study page applies its own brand accent colour via `CaseStudyLayout`. The colour is validated at build time and propagated as CSS custom properties (`--accent`, `--accent-rgb`, `--accent-border`) on `<body>`, preventing any brand colour from leaking into adjacent pages regardless of CSS bundle order.
+- **Brand-Accurate Case Study Theming:** Each case study page applies its own brand accent colour via `CaseStudyLayout`. The colour is validated and propagated as CSS custom properties (`--accent`, `--accent-rgb`, `--accent-border`, `--accent-contrast`) on `<body>`, preventing any brand colour from leaking into adjacent pages regardless of CSS bundle order.
 - **Content Integrity Suite:** Automated verification ensures that every interactive hotspot is valid, maps strictly one-to-one across the resume to avoid ambiguity, and every media asset (including `media` arrays) is present, preventing regressions during content updates.
 - **Security Hardening:** Constant-time cookie comparison (timing-attack resistant), fail-closed authentication (503 if `SITE_PASSWORD` is absent), refined asset path matching, and full security header suite (`X-Robots-Tag`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`).
 - **WCAG AA Compliance:** Rigorous color contrast calibration (4.5:1+) for all branding accents.
