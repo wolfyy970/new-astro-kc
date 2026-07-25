@@ -60,6 +60,7 @@ The project leverages Astro 5.0's Image Service for high-performance delivery:
 
 ### Updating the Resume
 The resume content is stored in `src/content/resume.json`.
+- Hero positioning lives in `hero.tagline` and `hero.credentials` (rendered above the document on the home page). Edit those fields there — do not hardcode hero copy in page templates or docs.
 - Use the `<hotspot key="key-name">text</hotspot>` tag within strings to create interactive elements.
 
 ### Configuring Popovers
