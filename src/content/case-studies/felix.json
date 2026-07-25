@@ -1,0 +1,82 @@
+{
+  "meta": {
+    "title": "Felix the Cat's Giant Electronic Comic Book",
+    "description": "Designer and producer of Felix the Cat's Giant Electronic Comic Book — an interactive comic and edutainment title for Philips CD-i and PC CD-ROM, built at Epic Multimedia Group for ages 4–8.",
+    "ogImage": "/images/felix/cover.webp",
+    "accent": "#1e4db7"
+  },
+  "hero": {
+    "label": "Felix the Cat · Epic Multimedia Group · 1994–1995",
+    "title": "An interactive comic book for the living-room screen.",
+    "subtitle": "I designed and produced Felix the Cat's Giant Electronic Comic Book for Philips CD-i and PC CD-ROM — stories, songs, and activities for kids aged 4–8, in an era when \"interactive\" still had to be invented on the page.",
+    "background": "/images/felix/cover.webp"
+  },
+  "context": {
+    "challenge": "Turn a classic cartoon character into a playable comic book — readable, musical, and full of activities — that a four-year-old could navigate on CD-i or a home PC.",
+    "role": "Interactive Designer & Producer",
+    "company": "Epic Multimedia Group (E.M.G Ltd.)",
+    "scope": "Interactive comic & edutainment; PC CD-ROM & Philips CD-i",
+    "team": "Designers, writers, programmers, artists",
+    "body": "At Epic Multimedia Group in Brighton I worked on the Children's and Education team during the CD-ROM and Philips CD-i boom — CD-i being one of the earliest serious attempts at interactive television in the home. Felix the Cat's Giant Electronic Comic Book was our bid to make reading, counting, drawing, music, and environmental learning feel like play. I designed the interactive experience and produced the title through its build: the contents map, the activity screens, the story-and-song pairings, and the on-screen language a young child could follow without a manual."
+  },
+  "sections": [
+    {
+      "key": "contents",
+      "type": "largeImage",
+      "label": "The Contents",
+      "title": "A comic book you could open and stay inside.",
+      "description": "The contents spread was the product in miniature: stories, songs, puzzles, drawing tools, movies, and farewell — laid out like an open book against a field of dancing Felix silhouettes. Kids didn't browse a file menu. They flipped into chapters.",
+      "image": "/images/felix/contents-menu.png",
+      "imageAlt": "Contents menu from Felix the Cat's Giant Electronic Comic Book — an open book listing stories, activities, songs, and movies against a purple Felix-patterned background"
+    },
+    {
+      "key": "activities-intro",
+      "type": "textOnly",
+      "label": "Stories, Songs & Activities",
+      "title": "Learning that looked like mischief.",
+      "description": "Making Faces, Love This Planet, A Fish Story and Song, How to Draw Felix — creative play, environmental sorting, narrative-plus-music, and guided drawing, all in Felix's rubber-hose world. The brief was simple: ages 4 to 8 should want to come back."
+    },
+    {
+      "key": "activities",
+      "type": "photoGrid",
+      "columns": 2,
+      "gap": "normal",
+      "images": [
+        {
+          "src": "/images/felix/making-faces.png",
+          "alt": "Making Faces activity — a sketchpad silhouette of Felix with interchangeable cartoon eyes and a green pencil"
+        },
+        {
+          "src": "/images/felix/love-this-planet.png",
+          "alt": "Love This Planet recycle activity — plastic, metal, and glass bins on a notebook page with Felix navigation icons"
+        },
+        {
+          "src": "/images/felix/fish-story-song.png",
+          "alt": "Open book spread pairing A Fish Story (Felix fishing in a boat) with A Fish Song (underwater sharks and musical notes)"
+        },
+        {
+          "src": "/images/felix/how-to-draw-felix.png",
+          "alt": "How to Draw Felix activity — a sketchbook page with a line drawing of Felix and a cloud sidebar of drawing tools"
+        }
+      ]
+    },
+    {
+      "key": "credits",
+      "type": "featureRow",
+      "reverse": true,
+      "label": "Credits",
+      "title": "Interactive designer — and the narration that carried the page.",
+      "description": "The credits list me as Interactive Designer, and again under Narration Scripting with Sue Bowles, Martin Koronka, and Gary McGroarty. On a title this size, design and production weren't separate lanes — they were the same job of deciding what a child saw, heard, and could do next.",
+      "image": "/images/felix/credits-interactive-designer.png",
+      "imageAlt": "Credits screen listing Karl-Christian Wolff-Ingham as Interactive Designer and under Narration Scripting, with Felix walking beside the speech bubbles"
+    },
+    {
+      "key": "era",
+      "type": "textOnly",
+      "bg": "#eef3fb",
+      "label": "The Era",
+      "title": "Before the app store, on the disc that lived by the TV.",
+      "description": "This was edutainment at the edge of interactive television: authored for Philips CD-i and PC CD-ROM, distributed with Philips Media, aimed at the living room as much as the desk. The interaction model had to work with a remote or a mouse, on screens that still thought in 4:3. Getting Felix to feel like a comic you could play — not a lesson dressed as a cartoon — was the whole point."
+    }
+  ]
+}

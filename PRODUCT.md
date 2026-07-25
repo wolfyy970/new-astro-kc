@@ -25,6 +25,7 @@ Deep dives into major projects, powered by a data-driven template system. Each s
 - **Sparks Grove (Delta):** Cinematic, editorial presentation of global media platforms.
 - **Upwave:** Quantified-self venture and IoT behavioral science.
 - **Two Way TV:** Design and launch of the UK's first interactive TV multiplayer game service (BAFTA nominated).
+- **Felix:** Designer and producer of Felix the Cat's Giant Electronic Comic Book (PC CD-ROM & Philips CD-i).
 
 ### 3. Foundation & Strategy
 - **Feature Flags:** `CASE_STUDY_LINKS` environment variable controls which case study links are visible in popovers. Set to `true` to show all links, a comma-separated list of slugs to show specific ones, or leave empty to hide all. Filtering is server-side — the client never receives links to unpublished pages. Supports incremental content publishing without code changes.
