@@ -26,5 +26,12 @@
     "description": "Founding team · World's first multiplayer TV games · BAFTA nomination",
     "accent": "#00c2e0",
     "ogImage": "/images/two-way-tv/fruity4some.png"
+  },
+  {
+    "slug": "felix",
+    "title": "Felix the Cat's Giant Electronic Comic Book",
+    "description": "Interactive comic & edutainment · Designer & producer · CD-i & PC CD-ROM",
+    "accent": "#1e4db7",
+    "ogImage": "/images/felix/cover.webp"
   }
 ]

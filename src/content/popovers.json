@@ -116,5 +116,15 @@
       "/images/awards/world-cup-twitter.png",
       "/media/world-cup-twitter.mp4"
     ]
+  },
+  "felix": {
+    "label": "Felix the Cat · Interactive Comic",
+    "text": "Designer and producer of Felix the Cat's Giant Electronic Comic Book — stories, songs, and activities for ages 4–8 on Philips CD-i and PC CD-ROM, built at Epic Multimedia Group.",
+    "media": [
+      "/images/felix/cover.webp",
+      "/media/felix-resume-reel.mp4"
+    ],
+    "link": "/felix",
+    "linkText": "View Felix project →"
   }
 }

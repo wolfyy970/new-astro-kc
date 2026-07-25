@@ -6,6 +6,7 @@ import truist from "./case-studies/truist.json";
 import upwave from "./case-studies/upwave.json";
 import sparksGrove from "./case-studies/sparks-grove.json";
 import twoWayTv from "./case-studies/two-way-tv.json";
+import felix from "./case-studies/felix.json";
 import {
   resumeSchema,
   popoverMapSchema,
@@ -31,6 +32,7 @@ describe("content schemas — real data conforms", () => {
     ["upwave", upwave],
     ["sparks-grove", sparksGrove],
     ["two-way-tv", twoWayTv],
+    ["felix", felix],
   ])("case study %s matches caseStudyDataSchema", (_slug, data) => {
     expect(caseStudyDataSchema.safeParse(data).success).toBe(true);
   });

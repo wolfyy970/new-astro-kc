@@ -23,7 +23,8 @@
                 "/src/content/case-studies/truist.json",
                 "/src/content/case-studies/upwave.json",
                 "/src/content/case-studies/sparks-grove.json",
-                "/src/content/case-studies/two-way-tv.json"
+                "/src/content/case-studies/two-way-tv.json",
+                "/src/content/case-studies/felix.json"
             ],
             "url": "./.vscode/case-study.schema.json"
         }

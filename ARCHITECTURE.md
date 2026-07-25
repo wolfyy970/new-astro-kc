@@ -76,12 +76,14 @@ src/content/case-studies/
   upwave.json
   sparks-grove.json
   two-way-tv.json
+  felix.json
 
 src/pages/
   truist.astro           ← thin wrapper: imports JSON, renders <CaseStudyPage cs={cs} />
   upwave.astro
   sparks-grove.astro
   two-way-tv.astro
+  felix.astro
 
 src/components/case-studies/
   CaseStudyPage.astro    ← validates a study (zod) and composes Layout + Hero + Context + Sections
