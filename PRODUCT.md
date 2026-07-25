@@ -1,6 +1,6 @@
 # Product Specification
 
-KC Wolff-Ingham's portfolio is a high-impact, interactive digital presence for a senior design leader. It is designed to demonstrate both strategic depth and technical fluency.
+KC Wolff-Ingham's portfolio is a high-impact, interactive digital presence for fractional product and design leadership. It is designed to demonstrate both strategic depth and technical fluency.
 
 ## Core Features
 
@@ -37,6 +37,7 @@ Deep dives into major projects, powered by a data-driven template system. Each s
 - **Performance Mastery:** From 1460px marginalia to mobile bottom-sheets with identical functional density and LCP-optimized image delivery.
 
 ## Target Audience
-- Executive recruiters and hiring managers.
+- Founders and operators seeking fractional product and/or design leadership.
 - C-Suite leadership in Product, Tech, and Design.
+- Executive recruiters and hiring managers.
 - Industry peers looking for design leadership benchmarks.
