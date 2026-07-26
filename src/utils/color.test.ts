@@ -168,9 +168,20 @@ describe("isHexColorDark", () => {
   });
 
   it("treats gradient strings as dark by default", () => {
+    // The stops are deliberately the documented ink and stock: the function
+    // short-circuits on the word "gradient" and never parses them, so a
+    // fixture built from off-palette hexes only looked like a colour decision
+    // to anything scanning the repo.
     expect(
-      isHexColorDark("linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)"),
+      isHexColorDark("linear-gradient(135deg, #000000 0%, #ffffff 100%)"),
     ).toBe(true);
+  });
+
+  it("calls a gradient dark even when its stops are light", () => {
+    // Pins the reason the assertion above passes — the stops are not read.
+    expect(isHexColorDark("linear-gradient(90deg, #ffffff, #ffffff)")).toBe(
+      true,
+    );
   });
 
   it("returns false for invalid or empty input", () => {
