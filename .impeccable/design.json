@@ -1,0 +1,494 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-26T00:00:00.000Z",
+  "title": "Design System: KC Wolff-Ingham",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "primary",
+        "displayName": "Ink",
+        "canonical": "oklch(0% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(37% 0 0)",
+          "oklch(48% 0 0)",
+          "oklch(59% 0 0)",
+          "oklch(70% 0 0)",
+          "oklch(82% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Client Accent",
+        "canonical": "oklch(0% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(37% 0 0)",
+          "oklch(48% 0 0)",
+          "oklch(59% 0 0)",
+          "oklch(70% 0 0)",
+          "oklch(82% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "body": {
+        "role": "neutral",
+        "displayName": "Body Ink",
+        "canonical": "oklch(19.9% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(37% 0 0)",
+          "oklch(48% 0 0)",
+          "oklch(59% 0 0)",
+          "oklch(70% 0 0)",
+          "oklch(82% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "light": {
+        "role": "neutral",
+        "displayName": "Apparatus Grey",
+        "canonical": "oklch(54.6% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(37% 0 0)",
+          "oklch(48% 0 0)",
+          "oklch(59% 0 0)",
+          "oklch(70% 0 0)",
+          "oklch(82% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(88.5% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(37% 0 0)",
+          "oklch(48% 0 0)",
+          "oklch(59% 0 0)",
+          "oklch(70% 0 0)",
+          "oklch(82% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "stock": {
+        "role": "neutral",
+        "displayName": "Stock",
+        "canonical": "oklch(100% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(37% 0 0)",
+          "oklch(48% 0 0)",
+          "oklch(59% 0 0)",
+          "oklch(70% 0 0)",
+          "oklch(82% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "ink-night": {
+        "role": "primary",
+        "displayName": "Ink, Night",
+        "canonical": "oklch(100% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(37% 0 0)",
+          "oklch(48% 0 0)",
+          "oklch(59% 0 0)",
+          "oklch(70% 0 0)",
+          "oklch(82% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "body-night": {
+        "role": "neutral",
+        "displayName": "Body Ink, Night",
+        "canonical": "oklch(91.1% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(37% 0 0)",
+          "oklch(48% 0 0)",
+          "oklch(59% 0 0)",
+          "oklch(70% 0 0)",
+          "oklch(82% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "light-night": {
+        "role": "neutral",
+        "displayName": "Apparatus Grey, Night",
+        "canonical": "oklch(66.9% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(37% 0 0)",
+          "oklch(48% 0 0)",
+          "oklch(59% 0 0)",
+          "oklch(70% 0 0)",
+          "oklch(82% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "rule-night": {
+        "role": "neutral",
+        "displayName": "Hairline, Night",
+        "canonical": "oklch(29.4% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(37% 0 0)",
+          "oklch(48% 0 0)",
+          "oklch(59% 0 0)",
+          "oklch(70% 0 0)",
+          "oklch(82% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "stock-night": {
+        "role": "neutral",
+        "displayName": "Stock, Night",
+        "canonical": "oklch(9.6% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(37% 0 0)",
+          "oklch(48% 0 0)",
+          "oklch(59% 0 0)",
+          "oklch(70% 0 0)",
+          "oklch(82% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "scrim": {
+        "role": "neutral",
+        "displayName": "Hero Scrim",
+        "canonical": "oklch(23.6% 0.045 250)",
+        "tonalRamp": [
+          "oklch(15% 0.045 250)",
+          "oklch(26% 0.045 250)",
+          "oklch(37% 0.045 250)",
+          "oklch(48% 0.04 250)",
+          "oklch(59% 0.035 250)",
+          "oklch(70% 0.03 250)",
+          "oklch(82% 0.02 250)",
+          "oklch(95% 0.01 250)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The masthead name, once. ~4× body — a classical title ratio, not a cover ratio."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "The positioning line under the rule. The only italic display type in the system."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Company names. `case` feature normalises the optical weight of source strings that are already uppercase."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Opening summary paragraphs. The only prose allowed to behave like an opening."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Everything else a reader reads. Held at ~70 characters (704px). Never below 17px."
+      },
+      "note": {
+        "displayName": "Note",
+        "purpose": "Margin-note prose only. Smaller because a 220px column takes fewer characters per line."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "The entire apparatus — section marks, folios, margin labels, dates, chrome. 0.22em for the wide variant."
+      },
+      "stat": {
+        "displayName": "Stat",
+        "purpose": "The one number a note leads with. In ink, never in accent."
+      },
+      "year": {
+        "displayName": "Year",
+        "purpose": "The time-axis rail only. Tracked at zero so the digits stack into a column."
+      }
+    },
+    "shadows": [
+      {
+        "name": "panel",
+        "value": "0 2px 4px rgba(0,0,0,0.05), 0 12px 28px rgba(0,0,0,0.1), 0 32px 64px rgba(0,0,0,0.09)",
+        "purpose": "The popover. Contact + form + ambient, so it reads as a physical object over the page."
+      },
+      {
+        "name": "panel-night",
+        "value": "0 32px 80px rgba(0,0,0,0.6)",
+        "purpose": "One layer at higher opacity. Contact shadows are invisible on near-black stock."
+      },
+      {
+        "name": "note",
+        "value": "0 2px 6px rgba(0,0,0,0.06), 0 14px 34px rgba(0,0,0,0.12)",
+        "purpose": "The expanded margin note. Lighter than the panel because it displaces less."
+      },
+      {
+        "name": "note-night",
+        "value": "0 24px 60px rgba(0,0,0,0.55)",
+        "purpose": "Night edition of the expanded margin note."
+      },
+      {
+        "name": "chrome",
+        "value": "0 2px 8px rgba(0,0,0,0.05)",
+        "purpose": "Fixed controls only — separates a fixed element from what scrolls beneath it."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-move",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Everything that moves: reveal 0.7s, margin note 0.55s, popover 0.22s, chrome 0.25s."
+      },
+      {
+        "name": "ease-sheet",
+        "value": "cubic-bezier(0.32, 0.72, 0, 1)",
+        "purpose": "The mobile bottom sheet only, at 0.3s. A platform curve, kept deliberately."
+      },
+      {
+        "name": "ease-state",
+        "value": "ease",
+        "purpose": "Colour and border transitions at 0.2s. State changes do not need a custom curve."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "small-mobile",
+        "value": "380px"
+      },
+      {
+        "name": "mobile",
+        "value": "600px"
+      },
+      {
+        "name": "tablet",
+        "value": "900px"
+      },
+      {
+        "name": "chrome",
+        "value": "1024px"
+      },
+      {
+        "name": "wide",
+        "value": "1420px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Annotated Term",
+      "kind": "custom",
+      "refersTo": "hotspot",
+      "description": "The system's signature. A marked term in running prose: hairline underline plus a superscript mono folio. The number is the affordance and it works identically at 375px and 1600px.",
+      "html": "<p class=\"ds-prose\">Led the strategic foresight work a CEO called <span class=\"ds-hotspot\" tabindex=\"0\" role=\"button\" aria-expanded=\"false\">instrumental to the merger<sup class=\"ds-hotspot-ref\" aria-hidden=\"true\">7</sup></span> in the year before it closed.</p>",
+      "css": ".ds-prose { font-family: var(--doc-serif, Newsreader, Georgia, serif); font-size: 17px; line-height: 1.68; color: var(--doc-body, #1a1a1a); max-width: 44ch; } .ds-hotspot { display: inline; cursor: pointer; color: inherit; border-bottom: 1px solid rgba(17,17,17,0.32); -webkit-box-decoration-break: clone; box-decoration-break: clone; padding: 1px 2px; margin: 0 -2px; border-radius: 2px; transition: color 0.2s ease, background-color 0.25s ease, border-color 0.25s ease; } .ds-hotspot-ref { font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 0.62em; font-weight: 500; font-feature-settings: 'tnum' 1; vertical-align: super; line-height: 0; margin-left: 2px; color: var(--accent, #000); } .ds-hotspot:hover { background-color: rgba(17,17,17,0.05); border-bottom-color: rgba(17,17,17,1); } .ds-hotspot:focus-visible { background-color: rgba(17,17,17,0.05); outline: 2px solid var(--doc-heading, #000); outline-offset: 3px; border-radius: 1px; }"
+    },
+    {
+      "name": "Margin Note",
+      "kind": "custom",
+      "refersTo": "margin-note",
+      "description": "The glance. A 220px column entry — folio, label, rule, one sentence — revealed on scroll beside the claim it supports. Its panel carries the full narrative; the margin never reprints it.",
+      "html": "<aside class=\"ds-note\"><div class=\"ds-note-head\"><span class=\"ds-note-folio\">07</span><span class=\"ds-note-label\">Truist · $66B Merger</span></div><div class=\"ds-note-rule\"></div><div class=\"ds-note-stat\">$66B</div><p class=\"ds-note-text\">Bill Rogers, the CEO of SunTrust, called the work &ldquo;instrumental&rdquo; in thinking that led to the merger.</p><span class=\"ds-note-more\">&rarr;</span></aside>",
+      "css": ".ds-note { width: 220px; cursor: pointer; } .ds-note-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; } .ds-note-folio { font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 11px; font-weight: 500; font-feature-settings: 'tnum' 1; color: var(--accent, #000); flex-shrink: 0; } .ds-note-label { font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--doc-light, #6b6b6b); line-height: 1.5; } .ds-note-rule { width: 26px; height: 2px; background: var(--doc-rule, #d6d6d6); margin-bottom: 13px; transition: width 0.3s cubic-bezier(0.22,1,0.36,1); } .ds-note-stat { font-family: var(--display, Newsreader, Georgia, serif); font-size: 30px; font-weight: 400; font-variation-settings: 'opsz' 30; color: var(--doc-heading, #000); letter-spacing: -0.025em; line-height: 1.08; margin-bottom: 7px; } .ds-note-text { font-family: var(--doc-serif, Newsreader, Georgia, serif); font-size: 14px; line-height: 1.62; color: var(--doc-body, #1a1a1a); } .ds-note-more { display: block; margin-top: 12px; font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 14px; line-height: 1; color: var(--doc-light, #6b6b6b); opacity: 0.6; transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.22,1,0.36,1); } .ds-note:hover .ds-note-rule { width: 34px; } .ds-note:hover .ds-note-more { opacity: 1; transform: translateX(3px); }"
+    },
+    {
+      "name": "Panel",
+      "kind": "card",
+      "refersTo": "popover",
+      "description": "The dig. 400px, capped at 78vh, opened by a marked term below the wide tier. Repeats the term's folio so the reader always knows which word the panel came from.",
+      "html": "<div class=\"ds-panel\"><div class=\"ds-panel-handle\"></div><div class=\"ds-panel-body\"><div class=\"ds-panel-head\"><span class=\"ds-panel-folio\">07</span><span class=\"ds-panel-label\">Truist · $66B Merger</span></div><div class=\"ds-panel-stat\">$66B</div><p class=\"ds-panel-text\">Strategic foresight delivered to the C-suite in the year before the SunTrust&ndash;BB&amp;T merger closed.</p><a class=\"ds-panel-link\" href=\"#\">Read the case study</a></div></div>",
+      "css": ".ds-panel { width: 400px; background: var(--doc-white, #fff); border: 1px solid var(--doc-rule, #d6d6d6); border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05), 0 12px 28px rgba(0,0,0,0.1), 0 32px 64px rgba(0,0,0,0.09); overflow: hidden; } .ds-panel-handle { height: 26px; display: flex; align-items: center; justify-content: center; background: var(--doc-white, #fff); border-bottom: 1px solid var(--doc-rule, #d6d6d6); cursor: grab; } .ds-panel-handle::before { content: ''; width: 2px; height: 2px; border-radius: 50%; background: var(--doc-rule, #d6d6d6); box-shadow: -6px 0 0 var(--doc-rule, #d6d6d6), 6px 0 0 var(--doc-rule, #d6d6d6); } .ds-panel-body { padding: 20px 22px 24px; } .ds-panel-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; } .ds-panel-folio { font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 11px; font-weight: 500; font-feature-settings: 'tnum' 1; color: var(--accent, #000); } .ds-panel-label { font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--doc-light, #6b6b6b); line-height: 1.5; } .ds-panel-stat { font-family: var(--display, Newsreader, Georgia, serif); font-size: 34px; font-weight: 400; font-variation-settings: 'opsz' 36; color: var(--doc-heading, #000); letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 10px; } .ds-panel-text { font-family: var(--doc-serif, Newsreader, Georgia, serif); font-size: 17px; line-height: 1.65; color: var(--doc-body, #1a1a1a); margin-bottom: 14px; } .ds-panel-link { display: inline-block; font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--doc-heading, #000); text-decoration: none; padding-bottom: 4px; border-bottom: 1px solid var(--doc-heading, #000); transition: border-color 0.2s ease; } .ds-panel-link:hover, .ds-panel-link:focus-visible { border-bottom-color: var(--accent, #000); }"
+    },
+    {
+      "name": "Section Mark",
+      "kind": "custom",
+      "refersTo": "section-mark",
+      "description": "How the document announces a new part: a counter-generated numeral, a tracked mono label, and a hairline running to the end of the measure.",
+      "html": "<h2 class=\"ds-section\"><span class=\"ds-section-num\">02</span>Experience</h2>",
+      "css": ".ds-section { display: flex; align-items: center; gap: 14px; font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 11px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--doc-heading, #000); margin: 0; } .ds-section-num { font-feature-settings: 'tnum' 1; letter-spacing: 0; color: var(--doc-light, #6b6b6b); flex-shrink: 0; } .ds-section::after { content: ''; flex: 1; height: 1px; background: var(--doc-rule, #d6d6d6); }"
+    },
+    {
+      "name": "Chrome Button",
+      "kind": "button",
+      "refersTo": "chrome-button",
+      "description": "The theme toggle and the back link. Cut from the same stock as the document — 2px corner, hairline border, mono label. Hover shifts the border to the accent.",
+      "html": "<button class=\"ds-chrome\" type=\"button\">Night</button>",
+      "css": ".ds-chrome { font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.16em; color: var(--doc-light, #6b6b6b); background: var(--doc-white, #fff); border: 1px solid var(--doc-rule, #d6d6d6); padding: 8px 12px; border-radius: 2px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.25s cubic-bezier(0.22,1,0.36,1); display: inline-flex; align-items: center; gap: 6px; } .ds-chrome:hover { background: var(--bg, #fff); border-color: var(--accent, #000); color: var(--doc-heading, #000); transform: translateY(-1px); } .ds-chrome:focus-visible { outline: 2px solid var(--accent, #000); outline-offset: 2px; } .ds-chrome:active { transform: translateY(0); }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "case-study-card",
+      "description": "Case-study card, reconciled to the document system: flat with a hairline at rest, hover shifts the border to the client accent. No lift, no resting shadow — it sits in the page rather than above it.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card-media\"></div><div class=\"ds-card-text\"><h3>Unified Commerce Platform</h3><p>A single checkout across 6,000 stores and four legacy systems.</p></div></article>",
+      "css": ".ds-card { background: var(--doc-white, #fff); border: 1px solid var(--doc-rule, #d6d6d6); border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; max-width: 380px; transition: border-color 0.2s ease; } .ds-card:hover { border-color: var(--accent, #000); } .ds-card-media { aspect-ratio: 16/10; background: repeating-linear-gradient(45deg, var(--doc-rule, #d6d6d6) 0 2px, transparent 2px 10px); } .ds-card-text { padding: 32px; } .ds-card-text h3 { font-family: var(--display, Newsreader, Georgia, serif); font-size: 22px; font-weight: 600; font-variation-settings: 'opsz' 20; color: var(--doc-heading, #000); margin: 0 0 8px; } .ds-card-text p { font-family: var(--doc-serif, Newsreader, Georgia, serif); font-size: 17px; line-height: 1.68; color: var(--doc-body, #1a1a1a); margin: 0; }"
+    },
+    {
+      "name": "Input",
+      "kind": "input",
+      "refersTo": "login-input",
+      "description": "The gate's field. A centred underline — no box, no fill, no glow. Focus moves the bottom border to the accent and nothing else.",
+      "html": "<form class=\"ds-form\"><input class=\"ds-input\" type=\"text\" placeholder=\"Access code\" aria-label=\"Access code\" /><span class=\"ds-error\">Not recognised</span></form>",
+      "css": ".ds-form { display: flex; flex-direction: column; gap: 8px; max-width: 360px; } .ds-input { width: 100%; padding: 13px 0; background: transparent; border: none; border-bottom: 1px solid rgba(17,17,17,0.22); font-family: var(--doc-sans, system-ui, sans-serif); font-size: 15px; text-align: center; outline: none; color: var(--doc-heading, #000); transition: border-color 0.25s ease; } .ds-input:focus { border-bottom-color: var(--accent, #000); } .ds-input::placeholder { color: var(--doc-light, #6b6b6b); font-style: italic; opacity: 1; } .ds-error { font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--doc-heading, #000); text-align: center; }"
+    },
+    {
+      "name": "Case-Study Control",
+      "kind": "button",
+      "refersTo": "case-study-link",
+      "description": "The single route into a project page. Underlined mono label, arrow right, hairline above; present in the collapsed margin note as well as the expanded one and the panel.",
+      "html": "<a class=\"ds-case-link\" href=\"/truist\"><span class=\"ds-case-link-label\">View Truist project</span></a>",
+      "css": ".ds-case-link{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px;padding:11px 0 10px;border-top:1px solid var(--doc-rule,#d6d6d6);font-family:var(--mono,\"JetBrains Mono\",monospace);font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--doc-heading,#000);text-decoration:none}.ds-case-link-label{border-bottom:1px solid var(--doc-heading,#000);padding-bottom:2px}.ds-case-link::after{content:\"\\2192\";letter-spacing:0;flex-shrink:0;transition:transform .2s cubic-bezier(.22,1,.36,1)}.ds-case-link:hover::after{transform:translateX(3px)}.ds-case-link:focus-visible{outline:2px solid var(--doc-heading,#000);outline-offset:3px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Annotated Monograph",
+    "overview": "A printed monograph that someone has read closely and marked up in the margin. The document is the whole design — not a page about a document, but the document itself, set the way a publication sets one. Every reader gets one continuous sheet of ink on stock: a title page, a hairline, and then prose. What makes it more than a résumé is the apparatus running alongside it — numbered footnote references in the text, and the notes themselves standing in the margin where the reader can see the claim and its evidence at the same time.\n\nThe system has two registers, and the surface decides which one applies. The résumé is achromatic by doctrine, not by restraint: hierarchy comes from size, weight, leading and white space, and the only colour on it is inside the photographs, which are the work. A case study is the opposite — it is that client’s environment. Delta reads as Delta and Truist reads as Truist, with the brand colour driving the hero field, the dark bands, the section stock, the labels and the outcome numerals. The achromatic rule stops at the résumé and does not travel.\n\nDensity is a document’s density, not an application’s. Type is set at a reading size (17px body, never smaller), the measure is held at ~70 characters, and the margins are wide enough to hold a real column rather than a tooltip. Anti-references, confirmed in the work: no highlighter-style fills on marked terms, no blend modes over media, no font-smoothing overrides, and no card-and-shadow chrome on anything that is not actually floating.",
+    "keyCharacteristics": [
+      "Two registers: an achromatic résumé, and case studies saturated in the client’s own brand colour.",
+      "One serif (Newsreader) for everything read; one mono (JetBrains Mono) for everything the publication says about itself.",
+      "Brand colour that carries text is derived per client in color.ts, never taken straight from the hex.",
+      "Flat by default. Shadow means \"this surface is above the document,\" and only four things are.",
+      "Footnote numbering as the affordance: a superscript folio works identically at 375px and 1600px.",
+      "Two rungs, one ladder — the margin is the glance, the panel is the dig, and the same words never appear twice."
+    ],
+    "rules": [
+      {
+        "name": "The Two Registers Rule",
+        "body": "The surface decides the palette. The résumé carries no hue at all. A case study carries its client’s, everywhere — hero, bands, stock, labels, numerals. There is no third setting, and neither register borrows from the other: a neutral case study is as wrong as a coloured résumé.",
+        "section": "colors"
+      },
+      {
+        "name": "The Accent Identifies, It Does Not Fill",
+        "body": "On a case study the accent drives the things that name the client — hero field, eyebrows, outcome numerals, hover borders. It does not drive the page fields; those are art-directed per section in content, because most brands are more than one colour. Deriving everything from a single hex turned Delta’s navy page red.",
+        "section": "colors"
+      },
+      {
+        "name": "The Derived, Never Guessed Rule",
+        "body": "Brand colour that carries text goes through color.ts, never straight from the hex. --accent-ink for light stock, a 35% white tint for dark. Upwave’s orange measures 2.98:1 as a label and Felix’s cyan 2.05:1 — the brands most worth showing are the ones most likely to fail.",
+        "section": "colors"
+      },
+      {
+        "name": "The True Neutral Rule (résumé only)",
+        "body": "Every value in the résumé’s interface satisfies R = G = B, including shadow tints. On a case study the neutrals are deliberately not neutral — they are mixed toward the accent, which is the point.",
+        "section": "colors"
+      },
+      {
+        "name": "The Photograph Exception",
+        "body": "The work is the only colour on the résumé, and it renders as itself. No blend mode, no duotone, no filter, no opacity wash over media — ever.",
+        "section": "colors"
+      },
+      {
+        "name": "The No-Hue-For-State Rule",
+        "body": "Errors, warnings and success are set in ink and carried by their words and position, not by red or green. The copy is the signal; hue would be redundant on a page this quiet, and loud out of proportion to the event.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Voice Rule",
+        "body": "Newsreader sets everything a person reads. JetBrains Mono sets everything the publication says about itself. There is no third voice, and the mono never sets prose — if a sentence is in the mono, it is in the wrong typeface.",
+        "section": "typography"
+      },
+      {
+        "name": "The Reading Floor Rule",
+        "body": "Body copy is 17px at every viewport including 375px. The scale reduces the display, the headline and the titles on small screens and deliberately does not touch the body. Reading size is not a responsive variable.",
+        "section": "typography"
+      },
+      {
+        "name": "The Folio Rule",
+        "body": "A marked term announces itself with a hairline underline and a superscript numeral, never with a fill. A filled term is a highlighter mark — a reader's gesture, not a typographer's. The wash is reserved for states the reader caused: hover, and open.",
+        "section": "typography"
+      },
+      {
+        "name": "The Time Axis Rule",
+        "body": "Dates are structure, not metadata. A chronological section puts its years in the rail, never back in a company-left/dates-right row — that row renders thirty-four years as eleven unrelated line items.",
+        "section": "layout"
+      },
+      {
+        "name": "The Numbering Is Free Rule",
+        "body": "Section marks are numbered by a CSS counter and footnote folios by a render-time counter. The document gains an apparatus without a character of copy changing.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Left Edge Rule",
+        "body": "Every element on the résumé aligns to a single left edge. Nothing is centred, nothing is right-aligned, and no second grid is introduced. Two grids on one surface reads as a mistake even when the reader cannot say why.",
+        "section": "layout"
+      },
+      {
+        "name": "The Derived Threshold Rule",
+        "body": "The marginalia breakpoint is arithmetic, not taste: 880 + 2 × (42 + 220) = 1404, rounded to 1420. It must stay below the 1440px logical width of a 13\" laptop, or the feature the entire reading experience is built around is unreachable on the most common machine it will be read on.",
+        "section": "layout"
+      },
+      {
+        "name": "The Measure Rule",
+        "body": "Running text never exceeds 704px anywhere in the system, including on case-study pages. Media may go full-bleed; sentences may not.",
+        "section": "layout"
+      },
+      {
+        "name": "The Nothing Withheld Rule",
+        "body": "Below the wide tier the margins disappear and the panel takes over. The folio numbers still mark every term and every note is still reachable. Narrow viewports lose the simultaneous view, never the content.",
+        "section": "layout"
+      },
+      {
+        "name": "The Float Rule",
+        "body": "A shadow is a claim that the surface is above the document. If the element scrolls with the page, it does not get one — it gets a hairline. Cards, sections, images, stat bands and heroes are in the page.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Hairline Rule",
+        "body": "Separation is a 1px rule line. Not a 3px band, not a tinted background, not a gap. A hairline is punctuation, and punctuation is all most separations need to do.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Neutral Shadow Rule",
+        "body": "Shadows are cast in true neutral. A shadow tinted rgba(30, 25, 15, …) is a brown light source in a room that has no brown in it.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Cut-From-Stock Rule",
+        "body": "Four radii, and no fifth. A 12px card, a 32px image, or a 100px pill in this system is a component that was designed somewhere else and pasted in.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do decide the register before the value: résumé means no hue, case study means the client’s hue everywhere.",
+      "Do derive every coloured value on a case study from var(--accent), and route anything that carries text through --accent-ink or the dark-stock tint.",
+      "Do keep the résumé’s neutrals at R = G = B, including shadow tints.",
+      "Do declare anything derived from --accent on <body> or below; a mapping on :root resolves against the ink and silently loses the brand.",
+      "Do hang any new column into --sheet-inset rather than taking it out of the measure; a rail that indents the prose has created a second left edge.",
+      "Do set anything a person reads in Newsreader and anything the publication says about itself in JetBrains Mono.",
+      "Do hold running text to 704px and align everything to the single left edge.",
+      "Do recompute the 1420px threshold from 880 + 2 × (42 + 220) whenever the sheet, gutter or column changes, and update BREAKPOINT_WIDE by hand.",
+      "Do reserve shadow for the four surfaces that genuinely float, and give everything else a hairline.",
+      "Do preserve opacity and colour states under prefers-reduced-motion — remove the movement, not the feedback."
+    ],
+    "donts": [
+      "Don’t introduce a hue that belongs to nobody — no leftover brand amber, no warm cream, no slate-grey ramp, no fixed navy scrim shared across five clients.",
+      "Don’t neutralise a case study. Flattening a hero, greying a brand-derived band, or stripping the accent out of the section stock takes the brand out of the one place it belongs.",
+      "Don’t apply mix-blend-mode, filters, duotones or opacity washes to photographs.",
+      "Don’t use -webkit-font-smoothing: antialiased or text-rendering: optimizeLegibility.",
+      "Don’t dim text with opacity. Dim it with a colour value, so the contrast ratio is the one you declared.",
+      "Don’t add a fifth corner radius.",
+      "Don’t lift a card on hover or shadow anything that scrolls with the page.",
+      "Don’t let the mono set a sentence, or the display serif set a label.",
+      "Don’t reduce body copy below 17px at any viewport.",
+      "Don’t reuse the theme-* prefix for anything but the <html> edition flag.",
+      "Don’t put a bare arrow next to content as a “there’s more” cue. It reads as a link, and inside a surface that is itself clickable it competes with the real control.",
+      "Don’t put glyphs, arrows or punctuation-as-affordance inside content strings. If it is an affordance it belongs in CSS."
+    ]
+  }
+}

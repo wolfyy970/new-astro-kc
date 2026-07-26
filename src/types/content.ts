@@ -11,7 +11,6 @@ import type { z } from "zod";
 import type {
   educationSchema,
   experienceEntrySchema,
-  keyAchievementClusterSchema,
   contactSchema,
   patentsAndRecognitionSchema,
   resumeSchema,
@@ -30,7 +29,6 @@ import type {
 
 export type Education = z.infer<typeof educationSchema>;
 export type ExperienceEntry = z.infer<typeof experienceEntrySchema>;
-export type KeyAchievementCluster = z.infer<typeof keyAchievementClusterSchema>;
 export type Contact = z.infer<typeof contactSchema>;
 export type PatentsAndRecognition = z.infer<typeof patentsAndRecognitionSchema>;
 export type ResumeData = z.infer<typeof resumeSchema>;

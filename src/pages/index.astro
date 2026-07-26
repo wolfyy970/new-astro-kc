@@ -1,15 +1,15 @@
 ---
 import { getImage } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import WidenPrompt from "../components/WidenPrompt.astro";
 import resume from "../content/resume.json";
 import popoversRaw from "../content/popovers.json";
-import { renderHotspots } from "../utils/render";
+import { createHotspotRenderer } from "../utils/render";
 import type { Education, PopoverData } from "../types/content";
 import "../styles/global.css";
 
 import { optimizePopoverImages } from "../utils/images";
 import { applyFeatureFlags } from "../utils/feature-flags";
+import { yearSpan, startYear } from "../utils/dates";
 
 // ── Image Optimization + Feature Flags ───────────────────────────────────────
 // 1. Pre-optimise all images in the popover inventory (swap raw paths for
@@ -18,29 +18,47 @@ import { applyFeatureFlags } from "../utils/feature-flags";
 //    so the client never receives links to unpublished pages.
 
 const popovers = applyFeatureFlags(await optimizePopoverImages(popoversRaw, getImage));
+
+// ── Footnote numbering ───────────────────────────────────────────────────────
+// One renderer for the whole page, used in document order, so annotated terms
+// are numbered 1…n exactly as they are read. Created per render — a module-level
+// counter would leak across requests on a server-rendered site.
+const mark = createHotspotRenderer();
+
+const summaryParagraphs = resume.summary.split("\n\n");
+
+
 ---
 
 <BaseLayout
   title={resume.displayName}
   description="Design leadership by KC Wolff-Ingham. Senior product design leader with 30 years spanning banking, health tech, and media."
 >
-  <WidenPrompt />
+  <!-- ═══════ MASTHEAD — the cover ═══════ -->
+  <!-- Full-bleed ink field; the document emerges on light stock below it. -->
+  <header class="masthead">
+    <div class="masthead-inner">
+    <h1 class="masthead-name">{resume.displayName}</h1>
+    <div class="masthead-rule"></div>
 
-  <!-- ═══════ HERO ═══════ -->
-  <header class="hero">
-    <h1 class="hero-name">{resume.displayName}</h1>
-    <div class="hero-rule"></div>
-    <p class="hero-sub">{resume.hero.tagline}</p>
-    <div class="hero-credentials">
+    <!-- Everything the reader needs to place this person lives here, once.
+         There is no second identity block on the sheet below: the résumé opens
+         straight into the prose. -->
+    <div class="masthead-meta">
+      <div class="masthead-lede">
+        <p class="masthead-role">{resume.titleLine}</p>
+        <p class="masthead-sub">{resume.hero.tagline}</p>
+      </div>
+      <div class="masthead-credentials">
       {
         resume.hero.credentials.map((c, i) => {
           const last = i === resume.hero.credentials.length - 1;
           return (
             <>
-              <span class="hero-cred">
+              <span class="masthead-cred">
                 {c}
                 {!last && (
-                  <span class="hero-cred-sep" aria-hidden="true">{" ·"}</span>
+                  <span class="masthead-cred-sep" aria-hidden="true">{" ·"}</span>
                 )}
               </span>
               {!last && " "}
@@ -48,8 +66,21 @@ const popovers = applyFeatureFlags(await optimizePopoverImages(popoversRaw, getI
           );
         })
       }
+      </div>
     </div>
-    <div class="hero-mobile-hint" aria-label="Best viewed on desktop">
+
+    <div class="masthead-contact">
+      <a href={`mailto:${resume.contact.email}`}>{resume.contact.email}</a>
+      <span aria-hidden="true">·</span>
+      <span>{resume.contact.phone}</span>
+      <span aria-hidden="true">·</span>
+      <a href={resume.contact.linkedinUrl} target="_blank" rel="noopener noreferrer"
+        >{resume.contact.linkedin}</a
+      >
+      <span aria-hidden="true">·</span>
+      <span>{resume.contact.location}</span>
+    </div>
+    <div class="masthead-mobile-hint" aria-label="Best viewed on desktop">
       <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
         <line x1="8" y1="21" x2="16" y2="21"></line>
@@ -57,102 +88,76 @@ const popovers = applyFeatureFlags(await optimizePopoverImages(popoversRaw, getI
       </svg>
       Best on desktop. Highlights are interactive
     </div>
+    </div>
   </header>
 
   <!-- ═══════ THE DOCUMENT ═══════ -->
   <main class="doc-wrapper" id="main-content">
-    <section class="doc-page reveal" aria-label="Resume Content">
-      <div class="doc-hint">
-        <span class="doc-hint-dot" aria-hidden="true"></span> Highlights are interactive
-      </div>
-
-      <!-- Header -->
-      <div class="doc-name">{resume.name}</div>
-      <div class="doc-title-line">{resume.titleLine}</div>
-      <div class="doc-contact">
-        <a href={`mailto:${resume.contact.email}`}>{resume.contact.email}</a> &nbsp;·&nbsp;
-        {resume.contact.phone} &nbsp;·&nbsp;
-        <a href={resume.contact.linkedinUrl} target="_blank"
-          >{resume.contact.linkedin}</a
-        > &nbsp;·&nbsp;
-        {resume.contact.location}
-      </div>
-      <hr class="doc-hr" />
+    <article class="doc-page reveal" aria-label="Resume Content">
+      <!-- No identity block. The masthead above states who this is, what they
+           do, what they hold and how to reach them — once. The sheet is the
+           document body and opens straight into the prose. -->
 
       <!-- Executive Summary -->
       {
-        resume.summary
-          .split("\n\n")
-          .map((para) => (
-            <div class="doc-summary" set:html={renderHotspots(para)} />
-          ))
-      }
-
-      <!-- Key Achievements -->
-      <div class="doc-section-heading">Key Achievements</div>
-
-      {
-        resume.keyAchievements.map((cluster) => (
-          <div class="doc-achievement-cluster">
-            <h4>{cluster.heading}</h4>
-            <ul>
-              {cluster.items.map((item) => (
-                <li set:html={renderHotspots(item)} />
-              ))}
-            </ul>
-          </div>
+        summaryParagraphs.map((para) => (
+          <p class="doc-summary" set:html={mark(para)} />
         ))
       }
 
-      <hr class="doc-hr-thin" />
-
       <!-- Experience -->
-      <div class="doc-section-heading">Experience</div>
+      <h2 class="doc-section-heading">Experience</h2>
 
       {
         resume.experience.map((job) => (
-          <div class="doc-exp">
-            <div class="doc-exp-header">
-              <span class="doc-exp-company">{job.company}</span>
-              <span class="doc-exp-dates">{job.dates}</span>
+          <section class="doc-exp">
+            {/* The time axis. Years run down one edge of the document, so
+                tenure and sequence are readable without parsing a sentence.
+                This was a company-left/dates-right row — the most generic
+                pattern the résumé form has. The rail hangs in the sheet's own
+                margin (see --sheet-inset) so the prose keeps one left edge. */}
+            <span class="doc-exp-years" aria-hidden="true">
+              <span class="year-span">{yearSpan(job.dates)}</span>
+              <span class="year-start">{startYear(job.dates)}</span>
+            </span>
+            <div class="doc-exp-body">
+              <h3 class="doc-exp-company">
+                {job.company}
+                <span class="sr-only">, {job.dates}</span>
+              </h3>
+              <div class="doc-exp-title">{job.title}</div>
+              {job.description && (
+                <div class="doc-exp-desc" set:html={mark(job.description)} />
+              )}
+              <ul>
+                {job.bullets.map((bullet) => (
+                  <li set:html={mark(bullet)} />
+                ))}
+              </ul>
             </div>
-            <div class="doc-exp-title">{job.title}</div>
-            {job.description && (
-              <div
-                class="doc-exp-desc"
-                set:html={renderHotspots(job.description)}
-              />
-            )}
-            <ul>
-              {job.bullets.map((bullet) => (
-                <li set:html={renderHotspots(bullet)} />
-              ))}
-            </ul>
-          </div>
+          </section>
         ))
       }
 
       <hr class="doc-hr-thin" />
 
       <!-- Education -->
-      <div class="doc-section-heading">Education</div>
+      <h2 class="doc-section-heading">Education</h2>
 
       {
         (resume.education as Education[]).map((edu) => (
-          <div class="doc-edu-item">
-            <div class="degree">{edu.degree}</div>
+          <section class="doc-edu-item">
+            <h3 class="degree">{edu.degree}</h3>
             <div class="school">{edu.school}</div>
-            {edu.focus && (
-              <div class="focus" set:html={renderHotspots(edu.focus)} />
-            )}
-          </div>
+            {edu.focus && <div class="focus" set:html={mark(edu.focus)} />}
+          </section>
         ))
       }
 
       <hr class="doc-hr-thin" />
 
       <!-- Patents & Recognition -->
-      <div class="doc-section-heading">Patents &amp; Recognition</div>
+      <h2 class="doc-section-heading">Patents &amp; Recognition</h2>
       <div class="doc-awards-line">
         <strong>Patents:</strong>
         {resume.patentsAndRecognition.patents}
@@ -166,13 +171,11 @@ const popovers = applyFeatureFlags(await optimizePopoverImages(popoversRaw, getI
         {resume.patentsAndRecognition.certifications}
       </div>
 
-      <!-- Page footer -->
-      <div class="doc-footer">
-        {resume.displayName} &nbsp;·&nbsp; {resume.contact.email} &nbsp;·&nbsp; {
-          resume.contact.phone
-        } &nbsp;·&nbsp; {resume.contact.location}
-      </div>
-    </section>
+      <!-- No running colophon. In print a running foot exists because pages get
+           separated from each other; on one continuous sheet it was reprinting
+           the name and the entire contact line a second time, three screens
+           after the first. The record band above is the single source. -->
+    </article>
   </main>
 
   <!-- ═══════ POPOVER OVERLAY ═══════ -->
@@ -187,9 +190,9 @@ const popovers = applyFeatureFlags(await optimizePopoverImages(popoversRaw, getI
   >
   </div>
 
-  <div class="site-footer">
+  <footer class="site-footer">
     <p>&copy; 2026 {resume.displayName}</p>
-  </div>
+  </footer>
 
   <!-- ═══════ PAGE DATA → window globals ═══════ -->
   <!-- define:vars safely serialises build-time data; no template literals used here -->

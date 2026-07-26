@@ -1,6 +1,25 @@
 @import "./tokens.css";
 @import "./controls.css";
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE ANNOTATED DOCUMENT
+   ═══════════════════════════════════════════════════════════════════════════
+   Design thesis: this is a printed monograph that someone has marked up in the
+   margin. Every decision below serves that reading.
+
+   • One serif (Newsreader) carries both the title page and the body copy, so
+     the page reads as a single publication rather than an assembly of parts.
+   • The mono is the annotation apparatus only — folio numbers, footnote
+     markers, section marks, margin labels. It never sets prose.
+   • Annotated terms are footnote references, not highlighter blocks: a hairline
+     rule under the term plus a superscript number. The number is the affordance,
+     and it is legible at every viewport — you can see what has depth before you
+     have any idea that clicking is possible.
+   • The margin note and the popover are two rungs of one ladder, not two copies
+     of one thing. Margin = the glance (folio, label, figure, one sentence).
+     Popover = the dig (full narrative, full media, the case study).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 *,
 *::before,
 *::after {
@@ -10,89 +29,82 @@
 }
 
 :root {
-  /* Brand palette + fonts live in tokens.css (shared with login). */
+  /* Brand palette + fonts live in tokens.css (shared with login + case studies). */
 
-  /* Hotspot Design System */
-  --hs-opacity-default: 0.15;
-  --hs-opacity-hover: 0.25;
-  --hs-opacity-active: 0.35;
-  --hs-border-opacity: 0.3;
-  --hs-transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  /* ── Footnote / annotated-term system ──
+     The term itself is never filled by default — a filled term reads as a
+     highlighter mark, which is a reader's gesture, not a typographer's. The
+     rule under the term and the superscript number do the announcing; the
+     wash is reserved for states the reader caused (hover, open). */
+  --hs-rule: rgba(17, 17, 17, 0.32);
+  --hs-rule-hover: rgba(17, 17, 17, 1);
+  --hs-wash-hover: rgba(17, 17, 17, 0.05);
+  --hs-wash-active: rgba(17, 17, 17, 0.09);
+  --hs-transition:
+    color 0.2s ease, background-color 0.25s ease, border-color 0.25s ease;
 }
 
-/* ── Theme Overrides (app-specific; brand tokens overridden in tokens.css) ── */
-html.theme-light {
-  --hs-opacity-default: 0.08;
-  --hs-opacity-hover: 0.08;
-  --hs-opacity-active: 0.162;
-  --hs-border-opacity: 0.162;
+/* Night edition: the wash has to work harder against dark stock. */
+html.theme-dark {
+  --hs-rule: rgba(255, 255, 255, 0.34);
+  --hs-rule-hover: rgba(255, 255, 255, 1);
+  --hs-wash-hover: rgba(255, 255, 255, 0.08);
+  --hs-wash-active: rgba(255, 255, 255, 0.14);
 }
 
-/* Enable blend mode on light backgrounds/themes to allow white background blending */
-html.theme-light .popover-img,
-html.theme-light .popover-vid,
-html.theme-light .sa-img,
-html.theme-light .sa-vid {
-  mix-blend-mode: multiply !important;
+/* No blend mode on media.
+   Multiply was there to sink white-background artwork into the paper, but it
+   also multiplies every other pixel against the stock, which greys the
+   photographs and drags the whole field with them. The photographs are the only
+   colour left on this page; they render as themselves. */
+.popover-img,
+.popover-vid,
+.sa-img,
+.sa-vid {
+  mix-blend-mode: normal;
 }
 
 :root {
-  /* ── Type Scale ───────────────────────────────────────────────────────────
-     Named semantic levels — override ONLY these variables at each breakpoint.
-     Never write a font-size magic number on an element below this block.
+  /* The type scale and the mono tracking live in tokens.css — the login gate
+     needs them and does not import this file. Only the résumé's own layout
+     metrics are defined here. */
 
-     editorial      Hero name (display, fluid clamp)
-     editorial-sub  Hero subtitle
-     h1             Document name (resume header)
-     h2             Company names
-     h3             Section labels (EXPERIENCE, EDUCATION …)
-     h4             Job title / achievement cluster heading / degree
-     h5             School name / doc-title-line
-     body-lg        Summary paragraph (slightly elevated body)
-     body           Bullets, descriptions, popover body text
-     body-sm        Contact, dates, awards, quotes, links, credentials
-     meta           Mono labels (popover-label, doc-hint, sa-label …)
-     stat           Display numbers (popover-stat, sa-stat)
-     legal          Footer fine print
-     ─────────────────────────────────────────────────────────────────────── */
-  --type-editorial: clamp(48px, 7vw, 88px);
-  --type-editorial-sub: clamp(18px, 2.4vw, 24px);
-  --type-h1: 36px;
-  --type-h2: 18px;
-  --type-h3: 15px;
-  --type-h4: 16px;
-  --type-h5: 15px;
-  --type-body-lg: 17px;
-  --type-body: 16px;
-  --type-body-sm: 14px;
-  --type-meta: 11px;
-  --type-stat: 28px;
-  --type-legal: 12px;
+  /* ── Layout ──
+     --doc-max-width is a measure, not a container: 720px of Newsreader at 17px
+     lands at ~70 characters, which is the width prose actually wants. It is
+     also what buys the margins enough room to exist on a laptop — see the
+     marginalia threshold note below.
 
-  /* Letter-spacing utility (shared by all mono-label elements) */
-  --type-label-spacing: 2px;
-
-  /* Layout — must match JS constants in src/scripts/constants.ts */
-  --doc-max-width: 820px; /* matches no JS constant — shared by .hero and .doc-page */
-  --popover-width: 380px; /* matches POPOVER_WIDTH = 380 */
-  --popover-max-height: 80vh; /* matches POPOVER_MAX_HEIGHT_VH = 0.80 */
+     Must match JS constants in src/scripts/constants.ts. */
+  /* The SHEET, not the measure. A page is always wider than its text block —
+     that difference is what makes it read as a page rather than a column. The
+     text block inside is ~704px (≈70 characters at 17px); the extra 176px is
+     the sheet's own margin. At 720px the sheet was 50% of a 1442px viewport
+     with 361px dead on each side, and read as a strip.
+     The masthead shares this measure, so both halves sit on one left edge. */
+  --doc-max-width: 880px;
+  /* The sheet's own margin — the band between the sheet edge and the text
+     block. Named because three things now depend on it being the same number:
+     .doc-page's padding, .masthead-inner's padding, and the year rail, which
+     hangs in exactly this band so that prose keeps one left edge. */
+  --sheet-inset: clamp(24px, 6vw, 88px);
+  --margin-col-width: 220px; /* matches MARGIN_COL_WIDTH */
+  --margin-col-gutter: 42px; /* matches MARGIN_COL_GUTTER */
+  --popover-width: 400px; /* matches POPOVER_WIDTH = 400 */
+  --popover-max-height: 78vh; /* matches POPOVER_MAX_HEIGHT_VH = 0.78 */
 }
 
-/* Metadata Typography Utilities */
-.doc-hint,
-.popover-label,
-.sa-label {
-  font-family: var(--mono);
-  font-size: var(--type-meta);
-  font-weight: 500;
-  letter-spacing: var(--type-label-spacing);
-}
-
-.doc-hint,
+/* ── The annotation apparatus ──
+   Every mono label on the site, defined once. */
 .popover-label,
 .sa-label,
-.hero-credentials,
-.doc-section-heading {
+.doc-section-heading,
+.masthead-contact,
+.masthead-credentials {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: var(--type-meta);
+  letter-spacing: var(--type-label-spacing);
   text-transform: uppercase;
 }
 
@@ -104,101 +116,243 @@ html.theme-light .sa-vid {
 
 body {
   font-family: var(--doc-sans);
-  background: var(--bg);
+  background: var(--doc-white);
   color: var(--doc-body);
-  -webkit-font-smoothing: antialiased;
+  /* No -webkit-font-smoothing: antialiased.
+     Inherited and never questioned. On macOS it replaces subpixel rendering
+     with greyscale, which renders every glyph noticeably THINNER — and this
+     page sets its display serif at weight 200–300 and its body at 400.
+     Thinning light type on white is precisely how black text starts reading as
+     grey. Removing it lets the type render at the weight it was specified at.
+
+     text-rendering: optimizeLegibility went with it: a no-op or a
+     ligature/font-loading hazard in every current browser. */
 }
 
 /* ══════════════════════════════════════
-   HERO — Editorial title page
-   ══════════════════════════════════════ */
-.hero {
-  background: var(--bg);
+   MASTHEAD — the title page
+   ══════════════════════════════════════
+   Renamed from `.hero`. That name is owned by CaseStudyHero.astro, and because
+   global.css is imported on case-study pages too, the résumé's centred 820px
+   `.hero` rule was silently clamping every full-bleed case-study hero. Two
+   different things had one name; now they have two. */
+.masthead {
+  /* The head of the document, not a cover. It shares the page's stock, its
+     measure and its left edge — the masthead and the résumé are one continuous
+     sheet, and the only thing separating them is a hairline. */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 100px 40px 72px;
+  /* Mirrors .doc-wrapper exactly, so the masthead and the document share one
+     left edge. They are one continuous sheet now — two grids on one surface
+     reads as a mistake, and the name sitting 190px left of the body text it
+     introduces was the most visible one on the page. */
+  padding: clamp(52px, 8vh, 92px) 24px clamp(28px, 4vh, 52px);
   position: relative;
+  isolation: isolate;
+}
+
+.masthead-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Flush left, not centred. Symmetry is the safe choice and it reads as one;
+     a hard left edge with the name running to the measure is what makes the
+     page look set rather than arranged. */
+  text-align: left;
+  width: 100%;
   max-width: var(--doc-max-width);
   margin: 0 auto;
+  /* Same inset as .doc-page, so the name aligns to the body copy below it. */
+  padding: 0 var(--sheet-inset);
 }
 
-.hero-name {
+/* No closing bar. The masthead ends where the rule under it ends. */
+
+.masthead-name {
   font-family: var(--display);
   font-size: var(--type-editorial);
-  font-weight: 300;
+  /* A light weight at title scale reads as printed; 400 reads as a CMS heading. */
+  font-weight: 200;
+  font-variation-settings: "opsz" 72;
   color: var(--doc-heading);
-  letter-spacing: 0.02em;
-  line-height: 1;
-  margin-bottom: 0;
-  opacity: 0;
-  animation: fadeIn 0.8s ease 0.15s forwards;
-  white-space: nowrap;
+  /* At 200px, default tracking and leading are both far too loose — display
+     type has to be set tighter than the metrics assume or it falls apart into
+     separate letters and separate lines. */
+  letter-spacing: -0.022em;
+  line-height: 1.02;
+  width: 100%;
 }
 
-.hero-rule {
-  width: 56px;
-  height: 1px;
-  background: var(--accent);
-  margin: 28px auto;
-  opacity: 0;
-  animation: fadeIn 0.6s ease 0.4s forwards;
-}
+/* ── Entrance, as an enhancement ──
+   Everything below animates FROM a visible default. These four elements used
+   to sit at `opacity: 0` and rely on an animation's `forwards` fill to become
+   readable, which means the name, the positioning line and the contact details
+   only existed if the animation actually ran. Anything that stops it — a
+   browser that throttles animation in a background tab, an extension, a
+   rendering hiccup — left the title page blank. A document that has to be read
+   does not put its content behind a keyframe. */
+@media (prefers-reduced-motion: no-preference) {
+  .masthead-name {
+    animation: mastheadRise 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
 
-.hero-sub {
-  font-family: var(--display);
-  font-size: var(--type-editorial-sub);
-  font-weight: 400;
-  font-style: italic;
-  color: var(--doc-light);
-  max-width: 580px;
-  line-height: 1.5;
-  margin-bottom: 36px;
-  opacity: 0;
-  animation: fadeIn 0.7s ease 0.55s forwards;
-}
+  .masthead-meta {
+    animation: fadeIn 0.7s ease 0.62s backwards;
+  }
 
-.hero-credentials {
-  font-family: var(--doc-sans);
-  font-size: var(--type-body-sm);
-  font-weight: 400;
-  letter-spacing: 1.5px;
-  color: var(--doc-light);
-  /* Balance the wrap so credentials split evenly across lines (e.g. the long
-     M.S. on its own line) instead of orphaning the last one, at any width. */
-  text-wrap: balance;
-  opacity: 0;
-  animation: fadeIn 0.6s ease 0.7s forwards;
-}
+  .masthead-contact {
+    animation: fadeIn 0.7s ease 0.74s backwards;
+  }
 
-.hero-credentials .hero-cred-sep {
-  /* Spacing comes from the surrounding spaces; the dot trails its credential
-     so a wrapped line never starts with an orphan separator. */
-  color: var(--doc-rule);
-}
-
-/* Keep each credential intact on one line (e.g. "Computer Science" never splits). */
-.hero-credentials .hero-cred {
-  white-space: nowrap;
-}
-
-/* Desktop: the three credentials fit on a single line within the 820px hero.
-   Keep them on one line so they read as one centred row — two centred lines of
-   unequal width would never share a left edge, making the shorter line look
-   indented. Below this width they wrap (balanced) as normal. */
-@media (min-width: 901px) {
-  .hero-credentials {
-    white-space: nowrap;
+  .masthead-mobile-hint {
+    animation: fadeIn 0.6s ease 0.9s backwards;
   }
 }
 
-.hero-mobile-hint {
+@keyframes mastheadRise {
+  from {
+    opacity: 0;
+    transform: translateY(0.18em);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Full-measure rule. It runs the width of the text block and is the only thing
+   dividing the masthead from the document. */
+.masthead-rule {
+  width: 100%;
+  /* A hairline, not a bar. A 3px band of colour is a graphic; a hairline is
+     punctuation, and punctuation is all this needs to do. */
+  height: 1px;
+  background: var(--doc-heading);
+  margin: clamp(28px, 4vh, 48px) 0 clamp(20px, 2.6vh, 30px);
+  transform-origin: left center;
+  animation: ruleSweep 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.42s backwards;
+}
+
+@keyframes ruleSweep {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Colophon. Stacked flush left, not a two-column row.
+   The row worked when the masthead ran to 1560px; on the document's 704px
+   measure it wraps, and a wrapped space-between row drops the credentials to
+   the start of the next line where their right-alignment does nothing at all.
+   One left edge for everything is also simply the more honest structure. */
+.masthead-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+}
+
+.masthead-lede {
+  /* Explicit px, not ch. `ch` resolves against the element's own font — this
+     container inherits the 16px UI sans, so 42ch computed to 424px while the 32px
+     serif tagline inside it needs 455px to set on one line. The constraint was
+     silently 30% tighter than it read, which is how the positioning line ended
+     up breaking with an orphaned ampersand. */
+  max-width: 520px;
+}
+
+.masthead-role {
+  font-family: var(--mono);
+  font-size: var(--type-meta);
+  font-weight: 500;
+  letter-spacing: var(--type-label-spacing-wide);
+  text-transform: uppercase;
+  color: var(--doc-light);
+  margin-bottom: 12px;
+}
+
+.masthead-sub {
+  font-family: var(--display);
+  font-size: var(--type-editorial-sub);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--doc-heading);
+  line-height: 1.25;
+  margin: 0;
+}
+
+.masthead-credentials {
+  font-size: var(--type-meta);
+  letter-spacing: var(--type-label-spacing-wide);
+  color: var(--doc-light);
+  line-height: 1.9;
+  /* Flush left with everything else. This was right-aligned when the colophon
+     was a two-column row on a 1560px masthead; once the masthead moved onto the
+     document's measure the container sat at the shared left edge while the
+     glyphs still hung 57px inside it — aligned by measurement, misaligned by
+     eye, which is the only one that counts. */
+  text-align: left;
+  max-width: 100%;
+}
+
+/* Contact runs along the foot of the masthead — the last thing in the block,
+   and the only place on the page it appears. */
+.masthead-contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  width: 100%;
+  margin-top: clamp(28px, 4vh, 48px);
+  padding-top: 20px;
+  border-top: 1px solid var(--doc-rule);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: var(--type-label-spacing);
+  text-transform: uppercase;
+  color: var(--doc-light);
+}
+
+.masthead-contact a {
+  color: var(--doc-body);
+  text-decoration: none;
+  border-bottom: 1px solid var(--doc-rule);
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.masthead-contact a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.masthead-contact span[aria-hidden] {
+  color: var(--doc-light);
+}
+
+.masthead-credentials .masthead-cred {
+  white-space: nowrap;
+}
+
+/* Punctuation, but it still has to be visible: at --doc-rule it measured
+   1.45:1 and read as a gap rather than a separator. */
+.masthead-credentials .masthead-cred-sep {
+  color: var(--doc-light);
+}
+
+.masthead-mobile-hint {
   display: none;
 }
 
 /* ══════════════════════════════════════
-   DOCUMENT CONTAINER
+   DOCUMENT CONTAINER — the sheet
    ══════════════════════════════════════ */
 .doc-wrapper {
   display: flex;
@@ -206,204 +360,174 @@ body {
   padding: 0 24px 120px;
   position: relative;
   overflow: visible;
+  z-index: 1;
 }
 
 .doc-page {
-  background: var(--doc-white);
+  /* The document sets its own prose in the serif; UI chrome elsewhere stays
+     in the sans. This one declaration is what makes the page read as a
+     document rather than as a web page about a document. */
+  font-family: var(--doc-serif);
+  /* Not a card. The masthead and the document are one continuous stock, so the
+     sheet has no edge, no lift and no shadow to separate it from a page it is
+     already part of. */
+  background: transparent;
   width: 100%;
   max-width: var(--doc-max-width);
-  padding: 64px 72px 56px;
-  border-radius: 4px;
-  box-shadow:
-    0 1px 1px rgba(0, 0, 0, 0.03),
-    0 2px 4px rgba(0, 0, 0, 0.03),
-    0 4px 8px rgba(0, 0, 0, 0.03),
-    0 8px 16px rgba(0, 0, 0, 0.03),
-    0 16px 32px rgba(0, 0, 0, 0.05),
-    0 32px 64px rgba(0, 0, 0, 0.04);
+  padding: clamp(34px, 4.4vw, 58px) var(--sheet-inset) 64px;
   position: relative;
   isolation: isolate;
-  /* stacking context: z-index:-1 fragments appear above white bg, below text */
   overflow: visible;
-}
-
-.doc-hint {
-  position: absolute;
-  top: 20px;
-  right: 24px;
-  color: var(--doc-light);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.doc-hint-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  opacity: 0.5;
-  animation: pulse-dot 2.5s ease-in-out infinite;
-}
-
-@keyframes pulse-dot {
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-
-  50% {
-    opacity: 0.8;
-  }
 }
 
 /* ══════════════════════════════════════
    DOCUMENT TYPOGRAPHY
    ══════════════════════════════════════ */
-.doc-name {
-  font-family: var(--doc-serif);
-  font-size: var(--type-h1);
-  font-weight: 700;
-  color: var(--doc-heading);
-  letter-spacing: -0.5px;
-  margin-bottom: 2px;
-}
-
-.doc-title-line {
-  font-family: var(--doc-sans);
-  font-size: var(--type-h5);
-  font-weight: 500;
-  color: var(--doc-light);
-  margin-bottom: 6px;
-}
-
-.doc-contact {
-  font-family: var(--doc-sans);
-  font-size: var(--type-body-sm);
-  color: var(--doc-light);
-  margin-bottom: 24px;
-}
-
-.doc-contact a {
-  color: var(--doc-light);
-  text-decoration: none;
-}
-
-.doc-hr {
-  border: none;
-  border-top: 1.5px solid var(--doc-heading);
-  margin: 0 0 24px;
-}
+/* .doc-record / .doc-name / .doc-title-line / .doc-contact / .doc-hr are gone.
+   They were the sheet's own identity block — a second masthead directly under
+   the first, restating the name, the credentials and the entire contact line.
+   The masthead states all of it once; the sheet opens on the prose. */
 
 .doc-hr-thin {
   border: none;
   border-top: 1px solid var(--doc-rule);
-  margin: 20px 0;
+  margin: 34px 0;
+}
+
+/* Section marks. A numbered, tracked mono label with a rule running to the end
+   of the measure — the way a printed document announces a new part.
+
+   The numbers come from a CSS counter, so the document gains an apparatus
+   without a single character of markup or copy changing. They pair with the
+   footnote folios: both are the publication numbering itself, set in the mono,
+   never in the prose. */
+.doc-page {
+  counter-reset: section;
 }
 
 .doc-section-heading {
-  font-family: var(--doc-serif);
+  display: flex;
+  align-items: center;
+  gap: 14px;
   font-size: var(--type-h3);
-  font-weight: 700;
-  letter-spacing: 2.5px;
+  letter-spacing: var(--type-label-spacing-wide);
   color: var(--doc-heading);
-  margin-bottom: 16px;
-  margin-top: 28px;
+  margin: 52px 0 24px;
+  counter-increment: section;
 }
 
+.doc-section-heading::before {
+  content: counter(section, decimal-leading-zero);
+  font-feature-settings: "tnum" 1;
+  letter-spacing: 0;
+  /* Ink, not signal. The numeral encodes nothing — the heading already says
+     which part this is — so under Tufte's rule it has no claim on the one
+     saturated colour the page allows itself. */
+  color: var(--doc-light);
+  flex-shrink: 0;
+}
+
+/* The rule runs out of the label in the signal colour and fades — the mark
+   reads as drawn from the heading rather than as a divider that happens to sit
+   next to it. */
+.doc-section-heading::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--doc-rule);
+}
+
+/* The lead paragraph. Slightly larger, slightly looser — the only prose on the
+   page allowed to behave like an opening. */
 .doc-summary {
   font-size: var(--type-body-lg);
   font-weight: 400;
   color: var(--doc-body);
-  line-height: 1.7;
-  margin-bottom: 24px;
+  line-height: 1.72;
+  margin-bottom: 22px;
 }
 
-/* ── Achievement clusters ── */
-.doc-achievement-cluster {
-  margin-bottom: 20px;
-}
-
-.doc-achievement-cluster h4 {
-  font-family: var(--doc-sans);
-  font-size: var(--type-h4);
-  font-weight: 600;
+.doc-summary:first-of-type::first-line {
+  /* A printed lead sets its first line slightly tighter and darker. */
   color: var(--doc-heading);
-  margin-bottom: 6px;
 }
 
-.doc-achievement-cluster ul {
-  list-style: none;
-  padding: 0;
-}
+/* ══════════════════════════════════════
+   THE TIME AXIS
+   ══════════════════════════════════════
+   One grid, shared by THE RECORD and Experience: a mono year rail on the left,
+   content on the measure, baselines aligned.
 
-.doc-achievement-cluster li {
-  font-size: var(--type-body);
-  color: var(--doc-body);
-  line-height: 1.65;
-  padding-left: 14px;
-  position: relative;
-  margin-bottom: 4px;
-}
-
-.doc-achievement-cluster li::before {
-  content: "–";
-  position: absolute;
-  left: 0;
-  color: var(--doc-light);
-}
-
-/* ── Experience entries ── */
+   This is the document's structural argument. The positioning is thirty-four
+   years of dated, repeated foresight, and the page had no time axis at all —
+   just reverse-chronological jobs with the dates right-aligned in a flex row,
+   which is the single most generic pattern the résumé form has. Pulled into a
+   column, the years stop being metadata and start being the evidence: 1991 at
+   the top of the record, 2025 at the bottom, and the reader does the
+   arithmetic without being told the number. */
+/* The rail hangs in the sheet's own margin rather than taking a column out of
+   the measure. Pulling it inside cost 96px of text width and, worse, gave the
+   document two left edges — the summary at one, every dated entry at another.
+   Negative-margining by exactly --sheet-inset puts the text column back on the
+   single edge the masthead and the prose already share, and drops the years
+   into the band beside it where the folios and margin notes live. */
 .doc-exp {
-  margin-bottom: 24px;
-}
-
-.doc-exp-header {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: var(--sheet-inset) 1fr;
+  margin-left: calc(-1 * var(--sheet-inset));
+  /* First-baseline alignment, so a 12px mono year sits on the same line as the
+     17px serif it labels rather than centring in its own box. */
   align-items: baseline;
-  margin-bottom: 2px;
 }
 
-.doc-exp-company {
-  font-family: var(--doc-sans);
-  font-size: var(--type-h2);
-  font-weight: 700;
+/* The years. Tabular figures and no tracking — a rail only reads as a column
+   if the digits stack, and the 0.16em the rest of the mono apparatus carries
+   would break the alignment it exists to create. Ink, not --doc-light: the
+   section numerals are publication furniture, but these are the claim. */
+.doc-exp-years {
+  font-family: var(--mono);
+  font-size: var(--type-year);
+  font-weight: 500;
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
   color: var(--doc-heading);
-}
-
-.doc-exp-dates {
-  font-size: var(--type-body-sm);
-  color: var(--doc-light);
+  text-align: right;
+  padding-right: 14px;
   white-space: nowrap;
 }
 
-.doc-exp-title {
-  font-size: var(--type-h4);
-  font-weight: 500;
-  color: var(--doc-light);
-  margin-bottom: 8px;
+/* Experience carries a span; the rail can only hold nine characters when the
+   sheet margin is at its full 88px. Below that the span steps down to the
+   start year, which is what the rail is really for — sequence. */
+.doc-exp-years .year-start {
+  display: none;
 }
 
-.doc-exp-desc {
-  font-size: var(--type-body);
-  color: var(--doc-body);
-  line-height: 1.65;
-  margin-bottom: 8px;
+@media (max-width: 1320px) {
+  .doc-exp-years .year-span {
+    display: none;
+  }
+
+  .doc-exp-years .year-start {
+    display: inline;
+  }
 }
 
+/* ── Bullets ── */
 .doc-exp ul {
   list-style: none;
   padding: 0;
 }
 
+/* Hanging-indent bullets with an en dash — a margin mark, not a list glyph. */
 .doc-exp li {
   font-size: var(--type-body);
   color: var(--doc-body);
-  line-height: 1.65;
-  padding-left: 14px;
+  line-height: 1.68;
+  padding-left: 20px;
   position: relative;
-  margin-bottom: 4px;
+  margin-bottom: 9px;
 }
 
 .doc-exp li::before {
@@ -413,88 +537,153 @@ body {
   color: var(--doc-light);
 }
 
+/* ── Experience entries ── */
+.doc-exp {
+  margin-bottom: 34px;
+}
+
+.doc-exp-company {
+  font-family: var(--display);
+  font-size: var(--type-h2);
+  font-weight: 600;
+  font-variation-settings: "opsz" 20;
+  color: var(--doc-heading);
+  letter-spacing: 0.01em;
+  margin-bottom: 3px;
+  /* The source strings are already uppercase; lowercasing them here would be a
+     content change, so this only normalises the optical weight of all-caps. */
+  font-feature-settings: "case" 1;
+}
+
+/* Visually hidden, still announced. The rail shows a year span; the authored
+   range with its months goes to assistive technology, so nothing is lost by
+   compressing the margin. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.doc-exp-title {
+  font-family: var(--display);
+  font-size: var(--type-h4);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--doc-light);
+  margin-bottom: 12px;
+}
+
+.doc-exp-desc {
+  font-size: var(--type-body);
+  color: var(--doc-body);
+  line-height: 1.68;
+  margin-bottom: 12px;
+}
+
 /* ── Education ── */
 .doc-edu-item {
-  margin-bottom: 10px;
+  margin-bottom: 18px;
 }
 
 .doc-edu-item .degree {
+  margin-bottom: 1px;
+  font-family: var(--display);
   font-size: var(--type-h4);
   font-weight: 600;
+  font-variation-settings: "opsz" 18;
   color: var(--doc-heading);
 }
 
 .doc-edu-item .school {
   font-size: var(--type-h5);
-  color: var(--doc-light);
+  color: var(--doc-body);
 }
 
 .doc-edu-item .focus {
   font-size: var(--type-body-sm);
   color: var(--doc-light);
   font-style: italic;
+  line-height: 1.6;
 }
 
 /* ── Patents & Awards ── */
 .doc-awards-line {
   font-size: var(--type-body-sm);
   color: var(--doc-body);
-  line-height: 1.65;
-  margin-bottom: 4px;
+  line-height: 1.75;
+  margin-bottom: 7px;
 }
 
-/* ── Page footer ── */
-.doc-footer {
-  margin-top: 40px;
-  padding-top: 16px;
-  border-top: 1px solid var(--doc-rule);
-  font-size: var(--type-legal);
-  color: var(--doc-light);
-  text-align: center;
-  letter-spacing: 0.5px;
+.doc-awards-line strong {
+  font-weight: 600;
+  color: var(--doc-heading);
 }
 
 /* ══════════════════════════════════════
-   INTERACTIVE HOTSPOTS
+   ANNOTATED TERMS (footnote references)
    ══════════════════════════════════════ */
 .hotspot {
   position: relative;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   display: inline;
-  background-color: rgba(var(--accent-rgb), var(--hs-opacity-default));
+  color: inherit;
+  /* Hairline under the term. box-decoration-break keeps it correct when the
+     term wraps across a line. */
+  border-bottom: 1px solid var(--hs-rule);
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
-  padding: 1px 3px;
-  margin: 0 -3px;
+  padding: 1px 2px;
+  margin: 0 -2px;
   border-radius: 2px;
-  border-bottom: 1px solid transparent;
   transition: var(--hs-transition);
-  color: inherit;
 }
 
-/* Hover State: Softly increase tint and show underline */
+/* The superscript folio. This is the affordance — it says "there is more here"
+   without any pulsing dot or instruction line, and it works identically at
+   375px and 1600px. */
+.hotspot-ref {
+  font-family: var(--mono);
+  font-size: 0.62em;
+  font-weight: 500;
+  font-feature-settings: "tnum" 1;
+  vertical-align: super;
+  line-height: 0;
+  margin-left: 2px;
+  color: var(--accent);
+  letter-spacing: 0;
+  transition: color 0.2s ease;
+}
+
 .hotspot:hover,
 .hotspot.hovered {
-  background-color: rgba(var(--accent-rgb), var(--hs-opacity-hover));
-  border-bottom-color: rgba(var(--accent-rgb), 0.4);
+  background-color: var(--hs-wash-hover);
+  border-bottom-color: var(--hs-rule-hover);
 }
 
-/* Active/Revealed State: Persistent tint while popover/margin-note is visible */
+/* Open, or revealed in the margin. */
 .hotspot.active,
 .hotspot.scroll-revealed {
-  background-color: rgba(var(--accent-rgb), var(--hs-opacity-active));
+  background-color: var(--hs-wash-active);
+  border-bottom-color: var(--hs-rule-hover);
 }
 
-/* Keyboard focus ring */
+/* No radius override — the term keeps the 2px it has at rest. Focus was
+   redrawing the same box at 1px, so the wash changed shape under the outline. */
 .hotspot:focus-visible {
-  background-color: rgba(var(--accent-rgb), var(--hs-opacity-hover));
-  outline: 2px solid var(--accent);
-  outline-offset: 4px;
+  background-color: var(--hs-wash-hover);
+  outline: 2px solid var(--doc-heading);
+  outline-offset: 3px;
 }
 
 /* ══════════════════════════════════════
-   POPOVERS
+   POPOVER — the dig
    ══════════════════════════════════════ */
 .popover-overlay {
   position: fixed;
@@ -519,25 +708,30 @@ body.popover-open {
   width: var(--popover-width);
   max-height: var(--popover-max-height);
   overflow-y: auto;
+  overscroll-behavior: contain;
   background: var(--doc-white);
   border: 1px solid var(--doc-rule);
-  border-radius: 10px;
+  border-radius: 4px;
   box-shadow:
-    0 4px 6px rgba(0, 0, 0, 0.04),
-    0 10px 20px rgba(0, 0, 0, 0.06),
-    0 20px 40px rgba(0, 0, 0, 0.04);
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    0 12px 28px rgba(0, 0, 0, 0.1),
+    0 32px 64px rgba(0, 0, 0, 0.09);
   padding: 0;
   opacity: 0;
-  transform: translateY(8px) scale(0.97);
+  transform: translateY(6px);
   transition:
-    opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
+}
+
+html.theme-dark .popover {
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
 }
 
 .popover.visible {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
   pointer-events: auto;
 }
 
@@ -545,12 +739,14 @@ body.popover-open {
 .popover-vid {
   width: 100%;
   height: auto;
-  max-height: 240px;
+  max-height: 260px;
   object-fit: contain;
   object-position: center;
   display: block;
-  padding: 8px 0 0;
-  /* Space away from the chrome line */
+}
+
+.popover-media {
+  padding: 14px 14px 0;
 }
 
 .popover-vid-wrap,
@@ -566,31 +762,27 @@ body.popover-open {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  color: var(--doc-light);
+  width: 46px;
+  height: 46px;
+  color: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 5;
   transition: all 0.2s ease;
-  padding: 0;
-  padding-left: 3px;
-  /* optical center for play icon */
+  padding: 0 0 0 3px; /* optical centre for the play triangle */
 }
 
 .popover-play-btn:hover,
 .sa-play-btn:hover {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(0, 0, 0, 0.15);
-  color: var(--accent);
-  transform: translate(-50%, -50%) scale(1.05);
+  background: rgba(255, 255, 255, 0.96);
+  transform: translate(-50%, -50%) scale(1.06);
 }
 
 .popover-play-btn.playing,
@@ -604,6 +796,7 @@ body.popover-open {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 14px 14px 0;
 }
 
 .popover-carousel-inner {
@@ -618,8 +811,8 @@ body.popover-open {
   background: var(--doc-white);
   border: 1px solid var(--doc-rule);
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   color: var(--doc-heading);
   display: flex;
   align-items: center;
@@ -628,7 +821,7 @@ body.popover-open {
   z-index: 2;
   transition: all 0.2s ease;
   padding: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16);
   opacity: 0;
 }
 
@@ -645,10 +838,9 @@ body.popover-open {
 }
 
 .popover-carousel-nav:hover {
-  background: var(--bg);
   border-color: var(--accent);
   color: var(--accent);
-  transform: translateY(-50%) scale(1.05);
+  transform: translateY(-50%) scale(1.06);
 }
 
 .popover-carousel {
@@ -658,8 +850,7 @@ body.popover-open {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   scroll-behavior: smooth;
-  gap: 16px;
-  padding: 8px 0 0;
+  gap: 14px;
   width: 100%;
 }
 
@@ -672,11 +863,6 @@ body.popover-open {
   scroll-snap-align: center;
 }
 
-.popover-carousel .popover-img,
-.popover-carousel .popover-vid {
-  padding: 0;
-}
-
 .popover-carousel-dots {
   display: flex;
   gap: 6px;
@@ -685,10 +871,10 @@ body.popover-open {
 }
 
 .popover-carousel-dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background-color: var(--accent-border);
+  background-color: var(--doc-rule);
   border: none;
   padding: 0;
   cursor: pointer;
@@ -698,19 +884,21 @@ body.popover-open {
 }
 
 .popover-carousel-dot.active {
-  background-color: var(--accent);
-  transform: scale(1.2);
+  background-color: var(--doc-light);
+  transform: scale(1.3);
 }
 
 .popover-handle {
   position: relative;
-  height: 24px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: grab;
   user-select: none;
   background: var(--doc-white);
+  border-bottom: 1px solid var(--doc-rule);
+  border-radius: 4px 4px 0 0;
 }
 
 .popover-handle::before {
@@ -721,35 +909,23 @@ body.popover-open {
   border-radius: 50%;
   background: var(--doc-rule);
   box-shadow:
-    -7px 0 0 var(--doc-rule),
-    7px 0 0 var(--doc-rule);
-}
-
-.popover-handle::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 96px;
-  height: 1px;
-  background: var(--doc-rule);
-  opacity: 0.4;
+    -6px 0 0 var(--doc-rule),
+    6px 0 0 var(--doc-rule);
 }
 
 .popover-close {
   position: absolute;
-  right: 6px;
-  top: 4px;
-  width: 24px;
-  height: 24px;
+  right: 5px;
+  top: 3px;
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
   background: transparent;
   cursor: pointer;
-  color: var(--doc-rule);
+  color: var(--doc-light);
   transition: color 0.15s ease;
   z-index: 10;
 }
@@ -758,8 +934,8 @@ body.popover-open {
 .popover-close::after {
   content: "";
   position: absolute;
-  width: 10px;
-  height: 1.2px;
+  width: 9px;
+  height: 1px;
   background: currentColor;
 }
 
@@ -771,20 +947,15 @@ body.popover-open {
   transform: rotate(-45deg);
 }
 
-.popover-close:hover {
-  color: var(--doc-heading);
-}
-
+.popover-close:hover,
 .popover-close:focus-visible {
+  color: var(--accent);
   outline: none;
-  color: var(--doc-heading);
 }
 
-/* Dragging state */
 .popover.is-dragging {
   transition: none !important;
   cursor: grabbing;
-  user-select: none;
 }
 
 .popover.is-dragging .popover-handle {
@@ -792,95 +963,164 @@ body.popover-open {
 }
 
 .popover-body {
-  padding: 20px 24px;
+  padding: 20px 22px 24px;
+}
+
+/* The popover repeats the term's folio number, so the connection between the
+   marked word and the open panel is explicit rather than assumed — open three
+   notes in a row and you still know which word each one came from. */
+.popover-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.popover-folio {
+  font-family: var(--mono);
+  font-size: var(--type-meta);
+  font-weight: 500;
+  font-feature-settings: "tnum" 1;
+  color: var(--accent);
+  letter-spacing: 0;
+  flex-shrink: 0;
 }
 
 .popover-label {
-  color: var(--accent);
-  margin-bottom: 8px;
+  color: var(--doc-light);
+  line-height: 1.5;
+}
+
+.popover-stat--phrase {
+  font-size: var(--type-body-lg);
+  font-variation-settings: "opsz" 20;
+  line-height: 1.45;
+  letter-spacing: 0;
 }
 
 .popover-text {
-  font-family: var(--doc-sans);
+  font-family: var(--doc-serif);
   font-size: var(--type-body);
   font-weight: 400;
   color: var(--doc-body);
-  line-height: 1.6;
-  margin-bottom: 12px;
+  line-height: 1.65;
+  margin-bottom: 14px;
 }
 
+/* The same control as .sa-link, on the other surface. Both routes to a case
+   study end in an identical underlined link rather than an inline phrase that
+   looked like body copy. */
 .popover-link {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 13px 0 12px;
+  border-top: 1px solid var(--doc-rule);
   font-family: var(--mono);
-  font-size: var(--type-body-sm);
-  letter-spacing: 1px;
-  color: var(--accent);
+  font-size: var(--type-meta);
+  font-weight: 500;
+  letter-spacing: var(--type-label-spacing);
+  text-transform: uppercase;
+  color: var(--doc-heading);
   text-decoration: none;
-  padding: 6px 0;
-  border-bottom: 1px solid var(--accent-border);
+  transition: color 0.2s ease;
+}
+
+.popover-link-label {
+  border-bottom: 1px solid var(--doc-heading);
+  padding-bottom: 2px;
   transition: border-color 0.2s ease;
 }
 
-.popover-link:hover {
-  border-color: var(--accent);
+.popover-link::after {
+  content: "\2192";
+  letter-spacing: 0;
+  flex-shrink: 0;
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.popover-link:hover::after,
+.popover-link:focus-visible::after {
+  transform: translateX(3px);
+}
+
+.popover-link:focus-visible {
+  outline: 2px solid var(--doc-heading);
+  outline-offset: 3px;
 }
 
 .popover-quote {
+  font-family: var(--display);
   font-style: italic;
-  font-size: var(--type-body-sm);
+  font-size: var(--type-body);
   color: var(--doc-light);
-  border-left: 2px solid var(--accent-border);
-  padding-left: 12px;
-  margin: 10px 0;
+  border-left: 2px solid var(--doc-rule);
+  padding-left: 14px;
+  margin: 14px 0;
   line-height: 1.55;
 }
 
+/* The figure is the headline of the note. It is already the largest thing in
+   the panel; colouring it too is saying the same thing twice. */
 .popover-stat {
   font-family: var(--display);
   font-size: var(--type-stat);
-  font-weight: 500;
+  font-weight: 400;
+  font-variation-settings: "opsz" 36;
   color: var(--doc-heading);
-  margin-bottom: 4px;
-  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
 }
 
 /* ══════════════════════════════════════
-   MARGIN ANNOTATIONS (wide desktop only)
-   ══════════════════════════════════════ */
+   MARGIN NOTES — the glance
+   ══════════════════════════════════════
+   Below the wide tier no margin notes are shown; the footnote numbers still
+   mark every annotated term, and clicking still opens the full note. Nothing
+   is hidden from a narrow reader — only the simultaneous view is.
+
+   Threshold = 880 sheet + 2 × (42 gutter + 220 column) = 1404, rounded to 1420.
+   Still under the 1440px logical width of a 13" MacBook Air. */
 .scroll-annotation {
   display: none;
 }
 
-@media (min-width: 1460px) {
+@media (min-width: 1420px) {
   .scroll-annotation {
     display: block;
     position: absolute;
-    width: 240px;
-    /* Was 210px */
-    /* Narrowed to ensure clearance on 1440p displays */
+    width: var(--margin-col-width);
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(8px);
     transition:
-      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
     pointer-events: none;
     z-index: 10;
-    /* Ensure it stays above any doc-page decorations */
   }
 
   .scroll-annotation.revealed {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
+    /* The note opens its own popover. It looked like an entry point and did
+       nothing before. */
+    cursor: pointer;
   }
 
-  /* Popover is open for this entry — dissolve the annotation out.
-     150ms: fast enough to not block the user, slow enough to read as
-     intentional. The popover's 250ms entrance overlaps the tail of this,
-     so the crossing of the two motions is the effect. */
+  .scroll-annotation.revealed:hover .sa-rule {
+    opacity: 1;
+    width: 34px;
+  }
+
+  /* The popover for this note is open — dissolve the margin copy so the same
+     words are never on screen twice. */
   .scroll-annotation.annotation-suppressed {
     opacity: 0;
-    transform: scale(0.96) translateY(3px);
+    transform: scale(0.97) translateY(3px);
     pointer-events: none;
     transition:
       opacity 0.15s ease-out,
@@ -888,70 +1128,147 @@ body.popover-open {
   }
 
   .scroll-annotation.side-right {
-    left: calc(100% + 56px);
+    left: calc(100% + var(--margin-col-gutter));
   }
 
   .scroll-annotation.side-left {
-    right: calc(100% + 56px);
+    right: calc(100% + var(--margin-col-gutter));
+  }
+
+  /* Folio + label share the top line: the number ties the note to its term. */
+  .sa-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .sa-folio {
+    font-family: var(--mono);
+    font-size: var(--type-meta);
+    font-weight: 500;
+    font-feature-settings: "tnum" 1;
+    color: var(--accent);
+    flex-shrink: 0;
   }
 
   .sa-rule {
-    width: 24px;
+    width: 26px;
     height: 1px;
-    background: var(--accent-border);
-    margin-bottom: 12px;
-  }
-
-  .side-left .sa-rule {
-    margin-left: auto;
+    background: var(--doc-rule);
+    opacity: 1;
+    margin-bottom: 13px;
+    transition:
+      width 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.3s ease;
   }
 
   .sa-label {
-    color: var(--accent);
-    margin-bottom: 6px;
+    color: var(--doc-light);
+    line-height: 1.5;
   }
 
+  /* Smaller than the panel's, deliberately. The panel is a 400px focal
+     surface; the margin is a 220px aside running alongside the document, and
+     at the panel's 34px it out-shouted the 22px company headings it sits
+     next to. Same role, different room. */
   .sa-stat {
     font-family: var(--display);
-    font-size: var(--type-stat);
-    font-weight: 500;
+    font-size: var(--type-stat-margin);
+    font-weight: 400;
+    font-variation-settings: "opsz" 28;
     color: var(--doc-heading);
-    margin-bottom: 4px;
-    letter-spacing: -0.02em;
+    margin-bottom: 7px;
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+  }
+
+  /* A sentence in the stat slot is prose, so it is set as prose. */
+  .sa-stat--phrase {
+    font-size: var(--type-body);
+    font-variation-settings: "opsz" 18;
+    line-height: 1.45;
+    letter-spacing: 0;
   }
 
   .sa-text {
-    font-family: var(--doc-sans);
+    font-family: var(--doc-serif);
     font-size: var(--type-body-sm);
     font-weight: 400;
     color: var(--doc-body);
-    line-height: 1.6;
-    margin-bottom: 8px;
+    line-height: 1.62;
   }
 
   .sa-quote {
     font-family: var(--display);
     font-style: italic;
     font-size: var(--type-body-sm);
-    color: var(--doc-body);
-    border-left: 1.5px solid var(--accent-border);
+    color: var(--doc-light);
+    border-left: 1.5px solid var(--doc-rule);
     padding-left: 10px;
-    margin: 6px 0;
+    margin: 8px 0;
     line-height: 1.5;
   }
 
+  /* A single figure, not a carousel. The margin's job is to show that there is
+     something to see; the popover's job is to let you see all of it. */
   .sa-img,
   .sa-vid {
     width: 100%;
     height: auto;
-    max-height: 160px;
+    max-height: 132px;
     object-fit: contain;
-    object-position: top center;
-    border-radius: 3px;
-    margin-bottom: 8px;
-    opacity: 0.85;
+    object-position: top left;
+    margin-bottom: 10px;
   }
 
+  .side-right .sa-img,
+  .side-right .sa-vid {
+    object-position: top left;
+  }
+
+  /* ── Expanded note ──
+     At this width the margin IS the detail view — clicking a marked term opens
+     its note here rather than throwing a panel over the document. So the
+     expanded state needs to behave like a surface: its own stock, its own
+     edge, and a bounded height.
+
+     The height cap is not cosmetic. The longest note runs past 1500px in a
+     220px column, which is four screens of scrolling in a strip 220px wide.
+     Capping and scrolling internally is the same contract the popover has. */
+  .scroll-annotation.is-expanded {
+    background: var(--doc-white);
+    border: 1px solid var(--doc-rule);
+    /* Same corner as the popover — this is the same kind of object, a panel
+       laid over the page. It was 3px, which is a third corner nobody chose. */
+    border-radius: 4px;
+    padding: 18px 16px 20px;
+    max-height: 72vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    /* Neutral. This cast rgba(30, 25, 15, …) — a brown light source in a room
+       with no brown in it, left behind by the warm palette. */
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.06),
+      0 14px 34px rgba(0, 0, 0, 0.12);
+    z-index: 30;
+    cursor: default;
+  }
+
+  html.theme-dark .scroll-annotation.is-expanded {
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  }
+
+  .is-expanded .sa-img,
+  .is-expanded .sa-vid {
+    max-height: 150px;
+  }
+
+  /* ── Margin carousel ──
+     These were lost in a stylesheet rewrite and the loss stayed invisible for
+     as long as the margin only ever rendered a single thumbnail. The moment an
+     expanded note asked for the full media array, the slides had no flex
+     context and stacked into a 1500px ribbon down the page. */
   .sa-carousel-wrap {
     display: flex;
     flex-direction: column;
@@ -964,43 +1281,6 @@ body.popover-open {
     width: 100%;
   }
 
-  .sa-carousel-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--doc-white);
-    border: 1px solid var(--doc-rule);
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
-    color: var(--doc-heading);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 2;
-    transition: all 0.2s ease;
-    padding: 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    opacity: 0;
-    /* JS manages inline opacity for first/last logic, this serves as base */
-  }
-
-  .sa-carousel-nav.prev {
-    left: -32px;
-  }
-
-  .sa-carousel-nav.next {
-    right: -32px;
-  }
-
-  .sa-carousel-nav:hover {
-    background: var(--bg);
-    border-color: var(--accent);
-    color: var(--accent);
-    transform: translateY(-50%) scale(1.05);
-  }
-
   .sa-carousel {
     display: flex;
     overflow-x: auto;
@@ -1008,7 +1288,7 @@ body.popover-open {
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     scroll-behavior: smooth;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
   }
 
@@ -1026,9 +1306,45 @@ body.popover-open {
     margin-bottom: 0;
   }
 
+  /* No hover-to-reveal here: the note is already an intentional, opened thing. */
+  .sa-carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--doc-white);
+    border: 1px solid var(--doc-rule);
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    color: var(--doc-heading);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    padding: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .sa-carousel-nav.prev {
+    left: -8px;
+  }
+
+  .sa-carousel-nav.next {
+    right: -8px;
+  }
+
+  .sa-carousel-nav:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
   .sa-carousel-dots {
     display: flex;
-    gap: 6px;
+    gap: 5px;
     padding-top: 10px;
     justify-content: center;
   }
@@ -1037,7 +1353,7 @@ body.popover-open {
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background-color: var(--accent-border);
+    background-color: var(--doc-rule);
     border: none;
     padding: 0;
     cursor: pointer;
@@ -1047,62 +1363,83 @@ body.popover-open {
   }
 
   .sa-carousel-dot.active {
-    background-color: var(--accent);
-    transform: scale(1.2);
+    background-color: var(--doc-light);
+    transform: scale(1.3);
   }
 
+  /* A real link, in both states, sitting in normal flow.
+     It was `position: sticky; bottom: 0` — which does nothing here: a note
+     shorter than its own 72vh cap never overflows, so there is no scroll
+     container to stick to, and the control simply sat at the foot of a column
+     hanging below the fold. elementFromPoint at its centre returned nothing.
+     Underlined, because a case study is a destination and a destination that
+     does not look like a link is not a control. */
   .sa-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 14px;
+    padding: 11px 0 10px;
+    border-top: 1px solid var(--doc-rule);
     font-family: var(--mono);
-    font-size: var(--type-body-sm);
-    letter-spacing: 1px;
-    color: var(--accent);
+    font-size: var(--type-meta);
+    font-weight: 500;
+    letter-spacing: var(--type-label-spacing);
+    text-transform: uppercase;
+    color: var(--doc-heading);
     text-decoration: none;
-    border-bottom: 1px solid var(--accent-border);
+    transition: color 0.2s ease;
+  }
+
+  /* The rule belongs to the words, so the arrow is not dragged into it. */
+  .sa-link-label {
+    border-bottom: 1px solid var(--doc-heading);
     padding-bottom: 2px;
     transition: border-color 0.2s ease;
   }
 
-  .sa-link:hover {
-    border-color: var(--accent);
+  .sa-link::after {
+    content: "\2192";
+    letter-spacing: 0;
+    flex-shrink: 0;
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  /* Left-side annotations: left-align body text for readability in narrow column.
-     The rule + label still anchor the right edge visually. */
-  .side-left {
+  .sa-link:hover::after,
+  .sa-link:focus-visible::after {
+    transform: translateX(3px);
+  }
+
+  .sa-link:focus-visible {
+    outline: 2px solid var(--doc-heading);
+    outline-offset: 3px;
+  }
+
+  /* Both margins set flush-left. Right-ragged text in the left margin looks
+     like a mistake at this column width; a shared left edge on both sides
+     reads as one apparatus running down the page. */
+  .side-left,
+  .side-right {
     text-align: left;
   }
-
-  .side-left .sa-rule {
-    margin-left: 0;
-  }
-
-  .side-left .sa-quote {
-    border-left: 1.5px solid var(--accent-border);
-    border-right: none;
-    padding-left: 10px;
-    padding-right: 0;
-  }
-
-  /* Shared active style logic handled by global .hotspot definition */
 }
-
-/* The live "widen the window" UX is the self-contained WidenPrompt.astro
-   component. The original edge-tracking ribbon styles were extracted to the
-   parked WidenHint.astro (not currently rendered). */
 
 /* ══════════════════════════════════════
    SITE FOOTER
    ══════════════════════════════════════ */
 .site-footer {
   text-align: center;
-  padding: 32px 24px 48px;
+  padding: 40px 24px 56px;
 }
 
 .site-footer p {
   font-family: var(--mono);
-  font-size: 10px; /* intentional exception: watermark-grade, below --type-legal */
+  font-size: var(--type-meta);
+  /* Dim by colour, not opacity — see the note in case-study.css. Uses the token
+     rather than a literal: #8a8a8a measured 3.45:1 on white and failed AA. */
   color: var(--doc-light);
-  letter-spacing: 2px;
+  letter-spacing: var(--type-label-spacing-wide);
 }
 
 /* ══════════════════════════════════════
@@ -1111,7 +1448,7 @@ body.popover-open {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(10px);
   }
 
   to {
@@ -1120,15 +1457,19 @@ body.popover-open {
   }
 }
 
-.reveal {
+/* Visible by default; hidden only once main.ts has proved it is running and
+   able to reveal it again. The sheet carrying the entire résumé is a .reveal
+   element, so an unqualified `opacity: 0` here meant a blocked or broken
+   bundle rendered a blank page over fully server-rendered content. */
+.js-reveal .reveal {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(16px);
   transition:
     opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.reveal.visible {
+.js-reveal .reveal.visible {
   opacity: 1;
   transform: translateY(0);
 }
@@ -1137,21 +1478,8 @@ body.popover-open {
    RESPONSIVE — TABLET
    ══════════════════════════════════════ */
 @media (max-width: 900px) {
-  .hero {
-    padding: 80px 24px 56px;
-  }
-
-  .doc-page {
-    padding: 40px 32px 40px;
-  }
-
-  .doc-exp-header {
-    flex-direction: column;
-    gap: 2px;
-  }
-
   .popover {
-    width: 320px;
+    width: 340px;
   }
 }
 
@@ -1159,51 +1487,79 @@ body.popover-open {
    RESPONSIVE — MOBILE
    ══════════════════════════════════════ */
 @media (max-width: 600px) {
-  /* ── Type scale: mobile variable overrides ── */
   :root {
-    --type-editorial: clamp(36px, 11vw, 52px);
-    --type-editorial-sub: 18px;
-    --type-h1: 24px;
-    --type-h2: 16px;
-    --type-h3: 13px;
-    --type-h4: 14px;
-    --type-h5: 13px;
-    --type-body-lg: 16px;
-    --type-body: 16px; /* intentionally at floor — no reduction */
-    --type-body-sm: 13px;
-    --type-meta: 12px; /* accessibility floor raised from 11px */
-    --type-legal: 11px;
+    /* Still the biggest thing on the screen, but the surname has to clear a
+       375px viewport: 15.5vw would set it at 58px and overrun. */
+    --type-editorial: clamp(34px, 9vw, 44px);
+    --type-editorial-sub: 21px;
+    --type-h2: 18px;
+    --type-h3: 10px;
+    --type-h4: 16px;
+    --type-h5: 14px;
+    --type-body-lg: 18px;
+    --type-body: 17px; /* intentionally at the reading floor — no reduction */
+    --type-body-sm: 14px;
+    --type-meta: 11px;
   }
 
-  .hero {
-    padding: 56px 24px 40px;
+  .masthead {
+    padding: 48px 24px 32px;
   }
 
-  .hero-rule {
-    width: 40px;
-    margin: 20px auto;
+  /* The colophon row stacks — a baseline-shared row needs width it doesn't
+     have on a phone, and right-aligned credentials under a left-aligned
+     tagline would read as a mistake. */
+  .masthead-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 22px;
   }
 
-  .hero-sub {
+  .masthead-sub {
     max-width: 100%;
   }
 
-  .hero-credentials {
-    letter-spacing: 1px;
-    line-height: 2;
+  .masthead-credentials {
+    text-align: left;
   }
 
-  .hero-mobile-hint {
+  .masthead-lede {
+    max-width: 100%;
+  }
+
+  /* The rail collapses. A 76px column beside a 280px measure would leave the
+     text 3 words wide, so the year steps above its entry and sets flush left
+     with everything else — the axis survives as sequence even without the
+     column. */
+  .doc-exp {
+    grid-template-columns: 1fr;
+    row-gap: 5px;
+  }
+
+  .doc-exp-years {
+    text-align: left;
+  }
+
+  .doc-wrapper {
+    margin-top: 0;
+  }
+
+  .masthead-mobile-hint {
     display: flex;
     align-items: center;
-    gap: 7px;
-    margin-top: 24px;
+    gap: 8px;
+    margin-top: 28px;
     padding: 9px 16px;
-    background: rgba(0, 0, 0, 0.055);
-    border-radius: 100px;
-    font-family: var(--doc-sans);
-    font-weight: 400;
-    letter-spacing: 0.3px;
+    border: 1px solid var(--doc-rule);
+    /* Chrome corner, like every other bordered control. A 100px pill was the
+       only fully-round object on the page and it read as a UI badge dropped
+       onto a printed sheet. */
+    border-radius: 2px;
+    font-family: var(--mono);
+    font-size: var(--type-meta);
+    font-weight: 500;
+    letter-spacing: var(--type-label-spacing);
+    text-transform: uppercase;
     color: var(--doc-light);
     opacity: 0;
     animation: fadeIn 0.6s ease 0.9s forwards;
@@ -1214,30 +1570,21 @@ body.popover-open {
   }
 
   .doc-page {
-    padding: 24px 18px 28px;
     border-radius: 0;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
-  }
-
-  .doc-hint {
-    display: none;
-  }
-
-  .doc-contact {
-    line-height: 1.8;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
   }
 
   .doc-section-heading {
-    letter-spacing: 2px;
-    margin-top: 20px;
-    margin-bottom: 12px;
+    margin: 34px 0 18px;
   }
 
-  /* ── Mobile bottom-sheet popover ── */
+  /* ── Mobile bottom sheet ── */
   .popover-overlay.open {
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
   }
 
   .popover {
@@ -1247,10 +1594,13 @@ body.popover-open {
     right: 0;
     top: auto !important;
     width: 100% !important;
-    max-height: 75vh;
+    max-height: 82vh;
     overflow-y: auto;
-    border-radius: 16px 16px 0 0;
-    /* --sheet-drag-offset is set by JS during swipe-to-dismiss gesture */
+    border-radius: 14px 14px 0 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    /* --sheet-drag-offset is driven by JS during swipe-to-dismiss */
     transform: translateY(
       calc(100% + var(--sheet-drag-offset, 0px))
     ) !important;
@@ -1265,81 +1615,33 @@ body.popover-open {
     opacity: 1;
   }
 
+  .popover-media,
+  .popover-carousel-wrap {
+    padding: 18px 18px 0;
+  }
+
   .popover-img,
   .popover-vid {
-    width: calc(100% - 40px);
-    height: auto;
-    max-height: 220px;
-    margin: 20px 20px 0;
-    border-radius: 8px;
-    object-fit: contain;
+    max-height: 240px;
+    border-radius: 4px;
   }
 
-  .popover-carousel-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 20px 20px 0;
-  }
-
-  .popover-carousel-inner {
-    position: relative;
-    width: 100%;
-  }
-
-  /* Mobile: no hover, so always show chevrons */
+  /* No hover on touch — the chevrons have to be present. */
   .popover-carousel-nav {
-    opacity: 0.72;
-    background: var(--doc-white);
-    border-color: var(--doc-rule);
-    color: var(--doc-heading);
-  }
-
-  .popover-carousel {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    scroll-behavior: smooth;
-    gap: 16px;
-    width: 100%;
-  }
-
-  .popover-carousel::-webkit-scrollbar {
-    display: none;
-  }
-
-  .popover-carousel-slide {
-    flex: 0 0 100%;
-    scroll-snap-align: center;
-  }
-
-  .popover-carousel .popover-img,
-  .popover-carousel .popover-vid {
-    margin: 0;
-    width: 100%;
-  }
-
-  /* Dots override for desktop popovers */
-  .popover-carousel-dots {
-    padding-top: 14px;
-    margin-bottom: -4px;
+    opacity: 0.8;
   }
 
   .popover-body {
-    padding: 16px 20px 32px;
+    padding: 18px 20px 36px;
   }
 
-  /* Mobile: repurpose the handle strip as a swipe-to-dismiss affordance */
+  /* The handle strip becomes a real swipe affordance. */
   .popover-handle {
-    display: flex;
-    height: 48px;
-    border-radius: 16px 16px 0 0;
-    cursor: default; /* not draggable on mobile */
+    height: 46px;
+    border-radius: 14px 14px 0 0;
+    cursor: default;
   }
 
-  /* Pill indicator replacing the three desktop dots */
   .popover-handle::before {
     width: 36px;
     height: 4px;
@@ -1348,20 +1650,13 @@ body.popover-open {
     box-shadow: none;
   }
 
-  /* Remove desktop rule line */
-  .popover-handle::after {
-    display: none;
-  }
-
-  /* 44×44 px touch target aligned to the right side of the handle strip */
+  /* 44×44 touch target, per Apple HIG and WCAG 2.5.5. */
   .popover-close {
     top: 50%;
-    right: 8px;
+    right: 6px;
     transform: translateY(-50%);
     width: 44px;
     height: 44px;
-    background: transparent;
-    box-shadow: none;
   }
 }
 
@@ -1369,24 +1664,17 @@ body.popover-open {
    RESPONSIVE — SMALL MOBILE
    ══════════════════════════════════════ */
 @media (max-width: 380px) {
-  /* ── Type scale: small-mobile variable overrides ── */
   :root {
-    --type-editorial: 42px;
-    --type-h1: 22px;
-    --type-h2: 15px;
+    --type-editorial: clamp(30px, 8.5vw, 38px);
+    --type-h2: 17px;
   }
 
-  .hero {
-    padding: 44px 20px 32px;
+  .masthead {
+    padding: 40px 20px 28px;
   }
 
   .doc-page {
-    padding: 20px 14px 24px;
-  }
-
-  .doc-achievement-cluster li,
-  .doc-exp li {
-    line-height: 1.55;
+    padding: 28px 18px 32px;
   }
 }
 
@@ -1396,25 +1684,26 @@ body.popover-open {
    visual states (opacity, color) preserved.
    ══════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
-  /* Scroll reveal: show immediately, no slide-up */
-  .reveal {
+  /* Must match the .js-reveal specificity, or the hidden state outranks this
+     and a reduced-motion reader waits on an observer to see the document. */
+  .js-reveal .reveal {
     opacity: 1;
     transform: none;
     transition: none;
   }
 
-  /* Hotspot transitions: snap */
+  /* The masthead entrance is declared only under `no-preference`, so there is
+     nothing left to switch off here. */
+
   .hotspot {
     transition: none;
   }
 
-  /* Popover: fade-only entrance, no scale/translate */
   .popover {
     transform: none !important;
     transition: opacity 0.15s ease;
   }
 
-  /* Scroll annotations: appear/disappear instantly */
   .scroll-annotation,
   .scroll-annotation.annotation-suppressed {
     transform: none;

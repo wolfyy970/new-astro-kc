@@ -27,11 +27,6 @@ export const experienceEntrySchema = z.object({
   bullets: z.array(z.string()),
 });
 
-export const keyAchievementClusterSchema = z.object({
-  heading: z.string(),
-  items: z.array(z.string()),
-});
-
 export const contactSchema = z.object({
   email: z.string(),
   phone: z.string(),
@@ -56,7 +51,6 @@ export const resumeSchema = z.object({
     credentials: z.array(z.string()),
   }),
   summary: z.string(),
-  keyAchievements: z.array(keyAchievementClusterSchema),
   experience: z.array(experienceEntrySchema),
   education: z.array(educationSchema),
   patentsAndRecognition: patentsAndRecognitionSchema,

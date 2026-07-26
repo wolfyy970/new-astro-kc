@@ -1,10 +1,22 @@
 /* ══════════════════════════════════════
    CASE STUDY — SHARED STYLES
    ══════════════════════════════════════
-   Brand accent is set as an inline style on <body> by CaseStudyLayout,
-   which derives --accent, --accent-rgb, and --accent-border from the
-   page's `accent` prop via src/utils/color.ts. Do not redefine --accent
-   in :root — inline styles take precedence and cannot bleed across pages.
+   Brand accent is set as an inline style on <body> by CaseStudyLayout, which
+   derives --accent, --accent-rgb, --accent-contrast and --accent-ink from the
+   page's `accent` prop via src/utils/color.ts. Do not redefine --accent in
+   :root — inline styles take precedence and cannot bleed across pages.
+
+   For the same reason, anything DERIVED from --accent must be declared on
+   <body> or below, never on :root: a mapping on :root resolves against the
+   root's own --accent, not the inline brand value one level down.
+
+   These five pages are branded environments, but a brand is not one hex.
+   Delta is navy AND red: #0b1b2b fields with #c8102e on top. So --accent drives
+   the hero and the labels — the things that *name* the client — while each page
+   art-directs its own field colours in content via `bg` and `darkBg`. Deriving
+   the fields from the accent as well collapses two-colour brands into one and
+   turned Delta's navy page red. The résumé's achromatic rule stops at the
+   résumé; this file's rule is that the accent identifies, it does not fill.
    ══════════════════════════════════════ */
 
 /* ── Theme variables mapping ── */
@@ -13,20 +25,21 @@
   --text-primary: var(--doc-heading);
   --text-secondary: var(--doc-body);
   --text-muted: var(--doc-light);
-  --label-color: var(--accent);
-  --stat-value-color: var(--accent);
   --stat-label-color: var(--text-secondary);
 
   /* ── Case-study type scale ──
      One deliberate ramp for the section-header family. Eyebrow/heading/body are
      normalized to a single value each (previously drifted 11/12/13, 32/42, 16/18
      across components). Distinct roles below keep their own steps. */
-  --cs-eyebrow: 12px;
-  --cs-eyebrow-tracking: 4px;
+  /* The eyebrow is the label role, so it takes the label role's size and
+     tracking. It was 12px at a flat 4px, which is a second apparatus voice
+     one step off the one every other label on the site uses. */
+  --cs-eyebrow: var(--type-meta);
+  --cs-eyebrow-tracking: var(--type-label-spacing-wide);
   --cs-heading: 42px;
   --cs-body: 18px;
   --cs-card-title: 22px;
-  --cs-card-body: 16px;
+  --cs-card-body: 17px;
   --cs-photo-title: clamp(24px, 3vw, 36px);
   --cs-hero-title: clamp(48px, 6vw, 80px);
   --cs-hero-subtitle: 20px;
@@ -43,23 +56,57 @@
   --cs-max-width: 1300px;
   --cs-max-width-wide: 1600px;
   --cs-max-width-stat: 1400px;
-  --cs-radius: 12px;
-  --cs-radius-sm: 10px;
+  /* One radius, matching the document's panel step. A case-study card is the
+     same kind of object as a popover — a piece of paper laid over the page —
+     so it gets the same corner. 12px/10px were a second corner language. */
+  --cs-radius: 4px;
 
-  /* Dark-section background — single formula (collapses the #2d1446 vs #3b1a5a
-     fallback drift; --accent is always set on <body>, so the fallback is inert). */
-  --cs-dark-bg: color-mix(in srgb, var(--accent, #3b1a5a) 80%, #000);
+  /* Dark-section background. Pages override it per section via `darkBg`
+     (Delta's navy #0b1b2b, Upwave's warm #1e1e1e), which is where the real
+     art direction lives; this is only the fallback. */
+  --cs-dark-bg: color-mix(in srgb, var(--accent) 80%, #000);
 }
 
-/* If the page is in Dark mode globally, use a high contrast label color for default sections */
-html:not(.theme-light) body {
-  --label-color: rgba(255, 255, 255, 0.9);
-  --stat-value-color: var(--accent-contrast);
-  --stat-label-color: rgba(255, 255, 255, 0.6);
+/* The accent-derived mappings must be declared on <body>, not :root.
+   CaseStudyLayout injects the client's brand hex as an inline style on <body>,
+   so a `--label-color: var(--accent)` sitting on :root resolves against the
+   root's own --accent — the ink — and the inline brand value one level below
+   is never consulted. That is exactly what was happening: every eyebrow and
+   every outcome numeral on all five case studies rendered black, so the one
+   place the system permits colour was the one place it never appeared. */
+body {
+  /* --accent-ink, not --accent: the raw brand hex is chosen for logos and
+     fields, and at 11px on light stock Upwave's orange measures 2.98:1 and
+     Felix's cyan 2.05:1. color.ts darkens only the brands that need it and
+     returns Truist, Delta and Two Way TV untouched. */
+  --label-color: var(--accent-ink);
+  --stat-value-color: var(--accent-ink);
 }
 
-/* Light theme container override (for sections on light background) */
-.theme-light {
+/* Night edition, and the same problem in the other direction: on dark stock a
+   dark brand disappears. Labels take a light tint of the brand rather than the
+   brand itself — still unmistakably that client's hue, but lifted far enough
+   off the field to read (8.88–11.97:1 across all five).
+   Both were rgba-white before: dimming by alpha makes the real ratio a
+   function of whatever is behind the glyph, so it cannot be measured from the
+   declared value. These are solid values now. */
+html.theme-dark body {
+  --label-color: color-mix(in srgb, var(--accent) 35%, #fff);
+  --stat-value-color: color-mix(in srgb, var(--accent) 35%, #fff);
+  --stat-label-color: var(--doc-light);
+}
+
+/* Light section container override (for sections on a light background).
+   Named `section-*`, NOT `theme-*`: the `theme-dark` class is the document-level
+   edition flag on <html>, and reusing that name here made a section wrapper and
+   the global edition indistinguishable to the cascade. */
+/* The section palettes the pages were art-directed against.
+   These are cool greys, and that is not an accident: every case study already
+   declares its own field colours in content — Delta #0b1b2b / #080d14 navy,
+   Truist #f3eff8, Upwave #fff8f4, Two Way TV #f0f7ff, Felix #eef3fb — and the
+   greys sit under them without fighting. Deriving these from --accent instead
+   overrode that whole system and turned Delta's navy page red. */
+.section-light {
   --bg: #f1f3f5;
   --doc-white: #ffffff;
   --doc-heading: #1e202b;
@@ -70,13 +117,22 @@ html:not(.theme-light) body {
   --text-primary: var(--doc-heading);
   --text-secondary: var(--doc-body);
   --text-muted: var(--doc-light);
-  --label-color: var(--accent); /* Brand accent has high contrast on light bg */
-  --stat-value-color: var(--accent);
+  /* --accent-ink for the same reason as on <body>: "the brand reads fine on
+     light stock" holds for three of the five and not for orange or cyan. */
+  --label-color: var(--accent-ink, var(--accent));
+  --stat-value-color: var(--accent-ink, var(--accent));
   --stat-label-color: var(--text-secondary);
 }
 
-/* Dark theme container override (for sections on dark background) */
-.theme-dark {
+/* Dark section container override (for sections on a dark background).
+   `.is-dark` is the same thing arriving by a different route: components take
+   an `isDark` prop and stamp that class on themselves. It was styled by hand
+   at every call site — `color: #fff` here, `rgba(255,255,255,0.85)` there —
+   which is why dark bands drifted from dark sections. One class list, one set
+   of tokens, and every descendant inherits the right value without a single
+   per-element override. */
+.section-dark,
+.is-dark {
   --bg: #111219;
   --doc-white: #191a23;
   --doc-heading: #f3f4f6;
@@ -87,21 +143,28 @@ html:not(.theme-light) body {
   --text-primary: var(--doc-heading);
   --text-secondary: var(--doc-body);
   --text-muted: var(--doc-light);
-  --label-color: rgba(
-    255,
-    255,
-    255,
-    0.9
-  ); /* High contrast label color on dark bg */
-  --stat-value-color: var(--accent-contrast);
-  --stat-label-color: rgba(255, 255, 255, 0.6); /* Styled dark label color */
+  --label-color: color-mix(in srgb, var(--accent) 35%, #fff);
+  --stat-value-color: color-mix(in srgb, var(--accent) 35%, #fff);
+  --stat-label-color: var(--doc-light);
+
+  /* Carrying the dark token set means sitting on dark stock. Some wrappers
+     took `.is-dark` and painted nothing, so a photo-grid section on Truist
+     rendered its light-tinted label straight onto the white body at 2.09:1.
+     Components with their own surface — a card inside the band — override
+     this from their scoped styles, which outrank a bare class selector. */
+  background-color: var(--case-study-dark, var(--cs-dark-bg));
 }
 
+/* The document's voice, not a second one.
+   Case studies were set in the system UI sans while the résumé that links to
+   them is set in Newsreader — the same publication speaking in two registers.
+   A case study is evidence attached to the monograph, so it reads in the
+   monograph's face. Headings were already --display (the same family); this
+   brings the prose with them. */
 body {
-  font-family: var(--doc-sans);
+  font-family: var(--doc-serif);
   color: var(--text-primary);
   background: var(--warm-white);
-  -webkit-font-smoothing: antialiased;
   line-height: 1.5;
 }
 
@@ -113,13 +176,19 @@ footer {
   text-align: center;
 }
 
+/* The label role, set the way every other label on the site is set: mono,
+   11px, 0.16em. It was 12px sans at 2px tracking — a second apparatus voice
+   for the one line that appears on every case-study page. */
 footer p {
-  font-size: 12px;
+  font-family: var(--mono);
+  font-size: var(--type-meta);
   font-weight: 500;
-  color: var(--text-secondary);
-  letter-spacing: 2px;
+  letter-spacing: var(--type-label-spacing);
   text-transform: uppercase;
-  opacity: 0.5;
+  /* Was opacity: 0.5, which put this under AA against its own background.
+     Dim by colour, not opacity — opacity composites the glyph against whatever
+     is behind it, so the real contrast is unmeasurable from the declared value. */
+  color: var(--text-muted);
 }
 
 /* ── Responsive ── */

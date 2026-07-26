@@ -20,7 +20,7 @@
   "merger": {
     "label": "Truist · $66B Merger",
     "text": "The SunTrust-BB&T merger created Truist, the largest banking merger since 2008. Inheriting an innovation studio with an uncertain future, I rebooted it by adding customer journey mapping and strategic foresight. This repositioning earned a partnership with Corporate Strategy to run a major foresight exercise using the Jobs to Be Done framework, ultimately presenting three future-of-banking scenarios to the CEO and C-suite.",
-    "quote": "Bill Rogers, the then-CEO of SunTrust, called the work \"instrumental\" in how he thought about the merger.",
+    "quote": "Bill Rogers, the CEO of SunTrust, called the work \"instrumental\" in thinking that led to the merger.",
     "media": [
       "/images/truist/trend-card-1.png",
       "/images/truist/trend-card-2.png",
@@ -31,21 +31,21 @@
       "/images/truist/trend-card-7.png"
     ],
     "link": "/truist",
-    "linkText": "View Truist project →"
+    "linkText": "View Truist project"
   },
   "truist-products": {
     "label": "Truist Commercial Banking",
     "text": "Rebuilt Commercial and Small Business banking products for the merged Truist entity. All product lines required unifying two distinct legacy systems under one coherent design language designed by my team.",
     "img": "/images/truist/1771281469482-048153c4.png",
     "link": "/truist",
-    "linkText": "View Truist project →"
+    "linkText": "View Truist project"
   },
   "delta": {
     "label": "Delta Air Lines",
     "text": "Created news.delta.com, the corporate communications platform that serves Delta's media relations, employee engagement, and storytelling. A unified editorial system for a global airline with 90,000 employees.",
     "img": "/images/sparks-grove/news-hub.jpg",
     "link": "/sparks-grove",
-    "linkText": "View Delta project →"
+    "linkText": "View Delta project"
   },
   "clients": {
     "label": "Client Work",
@@ -56,7 +56,7 @@
     "text": "Prescient IoT-driven digital health venture at the intersection of wearables and personalized content delivery. Partnered with IDEO for market validation and product-market fit. Introduced lean product methodology enabling daily release cycles. The product was ahead of mainstream wearable adoption: pre-Apple Watch.",
     "img": "/images/upwave/turner-upwave-site.png",
     "link": "/upwave",
-    "linkText": "View Upwave project →",
+    "linkText": "View Upwave project",
     "stat": "Zero to one product."
   },
   "emmy": {
@@ -100,7 +100,7 @@
     "stat": "2000",
     "img": "/images/awards/bafta-nomination.jpg",
     "link": "/two-way-tv",
-    "linkText": "View Two Way TV project →"
+    "linkText": "View Two Way TV project"
   },
   "apple-award": {
     "label": "Apple Design Award",
@@ -120,11 +120,8 @@
   "felix": {
     "label": "Felix the Cat · Interactive Comic",
     "text": "Designer and producer of Felix the Cat's Giant Electronic Comic Book — stories, songs, and activities for ages 4–8 on Philips CD-i and PC CD-ROM, built at Epic Multimedia Group.",
-    "media": [
-      "/images/felix/cover.webp",
-      "/media/felix-resume-reel.mp4"
-    ],
+    "media": ["/images/felix/cover.webp", "/media/felix-resume-reel.mp4"],
     "link": "/felix",
-    "linkText": "View Felix project →"
+    "linkText": "View Felix project"
   }
 }

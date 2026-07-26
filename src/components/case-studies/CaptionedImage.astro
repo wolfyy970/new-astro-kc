@@ -46,13 +46,13 @@ const { image, imageAlt, caption, label, isMobile } = Astro.props;
     }
 
     .image-label {
+        font-family: var(--mono);
         font-size: var(--cs-eyebrow);
-        font-weight: 600;
+        font-weight: 500;
         letter-spacing: var(--cs-eyebrow-tracking);
         text-transform: uppercase;
-        color: var(--label-color, var(--accent, currentColor));
+        color: var(--label-color);
         margin-bottom: 24px;
-        opacity: 0.8;
     }
 
     /*
@@ -64,7 +64,7 @@ const { image, imageAlt, caption, label, isMobile } = Astro.props;
     .captioned-image-frame {
         border-radius: var(--cs-radius);
         overflow: hidden;
-        background: var(--bg, #f0ede8);
+        background: var(--bg);
         line-height: 0;
         display: flex;
         justify-content: center;
@@ -88,11 +88,7 @@ const { image, imageAlt, caption, label, isMobile } = Astro.props;
 
     .captioned-image-frame.is-mobile img {
         max-width: 320px;
-        box-shadow:
-            0 4px 6px -1px rgba(0, 0, 0, 0.05),
-            0 10px 15px -3px rgba(0, 0, 0, 0.1),
-            0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        border: 1px solid var(--doc-rule, rgba(0, 0, 0, 0.08));
+        border: 1px solid var(--doc-rule);
     }
 
     .image-caption {

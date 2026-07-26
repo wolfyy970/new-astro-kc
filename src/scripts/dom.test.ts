@@ -1,6 +1,18 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { buildContentNode, requireGlobal, requireEl } from "./dom";
+import { ANNOTATION_TEXT_SENTENCES } from "./constants";
 import type { PopoverData } from "../types/content";
+
+// The truncation tests are driven by the constant rather than a literal, so
+// retuning how much the margin shows stays a one-line change instead of a
+// test-rewrite. (It was hardcoded to 3, which is what broke when the margin
+// note became a one-sentence glance.)
+const LIMIT = ANNOTATION_TEXT_SENTENCES;
+
+/** "Sentence 1. Sentence 2. … Sentence n." */
+function sentences(n: number): string {
+  return Array.from({ length: n }, (_, i) => `Sentence ${i + 1}.`).join(" ");
+}
 
 describe("buildContentNode", () => {
   const mockData: PopoverData = {
@@ -34,46 +46,44 @@ describe("buildContentNode", () => {
     expect(html).toContain("This is sentence three."); // Full text
   });
 
-  it("should truncate annotation text at ANNOTATION_TEXT_SENTENCES (3) when there are more", () => {
-    const fourSentenceData: PopoverData = {
-      ...mockData,
-      text: "This is sentence one. This is sentence two. This is sentence three. This is sentence four.",
-    };
-    const frag = buildContentNode(fourSentenceData, "sa", {
-      truncateText: true,
-      prependRule: true,
-    });
+  it("should truncate a margin note at ANNOTATION_TEXT_SENTENCES when there are more", () => {
+    const frag = buildContentNode(
+      { ...mockData, text: sentences(LIMIT + 2) },
+      "sa",
+      { truncateText: true, prependRule: true },
+    );
     const html = fragmentToHTML(frag);
     expect(html).toContain('class="sa-rule"');
-    expect(html).toContain("This is sentence three.");
-    expect(html).not.toContain("This is sentence four."); // Truncated after 3 sentences
+    expect(html).toContain(`Sentence ${LIMIT}.`);
+    expect(html).not.toContain(`Sentence ${LIMIT + 1}.`);
   });
 
-  it("should NOT truncate annotation text when it has 3 or fewer sentences", () => {
-    const threeSentenceData: PopoverData = {
-      ...mockData,
-      text: "This is sentence one. This is sentence two. This is sentence three.",
-    };
-    const frag = buildContentNode(threeSentenceData, "sa", {
-      truncateText: true,
-    });
-    const html = fragmentToHTML(frag);
-    expect(html).toContain("This is sentence three.");
+  it("should NOT truncate a margin note that already fits", () => {
+    const frag = buildContentNode(
+      { ...mockData, text: sentences(LIMIT) },
+      "sa",
+      {
+        truncateText: true,
+      },
+    );
+    expect(fragmentToHTML(frag)).toContain(`Sentence ${LIMIT}.`);
   });
 
   it("should not split on abbreviations like U.S. when truncating", () => {
-    const abbreviationData: PopoverData = {
-      ...mockData,
-      text: "Two U.S. patents granted in 2015. Second real sentence here. Third real sentence here. Fourth sentence to force truncation.",
-    };
-    const frag = buildContentNode(abbreviationData, "sa", {
-      truncateText: true,
-    });
+    const parts = [
+      "Two U.S. patents granted in 2015.",
+      ...Array.from({ length: LIMIT }, (_, i) => `Follow-up ${i + 1}.`),
+    ];
+    const frag = buildContentNode(
+      { ...mockData, text: parts.join(" ") },
+      "sa",
+      { truncateText: true },
+    );
     const html = fragmentToHTML(frag);
-    // 'U.S.' should not have caused a split, so all three real sentences appear
+    // 'U.S.' must not read as a sentence boundary, so the opening sentence
+    // survives intact and the overflow sentence is the one dropped.
     expect(html).toContain("Two U.S. patents granted in 2015.");
-    expect(html).toContain("Third real sentence here.");
-    expect(html).not.toContain("Fourth sentence to force truncation.");
+    expect(html).not.toContain(`Follow-up ${LIMIT}.`);
   });
 
   it("should handle missing optional fields", () => {
@@ -101,18 +111,123 @@ describe("buildContentNode", () => {
     expect(html).not.toContain("href");
   });
 
-  it("should correctly format truncated text with existing periods", () => {
-    const punctuationData: PopoverData = {
-      label: "Text Fix",
-      text: "Short sentence one. Short sentence two",
-    };
-    // Should NOT append a period since it wasn't truncated down from 4+
-    const frag = buildContentNode(punctuationData, "popover", {
-      truncateText: true,
-    });
+  it("should not append a period to text that was never truncated", () => {
+    const parts = [
+      ...Array.from({ length: LIMIT - 1 }, (_, i) => `Lead ${i + 1}.`),
+      "Short final sentence without a period",
+    ];
+    const frag = buildContentNode(
+      { label: "Text Fix", text: parts.join(" ") },
+      "popover",
+      { truncateText: true },
+    );
     const html = fragmentToHTML(frag);
-    expect(html).toContain("Short sentence one. Short sentence two");
-    expect(html).not.toContain("Short sentence two.");
+    expect(html).toContain("Short final sentence without a period");
+    expect(html).not.toContain("Short final sentence without a period.");
+  });
+
+  // ── The glance / dig ladder ──
+  // The margin note and the popover must not be two copies of one thing. These
+  // lock in the split: the margin shows one figure and no link, the popover
+  // shows everything.
+
+  const richData: PopoverData = {
+    label: "Rich Entry",
+    text: sentences(LIMIT + 3),
+    media: ["one.jpg", "two.jpg", "three.jpg"],
+    link: "/case-study",
+    linkText: "Read the case study",
+  };
+
+  it("should render the folio number on both surfaces", () => {
+    const margin = fragmentToHTML(
+      buildContentNode(richData, "sa", { folio: 7 }),
+    );
+    const popover = fragmentToHTML(
+      buildContentNode(richData, "popover", { wrapBody: true, folio: 7 }),
+    );
+    expect(margin).toContain('class="sa-folio"');
+    expect(margin).toContain(">7<");
+    expect(popover).toContain('class="popover-folio"');
+    expect(popover).toContain(">7<");
+  });
+
+  it("should omit the folio element entirely when no number is given", () => {
+    const html = fragmentToHTML(buildContentNode(richData, "popover"));
+    expect(html).not.toContain("popover-folio");
+    expect(html).toContain('class="popover-label"');
+  });
+
+  it("thumb mode should show one figure and no carousel", () => {
+    const html = fragmentToHTML(
+      buildContentNode(richData, "sa", { mediaMode: "thumb" }),
+    );
+    expect(html).toContain('src="one.jpg"');
+    expect(html).not.toContain('src="two.jpg"');
+    expect(html).not.toContain("sa-carousel");
+  });
+
+  it("full mode should show every figure as a carousel", () => {
+    const html = fragmentToHTML(
+      buildContentNode(richData, "popover", { mediaMode: "full" }),
+    );
+    expect(html).toContain('src="one.jpg"');
+    expect(html).toContain('src="three.jpg"');
+    expect(html).toContain("popover-carousel");
+  });
+
+  it("should keep the case-study link out of the margin and in the popover", () => {
+    const margin = fragmentToHTML(
+      buildContentNode(richData, "sa", { includeLink: false }),
+    );
+    const popover = fragmentToHTML(
+      buildContentNode(richData, "popover", { includeLink: true }),
+    );
+    expect(margin).not.toContain('href="/case-study"');
+    expect(popover).toContain('href="/case-study"');
+  });
+
+  it("should give a margin note a real link, in both states", () => {
+    // The collapsed note carries it too: reaching a project used to mean
+    // expanding first and hunting for it at the foot of the column.
+    const collapsed = fragmentToHTML(
+      buildContentNode(richData, "sa", {
+        truncateText: true,
+        includeLink: true,
+      }),
+    );
+    expect(collapsed).toContain('href="/case-study"');
+    expect(collapsed).toContain('class="sa-link"');
+    // The label is its own element so the underline belongs to the words.
+    expect(collapsed).toContain('class="sa-link-label"');
+  });
+
+  it("should keep affordance glyphs out of the content string", () => {
+    const html = fragmentToHTML(
+      buildContentNode(richData, "popover", { includeLink: true }),
+    );
+    expect(html).not.toContain("\u2192");
+  });
+
+  it("should give each carousel figure a distinguishable description", () => {
+    const html = fragmentToHTML(
+      buildContentNode(richData, "popover", { mediaMode: "full" }),
+    );
+    // Previously every image carried the same label verbatim, so a screen
+    // reader announced the identical string once per slide.
+    expect(html).toContain("figure 1 of 3");
+    expect(html).toContain("figure 3 of 3");
+  });
+
+  it("should not add figure numbering to a lone image", () => {
+    const html = fragmentToHTML(
+      buildContentNode(
+        { label: "Solo", text: "Text.", img: "solo.jpg" },
+        "popover",
+      ),
+    );
+    expect(html).toContain('alt="Solo"');
+    expect(html).not.toContain("figure 1 of 1");
   });
 
   it("should render a video element properly with correct fallback and autoplay disable structure", () => {

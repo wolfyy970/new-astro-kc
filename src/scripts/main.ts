@@ -7,11 +7,7 @@ import type { PopoverMap } from "../types/content.ts";
 import { requireGlobal } from "./dom.ts";
 import { initPopoverEngine } from "./popover-engine.ts";
 import { initAnnotationEngine } from "./annotation-engine.ts";
-import {
-  SEL_REVEAL,
-  CLS_VISIBLE,
-  REVEAL_THRESHOLD,
-} from "./constants.ts";
+import { SEL_REVEAL, CLS_VISIBLE, REVEAL_THRESHOLD } from "./constants.ts";
 
 // ── Read page data ────────────────────────────────────────────────────────────
 // Globals are set by the <script define:vars> block in index.astro.
@@ -21,6 +17,13 @@ import {
 const popovers = requireGlobal("__POPOVERS__", "main");
 
 // ── Scroll reveal (.reveal elements) ─────────────────────────────────────────
+
+// The hidden starting state is gated on this class, which only exists once the
+// script has run. The résumé sheet is a .reveal element, so without the gate a
+// failed or blocked bundle left the entire document at opacity 0 — server-
+// rendered, present in the DOM, and invisible. The content is now visible by
+// default and the fade is layered on top of it.
+document.documentElement.classList.add("js-reveal");
 
 const revealObserver = new IntersectionObserver(
   (entries) => {
