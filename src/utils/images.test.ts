@@ -42,6 +42,28 @@ describe("optimizePopoverImages", () => {
     );
   });
 
+  it("should size figures with a bounding box, never a crop", async () => {
+    // `fit: "cover"` made 600x400 a mandate instead of a limit: every figure
+    // was hard-cropped to 3:2 at build time, so a 1100x2070 portrait lost two
+    // thirds of itself before any stylesheet saw it. Asserted because nothing
+    // else in the suite would catch a silent revert.
+    const raw: Record<string, PopoverData> = {
+      item1: { label: "Item 1", text: "Text 1", img: "/tall.jpg" },
+    };
+    const mockGetImage = vi
+      .fn()
+      .mockImplementation(async ({ src }) => ({ src: `/opt${src}` }));
+
+    await optimizePopoverImages(raw, mockGetImage);
+
+    expect(mockGetImage).toHaveBeenCalledWith(
+      expect.objectContaining({ fit: "inside" }),
+    );
+    expect(mockGetImage).not.toHaveBeenCalledWith(
+      expect.objectContaining({ fit: "cover" }),
+    );
+  });
+
   it("should skip optimization for uppercase video extensions (.MP4, .WEBM) in img and media", async () => {
     const raw: Record<string, PopoverData> = {
       item1: { label: "Video", text: "Text", img: "/clip.MP4" },

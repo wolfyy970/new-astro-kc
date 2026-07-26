@@ -58,6 +58,10 @@ describe("content schemas — reject malformed data", () => {
   });
 
   it("rejects a manifest entry missing `slug`", () => {
-    expect(manifestSchema.safeParse([{ title: "x", description: "y", accent: "#000000", ogImage: "/a.png" }]).success).toBe(false);
+    expect(
+      manifestSchema.safeParse([
+        { title: "x", description: "y", accent: "#000000", ogImage: "/a.png" },
+      ]).success,
+    ).toBe(false);
   });
 });

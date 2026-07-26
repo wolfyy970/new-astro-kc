@@ -3,7 +3,12 @@
 // Centralises DOM access patterns, window global validation, and HTML assembly.
 
 import type { PopoverData } from "../types/content.ts";
-import { ANNOTATION_TEXT_SENTENCES, VIDEO_EXTENSIONS } from "./constants.ts";
+import {
+  ANNOTATION_TEXT_SENTENCES,
+  VIDEO_EXTENSIONS,
+  POPOVER_IMAGE_WIDTH,
+  POPOVER_IMAGE_HEIGHT,
+} from "./constants.ts";
 
 // ── Element access ─────────────────────────────────────────────────────────────
 
@@ -78,15 +83,58 @@ function isVideoSrc(src: string): boolean {
 }
 
 /**
- * Builds a single media element: an <img>, an autoplaying muted <video>, or a
- * click-to-play <video> wrapped with an overlay play button (when autoPlay is
+ * Invokes `cb` once the media element has its intrinsic dimensions — immediately
+ * if already loaded, otherwise on the relevant load event.
+ *
+ * Both engines need this for the same reason: none of these images carry
+ * width/height attributes, so until the resource resolves they contribute zero
+ * height to layout. Anything that measures a container holding them — margin
+ * overlap resolution, popover viewport clamping — is measuring a box that is
+ * about to grow.
+ */
+export function onMediaReady(media: Element, cb: () => void): void {
+  const tag = media.tagName.toLowerCase();
+  if (tag === "img") {
+    const image = media as HTMLImageElement;
+    if (image.complete) cb();
+    else image.addEventListener("load", cb);
+  } else if (tag === "video") {
+    const video = media as HTMLVideoElement;
+    if (video.readyState >= 1)
+      cb(); // HAVE_METADATA
+    else video.addEventListener("loadeddata", cb);
+  }
+}
+
+/**
+ * Describes one media item for assistive tech.
+ *
+ * Every image used to receive `data.label` verbatim, so a seven-image carousel
+ * announced the same seven words seven times — a screen-reader user could not
+ * tell the slides apart or track position. Position is at least derivable
+ * without inventing prose. Genuinely descriptive alt text has to be authored
+ * per image in popovers.json; this is the honest floor, not the ceiling.
+ */
+function describeMedia(
+  data: PopoverData,
+  index: number,
+  total: number,
+): string {
+  return total > 1
+    ? `${data.label} — figure ${index + 1} of ${total}`
+    : data.label;
+}
+
+/**
+ * Builds a single media element: an image, an autoplaying muted video, or a
+ * click-to-play video wrapped with an overlay play button (when autoPlay is
  * false, e.g. a standalone video or the first carousel slide).
  */
 function buildMediaElement(
   data: PopoverData,
   prefix: string,
   src: string,
-  { isCarouselItem = false, autoPlay = true } = {},
+  { isCarouselItem = false, autoPlay = true, index = 0, total = 1 } = {},
 ): HTMLElement {
   const isVideo = isVideoSrc(src);
   const mediaEl = document.createElement(isVideo ? "video" : "img");
@@ -95,10 +143,21 @@ function buildMediaElement(
     ? `${baseClass} ${prefix}-carousel-item`
     : baseClass;
 
+  const description = describeMedia(data, index, total);
+
   if (!isVideo) {
     const imgEl = mediaEl as HTMLImageElement;
     imgEl.src = src;
-    imgEl.alt = data.label;
+    imgEl.alt = description;
+    imgEl.decoding = "async";
+    // Reserve layout. Every popover image is pre-optimised to exactly these
+    // dimensions, so the ratio is accurate rather than a guess, and the note
+    // stops growing after it has been positioned.
+    imgEl.width = POPOVER_IMAGE_WIDTH;
+    imgEl.height = POPOVER_IMAGE_HEIGHT;
+    // Only the first slide is on screen when a carousel opens; the rest are one
+    // swipe away and have no business blocking it.
+    if (index > 0) imgEl.loading = "lazy";
     return mediaEl;
   }
 
@@ -108,8 +167,8 @@ function buildMediaElement(
   vid.loop = true;
   vid.muted = true;
   vid.playsInline = true;
-  vid.setAttribute("aria-label", data.label);
-  vid.setAttribute("title", data.label);
+  vid.setAttribute("aria-label", description);
+  vid.setAttribute("title", description);
   vid.setAttribute("role", "img");
 
   if (autoPlay) return vid;
@@ -176,6 +235,8 @@ function buildCarousel(
       buildMediaElement(data, prefix, src, {
         isCarouselItem: true,
         autoPlay: i !== 0,
+        index: i,
+        total: mediaList.length,
       }),
     );
     carousel.appendChild(slide);
@@ -253,13 +314,19 @@ function buildCarousel(
   return wrap;
 }
 
-/** Appends the textual fields (label, stat, text, quote, link) to a container. */
+/** Appends the textual fields (folio, label, stat, text, quote, link) to a container. */
 function appendBodyFields(
   container: Node,
   data: PopoverData,
   prefix: string,
   text: string,
+  options: {
+    folio?: number;
+    includeLink?: boolean;
+  } = {},
 ): void {
+  const { folio, includeLink = true } = options;
+
   const appendField = (
     tag: string,
     className: string,
@@ -275,12 +342,55 @@ function appendBodyFields(
     container.appendChild(el);
   };
 
-  appendField("div", `${prefix}-label`, data.label);
-  if (data.stat) appendField("div", `${prefix}-stat`, data.stat);
+  // The folio number sits on the same line as the label, on both surfaces. It
+  // is what ties an open note back to the marked term in the prose — without
+  // it, a reader who opens three notes in a row has no idea which word each one
+  // came from.
+  const head = document.createElement("div");
+  head.className = `${prefix}-head`;
+
+  if (folio !== undefined) {
+    const folioEl = document.createElement("span");
+    folioEl.className = `${prefix}-folio`;
+    folioEl.textContent = String(folio);
+    head.appendChild(folioEl);
+  }
+
+  const labelEl = document.createElement("span");
+  labelEl.className = `${prefix}-label`;
+  labelEl.textContent = data.label;
+  head.appendChild(labelEl);
+  container.appendChild(head);
+
+  // The stat slot holds two different kinds of thing. "$32.8M" and "2000" are
+  // figures and earn display scale; "Zero to one product." is a sentence, and
+  // setting a sentence at 34px in a 220px margin column made an aside shout
+  // louder than the company headings in the document beside it. Long values
+  // step down to prose scale, which is what they actually are.
+  if (data.stat) {
+    const statEl = document.createElement("div");
+    statEl.className =
+      data.stat.length > 10
+        ? `${prefix}-stat ${prefix}-stat--phrase`
+        : `${prefix}-stat`;
+    statEl.textContent = data.stat;
+    container.appendChild(statEl);
+  }
   appendField("div", `${prefix}-text`, text);
   if (data.quote) appendField("div", `${prefix}-quote`, data.quote);
-  if (data.link && data.linkText) {
-    appendField("a", `${prefix}-link`, data.linkText, data.link);
+
+  // The case-study link is the deepest rung of the ladder, so it belongs to the
+  // popover alone. Offering it in the margin too would flatten the three levels
+  // (marked term → margin note → full note → case study) back into two.
+  if (includeLink && data.link && data.linkText) {
+    const link = document.createElement("a");
+    link.className = `${prefix}-link`;
+    link.href = data.link;
+    const label = document.createElement("span");
+    label.className = `${prefix}-link-label`;
+    label.textContent = data.linkText;
+    link.appendChild(label);
+    container.appendChild(link);
   }
 }
 
@@ -304,12 +414,18 @@ export function buildContentNode(
     truncateText?: boolean;
     wrapBody?: boolean;
     prependRule?: boolean;
+    mediaMode?: "full" | "thumb" | "none";
+    folio?: number;
+    includeLink?: boolean;
   } = {},
 ): DocumentFragment {
   const {
     truncateText = false,
     wrapBody = false,
     prependRule = false,
+    mediaMode = "full",
+    folio,
+    includeLink = true,
   } = options;
   const fragment = document.createDocumentFragment();
 
@@ -323,20 +439,41 @@ export function buildContentNode(
     fragment.appendChild(rule);
   }
 
-  const mediaList =
+  const allMedia =
     data.media && data.media.length > 0
       ? data.media
       : data.img
         ? [data.img]
         : [];
 
+  // 'thumb' shows the first figure only, with no carousel machinery. The margin
+  // says "there is something to see here"; the popover is where you actually
+  // see all of it. Running the full carousel in a 250px column duplicated the
+  // popover's payload and left the click with nothing to deliver.
+  const mediaList =
+    mediaMode === "none"
+      ? []
+      : mediaMode === "thumb"
+        ? allMedia.slice(0, 1)
+        : allMedia;
+
   if (mediaList.length === 1) {
-    fragment.appendChild(
-      buildMediaElement(data, prefix, mediaList[0], {
-        isCarouselItem: false,
-        autoPlay: false,
-      }),
-    );
+    const media = buildMediaElement(data, prefix, mediaList[0], {
+      isCarouselItem: false,
+      autoPlay: false,
+      index: 0,
+      total: 1,
+    });
+
+    if (mediaMode === "full") {
+      // The popover insets its figures; the margin note runs them flush.
+      const mediaWrap = document.createElement("div");
+      mediaWrap.className = `${prefix}-media`;
+      mediaWrap.appendChild(media);
+      fragment.appendChild(mediaWrap);
+    } else {
+      fragment.appendChild(media);
+    }
   } else if (mediaList.length > 1) {
     fragment.appendChild(buildCarousel(data, prefix, mediaList));
   }
@@ -348,7 +485,10 @@ export function buildContentNode(
     (bodyContainer as HTMLElement).className = `${prefix}-body`;
   }
 
-  appendBodyFields(bodyContainer, data, prefix, text);
+  appendBodyFields(bodyContainer, data, prefix, text, {
+    folio,
+    includeLink,
+  });
 
   if (wrapBody) {
     fragment.appendChild(bodyContainer as HTMLElement);

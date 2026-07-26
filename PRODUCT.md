@@ -1,44 +1,87 @@
-# Product Specification
+# Product
 
-KC Wolff-Ingham's portfolio is a high-impact, interactive digital presence for fractional product and design leadership. It is designed to demonstrate both strategic depth and technical fluency.
+<!-- impeccable:product-schema 1 -->
 
-## Core Features
+## Platform
 
-### 1. Interactive Resume (Home Page)
-The primary landing experience is a "living" resume document.
-- **Editorial Hero Section:** A clean, high-contrast introduction with smooth fade-in animations and a sharp editorial tagline (the tagline text lives in `resume.json`).
-- **Popovers (Hotspots):** Inline links that trigger detailed context overlays.
-  - **Rich Media & Carousels:** Popovers and marginalia support arrays of mixed media (images and video). Multiple items automatically render as swipeable carousels featuring elegant pagination dots and subtle chevron navigation that dynamically appear and fade out when navigating.
-  - **Context-Aware Video Playback:** Videos embedded in arrays natively autoplay silently, while standalone videos or those in the first position start paused with a custom UI overlay play button, respecting user intent.
-  - **Draggable Context:** Popovers can be moved around the screen on desktop, allowing persistent reference while reading.
-  - **Focus Management:** Full keyboard support and focus trapping for an accessible experience.
-  - **Mobile Gesture Dismissal:** On mobile, the bottom sheet closes via three natural paths: swipe the sheet down (with rubber-band resistance and velocity-aware flick detection), tap the backdrop overlay, or use the '×' close button. The close button is a 44×44px touch target meeting Apple HIG and WCAG standards, centered in a visible pill-handle strip at the top of the sheet. On desktop, the '×' sits in the drag handle and Escape always closes.
-- **Scroll Annotations:** On wide screens (≥1460px), key hotspots automatically reveal themselves as margin annotations as the user scrolls, providing a rich, "magazine-style" experience.
-- **Cold-Start Intro Annotation:** When the page first loads at wide screen with all hotspots below the fold (the margin would otherwise be empty), a native-feeling introductory annotation automatically appears in the left margin. It sets the expectation — "Scroll to reveal..." — then gracefully dissolves the moment the first real annotation scrolls into view.
-- **Annotation Dissolve:** A refined visual effect where margin annotations gracefully disappear when their corresponding popover is opened, avoiding visual clutter and content duplication.
-- **Marginalia Discovery (Widen Prompt):** Below the marginalia threshold (600px up to 1460px), a centered, glassy floating prompt invites the user to widen the window. A slim progress bar fills as the viewport approaches 1460px; on reaching it, the prompt briefly inverts to a brand-orange "ready" confirmation, then recedes straight upward as the margin annotations take over. (The original edge-tracking "sticker peel" ribbon is preserved, unused, in `src/components/WidenHint.astro` for reference.)
-- **Executive Elegance Interaction:** Refined hotspot states with subtle underlines and semantic opacity control, ensuring a premium feel that prioritizes content readability.
+web
 
-### 2. Case Studies (Data-Driven)
-Deep dives into major projects, powered by a data-driven template system. Each study is a self-contained JSON file; a dispatcher component renders section layouts from a `type` field, so no page-level code changes are required to add or restructure content:
-- **Truist:** Focused on $66B merger strategy and C-suite foresight.
-- **Sparks Grove (Delta):** Cinematic, editorial presentation of global media platforms.
-- **Upwave:** Quantified-self venture and IoT behavioral science.
-- **Two Way TV:** Design and launch of the UK's first interactive TV multiplayer game service (BAFTA nominated).
-- **Felix:** Designer and producer of Felix the Cat's Giant Electronic Comic Book (PC CD-ROM & Philips CD-i).
+## Users
 
-### 3. Foundation & Strategy
-- **Feature Flags:** `CASE_STUDY_LINKS` environment variable controls which case study links are visible in popovers. Set to `true` to show all links, a comma-separated list of slugs to show specific ones, or leave empty to hide all. Filtering is server-side — the client never receives links to unpublished pages. Supports incremental content publishing without code changes.
-- **Brand-Accurate Case Study Theming:** Each case study page applies its own brand accent colour via `CaseStudyLayout`. The colour is validated and propagated as CSS custom properties (`--accent`, `--accent-rgb`, `--accent-border`, `--accent-contrast`) on `<body>`, preventing any brand colour from leaking into adjacent pages regardless of CSS bundle order.
-- **Content Integrity Suite:** Automated verification ensures that every interactive hotspot is valid, maps strictly one-to-one across the resume to avoid ambiguity, and every media asset (including `media` arrays) is present, preventing regressions during content updates.
-- **Security Hardening:** Constant-time cookie comparison (timing-attack resistant), fail-closed authentication (503 if `SITE_PASSWORD` is absent), refined asset path matching, and full security header suite (`X-Robots-Tag`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`).
-- **WCAG AA Compliance:** Rigorous color contrast calibration (4.5:1+) for all branding accents.
-- **Semantic Structure:** Full ARIA 1.1 implementation and focus-trapped interactive cards.
-- **Cinematic Pacing:** Fluid high-altitude photography blended with authoritative, accessible typography.
-- **Performance Mastery:** From 1460px marginalia to mobile bottom-sheets with identical functional density and LCP-optimized image delivery.
+**Primary: executive recruiters and hiring managers**, screening KC against a written role spec for a senior in-house design, product, or innovation leadership position (VP/Head of Design, CDO, Chief Innovation).
 
-## Target Audience
-- Founders and operators seeking fractional product and/or design leadership.
-- C-Suite leadership in Product, Tech, and Design.
-- Executive recruiters and hiring managers.
-- Industry peers looking for design leadership benchmarks.
+Their situation: they open a private link once, usually on a laptop, usually alongside other candidates, with limited time. Their job is to decide two things quickly — does this person clear the bar for the spec, and will the claims survive a reference check.
+
+Secondary audiences, confirmed but not ranked above the primary:
+
+- C-suite (CEO, CIO, CPO) making the final call — evaluating judgment and business outcomes, not craft artifacts.
+- Founders and operators considering fractional or advisory help.
+- Industry peers using the work as a leadership benchmark.
+
+## Product Purpose
+
+A private, password-gated credential document for Karl-Christian ("KC") Wolff-Ingham, used to advance conversations toward a senior in-house leadership role.
+
+It is not a marketing site. It is unindexed (`robots.txt` disallows all, plus `robots: noindex`) and gated behind `SITE_PASSWORD`, reaching readers only through a link KC sends deliberately. Success is a single outcome: the reader moves KC forward to a conversation.
+
+## Positioning
+
+Two claims a neighbouring candidate could not truthfully copy:
+
+1. **Thirty years of documented, timestamped technology foresight.** A March 1993 dissertation arguing the internet's importance, filed one month before the Mosaic browser shipped; back-propagation built into HyperCard as an undergraduate; mobile AR on pre-iPhone Nokia hardware; wearables before the Apple Watch; strategic foresight a CEO called "instrumental" to a $66B merger. Not one lucky call — a repeated, dated pattern.
+2. **A twice-proven transformation playbook.** Nascent design functions taken to 30-plus-person multidisciplinary organizations at two Fortune 500s (Truist, GPC), with impact stated in terms finance validated.
+
+The site's own mechanism is also positioning: **the résumé is the interface.** Evidence is attached to the claim it supports, in the margin beside it, rather than filed in a separate portfolio the reader has to go find.
+
+## Operating Context
+
+- Distribution is a private link, sent to named people. The gate is audience control, not confidentiality — all published content is cleared for sharing.
+- Typically read once, in a single sitting, on a laptop.
+- The recruiter workflow the design must serve: skim for scope, scale and tenure → probe two or three specific claims → decide.
+- The résumé document itself is the artifact under evaluation, so its craft is read as a work sample.
+
+## Capabilities and Constraints
+
+- **Stack:** Astro 5, `output: 'server'`, Vercel adapter.
+- **Auth:** site-wide middleware gate on `SITE_PASSWORD`; fail-closed with `503` when the variable is absent; constant-time cookie comparison; full security-header set.
+- **Content model:** `resume.json` and `popovers.json` are the résumé database; each case study is a self-contained JSON file indexed by `manifest.json` and rendered through a type-dispatching section component.
+- **Annotated terms:** 18, enforced strictly 1:1 against their notes at build time.
+- **Reading tiers:** margin notes at ≥1420px (derived from sheet + gutter + column, deliberately under a 1440px laptop); a bottom sheet below that. No content is unreachable at any width.
+- **Feature flag:** `CASE_STUDY_LINKS` controls which case-study links reach the client, filtered server-side, so studies can be published incrementally.
+- **Build gate:** `npm run verify` validates schemas, hotspot mapping, and every media path; the build fails on a broken reference. 148 unit tests cover the interaction engines, content schemas, and the auth gate.
+
+**Resolved — the headline now matches the objective.** The masthead read *"Fractional product & design leadership,"* which disagreed with the confirmed goal of a senior in-house role and with the primary reader being an executive recruiter. It now reads *"Design leadership at the intersection of product, technology and business."* Fractional and advisory work remains a secondary audience; it is no longer what the headline offers.
+
+## Brand Commitments
+
+- **Name:** "KC Wolff-Ingham" as the display name; "Karl-Christian Wolff-Ingham" as the formal one.
+- **The marginalia concept is binding.** KC has stated explicitly that the ability to dig deeper into the person, in the margin, is the point of the piece. It is not open to replacement.
+- **Copy is authored.** Strings in `resume.json` and `popovers.json` are KC's own words. Do not rewrite, embellish, or add claims without asking.
+
+## Evidence on Hand
+
+Real, in the repository:
+
+- **5 case studies** — Truist ($66B merger, C-suite foresight), Sparks Grove/Delta (news.delta.com), Upwave (Turner venture), Two Way TV (BAFTA nomination), Felix the Cat (CD-i / CD-ROM).
+- **18 annotated notes**, 71 images and 4 videos under `public/`.
+- **Awards:** Emmy (Outstanding Creative Achievement in Interactive Media), Royal Television Society Award, BAFTA Interactive Entertainment nomination, Webby nomination, Apple Design Project Award.
+- **Patents:** two granted US patents in automatic content recognition.
+- **Metrics:** $32.8M attributable revenue and 7% add-to-cart lift (GPC, 2025); 0→1M monthly uniques in 8 months (upwave); the $66B SunTrust–BB&T merger; a 10-person team scaled to ~50.
+
+Not for publication:
+
+- `KC_Wolff-Ingham_Career_Toolkit.md` is an internal job-search reference. Its own header states it is **not** intended to be sent to recruiters or employers. Use it as source material only.
+
+Absences future work must not fabricate: there are no testimonials, no named references, no pricing, and no third-party benchmarks on this site.
+
+## Product Principles
+
+1. **The claim carries its own evidence.** Proof sits beside the sentence it supports, never in a separate destination the reader has to go find.
+2. **Built for a skim that becomes a dig.** A recruiter must get scope, scale and tenure without clicking anything; depth is available on demand, never required.
+3. **Every number must survive a reference check.** Figures stay attributable and stated as they can be defended. No inflation, no rounding up, no borrowed credit.
+4. **The document is the work sample.** Its craft is being read as evidence of the candidate's judgment, so execution quality is a product requirement rather than polish.
+5. **Nothing is withheld from a narrow viewport.** Wide screens get the simultaneous view; every reader gets all of the content.
+
+## Accessibility & Inclusion
+
+Target WCAG 2.1 AA. Established requirements: full keyboard operation with focus trapping in the note panel; 44×44px minimum touch targets; `prefers-reduced-motion` honored throughout; and — because the interface palette is achromatic — no information is ever carried by colour alone.

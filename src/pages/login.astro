@@ -39,21 +39,14 @@ if (Astro.request.method === "POST") {
         <HeadFonts />
         <ThemeScript />
         <style>
-            /* Brand palette + fonts come from tokens.css (shared with global.css).
-               Only login-specific tokens live here. */
-            :root {
-                --accent-hover: #C55E44;
-                --subtitle-color: rgba(255, 255, 255, 0.5);
-                --input-border: rgba(255, 255, 255, 0.25);
-                --input-placeholder: rgba(255, 255, 255, 0.4);
-            }
+            /* Brand palette + fonts come from tokens.css (shared with
+               global.css). This page defines no colour tokens of its own.
 
-            html.theme-light {
-                --accent-hover: #A53E27;
-                --subtitle-color: rgba(30, 32, 43, 0.6);
-                --input-border: rgba(30, 32, 43, 0.25);
-                --input-placeholder: rgba(30, 32, 43, 0.4);
-            }
+               It used to define four: a rust --accent-hover (#8f2d16) with a
+               salmon night variant (#ef7d60), plus three rgba() tints of a
+               blue-black (20, 19, 26). Two hues that identified nothing, and
+               three text colours dimmed by alpha rather than stated as values.
+               The shared ink/rule/light tokens cover every one of them. */
 
             * {
                 margin: 0;
@@ -61,16 +54,18 @@ if (Astro.request.method === "POST") {
                 box-sizing: border-box;
             }
 
+            /* min-height, not height, and no overflow: hidden. The gate is one
+               screen tall by intent, but a fixed 100vh with hidden overflow
+               silently clips the form on a short window — and the title now
+               scales with the viewport, so there is more to clip. */
             body {
                 font-family: var(--doc-sans);
                 background: var(--bg);
                 color: var(--doc-heading);
-                height: 100vh;
+                min-height: 100vh;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                -webkit-font-smoothing: antialiased;
-                overflow: hidden;
             }
 
             .login-container {
@@ -92,12 +87,18 @@ if (Astro.request.method === "POST") {
                 }
             }
 
+            /* The display role, the same one the masthead uses. The gate shows
+               the reader the title of the document they are about to open, so
+               it should be that title — at 44px fixed it was neither the
+               display size nor any other step, and `nowrap` on the name put it
+               over the edge of a 375px phone. */
             .logo {
                 font-family: var(--display);
-                font-size: 44px;
-                font-weight: 300;
-                letter-spacing: 0.02em;
-                line-height: 1.1;
+                font-size: var(--type-editorial);
+                font-weight: 200;
+                font-variation-settings: "opsz" 72;
+                letter-spacing: -0.022em;
+                line-height: 1.02;
                 color: var(--doc-heading);
                 margin-bottom: 14px;
             }
@@ -107,15 +108,17 @@ if (Astro.request.method === "POST") {
                 white-space: nowrap;
             }
 
+            /* The label role. It was sans at 0.28em — the one apparatus line on
+               the page, set in a voice the apparatus never uses. */
             .logo-subtitle {
                 display: block;
-                font-family: var(--doc-sans);
-                font-size: 11px;
-                font-weight: 400;
+                font-family: var(--mono);
+                font-size: var(--type-meta);
+                font-weight: 500;
                 text-transform: uppercase;
-                letter-spacing: 0.28em;
+                letter-spacing: var(--type-label-spacing-wide);
                 margin-top: 14px;
-                color: var(--subtitle-color);
+                color: var(--doc-light);
             }
 
             .divider {
@@ -137,14 +140,18 @@ if (Astro.request.method === "POST") {
                 position: relative;
             }
 
+            /* 17px, not 15px. iOS Safari zooms the viewport whenever a focused
+               input is set below 16px, so the gate was scaling itself on every
+               phone the moment the reader tapped the field. 17px is also the
+               body step, so the number is not a new one. */
             input {
                 width: 100%;
                 padding: 13px 0;
                 background: transparent;
                 border: none;
-                border-bottom: 1px solid var(--input-border);
+                border-bottom: 1px solid var(--doc-rule);
                 font-family: var(--doc-sans);
-                font-size: 15px;
+                font-size: var(--type-body);
                 text-align: center;
                 outline: none;
                 transition: border-color 0.25s ease;
@@ -156,39 +163,62 @@ if (Astro.request.method === "POST") {
             }
 
             input::placeholder {
-                color: var(--input-placeholder);
+                color: var(--doc-light);
                 font-style: italic;
                 opacity: 1;
             }
 
+            /* `color: white` was a literal, and --accent is #000 in the day
+               edition but #ffffff at night — so the night gate rendered a white
+               label on a white button at 1:1 and the only control on the page
+               was invisible. --bg is the page's own stock, which inverts with
+               the edition and is by definition the maximum contrast against
+               the ink filling the button. */
             button {
                 align-self: center;
                 background: var(--accent);
-                color: white;
-                border: none;
+                color: var(--bg);
+                border: 1px solid var(--accent);
+                border-radius: 2px;
                 padding: 11px 40px;
-                font-family: var(--doc-sans);
-                font-size: 11px;
-                font-weight: 600;
+                /* The only control on the page, and it measured 39px tall from
+                   its padding alone. Stated rather than inferred from font
+                   metrics, so it holds at any label length. */
+                min-height: 44px;
+                font-family: var(--mono);
+                font-size: var(--type-meta);
+                font-weight: 500;
                 text-transform: uppercase;
-                letter-spacing: 2.5px;
+                letter-spacing: var(--type-label-spacing);
                 cursor: pointer;
-                transition: background 0.25s ease, opacity 0.25s ease;
+                transition: background 0.25s ease, color 0.25s ease;
                 margin-top: 8px;
             }
 
-            button:hover {
-                background: var(--accent-hover);
-                opacity: 0.92;
+            /* Inverts rather than shifting hue. The old hover went to a rust
+               (#8f2d16) that belonged to no palette, and dimmed with opacity. */
+            button:hover,
+            button:focus-visible {
+                background: var(--bg);
+                color: var(--doc-heading);
             }
 
+            button:focus-visible {
+                outline: 2px solid var(--accent);
+                outline-offset: 2px;
+            }
+
+            /* Ink, not red. The message is the only thing that appears when a
+               password fails, and it says what happened in words — hue would be
+               a second signal for an event that already has one, on a page
+               whose whole palette is a single neutral. */
             .error-msg {
                 font-family: var(--mono);
-                font-size: 10px;
-                color: #c8102e;
+                font-size: var(--type-meta);
+                color: var(--doc-heading);
                 margin-top: 8px;
                 text-transform: uppercase;
-                letter-spacing: 1px;
+                letter-spacing: var(--type-label-spacing);
             }
 
 

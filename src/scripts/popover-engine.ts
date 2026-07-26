@@ -17,7 +17,8 @@
 //   - Drag handle has aria-hidden (purely presentational)
 
 import type { PopoverMap } from "../types/content.ts";
-import { requireEl, buildContentNode } from "./dom.ts";
+import { requireEl, buildContentNode, onMediaReady } from "./dom.ts";
+import { toggleAnnotation, collapseAnnotation } from "./annotation-engine.ts";
 import {
   POPOVER_WIDTH,
   POPOVER_MARGIN_MIN,
@@ -313,8 +314,14 @@ function calculatePopoverPosition(hotspot: HTMLElement): {
 
 /**
  * Document-coordinate `top` that places a popover of `height` above the hotspot,
- * or null when it would not clear the top viewport margin. Shared by the
- * build-time estimate and the post-render clamp so the flip arithmetic lives once.
+ * or null when it would not fit there. Shared by the build-time estimate and the
+ * post-render clamp so the flip arithmetic lives once.
+ *
+ * Both edges are checked. Testing only the top edge looks sufficient — "above"
+ * intuitively means "higher up" — but it is not: when the term itself sits below
+ * the fold, a placement above it can clear the top margin and still finish well
+ * past the bottom of the viewport. That is exactly the case that put a
+ * seven-figure note 57px off-screen.
  */
 function topAboveIfItFits(
   rectTop: number,
@@ -322,11 +329,59 @@ function topAboveIfItFits(
   scrollY: number,
 ): number | null {
   const topIfAbove = rectTop + scrollY - height - POPOVER_OFFSET_Y;
-  return topIfAbove >= scrollY + POPOVER_MARGIN_MIN ? topIfAbove : null;
+  const clearsTop = topIfAbove >= scrollY + POPOVER_MARGIN_MIN;
+  const clearsBottom =
+    topIfAbove + height <= scrollY + window.innerHeight - POPOVER_MARGIN_MIN;
+  return clearsTop && clearsBottom ? topIfAbove : null;
 }
 
 function toggleHotspotState(el: HTMLElement, isHovered: boolean): void {
   el.classList.toggle(CLS_HOVERED, isHovered);
+}
+
+/**
+ * Measures the rendered popover and pulls it back inside the viewport if it
+ * overflows: flip above the term when there is room, otherwise sit it on the
+ * bottom margin.
+ *
+ * This must be callable more than once per open. The build-time estimate uses
+ * POPOVER_MAX_HEIGHT_VH as the worst case, and the first post-render pass
+ * measures whatever has laid out so far — but popover figures carry no
+ * width/height, so a carousel that has not yet decoded contributes nothing to
+ * offsetHeight and the panel grows *after* it has been positioned. That is how
+ * a seven-figure note ends up hanging 260px below the fold. Re-running this as
+ * each figure resolves is what makes the guarantee real.
+ */
+function clampToViewport(popoverEl: HTMLElement, hotspot: HTMLElement): void {
+  if (isMobileScreen()) return;
+
+  const height = popoverEl.offsetHeight;
+  const top = parseFloat(popoverEl.style.top);
+  if (Number.isNaN(top)) return;
+
+  const minTop = window.scrollY + POPOVER_MARGIN_MIN;
+  const maxTop =
+    window.scrollY + window.innerHeight - POPOVER_MARGIN_MIN - height;
+
+  // Already fully on screen — leave it where the reader's click put it.
+  if (top >= minTop && top <= maxTop) return;
+
+  // Prefer flipping above the term, but only when the whole panel fits there.
+  const above = topAboveIfItFits(
+    hotspot.getBoundingClientRect().top,
+    height,
+    window.scrollY,
+  );
+  if (above !== null) {
+    popoverEl.style.top = above + "px";
+    return;
+  }
+
+  // Otherwise pin inside the viewport. Clamping both edges matters: guarding
+  // only the bottom pushed tall notes off the top instead, which is the same
+  // bug wearing a different hat. When the panel is taller than the viewport
+  // (maxTop < minTop) minTop wins and the panel scrolls internally.
+  popoverEl.style.top = Math.max(minTop, Math.min(top, maxTop)) + "px";
 }
 
 // ── Core open/close ────────────────────────────────────────────────────────────
@@ -347,7 +402,13 @@ function openPopover(hotspot: HTMLElement): void {
   suppressAnnotation(key);
 
   popoverEl.replaceChildren(
-    buildContentNode(data, "popover", { wrapBody: true }),
+    buildContentNode(data, "popover", {
+      wrapBody: true,
+      // The dig: full narrative, every figure, and the case-study link.
+      mediaMode: "full",
+      folio: Number(hotspot.dataset.folio) || undefined,
+      includeLink: true,
+    }),
   );
   const closeBtn = injectPopoverChrome(popoverEl, data.label);
 
@@ -360,36 +421,17 @@ function openPopover(hotspot: HTMLElement): void {
     document.body.classList.add(CLS_POPOVER_OPEN);
   }
 
+  // Re-clamp as each figure resolves. Without this the first open of a
+  // media-heavy note is positioned against a height that has not happened yet.
+  popoverEl.querySelectorAll(".popover-img, .popover-vid").forEach((media) =>
+    onMediaReady(media, () => {
+      // Guard against a late load from a note the reader has already closed.
+      if (activeHotspot === hotspot) clampToViewport(popoverEl, hotspot);
+    }),
+  );
+
   requestAnimationFrame(() => {
-    // Post-render clamp: measure the actual rendered height and ensure the bottom
-    // of the popover stays within the viewport. This catches cases where the initial
-    // position estimate placed it too low (e.g. tall carousels).
-    if (!isMobileScreen()) {
-      const actualHeight = popoverEl.offsetHeight;
-      const popoverTop = parseFloat(popoverEl.style.top);
-      const viewportBottom =
-        window.scrollY + window.innerHeight - POPOVER_MARGIN_MIN;
-
-      if (popoverTop + actualHeight > viewportBottom) {
-        const hotspotRect = hotspot.getBoundingClientRect();
-        const above = topAboveIfItFits(
-          hotspotRect.top,
-          actualHeight,
-          window.scrollY,
-        );
-
-        if (above !== null) {
-          popoverEl.style.top = above + "px";
-        } else {
-          // Neither side fits fully — align the bottom to the viewport bottom
-          popoverEl.style.top =
-            Math.max(
-              window.scrollY + POPOVER_MARGIN_MIN,
-              viewportBottom - actualHeight,
-            ) + "px";
-        }
-      }
-    }
+    clampToViewport(popoverEl, hotspot);
 
     popoverEl.classList.add(CLS_VISIBLE);
     closeBtn.focus();
@@ -446,6 +488,15 @@ export function initPopoverEngine(popoverData: PopoverMap): void {
 
     const trigger = (e: Event) => {
       e.stopPropagation();
+
+      // Wide enough for margins: the note belongs in the margin, full stop.
+      // Opening a panel over the document to show content the reader could
+      // simply be shown *beside* it is the redundancy the whole layout exists
+      // to avoid. toggleAnnotation returns false only when the margin cannot
+      // take it (narrow tier, or notes not built yet), and then we fall through.
+      const key = el.dataset.popover;
+      if (key && toggleAnnotation(key)) return;
+
       if (activeHotspot === el) closePopover();
       else openPopover(el);
     };
@@ -462,6 +513,15 @@ export function initPopoverEngine(popoverData: PopoverMap): void {
   overlay.addEventListener("click", () => closePopover());
 
   document.addEventListener("keydown", (e: KeyboardEvent) => {
-    if (e.key === "Escape") closePopover();
+    if (e.key !== "Escape") return;
+    closePopover();
+    collapseAnnotation();
+  });
+
+  // A click anywhere else in the document closes an expanded margin note, the
+  // same way the overlay closes a popover.
+  document.addEventListener("click", (e: MouseEvent) => {
+    if ((e.target as HTMLElement).closest(".scroll-annotation")) return;
+    collapseAnnotation();
   });
 }

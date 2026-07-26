@@ -1,5 +1,6 @@
 ---
 import { Image } from "astro:assets";
+import { publicImageSize } from "../../utils/image-size";
 
 interface Props {
     title: string;
@@ -7,17 +8,32 @@ interface Props {
     image: string;
     imageAlt: string;
     isDark?: boolean;
+    /** Set on a card that spans the full grid width (mixedGrid's lead card).
+     *  Only a full-width card has room to lay a tall artifact out sideways. */
+    wide?: boolean;
 }
 
-const { title, description, image, imageAlt, isDark = false } = Astro.props;
+const { title, description, image, imageAlt, isDark = false, wide = false } = Astro.props;
+
+const size = (await publicImageSize(image)) ?? { width: 800, height: 500 };
+
+// A tall artifact in a wide card is the layout problem this solves.
+// news-hub.jpg is a 1100x2070 full-page capture whose whole point is the
+// modular architecture running down it — stacked above a caption in a
+// full-width card it shrank to a ~300px stamp with a thousand pixels of dead
+// space either side. Portrait art in a full-width card turns the card
+// sideways instead: the page gets real height, the caption sits beside it,
+// and nothing is cropped away.
+const isPortrait = size.height / size.width > 1.15;
+const sideways = wide && isPortrait;
 ---
 
-<div class={`showcase-card${isDark ? " is-dark" : ""}`}>
+<div class={`showcase-card${isDark ? " is-dark" : ""}${sideways ? " is-sideways" : ""}`}>
     <Image
         src={image}
         alt={imageAlt}
-        width={800}
-        height={500}
+        width={size.width}
+        height={size.height}
         format="webp"
         quality="mid"
     />
@@ -28,47 +44,87 @@ const { title, description, image, imageAlt, isDark = false } = Astro.props;
 </div>
 
 <style>
+    /* Flat, hairline, in the page.
+       This carried a resting shadow and rose 8px into a 64px one on hover —
+       a card claiming to float above a surface it scrolls with. Hover now
+       moves the border to the client's colour, which is the same gesture the
+       chrome buttons and the carousel chevrons already make, and the only
+       thing the accent is allowed to do: identify whose card this is. */
     .showcase-card {
         background: var(--doc-white, #fff);
         border-radius: var(--cs-radius);
         overflow: hidden;
-        box-shadow: 0 4px 32px rgba(0, 0, 0, 0.05);
-        transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-        border: 1px solid var(--doc-rule, rgba(0, 0, 0, 0.03));
+        border: 1px solid var(--doc-rule);
+        transition: border-color 0.2s ease;
         display: flex;
         flex-direction: column;
     }
 
     .showcase-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 32px 64px rgba(0, 0, 0, 0.1);
+        border-color: var(--accent);
     }
 
-    @media (prefers-reduced-motion: reduce) {
-        .showcase-card:hover {
-            transform: none;
-        }
-    }
+    /* No .is-dark block. The class now carries the dark token set (see
+       case-study.css), so the same three declarations above resolve correctly
+       on either stock. */
 
-    .showcase-card.is-dark {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        box-shadow: none;
-    }
-
-    .showcase-card.is-dark .card-text h3 {
-        color: #fff;
-    }
-
-    .showcase-card.is-dark .card-text p {
-        color: rgba(255, 255, 255, 0.75);
-    }
-
+    /* Fit inside a bounded box; never crop, never stretch.
+       These sources run from 0.47 to 2.36. Cropping them all to 16:10 cut the
+       composition out of every one that was not already landscape — but simply
+       releasing the ratio was no better: news-hub.jpg is 1100x2070 and rendered
+       2443px tall inside a card. Capping the height and letting the width fall
+       out of the ratio keeps the grid tidy with nothing cut off; a portrait
+       screenshot just sits narrower on its card. */
     img {
-        width: 100%;
         display: block;
-        aspect-ratio: 16/10;
-        object-fit: cover;
+        width: auto;
+        max-width: 100%;
+        height: auto;
+        max-height: 420px;
+        margin: 0 auto;
+    }
+
+    /* ── Sideways: a tall page shown at readable height ── */
+    .showcase-card.is-sideways {
+        flex-direction: row;
+        /* Centred as a pair. Left-aligning them stranded ~440px of empty card
+           to the right of the caption, which read as a mistake rather than as
+           space. */
+        justify-content: center;
+        align-items: center;
+        gap: 64px;
+        padding: 56px;
+    }
+
+    /* Tall enough to read the architecture. The ratio is the binding
+       constraint here — width only grows with height — so the cap is set by
+       what a full-page capture needs to be legible, not by a round number. */
+    .showcase-card.is-sideways img {
+        max-height: 940px;
+        margin: 0;
+        flex-shrink: 0;
+    }
+
+    .showcase-card.is-sideways .card-text {
+        padding: 0;
+        flex: 0 1 440px;
+    }
+
+    @media (max-width: 1024px) {
+        .showcase-card.is-sideways {
+            flex-direction: column;
+            gap: 0;
+            padding: 0;
+        }
+        .showcase-card.is-sideways img {
+            max-width: 100%;
+            max-height: 560px;
+            margin: 0 auto;
+        }
+        .showcase-card.is-sideways .card-text {
+            padding: 32px;
+            max-width: none;
+        }
     }
 
     .card-text {
@@ -76,16 +132,20 @@ const { title, description, image, imageAlt, isDark = false } = Astro.props;
     }
 
     h3 {
+        font-family: var(--display);
         font-size: var(--cs-card-title);
-        font-weight: 500;
-        color: var(--text-primary, var(--doc-heading, #1a1a1a));
+        font-weight: 600;
+        font-variation-settings: "opsz" 20;
+        color: var(--text-primary);
         margin-bottom: 8px;
     }
 
+    /* Weight 400, not 300. The title role is 600 and the body role is 400;
+       a 300 was a third weight that only appeared inside cards. */
     p {
         font-size: var(--cs-card-body);
-        font-weight: 300;
-        color: var(--text-secondary, var(--doc-body, #5a5a5a));
+        font-weight: 400;
+        color: var(--text-secondary);
         line-height: 1.6;
     }
 </style>

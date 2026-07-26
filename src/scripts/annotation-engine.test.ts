@@ -1,10 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { initAnnotationEngine, cleanupAnnotations } from "./annotation-engine";
-import {
-  SEL_DOC_PAGE,
-  BREAKPOINT_WIDE,
-  RESIZE_DEBOUNCE_MS,
-} from "./constants";
+import { SEL_DOC_PAGE, BREAKPOINT_WIDE, RESIZE_DEBOUNCE_MS } from "./constants";
 import type { PopoverMap } from "../types/content";
 
 describe("Annotation Engine (DOM auto-mapping)", () => {

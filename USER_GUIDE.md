@@ -101,7 +101,7 @@ CASE_STUDY_LINKS=truist,sparks-grove
 
 ## CSS Type Scale
 
-The resume uses semantic CSS custom properties (`--type-editorial`, `--type-h1` through `--type-h5`, `--type-body`, `--type-meta`, etc.) defined in `src/styles/global.css`. The case-study subsystem uses a parallel `--cs-*` scale in `src/styles/case-study.css`, and the shared brand palette + fonts live in `src/styles/tokens.css`.
+The résumé uses semantic CSS custom properties (`--type-editorial`, `--type-h2` through `--type-h5`, `--type-body`, `--type-meta`, `--type-year`, `--type-stat`, …) defined in `src/styles/tokens.css`, alongside the shared palette and font stacks — the login gate consumes the scale but does not import `global.css`, so it has to live in the shared layer. The case-study subsystem uses a parallel `--cs-*` scale in `src/styles/case-study.css`.
 
 **The rule:** never write a `font-size` pixel value directly on an element — use the appropriate token, and override only the `:root` variables inside a breakpoint block. See `ARCHITECTURE.md` for the full scale table.
 

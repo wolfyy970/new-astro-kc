@@ -1,5 +1,6 @@
 ---
 import { Image } from "astro:assets";
+import { publicImageSize } from "../../utils/image-size";
 
 interface Props {
     title: string;
@@ -18,6 +19,9 @@ const {
     label,
     reverse = false,
 } = Astro.props;
+
+// Real dimensions, so the reserved box matches the picture.
+const size = (await publicImageSize(image)) ?? { width: 800, height: 600 };
 ---
 
 <section class={`feature-row${reverse ? " reverse" : ""}`}>
@@ -25,8 +29,8 @@ const {
         <Image
             src={image}
             alt={imageAlt}
-            width={800}
-            height={600}
+            width={size.width}
+            height={size.height}
             format="webp"
             quality="mid"
         />
@@ -58,10 +62,16 @@ const {
         flex: 1;
     }
 
+    /* height: auto is not optional. The image tag carries width/height attributes,
+       and with only `width: 100%` set the attribute height stays in force — so
+       the picture is drawn at container-width x attribute-height and squashed
+       to whatever ratio the component happened to hardcode. Releasing the
+       height lets the browser use the file's real proportions. */
     .feature-image img {
         width: 100%;
+        height: auto;
         border-radius: var(--cs-radius);
-        box-shadow: 0 32px 64px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--doc-rule);
     }
 
     .feature-text {
@@ -69,11 +79,12 @@ const {
     }
 
     .section-label {
+        font-family: var(--mono);
         font-size: var(--cs-eyebrow);
-        font-weight: 600;
+        font-weight: 500;
         letter-spacing: var(--cs-eyebrow-tracking);
         text-transform: uppercase;
-        color: var(--label-color, var(--accent, currentColor));
+        color: var(--label-color);
         margin-bottom: 24px;
     }
 
@@ -81,16 +92,16 @@ const {
         font-family: var(--display);
         font-size: var(--cs-heading);
         font-weight: 400;
-        color: var(--text-primary, var(--doc-heading, #1a1a1a));
+        color: var(--text-primary);
         line-height: 1.25;
         margin-bottom: 32px;
     }
 
     .section-body {
-        font-family: var(--doc-sans);
+        font-family: var(--doc-serif);
         font-size: var(--cs-body);
-        font-weight: 300;
-        color: var(--text-secondary, var(--doc-body, #5a5a5a));
+        font-weight: 400;
+        color: var(--text-secondary);
         line-height: 1.8;
     }
 

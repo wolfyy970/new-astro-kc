@@ -138,6 +138,96 @@ describe("PopoverEngine", () => {
       expect(popoverEl.style.top).toBe("390px");
     });
 
+    it("keeps a tall note on screen when its term is below the fold", () => {
+      // Regression. Two guards were one-sided and covered for each other's gap:
+      // the flip only checked that the panel cleared the TOP margin, and the
+      // clamp only checked the BOTTOM. When the term is outside the viewport —
+      // which happens on the re-clamp that fires as a carousel's figures finish
+      // loading, if the reader has scrolled in the meantime — "above the term"
+      // clears the top margin and still ends far past the bottom of the screen.
+      Object.defineProperty(popoverEl, "offsetHeight", {
+        value: 700, // a media-heavy note
+        writable: true,
+        configurable: true,
+      });
+
+      hotspot.getBoundingClientRect = () => ({
+        left: 200,
+        top: 1100, // below a 900px viewport
+        width: 100,
+        height: 30,
+        right: 300,
+        bottom: 1130,
+        x: 200,
+        y: 1100,
+        toJSON: () => {},
+      });
+
+      hotspot.click();
+
+      const top = parseFloat(popoverEl.style.top);
+      expect(top).toBeGreaterThanOrEqual(POPOVER_MARGIN_MIN);
+      expect(top + 700).toBeLessThanOrEqual(
+        window.innerHeight - POPOVER_MARGIN_MIN,
+      );
+    });
+
+    it("keeps a note on screen when its term is above the fold", () => {
+      // The mirror case: the old clamp returned early whenever the bottom edge
+      // was fine, so a panel positioned off the TOP of the viewport was never
+      // corrected at all.
+      Object.defineProperty(popoverEl, "offsetHeight", {
+        value: 400,
+        writable: true,
+        configurable: true,
+      });
+
+      hotspot.getBoundingClientRect = () => ({
+        left: 200,
+        top: -600, // scrolled well above the viewport
+        width: 100,
+        height: 30,
+        right: 300,
+        bottom: -570,
+        x: 200,
+        y: -600,
+        toJSON: () => {},
+      });
+
+      hotspot.click();
+
+      const top = parseFloat(popoverEl.style.top);
+      expect(top).toBeGreaterThanOrEqual(POPOVER_MARGIN_MIN);
+      expect(top + 400).toBeLessThanOrEqual(
+        window.innerHeight - POPOVER_MARGIN_MIN,
+      );
+    });
+
+    it("pins a note taller than the viewport to the top margin", () => {
+      // Nothing can fit; the panel scrolls internally, so the guarantee is that
+      // its top edge stays reachable rather than drifting above the fold.
+      Object.defineProperty(popoverEl, "offsetHeight", {
+        value: 1200, // taller than the 900px viewport
+        writable: true,
+        configurable: true,
+      });
+
+      hotspot.getBoundingClientRect = () => ({
+        left: 200,
+        top: 600,
+        width: 100,
+        height: 30,
+        right: 300,
+        bottom: 630,
+        x: 200,
+        y: 600,
+        toJSON: () => {},
+      });
+
+      hotspot.click();
+      expect(popoverEl.style.top).toBe(`${POPOVER_MARGIN_MIN}px`);
+    });
+
     it("clamps popover to horizontal viewport margins", () => {
       hotspot.getBoundingClientRect = () => ({
         left: 10, // Near left edge
@@ -272,10 +362,18 @@ describe("PopoverEngine", () => {
 
     it("clamps left so the panel cannot be dragged past the right edge", () => {
       handle.dispatchEvent(
-        pointerEvent("pointerdown", { clientX: 100, clientY: 100, pointerId: 1 }),
+        pointerEvent("pointerdown", {
+          clientX: 100,
+          clientY: 100,
+          pointerId: 1,
+        }),
       );
       popoverEl.dispatchEvent(
-        pointerEvent("pointermove", { clientX: 99999, clientY: 100, pointerId: 1 }),
+        pointerEvent("pointermove", {
+          clientX: 99999,
+          clientY: 100,
+          pointerId: 1,
+        }),
       );
 
       expect(popoverEl.style.left).toBe(
@@ -285,10 +383,18 @@ describe("PopoverEngine", () => {
 
     it("clamps left to the minimum margin at the left edge", () => {
       handle.dispatchEvent(
-        pointerEvent("pointerdown", { clientX: 100, clientY: 100, pointerId: 1 }),
+        pointerEvent("pointerdown", {
+          clientX: 100,
+          clientY: 100,
+          pointerId: 1,
+        }),
       );
       popoverEl.dispatchEvent(
-        pointerEvent("pointermove", { clientX: -99999, clientY: 100, pointerId: 1 }),
+        pointerEvent("pointermove", {
+          clientX: -99999,
+          clientY: 100,
+          pointerId: 1,
+        }),
       );
 
       expect(popoverEl.style.left).toBe(`${POPOVER_MARGIN_MIN}px`);

@@ -57,11 +57,12 @@ const { challenge, role, company, scope, team } = Astro.props;
     }
 
     .section-label {
+        font-family: var(--mono);
         font-size: var(--cs-eyebrow);
-        font-weight: 600;
+        font-weight: 500;
         letter-spacing: var(--cs-eyebrow-tracking);
         text-transform: uppercase;
-        color: var(--label-color, var(--accent, currentColor));
+        color: var(--label-color);
         margin-bottom: 24px;
     }
 
@@ -69,16 +70,16 @@ const { challenge, role, company, scope, team } = Astro.props;
         font-family: var(--display);
         font-size: var(--cs-heading);
         font-weight: 400;
-        color: var(--text-primary, var(--doc-heading, #1a1a1a));
+        color: var(--text-primary);
         line-height: 1.25;
         margin-bottom: 32px;
     }
 
     .section-body {
-        font-family: var(--doc-sans);
+        font-family: var(--doc-serif);
         font-size: var(--cs-body);
-        font-weight: 300;
-        color: var(--text-secondary, var(--doc-body, #5a5a5a));
+        font-weight: 400;
+        color: var(--text-secondary);
         line-height: 1.8;
     }
 
@@ -89,9 +90,9 @@ const { challenge, role, company, scope, team } = Astro.props;
     }
 
     .meta-item p {
-        font-size: 16px;
-        font-weight: 300;
-        color: var(--text-primary, var(--doc-heading, #1a1a1a));
+        font-size: var(--cs-card-body);
+        font-weight: 400;
+        color: var(--text-primary);
         line-height: 1.4;
     }
 

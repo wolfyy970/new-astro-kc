@@ -70,12 +70,12 @@ const { images, columns = 2, label, title, gap = "normal" } = Astro.props;
     }
 
     .photo-label {
+        font-family: var(--mono);
         font-size: var(--cs-eyebrow);
-        font-weight: 600;
+        font-weight: 500;
         letter-spacing: var(--cs-eyebrow-tracking);
         text-transform: uppercase;
-        color: var(--label-color, var(--accent, currentColor));
-        opacity: 0.8;
+        color: var(--label-color);
         margin-bottom: 12px;
     }
 
@@ -102,9 +102,9 @@ const { images, columns = 2, label, title, gap = "normal" } = Astro.props;
     .photo-grid--cols-4 { grid-template-columns: repeat(4, 1fr); }
 
     .photo-item {
-        border-radius: var(--cs-radius-sm);
+        border-radius: var(--cs-radius);
         overflow: hidden;
-        background: #f0ede8;
+        background: var(--bg);
         line-height: 0;
     }
 

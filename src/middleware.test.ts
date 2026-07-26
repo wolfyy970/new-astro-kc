@@ -93,7 +93,10 @@ describe("onRequest middleware authentication gate", () => {
       redirect: mockRedirect,
     } as any;
 
-    const responseMissing = (await onRequest(mockContextMissing, mockNext)) as Response;
+    const responseMissing = (await onRequest(
+      mockContextMissing,
+      mockNext,
+    )) as Response;
     expect(responseMissing.status).toBe(302);
     expect(await responseMissing.text()).toBe("Redirect to /login");
 
@@ -109,7 +112,10 @@ describe("onRequest middleware authentication gate", () => {
       redirect: mockRedirect,
     } as any;
 
-    const responseIncorrect = (await onRequest(mockContextIncorrect, mockNext)) as Response;
+    const responseIncorrect = (await onRequest(
+      mockContextIncorrect,
+      mockNext,
+    )) as Response;
     expect(responseIncorrect.status).toBe(302);
     expect(await responseIncorrect.text()).toBe("Redirect to /login");
   });

@@ -1,20 +1,34 @@
 import type { getImage } from "astro:assets";
 import type { PopoverData } from "../types/content";
-import { VIDEO_EXTENSIONS } from "../scripts/constants";
+import {
+  VIDEO_EXTENSIONS,
+  POPOVER_IMAGE_WIDTH,
+  POPOVER_IMAGE_HEIGHT,
+} from "../scripts/constants";
 
 // Shared optimisation options applied to every popover image/media item.
 // Centralised here so changes to format, quality, or dimensions only need one edit.
+// `fit: "inside"` — a bounding box, not a crop.
+//
+// This was `fit: "cover"`, which made 600x400 a mandate rather than a limit:
+// every figure was hard-cropped to 3:2 at build time, whatever it actually
+// was. A 1100x2070 portrait screenshot lost two thirds of itself before the
+// stylesheet ever saw it, and no amount of `object-fit: contain` downstream
+// could bring it back — the pixels were already gone. "inside" scales each
+// image to fit within the box and keeps its proportions.
 const IMAGE_OPTIMIZE_OPTIONS = {
-  width: 600,
-  height: 400,
-  fit: "cover",
+  width: POPOVER_IMAGE_WIDTH,
+  height: POPOVER_IMAGE_HEIGHT,
+  fit: "inside",
   format: "webp",
   quality: "mid",
 } as const;
 
 // Mirror Astro's real getImage signature rather than re-declaring a looser one,
 // so the optimisation options are checked against the actual image service.
-type GetImageFn = (options: Parameters<typeof getImage>[0]) => ReturnType<typeof getImage>;
+type GetImageFn = (
+  options: Parameters<typeof getImage>[0],
+) => ReturnType<typeof getImage>;
 
 /**
  * Pre-optimizes all images in the popover inventory.

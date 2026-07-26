@@ -5,7 +5,9 @@ import { VIDEO_EXTENSIONS } from "./scripts/constants.ts";
 
 // Static assets bypass the auth gate. The video extensions are sourced from the
 // shared VIDEO_EXTENSIONS so the gate and the image optimizer can't drift.
-const VIDEO_EXT = VIDEO_EXTENSIONS.map((ext) => ext.replace(/^\./, "")).join("|");
+const VIDEO_EXT = VIDEO_EXTENSIONS.map((ext) => ext.replace(/^\./, "")).join(
+  "|",
+);
 const ASSET_EXT = new RegExp(
   `\\.(jpg|jpeg|png|webp|gif|svg|ico|${VIDEO_EXT}|css|js|mjs|woff2?|txt|xml|json)$`,
   "i",

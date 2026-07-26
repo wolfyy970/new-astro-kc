@@ -1,40 +1,115 @@
-/* ── Shared brand tokens ──────────────────────────────────────────────────────
-   The single source of truth for the brand palette and font stacks, imported by
-   both global.css (the main app) and login.astro. App-specific tokens (type
-   scale, hotspot system, popover sizing) stay in global.css; login-specific
-   tokens (input/subtitle colors, accent-hover) stay in login.astro.
+/* ── Shared tokens ────────────────────────────────────────────────────────────
+   Single source of truth for the palette and font stacks. Imported by
+   global.css (the résumé), case-study.css, and login.astro.
 
-   NOTE: case-study pages set --accent (and friends) as an inline style on
-   <body> via CaseStudyLayout, which takes precedence over these defaults. */
+   PALETTE — achromatic. Every value here is a true neutral: R = G = B.
+
+   The résumé page carries no hue at all. Hierarchy comes from type size, weight
+   and white space; the only colour on it is the photographs inside the notes,
+   which are the work itself.
+
+   --accent is the one token that is NOT neutral in practice. On the résumé it
+   resolves to the ink and disappears. On a case-study page CaseStudyLayout
+   injects that client's real brand hex as an inline style on <body>, which
+   overrides everything here — so --accent means "the colour of the company this
+   page is about," and it only ever denotes something. That is the whole rule:
+   colour appears where it identifies a thing, and nowhere else.
+
+   --bg and --doc-white are equal on the résumé (page and sheet are one
+   continuous surface). They stay separate tokens because case-study.css
+   redefines both per section via .section-light / .section-dark. */
+
 :root {
-  --bg: #111219;
-  --doc-white: #191a23;
-  --accent: #e07a5f;
-  --accent-rgb: 224, 122, 95;
-  --accent-border: rgba(224, 122, 95, 0.2);
+  /* Stock: --bg is the page, --doc-white the sheet. */
+  --bg: #ffffff;
+  --doc-white: #ffffff;
 
-  /* Document Palette */
-  --doc-heading: #f3f4f6;
-  --doc-body: #e5e7eb;
-  --doc-light: #9ca3af;
-  --doc-rule: #2d3142;
+  /* Ink */
+  --doc-heading: #000000;
+  --doc-body: #1a1a1a;
+  --doc-light: #6b6b6b;
+  --doc-rule: #d6d6d6;
 
-  /* Font stacks */
-  --display: "Prata", Georgia, serif;
-  --doc-serif: "Inter", -apple-system, sans-serif;
-  --doc-sans: "Inter", -apple-system, sans-serif;
-  --mono: "JetBrains Mono", monospace;
+  /* See the note above — brand colour on case studies, ink here. */
+  --accent: #000000;
+  --accent-rgb: 0, 0, 0;
+
+  /* ── Font stacks ──
+     One serif sets both the masthead and the body copy, which is what makes the
+     page read as a single publication; Newsreader's optical-size axis lets the
+     same face be a 68px title and a 17px paragraph. The mono is the annotation
+     apparatus — folio numbers, footnote markers, margin labels — and never
+     sets prose. */
+  --display: "Newsreader", Georgia, "Times New Roman", serif;
+  --doc-serif: "Newsreader", Georgia, "Times New Roman", serif;
+  /* No webfont. Inter rendered exactly zero elements on the résumé — the
+     document is Newsreader and the apparatus is JetBrains Mono — yet it was
+     loading three weights. It now sets only the login form, where the system
+     UI face is the better answer anyway. */
+  --doc-sans:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* ── Type Scale ───────────────────────────────────────────────────────────
+     Named semantic levels — override ONLY these variables at each breakpoint.
+     Never write a font-size magic number on an element below this block.
+
+     Defined here rather than in global.css because three surfaces consume the
+     scale — the résumé, the case studies, and the login gate — and only the
+     first two import global.css. The gate silently resolved every --type-*
+     reference to nothing, which made its input inherit 16px and its title
+     collapse to the body size.
+
+     editorial      Masthead name (display serif, fluid clamp)
+     editorial-sub  Masthead tagline
+     h2             Company names
+     h3             Section marks (EXPERIENCE, EDUCATION …) — mono
+     h4             Job title / achievement cluster heading / degree
+     h5             School name
+     body-lg        Summary paragraph (the lead)
+     body           Bullets, descriptions, popover body text
+     body-sm        Quotes, margin-note prose, captions
+     meta           Mono labels (section marks, folios, dates, chrome …)
+     stat           Display numbers (popover-stat, sa-stat)
+
+     Title scale, not cover scale. Roughly 4× the 17px body — a classical title
+     ratio, and the top of one type hierarchy rather than a separate register.
+     It also sets on one line at every width, so the hyphen never breaks. */
+  --type-editorial: clamp(40px, 5.2vw, 68px);
+  --type-editorial-sub: clamp(20px, 2.4vw, 32px);
+  --type-h2: 22px;
+  --type-h3: 11px;
+  --type-h4: 17px;
+  --type-h5: 15px;
+  --type-body-lg: 19px;
+  --type-body: 17px;
+  --type-body-sm: 14px;
+  --type-meta: 11px;
+  /* The year rail. One step above the label role because these numerals are
+     the document's argument rather than its furniture, and one step below the
+     body so a column of dates never competes with the sentence it dates. */
+  --type-year: 12px;
+  --type-stat: 34px;
+  /* The same role in the smaller room. The panel is a 400px focal surface; the
+     margin is a 220px aside beside the document, and the panel's 34px there
+     out-shouts the 22px company headings it runs alongside. */
+  --type-stat-margin: 26px;
+
+  /* Tracking for the mono apparatus. Small tracked mono needs more air than
+     a display face; these two values cover every label on the site. */
+  --type-label-spacing: 0.16em;
+  --type-label-spacing-wide: 0.22em;
 }
 
-/* ── Theme Overrides ─────────────────────────────────────────────────────── */
-html.theme-light {
-  --bg: #f1f3f5;
-  --doc-white: #ffffff;
-  --accent: #c24f34;
-  --accent-rgb: 194, 79, 52;
-  --accent-border: rgba(194, 79, 52, 0.15);
-  --doc-heading: #1e202b;
-  --doc-body: #3a3d4d;
-  --doc-light: #686c7d;
-  --doc-rule: #e1e4eb;
+/* ── Night edition ─────────────────────────────────────────────────────────── */
+html.theme-dark {
+  --bg: #0a0a0a;
+  --doc-white: #0a0a0a;
+  --doc-heading: #ffffff;
+  --doc-body: #e0e0e0;
+  --doc-light: #909090;
+  --doc-rule: #2e2e2e;
+
+  --accent: #ffffff;
+  --accent-rgb: 255, 255, 255;
 }

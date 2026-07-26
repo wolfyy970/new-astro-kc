@@ -38,8 +38,8 @@ const { stats, label, isDark = false } = Astro.props;
     .stat-row-section {
         padding: var(--cs-pad-media);
         background: var(--doc-white, #fff);
-        border-top: 1px solid var(--doc-rule, rgba(0, 0, 0, 0.05));
-        border-bottom: 1px solid var(--doc-rule, rgba(0, 0, 0, 0.05));
+        border-top: 1px solid var(--doc-rule);
+        border-bottom: 1px solid var(--doc-rule);
     }
 
     .stat-row-section.is-dark {
@@ -53,11 +53,12 @@ const { stats, label, isDark = false } = Astro.props;
     }
 
     .stat-row-label {
+        font-family: var(--mono);
         font-size: var(--cs-eyebrow);
-        font-weight: 600;
+        font-weight: 500;
         letter-spacing: var(--cs-eyebrow-tracking);
         text-transform: uppercase;
-        color: var(--label-color, var(--accent, #70541C));
+        color: var(--label-color);
         margin-bottom: 48px;
         text-align: center;
     }
@@ -73,23 +74,21 @@ const { stats, label, isDark = false } = Astro.props;
         align-items: center;
         padding: 40px 24px;
         text-align: center;
-        border-right: 1px solid rgba(0, 0, 0, 0.06);
+        border-right: 1px solid var(--doc-rule);
     }
 
     .stat-item:last-child {
         border-right: none;
     }
 
-    .is-dark .stat-item {
-        border-right-color: rgba(255, 255, 255, 0.08);
-    }
+    
 
     .stat-value {
         font-family: var(--display);
         font-size: var(--cs-stat-value);
         font-weight: 400;
         line-height: 1;
-        color: var(--stat-value-color, var(--accent, #70541C));
+        color: var(--stat-value-color);
         display: block;
     }
 
@@ -97,10 +96,10 @@ const { stats, label, isDark = false } = Astro.props;
         display: block;
         margin-top: 16px;
         font-size: var(--cs-stat-label);
-        font-weight: 600;
-        letter-spacing: 2.5px;
+        font-weight: 500;
+        letter-spacing: var(--type-label-spacing);
         text-transform: uppercase;
-        color: var(--stat-label-color, var(--text-secondary, #666));
+        color: var(--stat-label-color);
         line-height: 1.4;
         max-width: 160px;
     }
@@ -108,10 +107,9 @@ const { stats, label, isDark = false } = Astro.props;
     @media (max-width: 768px) {
         .stat-row-section { padding: var(--cs-pad-media-tablet); }
         .stat-grid { grid-template-columns: repeat(2, 1fr); }
-        .stat-item { border-right: none; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
-        .stat-item:nth-child(odd) { border-right: 1px solid rgba(0, 0, 0, 0.06); }
+        .stat-item { border-right: none; border-bottom: 1px solid var(--doc-rule); }
+        .stat-item:nth-child(odd) { border-right: 1px solid var(--doc-rule); }
         .stat-item:last-child { border-bottom: none; }
-        .is-dark .stat-item { border-color: rgba(255, 255, 255, 0.08); }
     }
 
     @media (max-width: 480px) {

@@ -1,20 +1,25 @@
 <script is:inline>
   (function () {
-    // Two themes only: dark and light. ALWAYS default to dark — the OS
-    // `prefers-color-scheme` is intentionally ignored. The user can opt into
-    // light, but anything other than an explicit 'light' resolves to dark
-    // (including a stale 'system' value left by an earlier version).
+    // Two editions only: light and dark. ALWAYS default to light — the OS
+    // `prefers-color-scheme` is intentionally ignored.
+    //
+    // Light is the default because the entire piece is built on a paper
+    // metaphor: a sheet of stock, a printed rule, notes pencilled in the
+    // margin. That reading only holds on paper. Dark is a genuine night
+    // edition (see tokens.css) rather than an inversion, but it is the
+    // secondary experience. Anything other than an explicit 'dark' resolves
+    // to light, including stale values left by an earlier version.
     function resolveTheme() {
-      return localStorage.getItem("portfolio-theme") === "light"
-        ? "light"
-        : "dark";
+      return localStorage.getItem("portfolio-theme") === "dark"
+        ? "dark"
+        : "light";
     }
 
     function applyTheme(themeName) {
-      if (themeName === "light") {
-        document.documentElement.classList.add("theme-light");
+      if (themeName === "dark") {
+        document.documentElement.classList.add("theme-dark");
       } else {
-        document.documentElement.classList.remove("theme-light");
+        document.documentElement.classList.remove("theme-dark");
       }
       updateButtonLabel(themeName);
     }
@@ -31,7 +36,7 @@
     }
 
     function toggleTheme() {
-      const next = resolveTheme() === "light" ? "dark" : "light";
+      const next = resolveTheme() === "dark" ? "light" : "dark";
       localStorage.setItem("portfolio-theme", next);
       applyTheme(next);
     }

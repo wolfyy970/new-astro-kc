@@ -8,15 +8,17 @@
   top: 24px;
   z-index: 10000;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: var(--type-meta, 11px);
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--doc-heading);
+  letter-spacing: var(--type-label-spacing, 0.16em);
+  color: var(--doc-light);
   background: var(--doc-white);
   border: 1px solid var(--doc-rule);
   padding: 8px 12px;
-  border-radius: 6px;
+  /* Matches the sheet's 2px corner — the chrome should look cut from the same
+     stock as the document, not applied on top of it. */
+  border-radius: 2px;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);

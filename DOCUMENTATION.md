@@ -14,9 +14,10 @@
 
 ```
 README.md (Hub)
-├── PRODUCT.md        — Feature spec, what exists
+├── PRODUCT.md        — Product truth: users, purpose, positioning, constraints
 ├── USER_GUIDE.md     — Setup, content management, and deployments
 ├── ARCHITECTURE.md   — System design, data flow, module boundaries
+├── DESIGN.md         — The visual system: palette, type, layout, components
 └── DOCUMENTATION.md  — This file (meta-documentation)
 ```
 
@@ -30,6 +31,7 @@ README.md (Hub)
 | **PRODUCT.md** | Feature source of truth (prevents hallucination) | Feature launches |
 | **USER_GUIDE.md** | Setup, content management, and deployments | UX changes |
 | **ARCHITECTURE.md** | System design, module boundaries, data flow | Architecture changes |
+| **DESIGN.md** | Visual system: tokens, type roles, layout rules, components | Design-system changes |
 | **DOCUMENTATION.md** | Meta: documentation philosophy and rules | Rarely |
 
 ---

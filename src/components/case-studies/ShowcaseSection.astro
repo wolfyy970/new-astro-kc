@@ -28,7 +28,7 @@ const { label, title, description, isDark = false } = Astro.props;
     .showcase-section.is-dark {
         /* Pages can set --case-study-dark to override the computed dark bg */
         background: var(--case-study-dark, var(--cs-dark-bg));
-        color: #fff;
+        color: var(--text-primary);
     }
 
     .section-content {
@@ -37,11 +37,12 @@ const { label, title, description, isDark = false } = Astro.props;
     }
 
     .section-label {
+        font-family: var(--mono);
         font-size: var(--cs-eyebrow);
-        font-weight: 600;
+        font-weight: 500;
         letter-spacing: var(--cs-eyebrow-tracking);
         text-transform: uppercase;
-        color: var(--label-color, var(--accent, currentColor));
+        color: var(--label-color);
         margin-bottom: 24px;
     }
 
@@ -49,26 +50,21 @@ const { label, title, description, isDark = false } = Astro.props;
         font-family: var(--display);
         font-size: var(--cs-heading);
         font-weight: 400;
-        color: var(--text-primary, var(--doc-heading, #1a1a1a));
+        color: var(--text-primary);
         line-height: 1.25;
         margin-bottom: 32px;
     }
 
-    .is-dark .section-heading {
-        color: #fff;
-    }
-
+    /* Running text holds the document's measure — 704px, the same ~70
+       characters the résumé sets. It was 800px, which on a serif at 18px runs
+       past 80 characters and starts costing the reader line returns. */
     .section-body {
-        font-family: var(--doc-sans);
+        font-family: var(--doc-serif);
         font-size: var(--cs-body);
-        font-weight: 300;
-        color: var(--text-secondary, var(--doc-body, #5a5a5a));
+        font-weight: 400;
+        color: var(--text-secondary);
         line-height: 1.8;
-        max-width: 800px;
-    }
-
-    .is-dark .section-body {
-        color: rgba(255, 255, 255, 0.85);
+        max-width: 704px;
     }
 
     @media (max-width: 1024px) {
