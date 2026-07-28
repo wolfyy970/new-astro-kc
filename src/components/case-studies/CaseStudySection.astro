@@ -25,125 +25,140 @@ import { publicImageSize } from "../../utils/image-size";
 import { isHexColorDark } from "../../utils/color";
 
 type SectionType =
-    | "cardGrid"
-    | "mixedGrid"
-    | "featureRow"
-    | "textOnly"
-    | "largeImage"
-    | "fullBleed"
-    | "captionedImage"
-    | "photoGrid"
-    | "statRow";
+  | "cardGrid"
+  | "mixedGrid"
+  | "featureRow"
+  | "textOnly"
+  | "largeImage"
+  | "fullBleed"
+  | "captionedImage"
+  | "photoGrid"
+  | "statRow"
+  | "video";
 
 interface Card {
-    title: string;
-    description: string;
-    image: string;
-    imageAlt: string;
+  title: string;
+  description: string;
+  image: string;
+  imageAlt: string;
 }
 
 interface PhotoItem {
-    src: string;
-    alt: string;
+  src: string;
+  alt: string;
 }
 
 interface StatItem {
-    value: string;
-    label: string;
+  value: string;
+  label: string;
 }
 
 interface Props {
-    /** Discriminator — determines which component tree is rendered. */
-    type: SectionType;
-    /** Unique identifier for this section within the study (not rendered). */
-    key?: string;
+  /** Discriminator — determines which component tree is rendered. */
+  type: SectionType;
+  /** Unique identifier for this section within the study (not rendered). */
+  key?: string;
 
-    // ── Shared text fields ──────────────────────────────────────────────
-    label?: string;
-    title?: string;
-    description?: string;
-    isMobile?: boolean;
+  // ── Shared text fields ──────────────────────────────────────────────
+  label?: string;
+  title?: string;
+  description?: string;
+  link?: string;
+  linkText?: string;
+  isMobile?: boolean;
 
-    // ── Visual / theming ────────────────────────────────────────────────
-    /** Any CSS color or gradient applied as the section background. */
-    bg?: string;
-    /** Use the dark variant of ShowcaseSection / ShowcaseCard. */
-    isDark?: boolean;
-    /**
-     * Overrides the accent-derived dark background on dark sections.
-     * Sets --case-study-dark on the wrapper. Use when the brand accent
-     * color does not produce a suitable dark via color-mix.
-     */
-    darkBg?: string;
+  // ── Visual / theming ────────────────────────────────────────────────
+  /** Any CSS color or gradient applied as the section background. */
+  bg?: string;
+  /** Use the dark variant of ShowcaseSection / ShowcaseCard. */
+  isDark?: boolean;
+  /**
+   * Overrides the accent-derived dark background on dark sections.
+   * Sets --case-study-dark on the wrapper. Use when the brand accent
+   * color does not produce a suitable dark via color-mix.
+   */
+  darkBg?: string;
 
-    // ── cardGrid ────────────────────────────────────────────────────────
-    /** Grid column count. Defaults to 2. Only used by cardGrid. */
-    columns?: 1 | 2 | 3;
-    /** Cards rendered in the grid. Required for cardGrid. */
-    cards?: Card[];
+  // ── cardGrid ────────────────────────────────────────────────────────
+  /** Grid column count. Defaults to 2. Only used by cardGrid. */
+  columns?: 1 | 2 | 3;
+  /** Cards rendered in the grid. Required for cardGrid. */
+  cards?: Card[];
 
-    // ── mixedGrid ───────────────────────────────────────────────────────
-    /** Lead card rendered full-width above secondaryCards. */
-    primaryCard?: Card;
-    /** Supporting cards rendered in a 2-column grid. */
-    secondaryCards?: Card[];
+  // ── mixedGrid ───────────────────────────────────────────────────────
+  /** Lead card rendered full-width above secondaryCards. */
+  primaryCard?: Card;
+  /** Supporting cards rendered in a 2-column grid. */
+  secondaryCards?: Card[];
 
-    // ── featureRow ──────────────────────────────────────────────────────
-    /** Flip image/text order so the image appears on the right. */
-    reverse?: boolean;
+  // ── featureRow ──────────────────────────────────────────────────────
+  /** Flip image/text order so the image appears on the right. */
+  reverse?: boolean;
 
-    // ── featureRow | largeImage | fullBleed ─────────────────────────────
-    image?: string;
-    imageAlt?: string;
+  // ── featureRow | largeImage | fullBleed ─────────────────────────────
+  image?: string;
+  imageAlt?: string;
 
-    // ── largeImage ──────────────────────────────────────────────────────
-    /** Intrinsic width for Astro image optimisation. Defaults to 1300. */
-    imageWidth?: number;
-    /** Intrinsic height for Astro image optimisation. Defaults to 800. */
-    imageHeight?: number;
+  // ── largeImage ──────────────────────────────────────────────────────
+  /** Intrinsic width for Astro image optimisation. Defaults to 1300. */
+  imageWidth?: number;
+  /** Intrinsic height for Astro image optimisation. Defaults to 800. */
+  imageHeight?: number;
 
-    // ── captionedImage ──────────────────────────────────────────────────
-    /** Single caption line below the image. Keep to one short sentence. */
-    caption?: string;
+  // ── captionedImage ──────────────────────────────────────────────────
+  /** Single caption line below the image. Keep to one short sentence. */
+  caption?: string;
+  /** Maximum rendered width for documentary or supporting imagery. */
+  displayWidth?: number;
+  video?: string;
+  poster?: string;
 
-    // ── photoGrid ────────────────────────────────────────────────────────
-    /** Array of image/alt pairs for photo-only grid. No per-image text. */
-    images?: PhotoItem[];
-    /** Gap between photo grid cells: tight (6px) | normal (16px) | loose (32px). */
-    gap?: "tight" | "normal" | "loose";
+  // ── photoGrid ────────────────────────────────────────────────────────
+  /** Array of image/alt pairs for photo-only grid. No per-image text. */
+  images?: PhotoItem[];
+  /** Gap between photo grid cells: tight (6px) | normal (16px) | loose (32px). */
+  gap?: "tight" | "normal" | "loose";
 
-    // ── statRow ──────────────────────────────────────────────────────────
-    /** Array of value/label pairs for the stat band. */
-    stats?: StatItem[];
+  // ── statRow ──────────────────────────────────────────────────────────
+  /** Array of value/label pairs for the stat band. */
+  stats?: StatItem[];
 }
 
 const {
-    type,
-    label,
-    title = "",
-    description = "",
-    isMobile = false,
-    bg,
-    isDark = false,
-    darkBg,
-    columns = 2,
-    reverse = false,
-    cards = [],
-    primaryCard,
-    secondaryCards = [],
-    image,
-    imageAlt = "",
-    imageWidth,
-    imageHeight,
-    caption,
-    images = [],
-    gap = "normal",
-    stats = [],
+  type,
+  label,
+  title = "",
+  description = "",
+  link,
+  linkText,
+  isMobile = false,
+  bg,
+  isDark = false,
+  darkBg,
+  columns = 2,
+  reverse = false,
+  cards = [],
+  primaryCard,
+  secondaryCards = [],
+  image,
+  imageAlt = "",
+  imageWidth,
+  imageHeight,
+  caption,
+  displayWidth,
+  video,
+  poster,
+  images = [],
+  gap = "normal",
+  stats = [],
 } = Astro.props;
 
 // Real dimensions for whichever image this section renders, so the box the
 // browser reserves matches the picture that arrives.
 const mediaSize = image ? await publicImageSize(image) : null;
+const videoType = video?.toLowerCase().endsWith(".webm")
+  ? "video/webm"
+  : "video/mp4";
 
 // Compose the wrapper style from bg color and optional --case-study-dark override.
 const wrapperParts: string[] = [];
@@ -153,8 +168,10 @@ const wrapperStyle = wrapperParts.join("; ") || undefined;
 
 const isSectionDark = isDark || isHexColorDark(bg);
 const sectionClass = isSectionDark
-    ? "section-dark"
-    : (bg ? "section-light" : undefined);
+  ? "section-dark"
+  : bg
+    ? "section-light"
+    : undefined;
 ---
 
 <!--
@@ -165,151 +182,235 @@ const sectionClass = isSectionDark
   the global edition in the cascade.
 -->
 <div class={sectionClass} style={wrapperStyle}>
-
-    {type === "cardGrid" && (
-        <ShowcaseSection label={label} title={title} description={description} isDark={isSectionDark}>
-            <ShowcaseGrid columns={columns}>
-                {cards.map(card => (
-                    <ShowcaseCard
-                        title={card.title}
-                        description={card.description}
-                        image={card.image}
-                        imageAlt={card.imageAlt}
-                        isDark={isSectionDark}
-                    />
-                ))}
-            </ShowcaseGrid>
-        </ShowcaseSection>
-    )}
-
-    {type === "mixedGrid" && primaryCard && (
-        <ShowcaseSection label={label} title={title} description={description} isDark={isSectionDark}>
-            <ShowcaseGrid columns={1}>
-                <ShowcaseCard
-                    wide
-                    title={primaryCard.title}
-                    description={primaryCard.description}
-                    image={primaryCard.image}
-                    imageAlt={primaryCard.imageAlt}
-                    isDark={isSectionDark}
-                />
-            </ShowcaseGrid>
-            <ShowcaseGrid columns={2}>
-                {secondaryCards.map(card => (
-                    <ShowcaseCard
-                        title={card.title}
-                        description={card.description}
-                        image={card.image}
-                        imageAlt={card.imageAlt}
-                        isDark={isSectionDark}
-                    />
-                ))}
-            </ShowcaseGrid>
-        </ShowcaseSection>
-    )}
-
-    {type === "featureRow" && image && (
-        <FeatureRow
-            label={label}
-            title={title}
-            description={description}
-            image={image}
-            imageAlt={imageAlt}
-            reverse={reverse}
-        />
-    )}
-
-    {type === "textOnly" && (
-        <ShowcaseSection label={label} title={title} description={description} isDark={isSectionDark} />
-    )}
-
-    {type === "largeImage" && image && (
-        <ShowcaseSection label={label} title={title} description={description} isDark={isSectionDark}>
-            <div class="large-image-container">
-                <Image
-                    src={image}
-                    alt={imageAlt}
-                    width={imageWidth ?? mediaSize?.width}
-                    height={imageHeight ?? mediaSize?.height}
-                    format="webp"
-                />
-            </div>
-        </ShowcaseSection>
-    )}
-
-    {type === "fullBleed" && image && (
-        <section class="full-bleed">
-            <Image
-                src={image}
-                alt={imageAlt}
-                width={mediaSize?.width ?? 1920}
-                height={mediaSize?.height ?? 800}
-                format="webp"
+  {
+    type === "cardGrid" && (
+      <ShowcaseSection
+        label={label}
+        title={title}
+        description={description}
+        isDark={isSectionDark}
+      >
+        <ShowcaseGrid columns={columns}>
+          {cards.map((card) => (
+            <ShowcaseCard
+              title={card.title}
+              description={card.description}
+              image={card.image}
+              imageAlt={card.imageAlt}
+              isDark={isSectionDark}
             />
-        </section>
-    )}
+          ))}
+        </ShowcaseGrid>
+      </ShowcaseSection>
+    )
+  }
 
-    {type === "captionedImage" && image && (
-        <CaptionedImage
-            image={image}
-            imageAlt={imageAlt}
-            caption={caption}
-            label={label}
-            isMobile={isMobile}
-        />
-    )}
-
-    {type === "photoGrid" && images.length > 0 && (
-        <PhotoGrid
-            images={images}
-            columns={columns}
-            label={label}
-            title={title}
-            gap={gap}
-        />
-    )}
-
-    {type === "statRow" && stats.length > 0 && (
-        <StatRow
-            stats={stats}
-            label={label}
+  {
+    type === "mixedGrid" && primaryCard && (
+      <ShowcaseSection
+        label={label}
+        title={title}
+        description={description}
+        isDark={isSectionDark}
+      >
+        <ShowcaseGrid columns={1}>
+          <ShowcaseCard
+            wide
+            title={primaryCard.title}
+            description={primaryCard.description}
+            image={primaryCard.image}
+            imageAlt={primaryCard.imageAlt}
             isDark={isSectionDark}
-        />
-    )}
+          />
+        </ShowcaseGrid>
+        <ShowcaseGrid columns={2}>
+          {secondaryCards.map((card) => (
+            <ShowcaseCard
+              title={card.title}
+              description={card.description}
+              image={card.image}
+              imageAlt={card.imageAlt}
+              isDark={isSectionDark}
+            />
+          ))}
+        </ShowcaseGrid>
+      </ShowcaseSection>
+    )
+  }
 
+  {
+    type === "featureRow" && image && (
+      <FeatureRow
+        label={label}
+        title={title}
+        description={description}
+        image={image}
+        imageAlt={imageAlt}
+        reverse={reverse}
+        link={link}
+        linkText={linkText}
+        caption={caption}
+      />
+    )
+  }
+
+  {
+    type === "textOnly" && (
+      <ShowcaseSection
+        label={label}
+        title={title}
+        description={description}
+        isDark={isSectionDark}
+      />
+    )
+  }
+
+  {
+    type === "largeImage" && image && (
+      <ShowcaseSection
+        label={label}
+        title={title}
+        description={description}
+        isDark={isSectionDark}
+      >
+        <div class="large-image-container">
+          <Image
+            src={image}
+            alt={imageAlt}
+            width={imageWidth ?? mediaSize?.width ?? 1300}
+            height={imageHeight ?? mediaSize?.height ?? 800}
+            format="webp"
+          />
+        </div>
+      </ShowcaseSection>
+    )
+  }
+
+  {
+    type === "fullBleed" && image && (
+      <section class="full-bleed">
+        <Image
+          src={image}
+          alt={imageAlt}
+          width={mediaSize?.width ?? 1920}
+          height={mediaSize?.height ?? 800}
+          format="webp"
+        />
+      </section>
+    )
+  }
+
+  {
+    type === "captionedImage" && image && (
+      <CaptionedImage
+        image={image}
+        imageAlt={imageAlt}
+        caption={caption}
+        label={label}
+        isMobile={isMobile}
+        displayWidth={displayWidth}
+      />
+    )
+  }
+
+  {
+    type === "photoGrid" && images.length > 0 && (
+      <PhotoGrid
+        images={images}
+        columns={columns}
+        label={label}
+        title={title}
+        description={description}
+        gap={gap}
+      />
+    )
+  }
+
+  {
+    type === "statRow" && stats.length > 0 && (
+      <StatRow stats={stats} label={label} isDark={isSectionDark} />
+    )
+  }
+
+  {
+    type === "video" && video && (
+      <ShowcaseSection
+        label={label}
+        title={title}
+        description={description}
+        isDark={isSectionDark}
+      >
+        <figure class="case-study-video">
+          <video
+            controls
+            playsinline
+            preload="metadata"
+            poster={poster}
+            aria-label={title}
+          >
+            <source src={video} type={videoType} />
+            Your browser does not support embedded video.
+          </video>
+          {caption && <figcaption>{caption}</figcaption>}
+        </figure>
+      </ShowcaseSection>
+    )
+  }
 </div>
 
 <style>
-    /* largeImage: constrained, elevated image inside a ShowcaseSection */
-    .large-image-container {
-        margin-top: 80px;
-        border-radius: var(--cs-radius);
-        overflow: hidden;
-        border: 1px solid var(--doc-rule);
-        max-width: 1300px;
-        margin-left: auto;
-        margin-right: auto;
-        background: var(--doc-white);
-    }
+  /* largeImage: constrained, elevated image inside a ShowcaseSection */
+  .large-image-container {
+    margin-top: 80px;
+    border-radius: var(--cs-radius);
+    overflow: hidden;
+    border: 1px solid var(--doc-rule);
+    max-width: 1300px;
+    margin-left: auto;
+    margin-right: auto;
+    background: var(--doc-white);
+  }
 
-    /* height: auto, or the width/height attributes keep dictating the shape.
+  /* height: auto, or the width/height attributes keep dictating the shape.
        Without it a 1920x1440 screenshot was drawn at 1300x800. */
-    .large-image-container img {
-        width: 100%;
-        height: auto;
-        display: block;
-    }
+  .large-image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
 
-    /* fullBleed: viewport-height cinematic image strip */
-    .full-bleed {
-        height: 70vh;
-        overflow: hidden;
-    }
+  .case-study-video {
+    width: min(100%, 1120px);
+    margin: 72px auto 0;
+  }
 
-    .full-bleed img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-    }
+  .case-study-video video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border: 1px solid var(--doc-rule);
+    border-radius: var(--cs-radius);
+  }
+
+  .case-study-video figcaption {
+    margin-top: 14px;
+    color: var(--doc-light);
+    font-family: var(--mono);
+    font-size: var(--cs-caption);
+    line-height: 1.5;
+  }
+
+  /* fullBleed: viewport-height cinematic image strip */
+  .full-bleed {
+    height: 70vh;
+    overflow: hidden;
+  }
+
+  .full-bleed img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 </style>

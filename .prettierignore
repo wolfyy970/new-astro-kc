@@ -1,0 +1,7 @@
+.astro
+.vercel
+dist
+node_modules
+public
+tmp
+package-lock.json

@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "title": "FusionFall: Behavioral Design Research",
+    "description": "How I led behavioral design research with Richard Ryan, co-author of Self-Determination Theory and one of the world's most-cited psychologists, translating motivation science into practical game-design decisions for Cartoon Network's FusionFall.",
+    "ogImage": "/images/fusionfall/planet-fuse.webp",
+    "accent": "#2185c5"
+  },
+  "hero": {
+    "label": "Cartoon Network · FusionFall · 2008",
+    "title": "Behavioral Design for Player Motivation",
+    "subtitle": "Led behavioral design research with Richard Ryan, co-author of Self-Determination Theory and one of the world's most-cited psychologists, translating motivation science into practical game-design decisions for Cartoon Network's MMO.",
+    "background": "/images/fusionfall/planet-fuse.webp"
+  },
+  "context": {
+    "challenge": "Turn player motivation into practical design decisions for a large-scale Cartoon Network MMO.",
+    "role": "Director, Games & Entertainment Technology",
+    "company": "Turner Broadcasting / Cartoon Network",
+    "scope": "Behavioral design, player research, research strategy, and game-design recommendations",
+    "team": "Cartoon Network, Immersyve, Richard Ryan, and the FusionFall development team",
+    "body": "I led a behavioral design research program with Immersyve and Richard Ryan, co-author of Self-Determination Theory and one of the world's most-cited psychologists, to understand what would sustain engagement in FusionFall. Working directly with Ryan brought one of modern motivation psychology's foundational scholars into the design of a major commercial game. The work used the Player Experience of Need Satisfaction framework to study autonomy, competence, relatedness, control mastery, immersion, and enjoyment. Longitudinal play sessions, interviews, gameplay coding, surveys, and a limited biometric study connected player psychology to specific mechanics, locations, and moments in the game, giving the development team a reasoned basis for what to improve."
+  },
+  "sections": [
+    {
+      "key": "player-experience",
+      "type": "photoGrid",
+      "columns": 2,
+      "label": "The Player Experience",
+      "title": "Identity, connection, and a shared Cartoon Network world.",
+      "description": "The study examined more than combat and quests. Character creation tested whether players felt ownership of their identity. Shared spaces tested whether the MMO created meaningful connection with other players. Those two feelings, “this character is mine” and “I belong here,” are central to sustained engagement.",
+      "gap": "normal",
+      "images": [
+        {
+          "src": "/images/fusionfall/character-creation.webp",
+          "alt": "FusionFall character creator showing choices for a player's appearance and clothing"
+        },
+        {
+          "src": "/images/fusionfall/social-play.webp",
+          "alt": "A group of customized FusionFall players gathered together in the MMO world"
+        }
+      ]
+    },
+    {
+      "key": "research-in-practice",
+      "type": "featureRow",
+      "reverse": true,
+      "label": "Research in Practice",
+      "title": "Study active play and measured response, vs perception & memory.",
+      "description": "Forty participants ages 9 to 16 completed three two-hour sessions, producing more than 200 hours of recorded gameplay. Players completed repeated PENS, enjoyment, and immersion assessments while researchers coded their activity. Six participants also had heart rate, arousal, eye tracking, and brain activity measured in real time during play.",
+      "image": "/images/fusionfall/playtest-session.webp",
+      "imageAlt": "Recorded FusionFall research session showing a participant playing while their reactions were observed"
+    },
+    {
+      "key": "behavioral-map",
+      "type": "featureRow",
+      "bg": "#f2f6fa",
+      "label": "Behavioral Design",
+      "title": "Map motivation to moments in the experience.",
+      "description": "The research did not stop at whether players liked the game. We tracked three needs as they played: freedom to choose, confidence they could succeed, and connection to other people. Then we mapped the highs and lows back to exact locations, activities, and sequences in the game.",
+      "image": "/images/fusionfall/research-model.webp",
+      "imageAlt": "Research model mapping player responses across FusionFall locations including Sector V, Pokey, Genius Grove, and Peach Creek Estates"
+    },
+    {
+      "key": "infected-zones",
+      "type": "featureRow",
+      "reverse": true,
+      "label": "A Design Tension",
+      "title": "Freedom only motivates when players feel capable.",
+      "description": "The infected zones gave players more choice about where to go and what to attempt. That strengthened autonomy: “I chose this.” But the difficulty weakened competence: “I can do this.” The opportunity was clear: preserve the freedom while giving players a better path to mastery.",
+      "image": "/images/fusionfall/infected-zone.webp",
+      "imageAlt": "A FusionFall player confronting corrupted enemies in an infected area of the game world"
+    },
+    {
+      "key": "design-decisions",
+      "type": "largeImage",
+      "bg": "#f2f6fa",
+      "label": "From Psychology to Product",
+      "title": "Evidence based design",
+      "description": "Findings were translated into concrete recommendations for onboarding, challenge, exploration, social play, and retention. The framework showed which psychological needs a design choice supported, where it introduced friction, and why a change was worth making.",
+      "image": "/images/fusionfall/pens-findings.webp",
+      "imageAlt": "FusionFall behavioral research finding showing autonomy rising while competence fell in more challenging open-world infected zones"
+    },
+    {
+      "key": "impact",
+      "type": "textOnly",
+      "bg": "#e8f0f7",
+      "label": "The Outcome",
+      "title": "A behavioral framework for deciding what to change and why.",
+      "description": "The study gave Cartoon Network a shared language for discussing player experience beyond preference and entertainment value. Design choices could be evaluated against the psychological needs that sustain engagement, connecting behavioral science directly to product and game-design strategy."
+    }
+  ]
+}

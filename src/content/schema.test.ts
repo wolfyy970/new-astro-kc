@@ -7,6 +7,9 @@ import upwave from "./case-studies/upwave.json";
 import sparksGrove from "./case-studies/sparks-grove.json";
 import twoWayTv from "./case-studies/two-way-tv.json";
 import felix from "./case-studies/felix.json";
+import armchairManager from "./case-studies/armchair-manager.json";
+import fusionfall from "./case-studies/fusionfall.json";
+import magicWall from "./case-studies/magic-wall.json";
 import {
   resumeSchema,
   popoverMapSchema,
@@ -33,6 +36,9 @@ describe("content schemas — real data conforms", () => {
     ["sparks-grove", sparksGrove],
     ["two-way-tv", twoWayTv],
     ["felix", felix],
+    ["armchair-manager", armchairManager],
+    ["fusionfall", fusionfall],
+    ["magic-wall", magicWall],
   ])("case study %s matches caseStudyDataSchema", (_slug, data) => {
     expect(caseStudyDataSchema.safeParse(data).success).toBe(true);
   });
@@ -45,7 +51,8 @@ describe("content schemas — reject malformed data", () => {
   });
 
   it("rejects a resume missing a required top-level field", () => {
-    const { summary, ...withoutSummary } = resume as Record<string, unknown>;
+    const withoutSummary = { ...resume } as Partial<typeof resume>;
+    delete withoutSummary.summary;
     expect(resumeSchema.safeParse(withoutSummary).success).toBe(false);
   });
 

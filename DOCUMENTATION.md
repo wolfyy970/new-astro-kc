@@ -25,14 +25,14 @@ README.md (Hub)
 
 ## Document Types
 
-| Document | Purpose | Update Trigger |
-|----------|---------|----------------|
-| **README.md** | Entry point, quick start, doc map | Major features |
-| **PRODUCT.md** | Feature source of truth (prevents hallucination) | Feature launches |
-| **USER_GUIDE.md** | Setup, content management, and deployments | UX changes |
-| **ARCHITECTURE.md** | System design, module boundaries, data flow | Architecture changes |
-| **DESIGN.md** | Visual system: tokens, type roles, layout rules, components | Design-system changes |
-| **DOCUMENTATION.md** | Meta: documentation philosophy and rules | Rarely |
+| Document             | Purpose                                                     | Update Trigger        |
+| -------------------- | ----------------------------------------------------------- | --------------------- |
+| **README.md**        | Entry point, quick start, doc map                           | Major features        |
+| **PRODUCT.md**       | Feature source of truth (prevents hallucination)            | Feature launches      |
+| **USER_GUIDE.md**    | Setup, content management, and deployments                  | UX changes            |
+| **ARCHITECTURE.md**  | System design, module boundaries, data flow                 | Architecture changes  |
+| **DESIGN.md**        | Visual system: tokens, type roles, layout rules, components | Design-system changes |
+| **DOCUMENTATION.md** | Meta: documentation philosophy and rules                    | Rarely                |
 
 ---
 
@@ -59,11 +59,13 @@ README.md (Hub)
 ## Maintenance
 
 **After code changes:**
+
 1. Check which docs are affected
 2. Update or remove outdated content
 3. Verify cross-references still work
 
 **Documentation bloat indicators:**
+
 - Same information in multiple places
 - Docs describing features that no longer exist
 - Sections beginning with "Note: this is outdated..."
@@ -76,6 +78,7 @@ README.md (Hub)
 ## Success Metrics
 
 Documentation is working when:
+
 - New collaborators understand the project in <10 minutes
 - Getting it running takes <15 minutes
 - Finding specific information takes <2 minutes

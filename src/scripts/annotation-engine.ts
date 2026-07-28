@@ -85,12 +85,17 @@ function buildAllAnnotations(popovers: PopoverMap): void {
       // in the popover. The marked term is the accessible control.
       el.setAttribute("aria-hidden", "true");
 
-      renderAnnotation(el, data, hotspot, false);
+      renderAnnotation(el, data, false);
 
       // Clicking the note toggles it, exactly like clicking its term.
       el.addEventListener("click", (e) => {
-        // Let links inside an expanded note behave as links.
-        if ((e.target as HTMLElement).closest("a")) return;
+        const target = e.target;
+        if (!(target instanceof Element)) return;
+
+        // Media controls own their clicks. Letting a chevron, dot, or video
+        // bubble into the note toggle rebuilds the carousel around the event
+        // target and resets it to slide one.
+        if (target.closest("a, button, video, .sa-carousel")) return;
         toggleAnnotation(key);
       });
 
@@ -125,29 +130,28 @@ function buildAllAnnotations(popovers: PopoverMap): void {
 /**
  * Renders a note's contents at one of its two lengths.
  *
- *   glance   folio, label, headline figure, one sentence, a "more" glyph.
+ *   glance   label, every figure as a carousel, one sentence.
  *   expanded the whole thing — full narrative, every figure as a carousel,
  *            the quote, and the case-study link where one exists.
  *
- * The expanded form is what makes the wide layout self-sufficient. Only 6 of the
- * 18 notes have a case study behind them, so "click through to the detail page"
- * cannot be the wide-screen answer on its own — the other 12 (the Emmy, the two
- * patents, the Magic Wall, mobile AR before the iPhone, the dissertation) would
- * have nowhere to go, and the margin would be their permanent one-sentence
- * ceiling.
+ * The expanded form makes the wide layout self-sufficient. Not every note has
+ * a case study behind it, so "click through to the detail page" cannot be the
+ * wide-screen answer on its own; marginalia-only entries still need the full
+ * narrative to be available in place.
  */
 function renderAnnotation(
   el: HTMLElement,
   data: PopoverData,
-  hotspot: HTMLElement,
   expanded: boolean,
 ): void {
   el.replaceChildren(
     buildContentNode(data, "sa", {
       prependRule: true,
       truncateText: !expanded,
-      mediaMode: expanded ? "full" : "thumb",
-      folio: Number(hotspot.dataset.folio) || undefined,
+      // Marginalia is the wide-screen media experience, not a teaser for one.
+      // Keep every image and video available in both states; expansion adds
+      // the full narrative without changing or replacing the media controls.
+      mediaMode: "full",
       // Both states. Reaching a project used to require expanding the note
       // first and then finding a line of 11px type at the bottom of a column
       // that hangs below the fold — where a sticky footer cannot help, because
@@ -171,7 +175,7 @@ export function collapseAnnotation(): void {
   expandedKey = null;
   if (entry) {
     const data = popoverData[key];
-    if (data) renderAnnotation(entry.el, data, entry.hotspot, false);
+    if (data) renderAnnotation(entry.el, data, false);
     entry.hotspot.classList.remove(CLS_ACTIVE);
     entry.hotspot.setAttribute("aria-expanded", "false");
   }
@@ -193,7 +197,7 @@ function expandAnnotation(key: string): boolean {
   if (expandedKey && expandedKey !== key) collapseAnnotation();
 
   expandedKey = key;
-  renderAnnotation(entry.el, data, entry.hotspot, true);
+  renderAnnotation(entry.el, data, true);
   entry.el.classList.add(CLS_REVEALED);
   entry.hotspot.classList.add(CLS_ACTIVE);
   entry.hotspot.setAttribute("aria-expanded", "true");

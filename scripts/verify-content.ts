@@ -45,7 +45,7 @@ const publicDir = path.join(process.cwd(), "public");
 
 function verify() {
   console.log("🔍 Starting Content Integrity Verification...");
-  let errors: string[] = [];
+  const errors: string[] = [];
 
   // 1. Load Files
   if (!fs.existsSync(resumePath)) {
@@ -110,6 +110,19 @@ function verify() {
       }
     }
 
+    if (item.brandMark) {
+      const relativePath = item.brandMark.startsWith("/")
+        ? item.brandMark.slice(1)
+        : item.brandMark;
+      const fullPath = path.join(publicDir, relativePath);
+
+      if (!fs.existsSync(fullPath)) {
+        errors.push(
+          `Missing brand mark file for "${key}": "${item.brandMark}"`,
+        );
+      }
+    }
+
     if (Array.isArray(item.media)) {
       item.media.forEach((mediaPath: string) => {
         if (typeof mediaPath !== "string") return;
@@ -166,6 +179,8 @@ function verify() {
     for (const section of (study.sections ?? []) as CaseStudySectionData[]) {
       const sp = `${prefix} sections[${section.key ?? section.type}]`;
       if (section.image) checkImagePath(section.image, `${sp}.image`);
+      if (section.poster) checkImagePath(section.poster, `${sp}.poster`);
+      if (section.video) checkImagePath(section.video, `${sp}.video`);
       for (const card of section.cards ?? [])
         checkImagePath(card.image, `${sp}.cards[]`);
       if (section.primaryCard?.image)

@@ -10,7 +10,7 @@
    <body> or below, never on :root: a mapping on :root resolves against the
    root's own --accent, not the inline brand value one level down.
 
-   These five pages are branded environments, but a brand is not one hex.
+   These pages are branded environments, but a brand is not one hex.
    Delta is navy AND red: #0b1b2b fields with #c8102e on top. So --accent drives
    the hero and the labels — the things that *name* the client — while each page
    art-directs its own field colours in content via `bg` and `darkBg`. Deriving
@@ -72,7 +72,7 @@
    so a `--label-color: var(--accent)` sitting on :root resolves against the
    root's own --accent — the ink — and the inline brand value one level below
    is never consulted. That is exactly what was happening: every eyebrow and
-   every outcome numeral on all five case studies rendered black, so the one
+   every outcome numeral on every case study rendered black, so the one
    place the system permits colour was the one place it never appeared. */
 body {
   /* --accent-ink, not --accent: the raw brand hex is chosen for logos and
@@ -86,7 +86,7 @@ body {
 /* Night edition, and the same problem in the other direction: on dark stock a
    dark brand disappears. Labels take a light tint of the brand rather than the
    brand itself — still unmistakably that client's hue, but lifted far enough
-   off the field to read (8.88–11.97:1 across all five).
+   off the field to read.
    Both were rgba-white before: dimming by alpha makes the real ratio a
    function of whatever is behind the glyph, so it cannot be measured from the
    declared value. These are solid values now. */
@@ -117,8 +117,8 @@ html.theme-dark body {
   --text-primary: var(--doc-heading);
   --text-secondary: var(--doc-body);
   --text-muted: var(--doc-light);
-  /* --accent-ink for the same reason as on <body>: "the brand reads fine on
-     light stock" holds for three of the five and not for orange or cyan. */
+  /* --accent-ink for the same reason as on <body>: not every raw brand value
+     is readable as small text on light stock. */
   --label-color: var(--accent-ink, var(--accent));
   --stat-value-color: var(--accent-ink, var(--accent));
   --stat-label-color: var(--text-secondary);

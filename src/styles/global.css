@@ -9,14 +9,12 @@
 
    • One serif (Newsreader) carries both the title page and the body copy, so
      the page reads as a single publication rather than an assembly of parts.
-   • The mono is the annotation apparatus only — folio numbers, footnote
-     markers, section marks, margin labels. It never sets prose.
-   • Annotated terms are footnote references, not highlighter blocks: a hairline
-     rule under the term plus a superscript number. The number is the affordance,
-     and it is legible at every viewport — you can see what has depth before you
-     have any idea that clicking is possible.
+   • The mono is the annotation apparatus only — section marks, margin labels,
+     and interaction hints. It never sets prose.
+   • Every annotated term uses a hairline rule. A superscript Notes icon appears
+     only when a deeper case study also exists, so the icon always adds meaning.
    • The margin note and the popover are two rungs of one ladder, not two copies
-     of one thing. Margin = the glance (folio, label, figure, one sentence).
+     of one thing. Margin = the glance (label, figure, one sentence).
      Popover = the dig (full narrative, full media, the case study).
    ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -31,10 +29,10 @@
 :root {
   /* Brand palette + fonts live in tokens.css (shared with login + case studies). */
 
-  /* ── Footnote / annotated-term system ──
+  /* ── Annotation marker system ──
      The term itself is never filled by default — a filled term reads as a
      highlighter mark, which is a reader's gesture, not a typographer's. The
-     rule under the term and the superscript number do the announcing; the
+     rule under the term and the superscript semantic icon do the announcing; the
      wash is reserved for states the reader caused (hover, open). */
   --hs-rule: rgba(17, 17, 17, 0.32);
   --hs-rule-hover: rgba(17, 17, 17, 1);
@@ -90,7 +88,10 @@ html.theme-dark {
   --sheet-inset: clamp(24px, 6vw, 88px);
   --margin-col-width: 220px; /* matches MARGIN_COL_WIDTH */
   --margin-col-gutter: 42px; /* matches MARGIN_COL_GUTTER */
-  --popover-width: 400px; /* matches POPOVER_WIDTH = 400 */
+  /* A reading surface, not a tooltip: roughly 50–65 characters per line at
+     the established 17px body size. It grows with the viewport, then stops
+     before it obscures the document context around it. */
+  --popover-width: clamp(480px, 42vw, 560px);
   --popover-max-height: 78vh; /* matches POPOVER_MAX_HEIGHT_VH = 0.78 */
 }
 
@@ -287,10 +288,16 @@ body {
 }
 
 .masthead-credentials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px clamp(9px, 1.5vw, 15px);
   font-size: var(--type-meta);
   letter-spacing: var(--type-label-spacing-wide);
   color: var(--doc-light);
-  line-height: 1.9;
+  line-height: 1.5;
+  list-style: none;
+  margin: 0;
+  padding: 0;
   /* Flush left with everything else. This was right-aligned when the colophon
      was a two-column row on a 1560px masthead; once the masthead moved onto the
      document's measure the container sat at the shared left edge while the
@@ -341,9 +348,9 @@ body {
   white-space: nowrap;
 }
 
-/* Punctuation, but it still has to be visible: at --doc-rule it measured
-   1.45:1 and read as a gap rather than a separator. */
-.masthead-credentials .masthead-cred-sep {
+.masthead-credentials .masthead-cred:not(:last-child)::after {
+  content: "·";
+  margin-left: clamp(9px, 1.5vw, 15px);
   color: var(--doc-light);
 }
 
@@ -388,22 +395,9 @@ body {
    the first, restating the name, the credentials and the entire contact line.
    The masthead states all of it once; the sheet opens on the prose. */
 
-.doc-hr-thin {
-  border: none;
-  border-top: 1px solid var(--doc-rule);
-  margin: 34px 0;
-}
-
-/* Section marks. A numbered, tracked mono label with a rule running to the end
-   of the measure — the way a printed document announces a new part.
-
-   The numbers come from a CSS counter, so the document gains an apparatus
-   without a single character of markup or copy changing. They pair with the
-   footnote folios: both are the publication numbering itself, set in the mono,
-   never in the prose. */
-.doc-page {
-  counter-reset: section;
-}
+/* Section marks. A tracked mono label with a rule running to the end of the
+   measure — enough structure to announce a new part without adding decorative
+   numbering that carries no information. */
 
 .doc-section-heading {
   display: flex;
@@ -413,18 +407,6 @@ body {
   letter-spacing: var(--type-label-spacing-wide);
   color: var(--doc-heading);
   margin: 52px 0 24px;
-  counter-increment: section;
-}
-
-.doc-section-heading::before {
-  content: counter(section, decimal-leading-zero);
-  font-feature-settings: "tnum" 1;
-  letter-spacing: 0;
-  /* Ink, not signal. The numeral encodes nothing — the heading already says
-     which part this is — so under Tufte's rule it has no claim on the one
-     saturated colour the page allows itself. */
-  color: var(--doc-light);
-  flex-shrink: 0;
 }
 
 /* The rule runs out of the label in the signal colour and fades — the mark
@@ -470,7 +452,7 @@ body {
    document two left edges — the summary at one, every dated entry at another.
    Negative-margining by exactly --sheet-inset puts the text column back on the
    single edge the masthead and the prose already share, and drops the years
-   into the band beside it where the folios and margin notes live. */
+   into the band beside it where dates and margin notes live. */
 .doc-exp {
   display: grid;
   grid-template-columns: var(--sheet-inset) 1fr;
@@ -626,7 +608,7 @@ body {
 }
 
 /* ══════════════════════════════════════
-   ANNOTATED TERMS (footnote references)
+   ANNOTATED TERMS
    ══════════════════════════════════════ */
 .hotspot {
   position: relative;
@@ -645,20 +627,64 @@ body {
   transition: var(--hs-transition);
 }
 
-/* The superscript folio. This is the affordance — it says "there is more here"
-   without any pulsing dot or instruction line, and it works identically at
-   375px and 1600px. */
+/* Case-study marker. Ordinary marginalia needs no icon because the underline
+   already carries that signal; the superscript appears only for deeper work. */
 .hotspot-ref {
-  font-family: var(--mono);
-  font-size: 0.62em;
-  font-weight: 500;
-  font-feature-settings: "tnum" 1;
+  position: relative;
+  display: inline-flex;
+  font-size: 1em;
+  width: 0.78em;
+  height: 0.78em;
   vertical-align: super;
-  line-height: 0;
-  margin-left: 2px;
+  line-height: 1;
+  margin-left: 3px;
   color: var(--accent);
-  letter-spacing: 0;
-  transition: color 0.2s ease;
+  overflow: visible;
+  transition:
+    color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.hotspot-ref-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* The label makes the icon system discoverable without turning the document
+   into a permanent legend. It appears for mouse and keyboard users alike. */
+.hotspot-ref::after {
+  content: attr(data-hint);
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 8px);
+  z-index: 30;
+  padding: 6px 8px;
+  border-radius: 2px;
+  background: var(--doc-heading);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--doc-heading) 18%, transparent);
+  color: var(--doc-white);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -3px);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+.hotspot:hover .hotspot-ref::after,
+.hotspot.hovered .hotspot-ref::after,
+.hotspot:focus-visible .hotspot-ref::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 .hotspot:hover,
@@ -705,9 +731,11 @@ body.popover-open {
 .popover {
   position: absolute;
   z-index: 1000;
-  width: var(--popover-width);
+  display: flex;
+  flex-direction: column;
+  width: min(var(--popover-width), calc(100vw - 32px));
   max-height: var(--popover-max-height);
-  overflow-y: auto;
+  overflow: hidden;
   overscroll-behavior: contain;
   background: var(--doc-white);
   border: 1px solid var(--doc-rule);
@@ -723,6 +751,12 @@ body.popover-open {
     opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
+}
+
+.popover-scroll {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 html.theme-dark .popover {
@@ -747,6 +781,22 @@ html.theme-dark .popover {
 
 .popover-media {
   padding: 14px 14px 0;
+}
+
+.popover-media--with-brand {
+  display: grid;
+  grid-template-columns: clamp(96px, 24%, 128px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: center;
+  padding: 22px 28px 0;
+}
+
+.popover-brand-mark {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 150px;
+  object-fit: contain;
 }
 
 .popover-vid-wrap,
@@ -861,6 +911,9 @@ html.theme-dark .popover {
 .popover-carousel-slide {
   flex: 0 0 100%;
   scroll-snap-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .popover-carousel-dots {
@@ -890,67 +943,66 @@ html.theme-dark .popover {
 
 .popover-handle {
   position: relative;
-  height: 26px;
+  flex: 0 0 auto;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: grab;
   user-select: none;
   background: var(--doc-white);
-  border-bottom: 1px solid var(--doc-rule);
   border-radius: 4px 4px 0 0;
 }
 
 .popover-handle::before {
   content: "";
   display: block;
-  width: 2px;
-  height: 2px;
-  border-radius: 50%;
-  background: var(--doc-rule);
-  box-shadow:
-    -6px 0 0 var(--doc-rule),
-    6px 0 0 var(--doc-rule);
+  width: 32px;
+  height: 3px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--doc-light) 58%, transparent);
+  transition: background-color 0.15s ease;
+}
+
+.popover-handle:hover::before {
+  background: var(--doc-light);
 }
 
 .popover-close {
   position: absolute;
-  right: 5px;
-  top: 3px;
-  width: 20px;
-  height: 20px;
+  right: 6px;
+  top: 2px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
+  border-radius: 2px;
   background: transparent;
   cursor: pointer;
   color: var(--doc-light);
-  transition: color 0.15s ease;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
   z-index: 10;
 }
 
-.popover-close::before,
-.popover-close::after {
-  content: "";
-  position: absolute;
-  width: 9px;
-  height: 1px;
-  background: currentColor;
-}
-
-.popover-close::before {
-  transform: rotate(45deg);
-}
-
-.popover-close::after {
-  transform: rotate(-45deg);
+.popover-close svg {
+  width: 18px;
+  height: 18px;
+  display: block;
 }
 
 .popover-close:hover,
 .popover-close:focus-visible {
-  color: var(--accent);
-  outline: none;
+  color: var(--doc-heading);
+  background: color-mix(in srgb, var(--doc-heading) 6%, transparent);
+}
+
+.popover-close:focus-visible {
+  outline: 2px solid var(--doc-heading);
+  outline-offset: -3px;
 }
 
 .popover.is-dragging {
@@ -966,24 +1018,10 @@ html.theme-dark .popover {
   padding: 20px 22px 24px;
 }
 
-/* The popover repeats the term's folio number, so the connection between the
-   marked word and the open panel is explicit rather than assumed — open three
-   notes in a row and you still know which word each one came from. */
 .popover-head {
   display: flex;
   align-items: baseline;
-  gap: 10px;
   margin-bottom: 14px;
-}
-
-.popover-folio {
-  font-family: var(--mono);
-  font-size: var(--type-meta);
-  font-weight: 500;
-  font-feature-settings: "tnum" 1;
-  color: var(--accent);
-  letter-spacing: 0;
-  flex-shrink: 0;
 }
 
 .popover-label {
@@ -1007,42 +1045,66 @@ html.theme-dark .popover {
   margin-bottom: 14px;
 }
 
-/* The same control as .sa-link, on the other surface. Both routes to a case
-   study end in an identical underlined link rather than an inline phrase that
-   looked like body copy. */
+/* Project gateway for the overlay/bottom-sheet experience. It begins in the
+   reading order directly after the media (or after the label/stat when there
+   is no media), then stays available at the top once the reader scrolls past
+   it. The crisp document-white surface and black action make it discoverable
+   without introducing a muddy third color into the editorial system. */
 .popover-link {
+  position: sticky;
+  top: 0;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  margin-top: 18px;
-  padding: 13px 0 12px;
-  border-top: 1px solid var(--doc-rule);
+  gap: 12px;
+  margin: 14px 14px 0;
+  padding: 10px 10px 10px 14px;
+  border: 1px solid var(--doc-heading);
+  background: var(--doc-white);
   font-family: var(--mono);
   font-size: var(--type-meta);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: var(--type-label-spacing);
   text-transform: uppercase;
   color: var(--doc-heading);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .popover-link-label {
-  border-bottom: 1px solid var(--doc-heading);
-  padding-bottom: 2px;
-  transition: border-color 0.2s ease;
+  padding-left: 2px;
 }
 
 .popover-link::after {
   content: "\2192";
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  background: var(--doc-heading);
+  color: var(--doc-white);
   letter-spacing: 0;
   flex-shrink: 0;
   transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+.popover-body > .popover-link {
+  margin: 0 0 18px;
+}
+
+.popover-link:hover,
+.popover-link:focus-visible {
+  background: var(--doc-heading);
+  color: var(--doc-white);
+}
+
 .popover-link:hover::after,
 .popover-link:focus-visible::after {
+  background: var(--doc-white);
+  color: var(--doc-heading);
   transform: translateX(3px);
 }
 
@@ -1078,9 +1140,10 @@ html.theme-dark .popover {
 /* ══════════════════════════════════════
    MARGIN NOTES — the glance
    ══════════════════════════════════════
-   Below the wide tier no margin notes are shown; the footnote numbers still
-   mark every annotated term, and clicking still opens the full note. Nothing
-   is hidden from a narrow reader — only the simultaneous view is.
+   Below the wide tier no margin notes are shown; underlines still identify all
+   annotated terms and the superscript icon identifies available case studies.
+   Clicking still opens the full note, so nothing is hidden from a narrow reader
+   — only the simultaneous view is.
 
    Threshold = 880 sheet + 2 × (42 gutter + 220 column) = 1404, rounded to 1420.
    Still under the 1440px logical width of a 13" MacBook Air. */
@@ -1135,21 +1198,10 @@ html.theme-dark .popover {
     right: calc(100% + var(--margin-col-gutter));
   }
 
-  /* Folio + label share the top line: the number ties the note to its term. */
   .sa-head {
     display: flex;
     align-items: baseline;
-    gap: 8px;
     margin-bottom: 10px;
-  }
-
-  .sa-folio {
-    font-family: var(--mono);
-    font-size: var(--type-meta);
-    font-weight: 500;
-    font-feature-settings: "tnum" 1;
-    color: var(--accent);
-    flex-shrink: 0;
   }
 
   .sa-rule {
@@ -1168,7 +1220,7 @@ html.theme-dark .popover {
     line-height: 1.5;
   }
 
-  /* Smaller than the panel's, deliberately. The panel is a 400px focal
+  /* Smaller than the panel's, deliberately. The panel is a 480–560px focal
      surface; the margin is a 220px aside running alongside the document, and
      at the panel's 34px it out-shouted the 22px company headings it sits
      next to. Same role, different room. */
@@ -1210,8 +1262,8 @@ html.theme-dark .popover {
     line-height: 1.5;
   }
 
-  /* A single figure, not a carousel. The margin's job is to show that there is
-     something to see; the popover's job is to let you see all of it. */
+  /* Figures stay inside the marginalia experience. A single item renders
+     directly; two or more retain the established swipeable carousel. */
   .sa-img,
   .sa-vid {
     width: 100%;
@@ -1306,7 +1358,8 @@ html.theme-dark .popover {
     margin-bottom: 0;
   }
 
-  /* No hover-to-reveal here: the note is already an intentional, opened thing. */
+  /* Controls remain visible because the narrow column gives swipeable media
+     no room for a secondary discovery affordance. */
   .sa-carousel-nav {
     position: absolute;
     top: 50%;
@@ -1475,15 +1528,6 @@ html.theme-dark .popover {
 }
 
 /* ══════════════════════════════════════
-   RESPONSIVE — TABLET
-   ══════════════════════════════════════ */
-@media (max-width: 900px) {
-  .popover {
-    width: 340px;
-  }
-}
-
-/* ══════════════════════════════════════
    RESPONSIVE — MOBILE
    ══════════════════════════════════════ */
 @media (max-width: 600px) {
@@ -1520,7 +1564,13 @@ html.theme-dark .popover {
   }
 
   .masthead-credentials {
+    flex-direction: column;
+    gap: 6px;
     text-align: left;
+  }
+
+  .masthead-credentials .masthead-cred::after {
+    content: none;
   }
 
   .masthead-lede {
@@ -1595,7 +1645,7 @@ html.theme-dark .popover {
     top: auto !important;
     width: 100% !important;
     max-height: 82vh;
-    overflow-y: auto;
+    overflow: hidden;
     border-radius: 14px 14px 0 0;
     border-left: none;
     border-right: none;
@@ -1607,6 +1657,9 @@ html.theme-dark .popover {
     transition:
       opacity 0.3s cubic-bezier(0.32, 0.72, 0, 1),
       transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .popover-scroll {
     -webkit-overflow-scrolling: touch;
   }
 
@@ -1618,6 +1671,11 @@ html.theme-dark .popover {
   .popover-media,
   .popover-carousel-wrap {
     padding: 18px 18px 0;
+  }
+
+  .popover-media--with-brand {
+    grid-template-columns: minmax(76px, 24%) minmax(0, 1fr);
+    gap: 16px;
   }
 
   .popover-img,
@@ -1632,7 +1690,16 @@ html.theme-dark .popover {
   }
 
   .popover-body {
-    padding: 18px 20px 36px;
+    padding: 18px 20px 24px;
+  }
+
+  .popover-link {
+    margin: 14px 18px 0;
+    padding: 10px 10px 10px 13px;
+  }
+
+  .popover-body > .popover-link {
+    margin: 0 0 18px;
   }
 
   /* The handle strip becomes a real swipe affordance. */
@@ -1696,6 +1763,11 @@ html.theme-dark .popover {
      nothing left to switch off here. */
 
   .hotspot {
+    transition: none;
+  }
+
+  .hotspot-ref,
+  .hotspot-ref::after {
     transition: none;
   }
 

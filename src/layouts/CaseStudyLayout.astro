@@ -10,7 +10,7 @@ interface Props {
   description: string;
   ogImage?: string;
   /** Brand accent color as a 6-digit hex (e.g. `"#3b1a5a"`). Falls back to the
-   *  portfolio's default amber if omitted or invalid. */
+   *  portfolio's neutral ink if omitted or invalid. */
   accent?: string;
 }
 
@@ -26,7 +26,12 @@ const accentStyle = buildAccentStyle(accent);
   <body style={accentStyle}>
     <ThemeToggleButton />
     <nav class="back-nav" aria-label="Primary">
-      <a class="back-link" href="/" aria-label="Back to resume">
+      <a
+        class="back-link"
+        href="/"
+        aria-label="Back to resume"
+        data-resume-back
+      >
         <span aria-hidden="true">&larr;</span> Back
       </a>
     </nav>
@@ -38,5 +43,11 @@ const accentStyle = buildAccentStyle(accent);
     <footer>
       <p>KC &mdash; Design Leadership</p>
     </footer>
+
+    <script>
+      import { initCaseStudyBackNavigation } from "../scripts/return-to-resume.ts";
+
+      initCaseStudyBackNavigation();
+    </script>
   </body>
 </html>

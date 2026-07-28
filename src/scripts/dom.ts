@@ -259,9 +259,15 @@ function buildCarousel(
 
   const goToSlide = (idx: number) => {
     const clamped = Math.max(0, Math.min(mediaList.length - 1, idx));
+    const firstSlide = carousel.children[0] as HTMLElement | undefined;
     const targetSlide = carousel.children[clamped] as HTMLElement;
-    if (targetSlide) {
-      carousel.scrollTo({ left: targetSlide.offsetLeft, behavior: "smooth" });
+    if (firstSlide && targetSlide) {
+      // offsetLeft is relative to the positioned carousel wrapper, while
+      // scrollLeft is relative to the carousel's own content box. Normalise
+      // both slides to the same origin instead of feeding a page-relative
+      // offset into the scroll container.
+      const targetLeft = targetSlide.offsetLeft - firstSlide.offsetLeft;
+      carousel.scrollTo({ left: targetLeft, behavior: "smooth" });
     }
     currentIdx = clamped;
     syncNavState();
@@ -314,18 +320,36 @@ function buildCarousel(
   return wrap;
 }
 
-/** Appends the textual fields (folio, label, stat, text, quote, link) to a container. */
+function buildProjectLink(
+  data: PopoverData,
+  prefix: string,
+): HTMLAnchorElement | null {
+  if (!data.link || !data.linkText) return null;
+
+  const link = document.createElement("a");
+  link.className = `${prefix}-link`;
+  link.href = data.link;
+
+  const label = document.createElement("span");
+  label.className = `${prefix}-link-label`;
+  label.textContent = data.linkText;
+  link.appendChild(label);
+
+  return link;
+}
+
+/** Appends the textual fields (label, stat, text, quote, link) to a container. */
 function appendBodyFields(
   container: Node,
   data: PopoverData,
   prefix: string,
   text: string,
   options: {
-    folio?: number;
-    includeLink?: boolean;
+    projectLink?: HTMLAnchorElement | null;
+    linkPlacement?: "before-text" | "after-text";
   } = {},
 ): void {
-  const { folio, includeLink = true } = options;
+  const { projectLink = null, linkPlacement = "after-text" } = options;
 
   const appendField = (
     tag: string,
@@ -342,19 +366,8 @@ function appendBodyFields(
     container.appendChild(el);
   };
 
-  // The folio number sits on the same line as the label, on both surfaces. It
-  // is what ties an open note back to the marked term in the prose — without
-  // it, a reader who opens three notes in a row has no idea which word each one
-  // came from.
   const head = document.createElement("div");
   head.className = `${prefix}-head`;
-
-  if (folio !== undefined) {
-    const folioEl = document.createElement("span");
-    folioEl.className = `${prefix}-folio`;
-    folioEl.textContent = String(folio);
-    head.appendChild(folioEl);
-  }
 
   const labelEl = document.createElement("span");
   labelEl.className = `${prefix}-label`;
@@ -376,21 +389,20 @@ function appendBodyFields(
     statEl.textContent = data.stat;
     container.appendChild(statEl);
   }
+
+  // A no-media popover needs enough context to explain the destination before
+  // offering it. Place the project route after the label/stat but before the
+  // long narrative. Media popovers place the same link directly after the
+  // figure in buildContentNode.
+  if (projectLink && linkPlacement === "before-text") {
+    container.appendChild(projectLink);
+  }
+
   appendField("div", `${prefix}-text`, text);
   if (data.quote) appendField("div", `${prefix}-quote`, data.quote);
 
-  // The case-study link is the deepest rung of the ladder, so it belongs to the
-  // popover alone. Offering it in the margin too would flatten the three levels
-  // (marked term → margin note → full note → case study) back into two.
-  if (includeLink && data.link && data.linkText) {
-    const link = document.createElement("a");
-    link.className = `${prefix}-link`;
-    link.href = data.link;
-    const label = document.createElement("span");
-    label.className = `${prefix}-link-label`;
-    label.textContent = data.linkText;
-    link.appendChild(label);
-    container.appendChild(link);
+  if (projectLink && linkPlacement === "after-text") {
+    container.appendChild(projectLink);
   }
 }
 
@@ -415,7 +427,6 @@ export function buildContentNode(
     wrapBody?: boolean;
     prependRule?: boolean;
     mediaMode?: "full" | "thumb" | "none";
-    folio?: number;
     includeLink?: boolean;
   } = {},
 ): DocumentFragment {
@@ -424,7 +435,6 @@ export function buildContentNode(
     wrapBody = false,
     prependRule = false,
     mediaMode = "full",
-    folio,
     includeLink = true,
   } = options;
   const fragment = document.createDocumentFragment();
@@ -456,6 +466,7 @@ export function buildContentNode(
       : mediaMode === "thumb"
         ? allMedia.slice(0, 1)
         : allMedia;
+  const projectLink = includeLink ? buildProjectLink(data, prefix) : null;
 
   if (mediaList.length === 1) {
     const media = buildMediaElement(data, prefix, mediaList[0], {
@@ -470,12 +481,39 @@ export function buildContentNode(
       const mediaWrap = document.createElement("div");
       mediaWrap.className = `${prefix}-media`;
       mediaWrap.appendChild(media);
+
+      // Some archival artifacts do not visually identify the organization that
+      // issued them. A period-correct brand mark can sit beside the evidence in
+      // the popover, where there is enough room for both. It stays out of the
+      // narrow marginalia so the supporting mark never displaces the artifact.
+      if (prefix === "popover" && data.brandMark) {
+        mediaWrap.classList.add(`${prefix}-media--with-brand`);
+        const brandMark = document.createElement("img");
+        brandMark.className = `${prefix}-brand-mark`;
+        brandMark.src = data.brandMark;
+        brandMark.alt = data.brandMarkAlt ?? "";
+        brandMark.decoding = "async";
+        brandMark.width = 120;
+        brandMark.height = 140;
+        mediaWrap.insertBefore(brandMark, media);
+      }
+
       fragment.appendChild(mediaWrap);
     } else {
       fragment.appendChild(media);
     }
   } else if (mediaList.length > 1) {
     fragment.appendChild(buildCarousel(data, prefix, mediaList));
+  }
+
+  // In the overlay, the project destination belongs immediately after the
+  // visual evidence. It starts in the natural reading order and can then stick
+  // within the scroll region. Wide marginalia keeps its existing link at the
+  // end of the note.
+  const linkFollowsMedia =
+    prefix === "popover" && mediaList.length > 0 && projectLink;
+  if (linkFollowsMedia) {
+    fragment.appendChild(projectLink);
   }
 
   const bodyContainer: Node = wrapBody
@@ -486,8 +524,8 @@ export function buildContentNode(
   }
 
   appendBodyFields(bodyContainer, data, prefix, text, {
-    folio,
-    includeLink,
+    projectLink: linkFollowsMedia ? null : projectLink,
+    linkPlacement: prefix === "popover" ? "before-text" : "after-text",
   });
 
   if (wrapBody) {

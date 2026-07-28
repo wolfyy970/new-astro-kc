@@ -3,73 +3,86 @@
 ## Local Setup
 
 1. **Clone the repository.**
-2. **Install Node.js:** Version 18 or higher is recommended.
+2. **Install Node.js:** Version 22.12 or higher is required by Astro 7.
 3. **Install dependencies:**
    ```bash
    npm install
    ```
-4. **(Optional) Reset Demo Content:**
-   ```bash
-   npm run setup
-   ```
-   This clears example data from the JSON files so you can start fresh.
-5. **Run the development server:**
+4. **Run the development server:**
    ```bash
    npm run dev
    ```
    The site will be available at `http://localhost:4321`.
 
 The project uses **Vitest** with a **jsdom** environment for unit testing core logic and DOM utilities.
+
 - **Run tests once:** `npm run test`
 - **Run in watch mode:** `npx vitest`
+- **Apply formatting:** `npm run format`
+- **Verify formatting:** `npm run format:check`
+- **Lint source:** `npm run lint`
+- **Run Astro diagnostics:** `npm run check`
 
 ## Deployment
 
 The project is configured for **manual production deployment** to Vercel via the CLI. Git-based auto-deployment is disabled to maintain strict release control.
 
 1. **Production Manual Push:**
+
    ```bash
    vercel deploy --prod
    ```
 
 2. **Integration Checks:**
-   Always run `npm run build` locally before pushing to production to ensure TypeScript and Astro validation passes.
+   Run `npm run format:check`, `npm run lint`, `npm run check`, `npm run test`, and `npm run build` before pushing to production.
 
 ## Password Protection
 
 The entire portfolio is protected by an elegant password gate powered by Astro middleware and server-side logic.
 
-- **Environment Variable:** Set `SITE_PASSWORD` in your Vercel Dashboard or local `.env` file.
+- **Environment Variable:** Set `SITE_PASSWORD` in your Vercel Dashboard or local `.env.local` file. The local file is intentionally ignored by Git.
 - **Access:** Users are redirected to `/login` if not authenticated.
+- **Visibility:** The password field uses canonical Tabler `eye-off`/`eye` icons, with synchronized accessible labels, to reveal or conceal the entered value.
+- **Errors:** A failed attempt keeps feedback adjacent to the field, announces it with `role="alert"`, and marks the input invalid.
 - **Privacy:** Crawler indexing is disabled project-wide via `X-Robots-Tag` headers and a global `robots.txt` exclusion.
 - **Session:** A secure, `HttpOnly` cookie maintains the session for 7 days.
 
 ### 3. Content Verification & Integrity
+
 To ensure that the resume and its interactive layers remain synchronized, use the built-in verification suite:
+
 ```bash
 npm run verify
 ```
-This script validates the content JSON against the shared zod schemas (`src/content/schema.ts`), confirms that every `<hotspot>` in `resume.json` has a corresponding entry in `popovers.json`, that no hotspot is used more than once (enforcing a strict 1:1 mapping), and that all referenced image paths exist on disk. It runs automatically during `npm run build`.
+
+This script validates the content JSON against the shared Zod schemas (`src/content/schema.ts`), confirms that every `<hotspot>` in `resume.json` has a corresponding entry in `popovers.json`, that no hotspot is used more than once (enforcing a strict 1:1 mapping), and that all referenced image, video, poster, and brand-mark paths exist on disk. It runs automatically during `npm run build`.
 
 ### 4. Image Optimization
-The project leverages Astro 5.0's Image Service for high-performance delivery:
+
+The project leverages Astro 7's Image Service for high-performance delivery:
+
 - **Case Studies:** Use the standard `Image` component from `astro:assets`.
 - **Popovers:** Images in `popovers.json` are automatically pre-optimized and hashed during the build process in `index.astro`.
 
 ## Managing Content
 
 ### Updating the Resume
+
 The resume content is stored in `src/content/resume.json`.
+
 - Hero positioning lives in `hero.tagline` and `hero.credentials` (rendered above the document on the home page). Edit those fields there — do not hardcode hero copy in page templates or docs.
 - Use the `<hotspot key="key-name">text</hotspot>` tag within strings to create interactive elements.
 
 ### Configuring Popovers
+
 Popover data is stored in `src/content/popovers.json`.
+
 - Each key corresponds to a `hotspot` key used in the resume.
 - Fields include `label`, `text`, `stat`, `quote`, `link`, and `linkText`.
 - Media support:
   - `img` (string): For a single legacy image string payload.
-  - `media` (array of strings): Use this for rich media (both `.jpg`/`.png` and `.mp4`/`.webm`). If multiple paths are provided, it automatically creates an interactive swipeable carousel natively rendering images natively alongside looping videos.
+  - `media` (array of strings): Use this for rich media (both `.jpg`/`.png` and `.mp4`/`.webm`). If multiple paths are provided, it creates an interactive swipeable carousel containing images and looping videos.
+  - `brandMark` and `brandMarkAlt`: Optional supporting mark for an archival artifact that does not identify its issuer visually. It is composed only in the roomier popover, not in narrow marginalia.
 
 ## Feature Flags
 
@@ -109,14 +122,15 @@ The résumé uses semantic CSS custom properties (`--type-editorial`, `--type-h2
 
 Case studies are data-driven: content lives in JSON files and a thin `.astro` page imports and renders them. See `ARCHITECTURE.md → Case Study Template System` for the full section type reference.
 
-1. **Create `src/content/case-studies/<slug>.json`** following the schema in `.vscode/case-study.schema.json`. Include `meta`, `hero`, `context`, and a `sections` array where each item has a `type` field (e.g. `cardGrid`, `featureRow`, `textOnly`). Existing slugs include `truist`, `upwave`, `sparks-grove`, `two-way-tv`, and `felix`.
+1. **Create `src/content/case-studies/<slug>.json`** following the schema in `.vscode/case-study.schema.json`. Include `meta`, `hero`, `context`, and a `sections` array where each item has a `type` field (e.g. `cardGrid`, `featureRow`, `textOnly`). Existing slugs are `truist`, `upwave`, `sparks-grove`, `two-way-tv`, `felix`, `fusionfall`, `magic-wall`, and `armchair-manager`.
 2. **Add an entry to `src/content/case-studies/manifest.json`** with `slug`, `title`, `description`, `accent` (6-digit hex), and `ogImage`.
 3. **Create `src/pages/<slug>.astro`** — copy any existing page. The whole body is:
    ```astro
    ---
-   import CaseStudyPage from '../components/case-studies/CaseStudyPage.astro';
-   import cs from '../content/case-studies/<slug>.json';
+   import CaseStudyPage from "../components/case-studies/CaseStudyPage.astro";
+   import cs from "../content/case-studies/<slug>.json";
    ---
+
    <CaseStudyPage cs={cs} />
    ```
 4. **Register the editor schema** — add the file path to the `fileMatch` list in `.vscode/settings.json` (autocomplete only; runtime validation comes from `src/content/schema.ts`).

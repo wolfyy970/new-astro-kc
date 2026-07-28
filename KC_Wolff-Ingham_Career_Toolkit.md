@@ -1,4 +1,5 @@
 # KARL-CHRISTIAN WOLFF-INGHAM
+
 ## Career Toolkit & Reference Document
 
 **Email:** kcswolff@gmail.com  
@@ -11,6 +12,7 @@
 ## PURPOSE OF THIS DOCUMENT
 
 This is a comprehensive toolkit for all job search activities:
+
 - **Tailored resumes** — Source of truth for facts, metrics, and positioning
 - **Cover letters** — Building blocks, value propositions, and narrative threads
 - **Interview prep** — Stories, talking points, and answers to tough questions
@@ -37,37 +39,46 @@ Depending on the target role, I can position as:
 ## EDUCATION
 
 ### Executive MBA | 2019
+
 **Brown University** (Providence, RI) & **IE Business School** (Madrid, Spain)
+
 - Joint program
 - Focus: Strategic management, innovation, global business
 
 ### M.Sc. Human-Centered Computing Systems (HCI) | 1993–1994
+
 **University of Sussex**, Brighton, UK
+
 - Focus: AI and Intelligent Tutoring Systems
 - Achievement: Apple Design Project Award winner (Problem Analysis) — international inter-university competition
 
 ### B.Sc. (Hons) Computer Science (2:1) | 1989–1993
+
 **University of Brighton**, Brighton, UK
 
 **Dissertation:** "Colonizing Cyberspace" — 3D visualization of internet information spaces (March 1993)
 
 **Key quotes from dissertation:**
-> *"Cyberspace has been hailed as a new technological frontier... a world spanning network connecting millions of users in the same virtual space where they could communicate and exchange information."*
 
-> *"I believe, optimistically, that Gibsonian cyberspace, with a host of other virtual worlds for business and leisure will one day be a reality."*
+> _"Cyberspace has been hailed as a new technological frontier... a world spanning network connecting millions of users in the same virtual space where they could communicate and exchange information."_
+
+> _"I believe, optimistically, that Gibsonian cyberspace, with a host of other virtual worlds for business and leisure will one day be a reality."_
 
 **Critical timing context:**
+
 - Dissertation completed: **March 1993**
 - Mosaic browser publicly announced: **April 21, 1993** (one month LATER)
 - You were writing about the internet's transformative potential before the browser that made it mainstream even existed
 
 **Prescient concepts in dissertation:**
+
 - Predicted importance of global networked information spaces
 - Described 3D information visualization (now "spatial computing" — Apple Vision Pro, etc.)
 - Anticipated virtual communities and their cultural impact
 - Discussed the "Information Visualizer" — essentially predicting modern data visualization tools
 
 **Technical Project:** Back Propagation in HyperCard
+
 - Added external commands (XCMDs) to HyperCard's HyperScript language
 - Enabled back propagation learning capabilities for user-defined tasks
 - Back propagation is foundational to modern artificial neural networks
@@ -82,18 +93,21 @@ Depending on the target role, I can position as:
 ---
 
 ### GENUINE PARTS COMPANY (GPC) | Atlanta, GA
+
 **Head of UX Design and Research**  
-*January 2023 – Present*
+_January 2023 – Present_
 
 **Context:** Fortune Global 500 automotive/industrial parts distribution leader. $23B revenue. Report directly to CIO.
 
 **Organizational Transformation:**
+
 - Inherited 8-person team in January 2023
 - Scaled to 30-person team
 - Significant team quality improvements — many original team members transitioned out
 - Remit: Transform nascent design capability into enterprise-grade function
 
 **What Was Wrong (Inherited State):**
+
 - No design system
 - No UI team
 - Wrong people — skills gaps across the board
@@ -101,12 +115,14 @@ Depending on the target role, I can position as:
 - No research capability to speak of
 
 **Team Composition (Current):**
+
 - 30-person multidisciplinary team
 - **Functions built:** UX Design, UI Design, UX Research, Design Engineering (front-end engineers)
 - Geographic split: 20 onshore (Atlanta), 10 offshore (Krakow, Poland — GPC Global Technology Center)
 - Krakow center established by CIO; KC hired into it
 
 **Operating Model:**
+
 - **Balanced team model** — dedicated UX/UI designers and research per scrum team
 - Typically half a researcher per team
 - Design owns design decisions; business/product owns problem statements and success metrics
@@ -159,6 +175,7 @@ Depending on the target role, I can position as:
    - Elevated UX from service function to business-critical capability
 
 **Hardest Moment / Key Conflict:**
+
 - Had to establish design's independent voice — "told business and engineering to fuck off" (internal framing)
 - **The principle:** Business/product defines problem statements and success metrics; design owns the solution
 - Major conflict with Head of Business who was opinionated about what designs should be
@@ -166,18 +183,21 @@ Depending on the target role, I can position as:
 - **Lesson:** Establishing design maturity requires political will to claim responsibility for design decisions
 
 **What NOT to claim:**
+
 - Not running "product innovation" — running design
 - The internal startup is one part of broader responsibilities, not the whole job
 
 ---
 
 ### WOLFF CONSULTING, LLC | Atlanta, GA
+
 **Founder & Principal Consultant**  
-*June 2021 – January 2023*
+_June 2021 – January 2023_
 
 **Context:** Boutique product and design consultancy. Bridge between agile theory and application.
 
 **Key Engagement:**
+
 - **GPC Strategic Foresight (10 months)**
   - Client: GPC CIO
   - Scope: Future of automotive repair and digital customer experience
@@ -186,23 +206,27 @@ Depending on the target role, I can position as:
   - Important: This connects consulting → current role → internal startup
 
 **Other Clients:**
+
 - NAPA — Strategy (related to GPC engagement)
 - Gold's Gym — Design
 - Comscore — Product
 - FitRadio — Startup advisory
 
 **Other Services:**
+
 - Training and coaching on Agile & Lean Product Development
 
 ---
 
 ### TRUIST (Formerly SunTrust) | Atlanta, GA
+
 **Senior Vice President, UX Design & Research**  
-*July 2017 – June 2021*
+_July 2017 – June 2021_
 
 **Context:** Regional banking leader. Led through $66B SunTrust-BB&T merger (largest banking merger since 2008).
 
 **Organizational Transformation:**
+
 - Inherited 10-person team — UX design only
 - No UI design function
 - No UX research function
@@ -217,7 +241,7 @@ Depending on the target role, I can position as:
 1. **Accelerator Studio (NOT "Innovation Studio")**
    - Did NOT found it — rebooted and re-pivoted it
    - **Inherited state:** Had done some interesting work, but future was in question
-   - **My approach:** 
+   - **My approach:**
      - Met with all executive stakeholders
      - Interviewed them on what they thought it was and what value they wanted
      - Rebooted based on their input + my additions
@@ -230,18 +254,18 @@ Depending on the target role, I can position as:
    - Pitched Corporate Strategy on strategic foresight capabilities; they bought in and partnered
    - Co-designed and ran a foresight exercise with Accelerator Studio team
    - Pulled brightest people from all business units to participate
-   
+
    **Methodology (the clever part):**
    - Used Jobs to Be Done framework applied to BUSINESS UNITS, not just products
    - Isolated business identity from what it thinks it is → to the problems it actually solves for customers
    - Then ran foresight exercises on how those problems would be solved by businesses in the future
    - Output: Three scenarios for the future of banking
-   
+
    **The Presentation:**
    - Presented the three scenarios to the CEO and C-suite
    - Very well received
    - **CEO (current Truist CEO) said the work was "instrumental" in how he thought about the merger**
-   
+
    **Credit/Politics:**
    - Boss and head of Accelerator Studio took credit for it
    - "Success has a thousand fathers"
@@ -267,10 +291,12 @@ Depending on the target role, I can position as:
    - Purpose: Modernize bank's software development lifecycle
 
 **What NOT to claim:**
+
 - Did not "found" the Innovation/Accelerator Studio — rebooted it
 - Did not integrate "innovation methodologies" into SAFe — integrated voice of customer through design/research
 
 **Exit Context:**
+
 - Was positioned to be the design leader of the entire merged organization
 - However, design function fell under legacy BB&T leadership structure
 - New leader hired above me — no career path forward
@@ -282,8 +308,9 @@ Depending on the target role, I can position as:
 ---
 
 ### SPARKS GROVE / NORTH HIGHLAND | Atlanta, GA
+
 **Practice Lead, Experience Design (UX) & Emerging Interactions**  
-*September 2014 – March 2017*
+_September 2014 – March 2017_
 
 **Context:** Global management consulting firm. Sparks Grove was the innovation agency division.
 
@@ -301,6 +328,7 @@ Depending on the target role, I can position as:
    - Earned National Impact Award (2016) for this transformation
 
 **Key Clients:**
+
 - Delta Air Lines — Created news.delta.com (corporate communications, still live today)
 - The Coca-Cola Company
 - Disney
@@ -311,35 +339,42 @@ Depending on the target role, I can position as:
 ---
 
 ### TURNER BROADCASTING SYSTEM (Time Warner) | Atlanta, GA
-*Total Tenure: April 2005 – March 2014 (9 years)*
+
+_Total Tenure: April 2005 – March 2014 (9 years)_
 
 ---
 
 #### VP, Product Development (upwave.com)
-*October 2012 – March 2014*
+
+_October 2012 – March 2014_
 
 **Context:** Digital health/wellness startup within Turner. Internal venture.
 
 **What It Actually Was:**
+
 - IoT-driven digital health venture
 - Intersection of quantified-self technologies (wearables, health trackers) and personalized content delivery
 - Goal: Behavior change through data-driven insights and personalized content/tasks
 
 **Key Metrics:**
+
 - Grew from zero to 1 million average monthly uniques in 8 months
 - 27K registered users
 - 9.5M visits in first 8 months
 - Increased site recirculation from 5% to 24%
 
 **Methodology:**
+
 - Partnered with IDEO on market validation and product-market fit
 - Introduced lean product management / balanced team methodology
 - Enabled daily release cycle
 
 **Recognition:**
+
 - Webby Award Nomination (2014) — Health & Fitness category
 
 **Why It Ended:**
+
 - Platform sunset when Turner exited health vertical
 - Product was ahead of mainstream wearables adoption (pre-Apple Watch mainstream)
 - Product was good; TV content (because it's Turner) was not strong enough
@@ -350,7 +385,8 @@ Depending on the target role, I can position as:
 ---
 
 #### Sr. Director, Strategic Product Development & Innovation
-*December 2008 – October 2012*
+
+_December 2008 – October 2012_
 
 **Context:** Led R&D organization for Turner properties. Multidisciplinary team: product, UX, engineering.
 
@@ -389,13 +425,15 @@ Depending on the target role, I can position as:
    - Royal Television Society (RTS) Innovation Award (2010)
 
 **What NOT to claim:**
+
 - Four patents — only TWO were granted (we applied for four, two granted)
 - "Led" the Emmy-winning project — contributed the technology
 
 ---
 
 #### Director, Games & Entertainment Technology
-*April 2005 – December 2008*
+
+_April 2005 – December 2008_
 
 **Context:** R&D exploration role. Emerging platforms and technologies. Individual contributor (no direct reports).
 
@@ -422,12 +460,14 @@ Depending on the target role, I can position as:
 ---
 
 ### ENSEQUENCE INTERNATIONAL | London, UK
+
 **Interactive TV Architect**  
-*March 2003 – April 2005*
+_March 2003 – April 2005_
 
 **Context:** Interactive TV technology company.
 
 **Role:**
+
 - UK Product Manager for "on-Q" Authoring System
 - Designed technical solutions for broadcast deployment
 - Clients: BSkyB, BBC, others
@@ -435,11 +475,13 @@ Depending on the target role, I can position as:
 ---
 
 ### TWO WAY MEDIA (Formerly Two Way TV) | London, UK
-*Total Tenure: September 1995 – March 2003 (8 years)*
+
+_Total Tenure: September 1995 – March 2003 (8 years)_
 
 **Context:** Interactive television pioneer. Joined as founding team member.
 
 **Career Progression:**
+
 - Game Developer → Producer → Senior Producer → Solutions Development Manager
 
 **Team Size:** ~20 people (NOT 30 — accuracy matters)
@@ -460,14 +502,14 @@ Depending on the target role, I can position as:
 
 ## AWARDS & RECOGNITIONS
 
-| Year | Award | Project/Context |
-|------|-------|-----------------|
-| 2016 | **North Highland National Impact Award** | Transforming agency positioning to Human Experience Design (HxD) |
-| 2014 | **Webby Awards Nomination** (Health & Fitness) | upwave.com (Turner Broadcasting) |
+| Year | Award                                                                                          | Project/Context                                                                     |
+| ---- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| 2016 | **North Highland National Impact Award**                                                       | Transforming agency positioning to Human Experience Design (HxD)                    |
+| 2014 | **Webby Awards Nomination** (Health & Fitness)                                                 | upwave.com (Turner Broadcasting)                                                    |
 | 2011 | **Primetime Creative Arts Emmy Award** — Outstanding Creative Achievement in Interactive Media | "Conan O'Brien Presents: Team Coco" App — ACR technology syncing tablets to live TV |
-| 2010 | **Royal Television Society (RTS) Innovation Award** | CNN World Cup Twitter web application |
-| 2000 | **BAFTA Interactive Entertainment Awards Nomination** (Sports) | "Armchair Manager – Football" (Two Way TV) |
-| 1994 | **Apple Design Project Award** (Problem Analysis) | International inter-university competition |
+| 2010 | **Royal Television Society (RTS) Innovation Award**                                            | CNN World Cup Twitter web application                                               |
+| 2000 | **BAFTA Interactive Entertainment Awards Nomination** (Sports)                                 | "Armchair Manager – Football" (Two Way TV)                                          |
+| 1994 | **Apple Design Project Award** (Problem Analysis)                                              | International inter-university competition                                          |
 
 ---
 
@@ -482,23 +524,24 @@ Depending on the target role, I can position as:
 
 ## INNOVATION TRACK RECORD
 
-| Era | Emerging Technology | What I Did | Outcome |
-|-----|---------------------|------------|---------|
-| 1989-1993 | Neural Networks / AI | Back propagation in HyperCard | Foundational AI work, decades before current wave |
-| March 1993 | Internet / Virtual Worlds | "Colonizing Cyberspace" dissertation | Predicted internet importance ONE MONTH before Mosaic browser |
-| 1995-2005 | Connected TV | Multiplayer game service, interactive network | First-to-market |
-| 1995-2005 | Connected TV | Realtime Fantasy Football | BAFTA nomination |
-| 2005-2008 | Mobile AR | NBA/Cartoon Network AR apps with Georgia Tech | First in U.S. market |
-| 2008-2012 | Connected TV / ACR | Second-screen sync platform | Emmy Award, 2 patents |
-| 2012-2014 | IoT / Quantified Self | Wearables + personalized content platform | 1M users in 8 months |
-| 2017-2021 | Blockchain, Strategic Foresight | Accelerator Studio, DeFi exploration | Shaped $66B merger strategy |
-| 2023-now | AI/ML, Future of Autocare | Internal startup, Agentic UI | Disruptive business model (stealth) |
+| Era        | Emerging Technology             | What I Did                                    | Outcome                                                       |
+| ---------- | ------------------------------- | --------------------------------------------- | ------------------------------------------------------------- |
+| 1989-1993  | Neural Networks / AI            | Back propagation in HyperCard                 | Foundational AI work, decades before current wave             |
+| March 1993 | Internet / Virtual Worlds       | "Colonizing Cyberspace" dissertation          | Predicted internet importance ONE MONTH before Mosaic browser |
+| 1995-2005  | Connected TV                    | Multiplayer game service, interactive network | First-to-market                                               |
+| 1995-2005  | Connected TV                    | Realtime Fantasy Football                     | BAFTA nomination                                              |
+| 2005-2008  | Mobile AR                       | NBA/Cartoon Network AR apps with Georgia Tech | First in U.S. market                                          |
+| 2008-2012  | Connected TV / ACR              | Second-screen sync platform                   | Emmy Award, 2 patents                                         |
+| 2012-2014  | IoT / Quantified Self           | Wearables + personalized content platform     | 1M users in 8 months                                          |
+| 2017-2021  | Blockchain, Strategic Foresight | Accelerator Studio, DeFi exploration          | Shaped $66B merger strategy                                   |
+| 2023-now   | AI/ML, Future of Autocare       | Internal startup, Agentic UI                  | Disruptive business model (stealth)                           |
 
 ---
 
 ## KEY STORIES FOR INTERVIEWS
 
 ### 0. The Origin Story (University, 1989-1993)
+
 - **Back propagation project:** Added neural network learning capabilities to HyperCard before AI went mainstream. Back-propagation is the foundational algorithm behind today's LLMs and neural networks.
 - **"Colonizing Cyberspace" dissertation (March 1993):** Predicted internet importance through 3D information spaces
 - **Critical timing:** Dissertation completed ONE MONTH before Mosaic browser was publicly announced (April 1993)
@@ -509,18 +552,21 @@ Depending on the target role, I can position as:
 - **Key line for interviews:** "I wrote my dissertation on the transformative potential of global networked information spaces a month before the Mosaic browser made the web mainstream. In the same year, I was building neural network tools using back-propagation, the algorithm that powers today's LLMs. I've been seeing around corners my entire career, and I'm still doing it."
 
 ### 1. The $30M Revenue Story (GPC)
+
 - Research-driven redesign of $8B ecommerce platform (homepage redesign)
 - **Exact figure: $30.2 million** for fiscal year 2025
 - Measured via A/B testing and cohort analysis
 - Full attribution methodology — have receipts
 
 ### 2. The Consulting-to-Execution Story (GPC)
+
 - Did foresight work on future of auto care as consultant
 - That work became the digital transformation roadmap
 - GPC hired me to execute the vision I created
 - Now supporting internal startup that originated from that work
 
 ### 3. The Accelerator Studio Story (Truist)
+
 - Inherited existing studio, rebooted and re-pivoted it
 - **Process:** Stakeholder interviews → Synthesis → Strategy formation → Re-pitched to stakeholders for buy-in
 - **Two major additions:** Customer journeys AND strategic foresight
@@ -531,6 +577,7 @@ Depending on the target role, I can position as:
 - Retained through merger with bonus
 
 ### 4. The upwave.com Incubation Story (Turner)
+
 - IoT-driven health venture: wearables + personalized content
 - Zero to 1M users in 8 months
 - Partnered with IDEO
@@ -539,6 +586,7 @@ Depending on the target role, I can position as:
 - Ahead of mainstream wearables adoption
 
 ### 5. The Mobile AR Foresight Story (Turner)
+
 - Pioneered first mobile AR applications in U.S.
 - Partnered with Georgia Tech
 - NBA project: Billboard advertising network — AR interaction with advertising
@@ -548,6 +596,7 @@ Depending on the target role, I can position as:
 - Demonstrates technology foresight and early exploration
 
 ### 6. The Emmy/Patent Story (Turner)
+
 - Led R&D org for CNN, Cartoon Network, TBS, TNT
 - Contributed ACR technology to Emmy-winning Team Coco app
 - Two patents granted for ACR and audience engagement
@@ -587,10 +636,11 @@ Depending on the target role, I can position as:
 ## COMPENSATION
 
 **Current (GPC):**
+
 - Base salary: $260,000
 - Total package (including bonus + equity): $400,000+
 
-*Note: This comp level narrows the field. Target roles need to be VP/Head-level or equivalent.*
+_Note: This comp level narrows the field. Target roles need to be VP/Head-level or equivalent._
 
 ---
 
@@ -609,28 +659,36 @@ Depending on the target role, I can position as:
 ## HANDLING TOUGH QUESTIONS / REFRAMING WEAKNESSES
 
 ### "Why are you looking to leave GPC?"
+
 **Honest answer (internal):** Relationship with boss isn't great; limited upward mobility
 **Reframe:** "I've accomplished what I was brought in to do — transform a nascent design function into an enterprise capability. The team is scaled, the design system is deployed globally, and we're delivering measurable results. I'm looking for the next challenge where I can apply this playbook, ideally with a leadership team that sees design as central to business strategy."
 
 ### "You don't have P&L ownership. Why should we trust you with broader responsibility?"
+
 **Reframe:** "I haven't owned a P&L, but I've directly influenced significant revenue — $30M in attributable impact at GPC, and foresight work that shaped a $66B merger strategy at Truist. I've managed $6-7M budgets. What I bring is the ability to translate design work into business outcomes that finance teams can validate."
 
 ### "Your most recent pure innovation role was 2014. Are you still current?"
+
 **Reframe:** "upwave was my last full-time innovation role, but innovation has been embedded in everything since. At Truist, I rebooted the Accelerator Studio and explored blockchain/DeFi before it was mainstream. At GPC, I'm leading design for an AI/ML internal startup right now. I've also stayed hands-on with tools — I'm actively using Cursor, Claude Code, v0 in my workflow. I'm not managing from a distance."
 
 ### "Why the gap between Turner and Truist?" (Note: Actually went Turner → Sparks Grove → Truist)
+
 **Answer:** "After Turner, I moved to Sparks Grove, a consulting firm, where I led their UX practice and won $4.7M in new business. That experience — working across Delta, Coca-Cola, Disney, Home Depot — gave me breadth I wouldn't have gotten staying in one company. Then Truist recruited me to build their design function."
 
 ### "You mention 'seeing around corners' — isn't that just luck?"
+
 **Counter:** "It's documented. I wrote my dissertation on the internet's importance a month before Mosaic launched. I predicted mobile AR would happen on phones before the iPhone existed. I developed ACR technology years before second-screen became mainstream. You can dismiss one of those as luck. Three decades of it is a pattern. It's not magic — it's paying attention to technology trajectories and understanding what becomes possible when curves intersect."
 
 ### "What's your management philosophy?"
+
 **Answer:** "Evidence-based design. My core principle is: 'You are not the customer, but nor am I. So I don't care about your opinion; I care about the customer's opinion.' In practice, that means: primary research to understand the problem space, design solutions based on evidence, usability testing to validate, quantitative validation where possible, and ultimately tying design work to business outcomes. That's how we got to $30M in attributable impact at GPC. For managing teams: hire smart people, give them clear problems to solve, remove obstacles, and measure outcomes, not activity."
 
 ### "Why should we hire you over someone younger/cheaper?"
+
 **Reframe:** "You could. What you'd lose is pattern recognition — knowing what's signal and what's noise, having built this playbook twice already, having the executive presence to influence C-suite decisions. I'm also not coasting. I'm actively using AI tools in my workflow, leading an AI/ML startup, and just delivered $30M in measured impact. The question isn't whether I'm current — it's whether you want someone who's done this before or someone who's figuring it out as they go."
 
 ### "Tell me about a time you failed."
+
 **Use the upwave story:** "upwave was a genuine failure in some ways — we built a great product, hit 1M users in 8 months, partnered with IDEO, but Turner shut it down when they exited the health vertical. The product was ahead of its time — pre-Apple Watch mainstream — and Turner's TV content wasn't strong enough to sustain it. What I learned: timing matters as much as execution, and internal ventures live or die by parent company strategy, not just product quality. It taught me to pay closer attention to organizational dynamics and strategic alignment, not just product-market fit."
 
 ---
@@ -638,12 +696,15 @@ Depending on the target role, I can position as:
 ## VALUE PROPOSITIONS BY ROLE TYPE
 
 ### For Design Leadership Roles (VP Design, Head of Design, CDO)
+
 **Primary value prop:** "I transform nascent design capabilities into enterprise-grade strategic functions. I've done this twice at Fortune 500 companies — scaling teams from single digits to 30, establishing research capability, deploying design systems, and proving value in business terms ($30M+ attributable revenue)."
 
 ### For Innovation Roles (Head of Innovation, Chief Innovation Officer)
+
 **Primary value prop:** "I've spent 30 years identifying technology shifts before they go mainstream — from predicting the internet's importance before Mosaic, to pioneering mobile AR before the iPhone, to leading AI/ML ventures today. I don't just spot trends; I build organizations to capitalize on them."
 
 ### For CDO/Transformation Roles
+
 **Primary value prop:** "I bridge design, product, and technology. I've led digital transformation from the design seat — influencing $66B merger strategy, delivering $30M in measured revenue impact, and building functions that elevate customer experience to a strategic advantage."
 
 ---
@@ -651,9 +712,11 @@ Depending on the target role, I can position as:
 ## ELEVATOR PITCHES
 
 ### 30-Second Pitch (Design Leadership)
+
 "I'm a design executive who transforms nascent UX functions into enterprise strategic capabilities. I've done this twice at Fortune 500 companies — GPC and Truist — scaling teams from single digits to 30 and delivering measurable business impact. At GPC, that meant $30 million in attributable revenue. I'm looking for my next transformation challenge."
 
 ### 30-Second Pitch (Innovation)
+
 "I've spent 30 years identifying technology shifts before they go mainstream. I wrote my dissertation predicting the internet's importance a month before the Mosaic browser launched. I pioneered mobile AR before the iPhone. Now I'm leading design for an AI/ML startup at GPC. I see around corners — and I build organizations to capture what's coming."
 
 ---
@@ -661,27 +724,35 @@ Depending on the target role, I can position as:
 ## COVER LETTER BUILDING BLOCKS
 
 ### Opening Hook — Design Leadership
+
 "Design isn't a service function — it's a strategic capability. I've spent my career proving that, twice transforming nascent UX teams into enterprise-grade functions at Fortune 500 companies. At GPC, that transformation delivered $30 million in attributable revenue."
 
 ### Opening Hook — Innovation/CDO
+
 "I wrote my dissertation predicting the internet's transformative potential a month before the Mosaic browser made it mainstream. That wasn't luck — it was the start of a 30-year pattern of seeing technology shifts before they arrive. I'm still doing it, currently leading design for an AI/ML internal startup."
 
 ### Opening Hook — Transformation
+
 "Twice I've inherited underperforming design functions and transformed them into strategic capabilities — at Truist during a $66B merger, and at GPC where we've delivered $30M in measured impact. I'm looking for my third transformation."
 
 ### Body Paragraph — The Transformation Pattern
+
 "At both Truist and GPC, I inherited small teams with no research capability, no design system, and no independent voice. In both cases, I scaled to 30 people, established evidence-based design methodology, deployed global design systems, and proved value in terms finance teams could validate. This isn't theory — it's a repeatable playbook."
 
 ### Body Paragraph — The Foresight Pattern
+
 "My track record of technology foresight is documented and timestamped. Mobile AR before the iPhone (2005-2008). ACR and second-screen before it went mainstream (2008-2012). IoT/wearables before the Apple Watch (2012-2014). Strategic foresight that shaped a $66B banking merger (2017-2021). AI/ML internal startup now. I don't follow trends — I anticipate them."
 
 ### Body Paragraph — The Business Impact
+
 "I measure design success in business terms. At GPC, a research-driven homepage redesign delivered $30.2 million in attributable revenue — validated through A/B testing and cohort analysis with full documentation. At Truist, strategic foresight work that I designed and led was called 'instrumental' by the CEO in shaping merger strategy. Design isn't decoration — it's leverage."
 
 ### Closing — Standard
+
 "I'd welcome the opportunity to discuss how my experience transforming design functions could contribute to [Company]'s goals. I'm particularly interested in [specific aspect of their challenge], which aligns with work I've done at [relevant example]."
 
 ### Closing — Compensation Flexibility
+
 "I'm at a stage where the right challenge matters more than maximizing compensation. What I'm looking for is a leadership team that sees design as central to business strategy, and a transformation challenge worth solving."
 
 ---
@@ -689,16 +760,19 @@ Depending on the target role, I can position as:
 ## RESUME VARIANT GUIDELINES
 
 ### Variant 1: Design Leadership Resume
+
 **Lead with:** Organizational transformation, team scaling, measurable business outcomes
 **Emphasize:** $30M revenue, team growth (8→30), design systems, research capability
 **De-emphasize:** Early innovation work, patents (mention but don't lead)
 
 ### Variant 2: Innovation/CDO Resume
+
 **Lead with:** Foresight track record, venture incubation, emerging technology adoption
 **Emphasize:** Origin story (dissertation + back-prop), upwave, AR pioneering, patents, Emmy
 **De-emphasize:** Day-to-day design operations
 
 ### Variant 3: Digital/Hybrid Resume
+
 **Lead with:** Full breadth (design + product + technology), transformation capability
 **Emphasize:** Both business impact AND innovation track record, technical credibility (CS degree, patents)
 **De-emphasize:** Narrow design-only framing
@@ -708,11 +782,13 @@ Depending on the target role, I can position as:
 ## SKILLS & CERTIFICATIONS
 
 **Certifications:**
+
 - Agile Development (SCRUM Master)
 - Pragmatic Marketing (Product Management)
 - Human Factors International (PET Design)
 
 **Core Skills:**
+
 - Lean Product Development
 - SAFe (Scaled Agile)
 - Design Thinking
@@ -724,21 +800,25 @@ Depending on the target role, I can position as:
 ## OUTSTANDING QUESTIONS — TO COME BACK TO
 
 ### GPC
+
 - The $30M win: detailed attribution methodology walkthrough
 - Krakow team: collaboration model, challenges
 - AI tools integration: specific wins to point to
 
 ### Truist
+
 - Service Design Practice: concrete journey transformation example
 - Product Rebuilds: specific story for Commercial/Small Business/Investment banking
 - Blockchain/DeFi: what was actually delivered
 
 ### Turner
+
 - upwave: specific wearables integrated, what personalized content looked like
 - CNN Magic Wall: specific contribution vs. others
 - IDEO partnership: what they actually did, how long engagement was
 
 ### Sparks Grove
+
 - $4.7M deals: which were biggest, what was the pitch
 - Home Depot: what "reboot to lean product" meant concretely
 - HxD repositioning: what it meant in practice

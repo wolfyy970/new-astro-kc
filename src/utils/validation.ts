@@ -1,5 +1,3 @@
-import type { ResumeData } from "../types/content.ts";
-
 /**
  * Recursively find all <hotspot> keys in any string in a JSON-like object.
  */
@@ -48,6 +46,6 @@ export function findDuplicateHotspots(obj: unknown): string[] {
   countHotspots(obj);
 
   return Array.from(keyCounts.entries())
-    .filter(([_, count]) => count > 1)
-    .map(([key, _]) => key);
+    .filter((entry) => entry[1] > 1)
+    .map((entry) => entry[0]);
 }

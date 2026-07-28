@@ -76,6 +76,71 @@ describe("Annotation Engine (DOM auto-mapping)", () => {
     expect((annotations[2] as HTMLElement).dataset.annotationKey).toBe("item3");
   });
 
+  it("renders every image and video in the default marginalia carousel", () => {
+    mockPopovers.item1 = {
+      label: "Item 1",
+      text: "Text 1",
+      media: [
+        "/images/item-1.webp",
+        "/images/item-2.webp",
+        "/media/item-3.mp4",
+      ],
+    };
+
+    initAnnotationEngine(mockPopovers);
+
+    const annotation = document.querySelector('[data-annotation-key="item1"]');
+    expect(annotation?.querySelector(".sa-carousel")).not.toBeNull();
+    expect(annotation?.querySelectorAll(".sa-carousel-slide")).toHaveLength(3);
+    expect(annotation?.querySelectorAll(".sa-img")).toHaveLength(2);
+    expect(annotation?.querySelectorAll(".sa-vid")).toHaveLength(1);
+    expect(annotation?.querySelectorAll(".sa-carousel-dot")).toHaveLength(3);
+  });
+
+  it("lets carousel controls advance without rebuilding the marginalia", () => {
+    mockPopovers.item1 = {
+      label: "Item 1",
+      text: "Text 1",
+      media: ["/images/item-1.webp", "/images/item-2.webp"],
+    };
+
+    initAnnotationEngine(mockPopovers);
+
+    const annotation = document.querySelector<HTMLElement>(
+      '[data-annotation-key="item1"]',
+    )!;
+    const carousel = annotation.querySelector<HTMLElement>(".sa-carousel")!;
+    const secondSlide =
+      annotation.querySelectorAll<HTMLElement>(".sa-carousel-slide")[1];
+    Object.defineProperty(carousel, "scrollTo", {
+      value: vi.fn(),
+      configurable: true,
+    });
+    Object.defineProperty(
+      annotation.querySelectorAll<HTMLElement>(".sa-carousel-slide")[0],
+      "offsetLeft",
+      {
+        value: 10,
+        configurable: true,
+      },
+    );
+    Object.defineProperty(secondSlide, "offsetLeft", {
+      value: 240,
+      configurable: true,
+    });
+
+    annotation
+      .querySelector<HTMLButtonElement>(".sa-carousel-nav.next")!
+      .click();
+
+    expect(annotation.classList.contains("is-expanded")).toBe(false);
+    expect(
+      annotation
+        .querySelector('[aria-label="Go to slide 2"]')
+        ?.classList.contains("active"),
+    ).toBe(true);
+  });
+
   it("logs a warning and skips missing popover data", () => {
     const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
     // Remove item2 from popover data but it exists in DOM

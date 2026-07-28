@@ -11,10 +11,24 @@
       "required": ["title", "description", "accent"],
       "additionalProperties": false,
       "properties": {
-        "title":       { "type": "string", "description": "Browser tab title and OG title." },
-        "description": { "type": "string", "description": "Meta description and OG description." },
-        "ogImage":     { "type": "string", "pattern": "^/images/.*", "description": "OG share image path (relative to /public)." },
-        "accent":      { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$", "description": "Brand accent color as a 6-digit hex, e.g. \"#3b1a5a\"." }
+        "title": {
+          "type": "string",
+          "description": "Browser tab title and OG title."
+        },
+        "description": {
+          "type": "string",
+          "description": "Meta description and OG description."
+        },
+        "ogImage": {
+          "type": "string",
+          "pattern": "^/images/.*",
+          "description": "OG share image path (relative to /public)."
+        },
+        "accent": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "description": "Brand accent color as a 6-digit hex, e.g. \"#3b1a5a\"."
+        }
       }
     },
 
@@ -23,12 +37,32 @@
       "required": ["label", "title", "subtitle"],
       "additionalProperties": false,
       "properties": {
-        "label":      { "type": "string", "description": "Small eyebrow label above the title." },
-        "title":      { "type": "string", "description": "Primary hero heading (rendered as h1)." },
-        "subtitle":   { "type": "string", "description": "Supporting paragraph beneath the title." },
-        "image":      { "type": "string", "pattern": "^/images/.*", "description": "Standalone hero image (right-side device mockup). Use either image or background, not both." },
-        "imageAlt":   { "type": "string", "description": "Alt text for the standalone hero image." },
-        "background": { "type": "string", "pattern": "^/images/.*", "description": "Full-bleed background photograph. Use either image or background, not both." }
+        "label": {
+          "type": "string",
+          "description": "Small eyebrow label above the title."
+        },
+        "title": {
+          "type": "string",
+          "description": "Primary hero heading (rendered as h1)."
+        },
+        "subtitle": {
+          "type": "string",
+          "description": "Supporting paragraph beneath the title."
+        },
+        "image": {
+          "type": "string",
+          "pattern": "^/images/.*",
+          "description": "Standalone hero image (right-side device mockup). Use either image or background, not both."
+        },
+        "imageAlt": {
+          "type": "string",
+          "description": "Alt text for the standalone hero image."
+        },
+        "background": {
+          "type": "string",
+          "pattern": "^/images/.*",
+          "description": "Full-bleed background photograph. Use either image or background, not both."
+        }
       }
     },
 
@@ -37,12 +71,30 @@
       "required": ["challenge", "role", "company", "scope", "team", "body"],
       "additionalProperties": false,
       "properties": {
-        "challenge": { "type": "string", "description": "One-line challenge statement, displayed as the section heading." },
-        "role":      { "type": "string", "description": "Job title for the meta grid." },
-        "company":   { "type": "string", "description": "Company or client name for the meta grid." },
-        "scope":     { "type": "string", "description": "Scope of work for the meta grid." },
-        "team":      { "type": "string", "description": "Team composition or key outcome for the meta grid." },
-        "body":      { "type": "string", "description": "Full prose paragraph describing the engagement." }
+        "challenge": {
+          "type": "string",
+          "description": "One-line challenge statement, displayed as the section heading."
+        },
+        "role": {
+          "type": "string",
+          "description": "Job title for the meta grid."
+        },
+        "company": {
+          "type": "string",
+          "description": "Company or client name for the meta grid."
+        },
+        "scope": {
+          "type": "string",
+          "description": "Scope of work for the meta grid."
+        },
+        "team": {
+          "type": "string",
+          "description": "Team composition or key outcome for the meta grid."
+        },
+        "body": {
+          "type": "string",
+          "description": "Full prose paragraph describing the engagement."
+        }
       }
     },
 
@@ -60,7 +112,11 @@
       "required": ["src", "alt"],
       "additionalProperties": false,
       "properties": {
-        "src": { "type": "string", "pattern": "^/images/.*", "description": "Image path relative to /public." },
+        "src": {
+          "type": "string",
+          "pattern": "^/images/.*",
+          "description": "Image path relative to /public."
+        },
         "alt": { "type": "string", "description": "Alt text for the image." }
       }
     },
@@ -70,8 +126,14 @@
       "required": ["value", "label"],
       "additionalProperties": false,
       "properties": {
-        "value": { "type": "string", "description": "Display number or text, e.g. \"4.4M\" or \"$300M\"." },
-        "label": { "type": "string", "description": "Descriptor below the value, e.g. \"Mobile Users\"." }
+        "value": {
+          "type": "string",
+          "description": "Display number or text, e.g. \"4.4M\" or \"$300M\"."
+        },
+        "label": {
+          "type": "string",
+          "description": "Descriptor below the value, e.g. \"Mobile Users\"."
+        }
       }
     },
 
@@ -80,10 +142,10 @@
       "required": ["title", "description", "image", "imageAlt"],
       "additionalProperties": false,
       "properties": {
-        "title":       { "type": "string" },
+        "title": { "type": "string" },
         "description": { "type": "string" },
-        "image":       { "type": "string", "pattern": "^/images/.*" },
-        "imageAlt":    { "type": "string" }
+        "image": { "type": "string", "pattern": "^/images/.*" },
+        "imageAlt": { "type": "string" }
       }
     },
 
@@ -98,12 +160,40 @@
         },
         "type": {
           "type": "string",
-          "enum": ["cardGrid", "mixedGrid", "featureRow", "textOnly", "largeImage", "fullBleed", "captionedImage", "photoGrid", "statRow"],
+          "enum": [
+            "cardGrid",
+            "mixedGrid",
+            "featureRow",
+            "textOnly",
+            "largeImage",
+            "fullBleed",
+            "captionedImage",
+            "photoGrid",
+            "statRow",
+            "video"
+          ],
           "description": "Determines which component tree CaseStudySection renders. See ARCHITECTURE.md § Section Type Catalog for field requirements per type."
         },
-        "label":       { "type": "string", "description": "Small eyebrow label above the section heading." },
-        "title":       { "type": "string", "description": "Section heading (rendered as h2)." },
-        "description": { "type": "string", "description": "Section body copy." },
+        "label": {
+          "type": "string",
+          "description": "Small eyebrow label above the section heading."
+        },
+        "title": {
+          "type": "string",
+          "description": "Section heading (rendered as h2)."
+        },
+        "description": {
+          "type": "string",
+          "description": "Section body copy."
+        },
+        "link": {
+          "type": "string",
+          "description": "Optional internal project URL for a section-level call to action."
+        },
+        "linkText": {
+          "type": "string",
+          "description": "Visible label for the optional section-level call to action."
+        },
         "bg": {
           "type": "string",
           "description": "Background color or CSS gradient for the section. Any valid CSS value: hex (#f3eff8), named color, gradient, etc."
@@ -120,10 +210,8 @@
     },
 
     "Section": {
-      "allOf": [
-        { "$ref": "#/definitions/SectionBase" }
-      ],
-      "if":   { "properties": { "type": { "const": "cardGrid" } } },
+      "allOf": [{ "$ref": "#/definitions/SectionBase" }],
+      "if": { "properties": { "type": { "const": "cardGrid" } } },
       "then": {
         "required": ["cards"],
         "properties": {
@@ -142,11 +230,14 @@
         }
       },
       "else": {
-        "if":   { "properties": { "type": { "const": "mixedGrid" } } },
+        "if": { "properties": { "type": { "const": "mixedGrid" } } },
         "then": {
           "required": ["primaryCard", "secondaryCards"],
           "properties": {
-            "primaryCard":    { "$ref": "#/definitions/Card", "description": "Lead card rendered full-width (1-column grid) above secondaryCards." },
+            "primaryCard": {
+              "$ref": "#/definitions/Card",
+              "description": "Lead card rendered full-width (1-column grid) above secondaryCards."
+            },
             "secondaryCards": {
               "type": "array",
               "items": { "$ref": "#/definitions/Card" },
@@ -156,7 +247,7 @@
           }
         },
         "else": {
-          "if":   { "properties": { "type": { "const": "featureRow" } } },
+          "if": { "properties": { "type": { "const": "featureRow" } } },
           "then": {
             "required": ["title", "description", "image", "imageAlt"],
             "properties": {
@@ -165,44 +256,74 @@
                 "default": false,
                 "description": "Flip image and text order so the image appears on the right."
               },
-              "image":    { "type": "string", "pattern": "^/images/.*" },
+              "image": { "type": "string", "pattern": "^/images/.*" },
               "imageAlt": { "type": "string" }
             }
           },
           "else": {
-            "if":   { "properties": { "type": { "const": "largeImage" } } },
+            "if": { "properties": { "type": { "const": "largeImage" } } },
             "then": {
               "required": ["image", "imageAlt"],
               "properties": {
-                "image":       { "type": "string", "pattern": "^/images/.*", "description": "Full-width constrained image rendered inside the section." },
-                "imageAlt":    { "type": "string" },
-                "imageWidth":  { "type": "integer", "default": 1300, "description": "Intrinsic width hint for Astro image optimisation." },
-                "imageHeight": { "type": "integer", "default": 800,  "description": "Intrinsic height hint for Astro image optimisation." }
+                "image": {
+                  "type": "string",
+                  "pattern": "^/images/.*",
+                  "description": "Full-width constrained image rendered inside the section."
+                },
+                "imageAlt": { "type": "string" },
+                "imageWidth": {
+                  "type": "integer",
+                  "default": 1300,
+                  "description": "Intrinsic width hint for Astro image optimisation."
+                },
+                "imageHeight": {
+                  "type": "integer",
+                  "default": 800,
+                  "description": "Intrinsic height hint for Astro image optimisation."
+                }
               }
             },
             "else": {
-              "if":   { "properties": { "type": { "const": "fullBleed" } } },
+              "if": { "properties": { "type": { "const": "fullBleed" } } },
               "then": {
                 "required": ["image", "imageAlt"],
                 "properties": {
-                  "image":    { "type": "string", "pattern": "^/images/.*", "description": "Full-viewport cinematic image strip. No text is rendered." },
+                  "image": {
+                    "type": "string",
+                    "pattern": "^/images/.*",
+                    "description": "Full-viewport cinematic image strip. No text is rendered."
+                  },
                   "imageAlt": { "type": "string" }
                 }
               },
               "else": {
-                "if":   { "properties": { "type": { "const": "captionedImage" } } },
+                "if": {
+                  "properties": { "type": { "const": "captionedImage" } }
+                },
                 "then": {
                   "required": ["image", "imageAlt"],
                   "properties": {
-                    "image":       { "type": "string", "pattern": "^/images/.*", "description": "Full content-width image. Use high-resolution source (1800px+ wide)." },
-                    "imageAlt":    { "type": "string" },
-                    "caption":     { "type": "string", "description": "Single caption line below the image. One short sentence — a chapter marker, not a description." },
-                    "imageWidth":  { "type": "integer", "default": 1800 },
+                    "image": {
+                      "type": "string",
+                      "pattern": "^/images/.*",
+                      "description": "Full content-width image. Use high-resolution source (1800px+ wide)."
+                    },
+                    "imageAlt": { "type": "string" },
+                    "caption": {
+                      "type": "string",
+                      "description": "Single caption line below the image. One short sentence — a chapter marker, not a description."
+                    },
+                    "displayWidth": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "description": "Optional maximum rendered width for documentary or supporting imagery."
+                    },
+                    "imageWidth": { "type": "integer", "default": 1800 },
                     "imageHeight": { "type": "integer", "default": 1000 }
                   }
                 },
                 "else": {
-                  "if":   { "properties": { "type": { "const": "photoGrid" } } },
+                  "if": { "properties": { "type": { "const": "photoGrid" } } },
                   "then": {
                     "required": ["images"],
                     "properties": {
@@ -212,14 +333,22 @@
                         "minItems": 2,
                         "description": "Images to display in the grid. No per-image text — the images speak for themselves."
                       },
-                      "columns": { "type": "integer", "enum": [1, 2, 3, 4], "default": 2 },
-                      "gap":     { "type": "string", "enum": ["tight", "normal", "loose"], "default": "normal" },
-                      "imageWidth":  { "type": "integer", "default": 900 },
+                      "columns": {
+                        "type": "integer",
+                        "enum": [1, 2, 3, 4],
+                        "default": 2
+                      },
+                      "gap": {
+                        "type": "string",
+                        "enum": ["tight", "normal", "loose"],
+                        "default": "normal"
+                      },
+                      "imageWidth": { "type": "integer", "default": 900 },
                       "imageHeight": { "type": "integer", "default": 675 }
                     }
                   },
                   "else": {
-                    "if":   { "properties": { "type": { "const": "statRow" } } },
+                    "if": { "properties": { "type": { "const": "statRow" } } },
                     "then": {
                       "required": ["stats"],
                       "properties": {
@@ -229,6 +358,28 @@
                           "minItems": 2,
                           "maxItems": 5,
                           "description": "Impact metrics displayed as large typographic numbers. Keep to 2–5 items."
+                        }
+                      }
+                    },
+                    "else": {
+                      "if": { "properties": { "type": { "const": "video" } } },
+                      "then": {
+                        "required": ["video"],
+                        "properties": {
+                          "video": {
+                            "type": "string",
+                            "pattern": "^/media/.*\\.(mp4|webm)$",
+                            "description": "Video path relative to /public."
+                          },
+                          "poster": {
+                            "type": "string",
+                            "pattern": "^/images/.*",
+                            "description": "Optional poster image shown before playback."
+                          },
+                          "caption": {
+                            "type": "string",
+                            "description": "Short attribution or context line below the video."
+                          }
                         }
                       }
                     }

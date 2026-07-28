@@ -1,0 +1,53 @@
+---
+import arrowsHorizontalSvg from "@tabler/icons/outline/arrows-horizontal.svg?raw";
+import eyeSvg from "@tabler/icons/outline/eye.svg?raw";
+import eyeOffSvg from "@tabler/icons/outline/eye-off.svg?raw";
+import sunSvg from "@tabler/icons/outline/sun.svg?raw";
+
+const icons = {
+  "arrows-horizontal": arrowsHorizontalSvg,
+  eye: eyeSvg,
+  "eye-off": eyeOffSvg,
+  sun: sunSvg,
+} as const;
+
+export type IconName = keyof typeof icons;
+
+interface Props {
+  name: IconName;
+  size?: number;
+  stroke?: number;
+  label?: string;
+  class?: string;
+}
+
+const { name, size = 18, stroke = 1.5, label, class: className } = Astro.props;
+
+// @tabler/icons-astro exposes every icon through one enormous generated barrel.
+// Importing four symbols from it made Vite transform thousands of Astro
+// components on every development render. The core Tabler package also ships
+// the canonical SVGs as individually addressable files, so keep the same icon
+// geometry while loading only this curated four-icon subset.
+const iconBody = icons[name]
+  .replace(/^[\s\S]*?<svg[^>]*>/, "")
+  .replace(/<\/svg>\s*$/, "");
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={stroke}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  focusable="false"
+  role={label ? "img" : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : "true"}
+>
+  <Fragment set:html={iconBody} />
+</svg>

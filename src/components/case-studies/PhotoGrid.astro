@@ -13,129 +13,162 @@
  */
 
 interface PhotoItem {
-    src: string;
-    alt: string;
+  src: string;
+  alt: string;
 }
 
 interface Props {
-    images: PhotoItem[];
-    /** Grid column count (1–4). Collapses on smaller screens. Default: 2. */
-    columns?: 1 | 2 | 3 | 4;
-    /** Short eyebrow label above the grid. */
-    label?: string;
-    /** Optional section heading. Keep it brief. */
-    title?: string;
-    /** Inter-image gap size. Default: "normal" (16px). */
-    gap?: "tight" | "normal" | "loose";
+  images: PhotoItem[];
+  /** Grid column count (1–4). Collapses on smaller screens. Default: 2. */
+  columns?: 1 | 2 | 3 | 4;
+  /** Short eyebrow label above the grid. */
+  label?: string;
+  /** Optional section heading. Keep it brief. */
+  title?: string;
+  /** Explain why this image set matters before presenting it. */
+  description?: string;
+  /** Inter-image gap size. Default: "normal" (16px). */
+  gap?: "tight" | "normal" | "loose";
 }
 
-const { images, columns = 2, label, title, gap = "normal" } = Astro.props;
+const {
+  images,
+  columns = 2,
+  label,
+  title,
+  description,
+  gap = "normal",
+} = Astro.props;
 ---
 
 <section class={`photo-grid-section photo-grid-section--gap-${gap}`}>
-    <div class="photo-grid-inner">
-        {(label || title) && (
-            <header class="photo-grid-header">
-                {label && <p class="photo-label">{label}</p>}
-                {title && <h2 class="photo-title">{title}</h2>}
-            </header>
-        )}
-        <div class={`photo-grid photo-grid--cols-${columns}`}>
-            {images.map(img => (
-                <div class="photo-item">
-                    <img
-                        src={img.src}
-                        alt={img.alt}
-                        loading="lazy"
-                        decoding="async"
-                    />
-                </div>
-            ))}
-        </div>
+  <div class="photo-grid-inner">
+    {
+      (label || title || description) && (
+        <header class="photo-grid-header">
+          {label && <p class="photo-label">{label}</p>}
+          {title && <h2 class="photo-title">{title}</h2>}
+          {description && <p class="photo-description">{description}</p>}
+        </header>
+      )
+    }
+    <div class={`photo-grid photo-grid--cols-${columns}`}>
+      {
+        images.map((img) => (
+          <div class="photo-item">
+            <img src={img.src} alt={img.alt} loading="lazy" decoding="async" />
+          </div>
+        ))
+      }
     </div>
+  </div>
 </section>
 
 <style>
-    .photo-grid-section {
-        padding: var(--cs-pad-media);
-    }
+  .photo-grid-section {
+    padding: var(--cs-pad-media);
+  }
 
-    .photo-grid-inner {
-        max-width: var(--cs-max-width-wide);
-        margin: 0 auto;
-    }
+  .photo-grid-inner {
+    max-width: var(--cs-max-width-wide);
+    margin: 0 auto;
+  }
 
-    .photo-grid-header {
-        margin-bottom: 40px;
-    }
+  .photo-grid-header {
+    margin-bottom: 40px;
+  }
 
-    .photo-label {
-        font-family: var(--mono);
-        font-size: var(--cs-eyebrow);
-        font-weight: 500;
-        letter-spacing: var(--cs-eyebrow-tracking);
-        text-transform: uppercase;
-        color: var(--label-color);
-        margin-bottom: 12px;
-    }
+  .photo-label {
+    font-family: var(--mono);
+    font-size: var(--cs-eyebrow);
+    font-weight: 500;
+    letter-spacing: var(--cs-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--label-color);
+    margin-bottom: 12px;
+  }
 
-    .photo-title {
-        font-family: var(--display);
-        font-size: var(--cs-photo-title);
-        font-weight: 400;
-        color: var(--text-primary, #1a1a1a);
-        line-height: 1.2;
-    }
+  .photo-title {
+    font-family: var(--display);
+    font-size: var(--cs-photo-title);
+    font-weight: 400;
+    color: var(--text-primary, #1a1a1a);
+    line-height: 1.2;
+  }
 
-    .photo-grid {
-        display: grid;
-        gap: 16px;
-    }
+  .photo-description {
+    max-width: 780px;
+    margin-top: 24px;
+    font-family: var(--doc-serif);
+    font-size: var(--cs-body);
+    font-weight: 400;
+    color: var(--text-secondary);
+    line-height: 1.8;
+  }
 
-    .photo-grid-section--gap-tight  .photo-grid { gap: 6px; }
-    .photo-grid-section--gap-normal .photo-grid { gap: 16px; }
-    .photo-grid-section--gap-loose  .photo-grid { gap: 32px; }
+  .photo-grid {
+    display: grid;
+    gap: 16px;
+  }
 
-    .photo-grid--cols-1 { grid-template-columns: 1fr; }
-    .photo-grid--cols-2 { grid-template-columns: repeat(2, 1fr); }
-    .photo-grid--cols-3 { grid-template-columns: repeat(3, 1fr); }
-    .photo-grid--cols-4 { grid-template-columns: repeat(4, 1fr); }
+  .photo-grid-section--gap-tight .photo-grid {
+    gap: 6px;
+  }
+  .photo-grid-section--gap-normal .photo-grid {
+    gap: 16px;
+  }
+  .photo-grid-section--gap-loose .photo-grid {
+    gap: 32px;
+  }
 
-    .photo-item {
-        border-radius: var(--cs-radius);
-        overflow: hidden;
-        background: var(--bg);
-        line-height: 0;
-    }
+  .photo-grid--cols-1 {
+    grid-template-columns: 1fr;
+  }
+  .photo-grid--cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .photo-grid--cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .photo-grid--cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
 
-    /*
+  .photo-item {
+    border-radius: var(--cs-radius);
+    overflow: hidden;
+    background: var(--bg);
+    line-height: 0;
+  }
+
+  /*
      * Images fill their column width. Height follows the native aspect ratio.
      * No cropping. No object-fit forcing.
      */
-    .photo-item img {
-        width: 100%;
-        height: auto;
-        display: block;
-    }
+  .photo-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
 
-    @media (max-width: 1024px) {
-        .photo-grid-section {
-            padding: var(--cs-pad-media-tablet);
-        }
-        .photo-grid--cols-3,
-        .photo-grid--cols-4 {
-            grid-template-columns: repeat(2, 1fr);
-        }
+  @media (max-width: 1024px) {
+    .photo-grid-section {
+      padding: var(--cs-pad-media-tablet);
     }
+    .photo-grid--cols-3,
+    .photo-grid--cols-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
 
-    @media (max-width: 600px) {
-        .photo-grid-section {
-            padding: var(--cs-pad-media-mobile);
-        }
-        .photo-grid--cols-2,
-        .photo-grid--cols-3,
-        .photo-grid--cols-4 {
-            grid-template-columns: 1fr;
-        }
+  @media (max-width: 600px) {
+    .photo-grid-section {
+      padding: var(--cs-pad-media-mobile);
     }
+    .photo-grid--cols-2,
+    .photo-grid--cols-3,
+    .photo-grid--cols-4 {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>

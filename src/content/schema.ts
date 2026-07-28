@@ -64,6 +64,8 @@ export const popoverDataSchema = z.object({
   stat: z.string().optional(),
   img: z.string().optional(),
   media: z.array(z.string()).optional(),
+  brandMark: z.string().optional(),
+  brandMarkAlt: z.string().optional(),
   quote: z.string().optional(),
   link: z.string().optional(),
   linkText: z.string().optional(),
@@ -108,6 +110,7 @@ export const caseStudySectionTypeSchema = z.enum([
   "captionedImage",
   "photoGrid",
   "statRow",
+  "video",
 ]);
 
 export const caseStudyCardSchema = z.object({
@@ -133,6 +136,8 @@ export const caseStudySectionSchema = z.object({
   label: z.string().optional(),
   title: z.string().optional(),
   description: z.string().optional(),
+  link: z.string().optional(),
+  linkText: z.string().optional(),
   isMobile: z.boolean().optional(),
   bg: z.string().optional(),
   isDark: z.boolean().optional(),
@@ -146,7 +151,10 @@ export const caseStudySectionSchema = z.object({
   imageAlt: z.string().optional(),
   imageWidth: z.number().optional(),
   imageHeight: z.number().optional(),
+  displayWidth: z.number().positive().optional(),
   caption: z.string().optional(),
+  video: z.string().optional(),
+  poster: z.string().optional(),
   images: z.array(caseStudyPhotoItemSchema).optional(),
   gap: z.enum(["tight", "normal", "loose"]).optional(),
   stats: z.array(caseStudyStatItemSchema).optional(),

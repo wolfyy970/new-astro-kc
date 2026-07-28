@@ -70,11 +70,13 @@
   },
   "magicwall": {
     "label": "CNN Magic Wall",
-    "text": "Created the massive multi-touch screen paradigm for broadcast news visualization that became an industry standard. Designed large-format multi-touch interface that pioneered data-driven storytelling for weather and also used for election coverage at CNN.",
+    "text": "I brought the large-format multi-touch technology into CNN and brokered the relationship with the technology partner after seeing that the alternatives under consideration were not capable of the interaction model the network needed. My team designed and built the weather software shown here. CNN's election teams subsequently made the wall famous with their own election-night applications; that footage documents the wider adoption of the platform, not software built by my team.",
     "media": [
       "/images/cnn/magic-wall-hurricane.png",
       "/media/cnn-magic-wall.mp4"
-    ]
+    ],
+    "link": "/magic-wall",
+    "linkText": "View Magic Wall project"
   },
   "ar": {
     "label": "Mobile AR · 2005-2008",
@@ -83,6 +85,17 @@
       "/images/turner/nba-ar-prototype.png",
       "/media/nba-ar-prototype.mp4"
     ]
+  },
+  "fusionfall": {
+    "label": "Behavioral Design · FusionFall",
+    "text": "Led behavioral design research for Cartoon Network's FusionFall with Immersyve and Richard Ryan, co-author of Self-Determination Theory and one of the world's most-cited psychologists. We translated motivation science into specific recommendations for onboarding, challenge, exploration, social play, and retention, giving the development team a behavioral framework for deciding what to change and why.",
+    "media": [
+      "/images/fusionfall/research-model.webp",
+      "/images/fusionfall/playtest-session.webp",
+      "/images/fusionfall/pens-findings.webp"
+    ],
+    "link": "/fusionfall",
+    "linkText": "View FusionFall project"
   },
   "dissertation": {
     "label": "March 1993",
@@ -95,10 +108,26 @@
     "text": "Pioneered early AI tooling by building back-propagation learning capabilities into Apple's HyperCard via custom commands, the same foundational algorithm powering today's LLMs."
   },
   "bafta": {
-    "label": "BAFTA Nomination",
-    "text": "'Armchair Manager - Football', the first ever interactive TV app nominated for a BAFTA Interactive Entertainment Award in the Sports category in 2000.",
+    "label": "Armchair Manager · BAFTA Nominee",
+    "text": "Designed, produced, and technically architected Armchair Manager Football, including its database. Built for standard-definition interactive television (pre-HDTV), it let viewers assemble a squad of real footballers, predict match outcomes, and watch goals, bookings, substitutions, and results change their score in real time. In 2000, it became the first interactive television game ever nominated in BAFTA's Sports category.",
     "stat": "2000",
-    "img": "/images/awards/bafta-nomination.jpg",
+    "media": [
+      "/images/armchair-manager/title-screen.webp",
+      "/images/armchair-manager/match-centre.webp",
+      "/images/awards/bafta-nomination.jpg",
+      "/images/two-way-tv/armchair-manager-press.webp"
+    ],
+    "link": "/armchair-manager",
+    "linkText": "View Armchair Manager project"
+  },
+  "two-way-games": {
+    "label": "Multiplayer Television · 2001",
+    "text": "These networked games were delivered through standard-definition television (pre-HDTV), not through a conventional website or PC game. Viewers joined with a remote control and played through cable or satellite set-top boxes. Although the experience lived on television, Fruity4some's client was assembled from HTML and JavaScript modules, while the platform used Java services and broadcast-specific engines to manage live multiplayer sessions, scoring, chat, leaderboards, and unreliable back channels across multiple television platforms.",
+    "media": [
+      "/images/two-way-tv/fruity4some-game.webp",
+      "/images/two-way-tv/fifteen-to-one.webp",
+      "/images/two-way-tv/anorak.webp"
+    ],
     "link": "/two-way-tv",
     "linkText": "View Two Way TV project"
   },
@@ -106,7 +135,9 @@
     "label": "Apple Design Award",
     "text": "Winner of the Apple Design Project Award (Problem Analysis) in an international inter-university competition.",
     "stat": "1994",
-    "img": "/images/awards/apple-design-award.png"
+    "img": "/images/awards/apple-design-award.png",
+    "brandMark": "/images/awards/apple-rainbow-logo.svg",
+    "brandMarkAlt": "Apple Computer rainbow logo used from 1977 to 1998"
   },
   "rts-award": {
     "label": "RTS Innovation Award",
