@@ -38,7 +38,7 @@
      One serif sets both the masthead and the body copy, which is what makes the
      page read as a single publication; Newsreader's optical-size axis lets the
      same face be a 68px title and a 17px paragraph. The mono is the annotation
-     apparatus — folio numbers, footnote markers, margin labels — and never
+     apparatus — section marks, case-study hints, margin labels — and never
      sets prose. */
   --display: "Newsreader", Georgia, "Times New Roman", serif;
   --doc-serif: "Newsreader", Georgia, "Times New Roman", serif;
@@ -69,7 +69,7 @@
      body-lg        Summary paragraph (the lead)
      body           Bullets, descriptions, popover body text
      body-sm        Quotes, margin-note prose, captions
-     meta           Mono labels (section marks, folios, dates, chrome …)
+     meta           Mono labels (section marks, dates, chrome …)
      stat           Display numbers (popover-stat, sa-stat)
 
      Title scale, not cover scale. Roughly 4× the 17px body — a classical title
@@ -90,7 +90,7 @@
      body so a column of dates never competes with the sentence it dates. */
   --type-year: 12px;
   --type-stat: 34px;
-  /* The same role in the smaller room. The panel is a 400px focal surface; the
+  /* The same role in the smaller room. The panel is a 480–560px focal surface; the
      margin is a 220px aside beside the document, and the panel's 34px there
      out-shouts the 22px company headings it runs alongside. */
   --type-stat-margin: 26px;

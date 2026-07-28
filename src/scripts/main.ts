@@ -3,10 +3,13 @@
 // index.astro. Initialises all three interactive systems and coordinates the
 // highlight engine resize handler.
 
-import type { PopoverMap } from "../types/content.ts";
 import { requireGlobal } from "./dom.ts";
 import { initPopoverEngine } from "./popover-engine.ts";
 import { initAnnotationEngine } from "./annotation-engine.ts";
+import {
+  initResumeReturnTracking,
+  restoreResumeReturnView,
+} from "./return-to-resume.ts";
 import { SEL_REVEAL, CLS_VISIBLE, REVEAL_THRESHOLD } from "./constants.ts";
 
 // ── Read page data ────────────────────────────────────────────────────────────
@@ -15,6 +18,12 @@ import { SEL_REVEAL, CLS_VISIBLE, REVEAL_THRESHOLD } from "./constants.ts";
 // rather than silently passing undefined through the type system.
 
 const popovers = requireGlobal("__POPOVERS__", "main");
+
+// Project links are generated after boot, so one delegated listener records
+// that a case-study visit came from this exact résumé history entry. The case
+// study can then use true Back navigation instead of creating a fresh `/`
+// visit at the top of the document.
+initResumeReturnTracking();
 
 // ── Scroll reveal (.reveal elements) ─────────────────────────────────────────
 
@@ -44,5 +53,6 @@ requestAnimationFrame(() => {
   requestAnimationFrame(() => {
     initPopoverEngine(popovers);
     initAnnotationEngine(popovers);
+    restoreResumeReturnView();
   });
 });

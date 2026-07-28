@@ -20,7 +20,7 @@ export const BREAKPOINT_WIDE = 1420; // px — wide desktop, marginalia visible
 export const BREAKPOINT_MOBILE = 600; // px — mobile, bottom-sheet popover
 
 // ── Popover layout ──
-export const POPOVER_WIDTH = 400; // px — desktop popover width (must match --popover-width in global.css)
+export const POPOVER_MAX_WIDTH = 560; // px — fallback for the fluid CSS width when the panel cannot be measured
 export const POPOVER_MARGIN_MIN = 16; // px — min distance from viewport edge
 export const POPOVER_OFFSET_Y = 10; // px — vertical gap below hotspot
 export const POPOVER_MAX_HEIGHT_VH = 0.78; // fraction — must match `max-height: 78vh` in .popover CSS rule
@@ -36,7 +36,7 @@ export const SHEET_SNAPBACK_MS = 350; // ms — snap-back settle before clearing
 export const ANNOTATION_MIN_GAP = 80; // px — minimum vertical gap between annotations
 export const ANNOTATION_ROOT_MARGIN = "-15% 0px -40% 0px"; // IntersectionObserver rootMargin
 // The margin note is the glance, not the article. One sentence is what makes
-// the footnote worth following: at three, the margin was reprinting almost the
+// the annotation worth following: at three, the margin was reprinting almost the
 // whole popover, so opening it bought the reader a single extra sentence in
 // exchange for covering the page they were reading.
 export const ANNOTATION_TEXT_SENTENCES = 1; // max sentences shown in a margin note

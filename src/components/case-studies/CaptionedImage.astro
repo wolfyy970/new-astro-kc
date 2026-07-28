@@ -10,102 +10,104 @@
  */
 
 interface Props {
-    image: string;
-    imageAlt: string;
-    caption?: string;
-    label?: string;
-    isMobile?: boolean;
+  image: string;
+  imageAlt: string;
+  caption?: string;
+  label?: string;
+  isMobile?: boolean;
+  displayWidth?: number;
 }
 
-const { image, imageAlt, caption, label, isMobile } = Astro.props;
+const { image, imageAlt, caption, label, isMobile, displayWidth } = Astro.props;
+const innerStyle = displayWidth ? `max-width: ${displayWidth}px` : undefined;
 ---
 
 <section class="captioned-image-section">
-    <div class="captioned-image-inner">
-        {label && <p class="image-label">{label}</p>}
-        <div class={`captioned-image-frame${isMobile ? " is-mobile" : ""}`}>
-            <img
-                src={image}
-                alt={imageAlt}
-                loading="lazy"
-                decoding="async"
-            />
-        </div>
-        {caption && <p class="image-caption">{caption}</p>}
+  <div class="captioned-image-inner" style={innerStyle}>
+    {label && <p class="image-label">{label}</p>}
+    <div class={`captioned-image-frame${isMobile ? " is-mobile" : ""}`}>
+      <img src={image} alt={imageAlt} loading="lazy" decoding="async" />
     </div>
+    {caption && <p class="image-caption">{caption}</p>}
+  </div>
 </section>
 
 <style>
-    .captioned-image-section {
-        padding: var(--cs-pad-media);
-    }
+  .captioned-image-section {
+    padding: var(--cs-pad-media);
+  }
 
-    .captioned-image-inner {
-        max-width: var(--cs-max-width-wide);
-        margin: 0 auto;
-    }
+  .captioned-image-inner {
+    max-width: var(--cs-max-width-wide);
+    margin: 0 auto;
+    width: 100%;
+  }
 
-    .image-label {
-        font-family: var(--mono);
-        font-size: var(--cs-eyebrow);
-        font-weight: 500;
-        letter-spacing: var(--cs-eyebrow-tracking);
-        text-transform: uppercase;
-        color: var(--label-color);
-        margin-bottom: 24px;
-    }
+  .image-label {
+    font-family: var(--mono);
+    font-size: var(--cs-eyebrow);
+    font-weight: 500;
+    letter-spacing: var(--cs-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--label-color);
+    margin-bottom: 24px;
+  }
 
-    /*
+  /*
      * The frame is a flex container so portrait images center themselves
      * rather than stretching. The image never exceeds its container and
      * never exceeds its natural pixel width — it renders at exactly what
      * the source deserves.
      */
-    .captioned-image-frame {
-        border-radius: var(--cs-radius);
-        overflow: hidden;
-        background: var(--bg);
-        line-height: 0;
-        display: flex;
-        justify-content: center;
-        transition: background 0.3s ease;
-    }
+  .captioned-image-frame {
+    border-radius: var(--cs-radius);
+    overflow: hidden;
+    background: var(--bg);
+    line-height: 0;
+    display: flex;
+    justify-content: center;
+    transition: background 0.3s ease;
+  }
 
-    .captioned-image-frame.is-mobile {
-        background: transparent;
-        margin: 0 auto;
-        max-width: fit-content;
-    }
+  .captioned-image-frame.is-mobile {
+    background: transparent;
+    margin: 0 auto;
+    max-width: fit-content;
+  }
 
-    .captioned-image-frame img {
-        /* Landscape: fills the container width.
+  .captioned-image-frame img {
+    /* Landscape: fills the container width.
            Portrait:  capped at its natural width, centered. */
-        max-width: 100%;
-        height: auto;
-        display: block;
-        border-radius: inherit;
-    }
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: inherit;
+  }
 
-    .captioned-image-frame.is-mobile img {
-        max-width: 320px;
-        border: 1px solid var(--doc-rule);
-    }
+  .captioned-image-frame.is-mobile img {
+    max-width: 320px;
+    border: 1px solid var(--doc-rule);
+  }
 
-    .image-caption {
-        margin-top: 20px;
-        font-size: var(--cs-caption);
-        font-weight: 400;
-        color: var(--text-secondary, #666);
-        line-height: 1.5;
-        max-width: 680px;
-        font-style: italic;
-    }
+  .image-caption {
+    margin-top: 20px;
+    font-size: var(--cs-caption);
+    font-weight: 400;
+    color: var(--text-secondary, #666);
+    line-height: 1.5;
+    max-width: 680px;
+    font-style: italic;
+  }
 
-    @media (max-width: 1024px) {
-        .captioned-image-section { padding: var(--cs-pad-media-tablet); }
+  @media (max-width: 1024px) {
+    .captioned-image-section {
+      padding: var(--cs-pad-media-tablet);
     }
+  }
 
-    @media (max-width: 600px) {
-        .captioned-image-section { padding: var(--cs-pad-media-mobile); }
+  @media (max-width: 600px) {
+    .captioned-image-section {
+      padding: var(--cs-pad-media-mobile);
     }
+  }
 </style>

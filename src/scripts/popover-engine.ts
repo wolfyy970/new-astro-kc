@@ -20,7 +20,7 @@ import type { PopoverMap } from "../types/content.ts";
 import { requireEl, buildContentNode, onMediaReady } from "./dom.ts";
 import { toggleAnnotation, collapseAnnotation } from "./annotation-engine.ts";
 import {
-  POPOVER_WIDTH,
+  POPOVER_MAX_WIDTH,
   POPOVER_MARGIN_MIN,
   POPOVER_OFFSET_Y,
   POPOVER_MAX_HEIGHT_VH,
@@ -47,6 +47,10 @@ import {
 // The mobile transform rules reference this variable so JS can drive the offset
 // without fighting the `!important` declarations directly.
 const CSS_PROP_SHEET_OFFSET = "--sheet-drag-offset";
+// Canonical Tabler "X" geometry. The popover chrome is built client-side, so
+// it cannot render the Astro icon component used by server-rendered controls.
+const ICON_CLOSE =
+  '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>';
 import { isMobileScreen } from "../utils/viewport.ts";
 
 // ── Annotation dissolve ───────────────────────────────────────────────────────
@@ -174,7 +178,7 @@ function makeDraggable(popoverEl: HTMLElement): void {
 
 // ── Mobile swipe-to-dismiss ───────────────────────────────────────────────────
 // Attach once on the popover element. Engages only when isMobileScreen() is
-// true and the user drags downward from the top of the sheet (scrollTop === 0).
+// true and the user drags downward from the top of the sheet's scroll region.
 // The touchmove listener is intentionally non-passive so it can call
 // preventDefault() to stop the page beneath from scrolling during a dismiss.
 
@@ -204,8 +208,11 @@ function makeMobileSwipeable(popoverEl: HTMLElement): void {
     if (!isMobileScreen()) return;
     touchCurrentY = e.touches[0].clientY;
     const delta = touchCurrentY - touchStartY;
+    const scrollRegion =
+      popoverEl.querySelector<HTMLElement>(".popover-scroll");
+    const scrollTop = scrollRegion?.scrollTop ?? popoverEl.scrollTop;
 
-    if (delta <= 0 || popoverEl.scrollTop > 0) {
+    if (delta <= 0 || scrollTop > 0) {
       if (isSwiping) {
         // User scrolled back up mid-gesture — cancel
         isSwiping = false;
@@ -272,6 +279,7 @@ function injectPopoverChrome(
   const closeBtn = document.createElement("button");
   closeBtn.className = "popover-close";
   closeBtn.setAttribute("aria-label", "Close");
+  closeBtn.innerHTML = ICON_CLOSE;
   closeBtn.addEventListener("click", () => closePopover());
 
   popoverEl.prepend(closeBtn);
@@ -279,7 +287,10 @@ function injectPopoverChrome(
   return closeBtn;
 }
 
-function calculatePopoverPosition(hotspot: HTMLElement): {
+function calculatePopoverPosition(
+  hotspot: HTMLElement,
+  popoverEl: HTMLElement,
+): {
   top: string;
   left: string;
 } {
@@ -289,12 +300,17 @@ function calculatePopoverPosition(hotspot: HTMLElement): {
   const scrollY = window.scrollY;
   const vw = window.innerWidth;
   const vh = window.innerHeight;
+  // CSS owns the fluid reading width. Measuring the actual panel keeps hotspot
+  // centering and viewport clamping truthful at every point in that range.
+  const popoverWidth =
+    popoverEl.offsetWidth ||
+    Math.min(POPOVER_MAX_WIDTH, Math.max(0, vw - POPOVER_MARGIN_MIN * 2));
 
   // Horizontal: centred on the hotspot, clamped to viewport edges
-  let left = rect.left + rect.width / 2 - POPOVER_WIDTH / 2;
+  let left = rect.left + rect.width / 2 - popoverWidth / 2;
   left = Math.max(
     POPOVER_MARGIN_MIN,
-    Math.min(left, vw - POPOVER_WIDTH - POPOVER_MARGIN_MIN),
+    Math.min(left, vw - popoverWidth - POPOVER_MARGIN_MIN),
   );
 
   // Vertical: the CSS guarantees max-height of POPOVER_MAX_HEIGHT_VH, so use that as the
@@ -397,22 +413,26 @@ function openPopover(hotspot: HTMLElement): void {
   closePopover({ returnFocus: false });
 
   activeHotspot = hotspot;
+  popoverEl.dataset.popoverKey = key;
   hotspot.classList.add(CLS_ACTIVE);
   hotspot.setAttribute("aria-expanded", "true");
   suppressAnnotation(key);
 
-  popoverEl.replaceChildren(
-    buildContentNode(data, "popover", {
-      wrapBody: true,
-      // The dig: full narrative, every figure, and the case-study link.
-      mediaMode: "full",
-      folio: Number(hotspot.dataset.folio) || undefined,
-      includeLink: true,
-    }),
-  );
+  const content = buildContentNode(data, "popover", {
+    wrapBody: true,
+    // The dig: full narrative, every figure, and the case-study link.
+    mediaMode: "full",
+    includeLink: true,
+  });
+
+  const scrollRegion = document.createElement("div");
+  scrollRegion.className = "popover-scroll";
+  scrollRegion.appendChild(content);
+
+  popoverEl.replaceChildren(scrollRegion);
   const closeBtn = injectPopoverChrome(popoverEl, data.label);
 
-  const pos = calculatePopoverPosition(hotspot);
+  const pos = calculatePopoverPosition(hotspot, popoverEl);
   popoverEl.style.top = pos.top;
   popoverEl.style.left = pos.left;
 
@@ -451,6 +471,7 @@ export function closePopover(options: CloseOptions = {}): void {
 
   disableFocusTrap(popoverEl);
   popoverEl.classList.remove(CLS_VISIBLE);
+  delete popoverEl.dataset.popoverKey;
   popoverEl.style.removeProperty(CSS_PROP_SHEET_OFFSET); // clean up any swipe-dismiss offset
   overlay.classList.remove(CLS_OPEN);
   document.body.classList.remove(CLS_POPOVER_OPEN);
@@ -521,7 +542,18 @@ export function initPopoverEngine(popoverData: PopoverMap): void {
   // A click anywhere else in the document closes an expanded margin note, the
   // same way the overlay closes a popover.
   document.addEventListener("click", (e: MouseEvent) => {
-    if ((e.target as HTMLElement).closest(".scroll-annotation")) return;
+    // renderAnnotation() replaces a note's children during this same click.
+    // By the time the event reaches document, e.target may therefore be
+    // detached and .closest() can no longer find its former annotation parent.
+    // composedPath() preserves the original propagation path.
+    const startedInsideAnnotation = e
+      .composedPath()
+      .some(
+        (node) =>
+          node instanceof HTMLElement &&
+          node.classList.contains("scroll-annotation"),
+      );
+    if (startedInsideAnnotation) return;
     collapseAnnotation();
   });
 }

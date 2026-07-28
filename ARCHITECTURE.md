@@ -2,27 +2,31 @@
 
 ## System Overview
 
-The portfolio is built on **Astro 5.0**, leveraging its strengths in content-heavy, static-site generation with minimal JavaScript delivery.
+The portfolio is built on **Astro 7**, using server output through the Vercel adapter with minimal client JavaScript.
 
 ## Component & Layout Strategy
 
 ### Layouts
+
 - **BaseLayout.astro:** Used for the main interactive resume. Renders the shared `<BaseHead />` and sets up the popover overlay infrastructure.
-- **CaseStudyLayout.astro:** Used for individual case study pages. Adds back-to-home navigation and per-page accent theming, and renders the same `<BaseHead />`.
+- **CaseStudyLayout.astro:** Used for individual case study pages. Adds context-preserving back navigation and per-page accent theming, and renders the same `<BaseHead />`.
 - **BaseHead.astro:** Shared `<head>` partial (charset/viewport/title, `robots: noindex`, Open Graph + Twitter tags, favicon, fonts via `<HeadFonts />`, and the theme `<ThemeScript />`) used by both layouts so the document head can't drift between them.
 
 ### Content Flow
+
 1. **JSON Files:** `resume.json` and `popovers.json` act as the "database."
 2. **Feature Flags (`src/utils/feature-flags.ts`):** `applyFeatureFlags` strips `link`/`linkText` from any popover whose case study page is not enabled in `CASE_STUDY_LINKS`. This runs server-side in `index.astro` before data is serialised to `window.__POPOVERS__`, so the client never receives links to unpublished pages.
-3. **Page Templates:** `src/pages/index.astro` reads the JSON data, applies feature flags, then optimizes images.
-4. **Hotspot Processing:** `renderHotspots` converts `<hotspot>` tags into interactive `<span>` elements with appropriate ARIA attributes.
+3. **Page Templates:** `src/pages/index.astro` reads the JSON data, optimizes popover images, then applies feature flags before serializing the final map to the client.
+4. **Hotspot Processing:** one `createHotspotRenderer(popovers)` instance converts `<hotspot>` tags into interactive spans. Every term gets an underline; only an enabled project-backed term gets the superscript Tabler Notes icon and “Case study” hint.
 
 ## Interactive Systems
 
 The interactive layer is decomposed into modular engines for maintainability and focus:
 
 ### 1. Popover Engine (`popover-engine.ts`)
+
 Handles the heavy lifting for the contextual overlay system:
+
 - **Draggable Context:** Desktop popovers are draggable via a dedicated chrome handle, allowing users to move them while browsing.
 - **Focus Management:** Implements full focus trapping and keyboard navigation (Tab/Shift-Tab, Escape to close).
 - **Responsive Handling:** Swaps between floating draggable panels and mobile "bottom-sheets." The handle strip is repurposed on mobile as a visible pill-and-swipe affordance (48px tall, centered pill indicator) rather than hidden.
@@ -32,49 +36,51 @@ Handles the heavy lifting for the contextual overlay system:
 
   Two things make that guarantee real, and both were previously missing:
 
-  1. **The clamp re-runs as figures load.** Popover images carry no `width`/`height`, so until each resource resolves it contributes zero height and the panel grows *after* it has been positioned. `onMediaReady()` (shared with the annotation engine, exported from `dom.ts`) re-clamps per figure, guarded on the note still being open.
+  1. **The clamp re-runs as figures load.** Popover images carry no `width`/`height`, so until each resource resolves it contributes zero height and the panel grows _after_ it has been positioned. `onMediaReady()` (shared with the annotation engine, exported from `dom.ts`) re-clamps per figure, guarded on the note still being open.
   2. **Both edges are checked, in both places.** The flip (`topAboveIfItFits`) tested only the top margin and the clamp tested only the bottom, so each covered for the other's gap. When the term is outside the viewport — which happens on that late re-clamp if the reader has scrolled — "above the term" clears the top and still ends far past the bottom. Guarding only the bottom then pushes tall notes off the top instead: the same bug wearing a different hat. `clampToViewport` now clamps into `[minTop, maxTop]`, and pins to `minTop` when the panel is taller than the viewport (it scrolls internally).
 
 ### 2. Annotation Engine (`annotation-engine.ts`)
+
 Manages the "magazine-style" margin content:
+
 - **Automatic DOM Mapping:** Dynamically parses `.hotspot` anchors in the DOM and automatically alternates left/right side assignments for marginalia (decoupling content creation from configuration).
 - **Intersection Observation:** Rebuilds and positions margin annotations as hotspots scroll into view.
 - **Overlap Resolution:** Algorithmic adjustment to prevent vertical collisions between adjacent annotations.
 - **Cold-Start Intro Annotation:** When the engine initializes at wide screen and no hotspots are immediately in the viewport, a native-feeling introductory annotation is injected at the top of the margin. It sets the expectation for the interactive experience and dissolves the moment the first real annotation reveals. Cleaned up immediately on resize/teardown via `resetAnnotationState`.
 - **Resize tier handling:** A debounced `resize` handler builds annotations on entering the wide tier (≥1420px) and tears them down on leaving it.
 - **The threshold is derived, not chosen:** `BREAKPOINT_WIDE` = 880 (sheet) + 2 × (42 gutter + 220 column) = 1404, rounded to 1420. The original 1460 sat just above the 1440px logical width of a 13" MacBook Air, so the feature the entire reading experience is built around was unreachable on a very common laptop no matter how the window was sized. If any of `DOC_MAX_WIDTH`, `MARGIN_COL_WIDTH` or `MARGIN_COL_GUTTER` changes, the threshold must be recomputed.
-- **No widen prompt.** Once terms carry footnote numbers, nothing is hidden from a narrow reader — every note is still marked and still opens — so a floating pill asking the reader to resize their browser window was advertising a loss that no longer occurs. `WidenPrompt.astro` and `WidenHint.astro` have been deleted.
+- **Widening discovery:** `WidenPrompt.astro` is an in-flow publication header between 600px and the 1420px wide tier. It occupies its own row above the masthead so it pushes the name down rather than covering it. Its progress hairline responds continuously as the browser is widened; crossing the threshold briefly confirms that the marginalia have been revealed, then collapses the row. It is an invitation to the simultaneous reading mode, not a content-access warning: annotated terms and panels keep every note available below the threshold.
 - **Lifecycle Safety:** `resetAnnotationState()` handles DOM/state cleanup without aborting the `resizeAbortController`, preserving the resize listener across intermediate resets. `cleanupAnnotations()` performs a full teardown including the controller.
 
 ### 3. Deterministic Type Scale
 
 Every `font-size` is driven by semantic custom properties defined once in **`src/styles/tokens.css`**. They live there rather than in `global.css` because three surfaces consume the scale — the résumé, the case studies and the login gate — and only the first two import `global.css`. While the scale lived in `global.css` the gate resolved every `--type-*` to nothing, so its input silently inherited 16px and its title collapsed to body size.
 
-| Variable | Role | Desktop | ≤600px | ≤380px |
-|---|---|---|---|---|
-| `--type-editorial` | Masthead name | clamp(40–68px) | clamp(34–44px) | clamp(30–38px) |
-| `--type-editorial-sub` | Masthead tagline | clamp(20–32px) | 21px | — |
-| `--type-h2` | Company names | 22px | 18px | 17px |
-| `--type-h3` | Section marks (mono) | 11px | 10px | — |
-| `--type-h4` | Job title, degree | 17px | 16px | — |
-| `--type-h5` | School name | 15px | 14px | — |
-| `--type-body-lg` | Lead paragraph | 19px | 18px | — |
-| `--type-body` | Body copy | 17px | 17px | — |
-| `--type-body-sm` | Quotes, margin-note prose | 14px | 14px | — |
-| `--type-meta` | Mono labels | 11px | 11px | — |
-| `--type-year` | Date rail | 12px | 12px | — |
-| `--type-stat` | Panel display numbers | 34px | 34px | — |
-| `--type-stat-margin` | Margin display numbers | 26px | 26px | — |
+| Variable               | Role                      | Desktop        | ≤600px         | ≤380px         |
+| ---------------------- | ------------------------- | -------------- | -------------- | -------------- |
+| `--type-editorial`     | Masthead name             | clamp(40–68px) | clamp(34–44px) | clamp(30–38px) |
+| `--type-editorial-sub` | Masthead tagline          | clamp(20–32px) | 21px           | —              |
+| `--type-h2`            | Company names             | 22px           | 18px           | 17px           |
+| `--type-h3`            | Section marks (mono)      | 11px           | 10px           | —              |
+| `--type-h4`            | Job title, degree         | 17px           | 16px           | —              |
+| `--type-h5`            | School name               | 15px           | 14px           | —              |
+| `--type-body-lg`       | Lead paragraph            | 19px           | 18px           | —              |
+| `--type-body`          | Body copy                 | 17px           | 17px           | —              |
+| `--type-body-sm`       | Quotes, margin-note prose | 14px           | 14px           | —              |
+| `--type-meta`          | Mono labels               | 11px           | 11px           | —              |
+| `--type-year`          | Date rail                 | 12px           | 12px           | —              |
+| `--type-stat`          | Panel display numbers     | 34px           | 34px           | —              |
+| `--type-stat-margin`   | Margin display numbers    | 26px           | 26px           | —              |
 
-Body copy stays 17px at every viewport including 375px: the scale reduces the display, headline and title levels on small screens and deliberately does not touch the body, because reading size is not a responsive variable. The two stat steps are one role in two rooms — the panel is a 400px focal surface, the margin a 220px aside, and the panel's 34px there out-shouted the 22px company headings beside it.
+Body copy stays 17px at every viewport including 375px: the scale reduces the display, headline and title levels on small screens and deliberately does not touch the body, because reading size is not a responsive variable. The two stat steps are one role in two rooms — the panel is a fluid 480–560px focal surface, the margin a 220px aside, and the panel's 34px there out-shouted the 22px company headings beside it.
 
 **The rule:** a breakpoint overrides the `:root` variables only, never an element's `font-size`.
 
-**Shared tokens (`tokens.css`, `controls.css`).** The palette, the font stacks and the type scale live in `src/styles/tokens.css`, imported by `global.css`, `case-study.css` and `login.astro`, so no surface can drift. The floating theme toggle and the case-study back link live in `src/styles/controls.css`, shared the same way. The résumé's own layout metrics (`--doc-max-width`, `--sheet-inset`, `--margin-col-*`, `--popover-*`) and the footnote state variables stay in `global.css`.
+**Shared tokens (`tokens.css`, `controls.css`).** The palette, the font stacks and the type scale live in `src/styles/tokens.css`, imported by `global.css`, `case-study.css` and `login.astro`, so no surface can drift. The floating theme toggle and the case-study back link live in `src/styles/controls.css`, shared the same way. The résumé's own layout metrics (`--doc-max-width`, `--sheet-inset`, `--margin-col-*`, `--popover-*`) and annotation state variables stay in `global.css`.
 
 **Palette.** The résumé is achromatic and each case study is its client's environment. That doctrine, its tokens and its contrast maths are documented once in [DESIGN.md](./DESIGN.md) and are not restated here.
 
-**Two families, one voice.** `Newsreader` sets both the masthead and the body copy — its optical-size axis lets one face be a 68px title and a 17px paragraph, which is what makes the page read as a single publication. `JetBrains Mono` is the annotation apparatus and never sets prose: section marks, folio numbers, margin labels, dates, chrome. UI chrome takes the system UI stack; `Inter` was removed after it was found to be loading three weights while rendering zero elements.
+**Two families, one voice.** `Newsreader` sets both the masthead and the body copy — its optical-size axis lets one face be a 68px title and a 17px paragraph, which is what makes the page read as a single publication. `JetBrains Mono` is the annotation apparatus and never sets prose: section marks, margin labels, dates, and chrome. UI chrome takes the system UI stack; `Inter` was removed after it was found to be loading three weights while rendering zero elements.
 
 **The sheet is a page, not a column.** `--doc-max-width` is 880px, but the text block inside is 704px (≈70 characters at 17px) — the remaining 176px is the sheet's own margin. That difference is what makes it read as a page rather than a strip. The margin is named `--sheet-inset` (`clamp(24px, 6vw, 88px)`) because three things must agree on it: `.doc-page` padding, `.masthead-inner` padding, and the year rail, which hangs in exactly that band.
 
@@ -88,36 +94,51 @@ Experience sets its years in a mono rail that hangs in `--sheet-inset`, right-al
 
 Month precision is never lost: `index.astro` renders the full authored string into a visually hidden span, so assistive technology still gets the exact range.
 
-### 4. Footnote References (Annotated Terms)
+### 4. Semantic References (Annotated Terms)
 
-An annotated term is a footnote reference, not a highlighter mark: a hairline rule under the term plus a superscript folio number. The number is the affordance — it announces depth without depending on hover, on colour alone, or on a viewport wide enough for margins, and it works identically at 375px and 1600px. A filled term reads as a reader's gesture; the wash is therefore reserved for states the reader caused (hover, open).
+An annotated term uses a hairline rule rather than a highlighter fill. The underline is sufficient for ordinary marginalia; a superscript Tabler Notes icon appears only when the note also leads to a deeper case study. The icon's hover/focus hint says “Case study,” and the hotspot's accessible label distinguishes “Case study available” from “Marginalia.” This preserves meaning without numbering every annotation or adding an icon that merely repeats what the underline already says.
 
 - **`box-decoration-break: clone`** keeps the rule and wash correct when a term wraps across a line.
 - **State variables** (`--hs-rule`, `--hs-rule-hover`, `--hs-wash-hover`, `--hs-wash-active`) are defined once in `global.css` and re-tuned for the night edition. They must stay genuinely distinct per state: the previous light theme set default and hover to the same 0.08 opacity, so hovering an annotated term produced no tint change at all.
-- **Numbering** is assigned by `createHotspotRenderer()` in `src/utils/render.ts`. It returns a closure holding the counter, and `index.astro` creates exactly one per render and uses it for every string in document order. A module-scoped counter would be a live bug on a server-rendered site (`output: 'server'`): it would keep incrementing across requests and the second visitor would start at 19. `renderHotspots()` remains as a single-shot wrapper that starts a fresh sequence.
-- The superscript is `aria-hidden`. It is visual wayfinding; a screen reader announcing "Bolt design system 4" is noise, and `role="button"` + `aria-expanded` already carry the interaction.
+- **Project awareness** comes from the server-side, feature-flagged popover map passed into `createHotspotRenderer()`. A case-study icon therefore appears only when the corresponding route is actually offered in that environment.
+- The superscript icon is `aria-hidden`; the complete state is included in the hotspot's `aria-label`, while `role="button"` and `aria-expanded` carry the interaction.
 
 ### 4b. The Glance / Dig Ladder
 
-The margin note and the popover are two rungs of one ladder, not two renderings of one payload. `buildContentNode()` takes `mediaMode`, `folio` and `includeLink` to express the split:
+The margin note and the popover are two rungs of one ladder. `buildContentNode()` takes `mediaMode` and `includeLink` to express their shared media behavior and different text depth:
 
-| | Margin note (`sa`) | Popover (`popover`) |
-|---|---|---|
-| Text | 1 sentence (`ANNOTATION_TEXT_SENTENCES`) | full |
-| Media | first figure only, no carousel | every figure, full carousel |
-| Folio number | yes | yes |
-| Case-study link | yes | yes |
+|                 | Margin note (`sa`)                       | Popover (`popover`)         |
+| --------------- | ---------------------------------------- | --------------------------- |
+| Text            | 1 sentence (`ANNOTATION_TEXT_SENTENCES`) | full                        |
+| Media           | every figure, full carousel              | every figure, full carousel |
+| Case-study link | when authored                            | when authored               |
 
-Both surfaces previously rendered three sentences plus the whole carousel, so opening a note bought the reader one extra sentence in exchange for covering the page they were reading.
+On wide screens the marginalia is the media experience, not a preview of it. Images and videos therefore remain scrollable in the default note; expansion adds the complete narrative without replacing or removing the carousel.
 
-**The case-study control.** One control, identical on both surfaces and present in the collapsed margin note as well as the expanded one: a block at the foot with a hairline above, a mono label carrying its own underline, and an arrow as a `::after` pseudo-element. Two things it is deliberately not:
+**The case-study control.** Project-backed notes expose one named destination in the collapsed and expanded margin note as well as the popover. Its placement follows the surface:
 
-1. **Not sticky.** It was `position: sticky; bottom: 0`, which does nothing here — a note shorter than its own 72vh cap never overflows, so there is no scroll container to stick to, and the control simply sat at the foot of a column hanging below the fold. `elementFromPoint` at its centre returned nothing: a control that cannot be hit is not a control.
-2. **Not a bare arrow.** The collapsed note used to end in a `→` glyph cued on "the popover holds more", which fired for one extra sentence or one extra image as readily as for a case study — so it promised depth it usually could not deliver, and a trailing arrow reads as its own link inside a surface that is already clickable. The arrow now belongs to a real link, and lives in CSS rather than inside `linkText` in `popovers.json`.
+1. **Wide marginalia:** normal flow. A sticky position cannot help a note shorter than its own cap, so the destination sits naturally after the note content.
+2. **Popover and mobile sheet:** the destination is inserted directly after the media; when no media exists, it follows the label/stat and precedes the narrative. It is sticky at the top of `.popover-scroll`, so the reader encounters it early and it remains available while longer copy scrolls. The control uses a document-white field with a black boundary and action square, then inverts as one unit on hover/focus.
+
+The collapsed note used to end in a bare `→` glyph cued on "the popover holds more", which fired for one extra sentence or one extra image as readily as for a case study. The arrow now belongs to a real link and lives in CSS rather than inside `linkText` in `popovers.json`.
 
 At the wide tier the popover never opens: `popover-engine` defers to `toggleAnnotation(key)` first, so a marked term expands its note in the margin instead of throwing a panel over the document.
 
 ### 5. Case Study Template System
+
+**Returning without losing context.** Project links are dynamically generated
+on the résumé, so `return-to-resume.ts` listens for same-tab clicks on both
+`.popover-link` and `.sa-link`. It passes a short-lived marker through
+`sessionStorage`; the matching case-study history entry claims that marker.
+The case-study Back control then calls `history.back()` instead of creating a
+new `/` navigation, allowing the browser to restore the exact résumé scroll
+position and any back-forward cached UI state. Before leaving, the résumé also
+stores transient overlay state (note key, inner scroll, carousel slide, and
+dragged position) on its own history entry; `restoreResumeReturnView()` rebuilds
+that view if the browser did not retain the page in its back-forward cache.
+Direct case-study visits retain the ordinary `href="/"` fallback. This
+handshake is necessary because the site's `Referrer-Policy: no-referrer` header
+deliberately makes `document.referrer` unavailable.
 
 The case study system has three distinct layers. Each layer has a single responsibility, and a new agent should understand all three before making changes.
 
@@ -129,6 +150,9 @@ src/content/case-studies/
   sparks-grove.json
   two-way-tv.json
   felix.json
+  fusionfall.json
+  magic-wall.json
+  armchair-manager.json
 
 src/pages/
   truist.astro           ← thin wrapper: imports JSON, renders <CaseStudyPage cs={cs} />
@@ -136,11 +160,13 @@ src/pages/
   sparks-grove.astro
   two-way-tv.astro
   felix.astro
+  fusionfall.astro
+  magic-wall.astro
+  armchair-manager.astro
 
 src/components/case-studies/
   CaseStudyPage.astro    ← validates a study (zod) and composes Layout + Hero + Context + Sections
   CaseStudySection.astro ← dispatcher: switches on section.type
-  CaseStudyLayout.astro  ← HTML shell, fonts, back nav, accent theming
   CaseStudyHero.astro    ← full-bleed or device-mockup hero
   ContextGrid.astro      ← challenge/role/scope/team grid
   ShowcaseSection.astro  ← section wrapper (light or dark)
@@ -148,8 +174,11 @@ src/components/case-studies/
   ShowcaseCard.astro     ← image + title + description card
   FeatureRow.astro       ← 50/50 image-beside-text row
   CaptionedImage.astro   ← full-width image + one caption line
-  PhotoGrid.astro        ← image-only grid, no per-image text
+  PhotoGrid.astro        ← contextual header + uncropped image grid
   StatRow.astro          ← typographic outcome numbers band
+
+src/layouts/
+  CaseStudyLayout.astro  ← HTML shell, fonts, back nav, accent theming
 ```
 
 **Data flows like this:**
@@ -164,17 +193,18 @@ src/components/case-studies/
 
 Every section in a study JSON file must have a `type` field. `CaseStudySection.astro` switches on this value.
 
-| `type` | What renders | Required JSON fields | Optional JSON fields |
-|---|---|---|---|
-| `cardGrid` | ShowcaseSection + ShowcaseGrid + ShowcaseCard[] | `cards[]` | `columns` (1-3, default 2), `isDark`, `bg`, `darkBg` |
-| `mixedGrid` | ShowcaseSection + 1-col grid (primaryCard) + 2-col grid (secondaryCards) | `primaryCard`, `secondaryCards[]` | `isDark`, `bg`, `darkBg` |
-| `featureRow` | FeatureRow (image beside text, optionally reversed) | `title`, `description`, `image`, `imageAlt` | `reverse`, `label`, `bg` |
-| `textOnly` | ShowcaseSection with no child grid | `title`, `description` | `label`, `isDark`, `bg`, `darkBg` |
-| `largeImage` | ShowcaseSection + constrained full-width Image | `image`, `imageAlt` | `label`, `title`, `description`, `imageWidth`, `imageHeight`, `bg` |
-| `fullBleed` | Full-viewport `<section>` + Image (no text) | `image`, `imageAlt` | `bg` |
-| `captionedImage` | Full content-width image + single caption line | `image`, `imageAlt` | `caption` (one short sentence), `label`, `imageWidth`, `imageHeight`, `bg` |
-| `photoGrid` | Grid of images with no per-image text — use when the work speaks for itself | `images[]` (each: `src`, `alt`) | `columns` (1-4, default 2), `gap` (tight/normal/loose), `label`, `title`, `bg`, `isDark` |
-| `statRow` | Horizontal band of large typographic outcome numbers | `stats[]` (each: `value`, `label`) | `label`, `bg`, `isDark` |
+| `type`           | What renders                                                             | Required JSON fields                        | Optional JSON fields                                                                                            |
+| ---------------- | ------------------------------------------------------------------------ | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `cardGrid`       | ShowcaseSection + ShowcaseGrid + ShowcaseCard[]                          | `cards[]`                                   | `columns` (1-3, default 2), `isDark`, `bg`, `darkBg`                                                            |
+| `mixedGrid`      | ShowcaseSection + 1-col grid (primaryCard) + 2-col grid (secondaryCards) | `primaryCard`, `secondaryCards[]`           | `isDark`, `bg`, `darkBg`                                                                                        |
+| `featureRow`     | FeatureRow (image beside text, optionally reversed)                      | `title`, `description`, `image`, `imageAlt` | `reverse`, `label`, `caption`, `link`, `linkText`, `bg`                                                         |
+| `textOnly`       | ShowcaseSection with no child grid                                       | `title`, `description`                      | `label`, `isDark`, `bg`, `darkBg`                                                                               |
+| `largeImage`     | ShowcaseSection + constrained full-width Image                           | `image`, `imageAlt`                         | `label`, `title`, `description`, `imageWidth`, `imageHeight`, `bg`                                              |
+| `fullBleed`      | Full-viewport `<section>` + Image (no text)                              | `image`, `imageAlt`                         | `bg`                                                                                                            |
+| `captionedImage` | Content-width image + single caption line                                | `image`, `imageAlt`                         | `caption` (one short sentence), `label`, `displayWidth` (maximum rendered width for supporting artifacts), `bg` |
+| `photoGrid`      | Context header followed by a grid of uncropped images                    | `images[]` (each: `src`, `alt`)             | `columns` (1-3, default 2), `gap` (tight/normal/loose), `label`, `title`, `description`, `bg`, `isDark`         |
+| `statRow`        | Horizontal band of large typographic outcome numbers                     | `stats[]` (each: `value`, `label`)          | `label`, `bg`, `isDark`                                                                                         |
+| `video`          | ShowcaseSection + native video player + optional context caption         | `video`                                     | `poster`, `caption`, `label`, `title`, `description`, `bg`, `isDark`                                            |
 
 **Shared optional fields on every section:** `key` (identifier, not rendered), `label` (eyebrow text), `bg` (any CSS color or gradient), `isDark` (dark variant), `darkBg` (overrides accent-derived dark background).
 
@@ -186,9 +216,9 @@ Every section in a study JSON file must have a `type` field. `CaseStudySection.a
 --accent: #3b1a5a; --accent-rgb: 59, 26, 90; --accent-contrast: #FFFFFF; --accent-ink: #3b1a5a;
 ```
 
-`--accent-ink` is the brand darkened only as far as readability requires — `accentInk()` mixes toward black until it clears 4.9:1 on white, so Truist, Delta and Two Way TV are returned untouched and only the light brands move (Upwave `#f26522` → `#b84d1a`, Felix's cyan `#00c2e0` → `#007c8f`). A brand hex is chosen for logos and fields, not for 11px type: unadjusted, those two measure 2.98:1 and 2.05:1 as labels. The target is 4.9 rather than AA's 4.5 because the surface the ink lands on is a 5% tint of the brand, not pure white.
+`--accent-ink` is the brand darkened only as far as readability requires — `accentInk()` mixes toward black until it clears 4.9:1 on white. A brand hex is chosen for logos and fields, not for 11px type; the target is 4.9 rather than AA's 4.5 because the surface the ink lands on is a 5% tint of the brand, not pure white. The current published accents are defined canonically in `manifest.json`; do not duplicate that changing inventory here.
 
-**Anything derived from `--accent` must be declared on `<body>` or below, never on `:root`.** The brand hex arrives as an inline style on `<body>`; a mapping such as `--label-color: var(--accent)` sitting on `:root` resolves against the root's own `--accent` — the ink — and never sees the brand value one level down. That was live: every eyebrow and every outcome numeral on all five case studies rendered black.
+**Anything derived from `--accent` must be declared on `<body>` or below, never on `:root`.** The brand hex arrives as an inline style on `<body>`; a mapping such as `--label-color: var(--accent)` sitting on `:root` resolves against the root's own `--accent` — the ink — and never sees the brand value one level down.
 
 Inline styles take precedence over any stylesheet rule, so brand colours cannot bleed between pages regardless of CSS bundle order. If `accent` is omitted or malformed, `resolveHexColor()` falls back to `DEFAULT_ACCENT` (`#000000` — the ink, since a page naming no client has nothing to identify) and warns.
 
@@ -213,7 +243,9 @@ Dark sections (`isDark: true`) compute their background using `color-mix(in srgb
 ## Content Integrity & Performance
 
 ### 1. Content Integrity Suite (`scripts/verify-content.ts`)
+
 A custom TypeScript-driven verification system that ensures 100% link safety:
+
 - **Schema Validation:** Parses `resume.json`, `popovers.json`, `manifest.json`, and every case-study JSON against the shared **zod** schemas in `src/content/schema.ts` — the same schemas that back `content.config.ts` and the `z.infer`'d TS types in `src/types/content.ts`, so validation, runtime config, and compile-time types are one source of truth. A `try/catch` around `JSON.parse` turns malformed files into a clean error rather than a stack trace.
 - **Hotspot Validation:** Cross-references `<hotspot>` tags in `resume.json` against `popovers.json` inventory, and enforces a strict 1:1 mapping by failing the build if any duplicate hotspots are used in the resume.
 - **Media Validation:** Validates that every `img` path and every path within `media` arrays exists in the `public/` directory.
@@ -221,7 +253,9 @@ A custom TypeScript-driven verification system that ensures 100% link safety:
 - **Build Guard:** Integrated into the `npm run build` process to prevent broken deployments.
 
 ### 2. Image Optimization Pipeline
-Leverages Astro's Image Service for modern asset delivery:
+
+Leverages Astro 7's Image Service for modern asset delivery:
+
 - **Static Assets:** Automatic WebP conversion and resizing within case study components.
 - **Dynamic Assets:** Build-time pre-optimization of all popover images in `index.astro`, ensuring even dynamically loaded content is hashed and optimized. Sized with `fit: "inside"` — 600×400 is a bounding box, not a mandate. As `cover` it hard-cropped every figure to 3:2 at build time, so a 1100×2070 portrait lost two thirds of itself before any stylesheet saw it.
 
@@ -237,6 +271,7 @@ Case-study artwork lives in `public/`, which Astro does **not** process — `<Im
 ## Security
 
 Authentication lives in `src/middleware.ts`; the session cookie name (`SESSION_COOKIE_NAME`) and security-header set (`SECURITY_HEADERS`) are defined once in `src/utils/auth.ts` and shared with the login page so they can't drift.
+
 - **Fail-closed:** Returns `503` if `SITE_PASSWORD` is not configured (never accidentally open).
 - **Constant-time comparison:** `safeEqual()` wraps Node's `crypto.timingSafeEqual`, short-circuiting on a length mismatch first (since `timingSafeEqual` throws on unequal-length buffers), to resist timing attacks on cookie validation.
 - **Asset bypass:** the `ASSET_EXT` regex (its video extensions sourced from the shared `VIDEO_EXTENSIONS` constant) matches static file extensions, plus a `/_astro` prefix check — avoiding the overly broad `.includes('.')` approach.
@@ -248,7 +283,7 @@ The codebase uses three deliberate strategies, chosen by failure context — not
 
 - **Build-time content validators collect and fail loud.** `scripts/verify-content.ts` accumulates every problem into an `errors[]` array and `process.exit(1)` so a broken deploy is impossible. Schema parsing (`src/content/schema.ts`) throws on malformed data at the page boundary (`CaseStudyPage.astro`).
 - **The request gate fails closed.** `src/middleware.ts` returns `503` if `SITE_PASSWORD` is absent and redirects on any auth failure — never an open default.
-- **Render/build-time asset helpers warn and degrade.** `src/utils/images.ts`, `src/utils/color.ts` and `src/utils/image-size.ts` log a `console.warn` and fall back to the original/default value rather than throwing, so one bad asset never blanks a page. (A *legitimately absent* value stays silent; only a malformed one warns.)
+- **Render/build-time asset helpers warn and degrade.** `src/utils/images.ts`, `src/utils/color.ts` and `src/utils/image-size.ts` log a `console.warn` and fall back to the original/default value rather than throwing, so one bad asset never blanks a page. (A _legitimately absent_ value stays silent; only a malformed one warns.)
 
 ## Content Visibility
 
@@ -260,28 +295,33 @@ Nothing the reader must read is allowed to depend on an animation or a script co
 ## Case-Study Prop Vocabulary
 
 The vocabulary difference between `CaseStudyHero` and the section components is intentional, not drift:
+
 - **Hero** (`CaseStudyHero`): `subtitle` (lead paragraph), `background` (full-bleed hero image), `image` (device-mockup image).
 - **Sections** (`ShowcaseSection`, `FeatureRow`, …): `description` (body copy), `bg` (CSS background color/gradient), `image` (content image).
 
-`bg` is a section *color*; `background` is the hero *image* — keep them distinct.
+`bg` is a section _color_; `background` is the hero _image_ — keep them distinct.
 
 **`.hero` belongs to case studies; the résumé's title page is `.masthead`.** `CaseStudyLayout` imports `global.css`, so any unscoped selector there also lands on every case-study page. Both surfaces used to define `.hero`, and because `CaseStudyHero`'s scoped styles never set `max-width` or `margin`, the résumé's `.hero { max-width: 820px; margin: 0 auto }` won by default — clamping every full-bleed case-study hero to a centred 820px column with the page background showing as bars either side (692px of dead space at 1512px) while every section below it ran full width. Two different things had one name. Do not reintroduce a global `.hero` rule in `global.css`.
 
 The same hazard applied to `theme-light`/`theme-dark`, which were simultaneously the document-level edition flag on `<html>` and the section wrapper classes emitted by `CaseStudySection`. The section variants are now `section-light`/`section-dark`.
 
 ## Testing Strategy
+
 - **Vitest + JSDOM:** Core logic and utility functions are verified against a simulated browser environment.
 - **Key Testable Units:**
-  - `src/utils/color.ts`: Hex validation, RGB conversion, full `buildAccentStyle()` output, and `accentInk()` — asserted against the five published brand hexes, so a brand that stops clearing 4.9:1 on white fails here rather than on the page.
+  - `src/utils/color.ts`: Hex validation, RGB conversion, full `buildAccentStyle()` output, and `accentInk()` against representative published brand values.
   - `src/utils/validation.ts`: Logic for extracting and validating hotspots.
   - `src/utils/images.ts`: Pipeline for pre-optimizing dynamic image assets, including case-insensitive extension handling, forwarding of `IMAGE_OPTIMIZE_OPTIONS`, and that figures are sized with `fit: "inside"` — a bounding box, never a crop. Nothing else in the suite would catch a silent revert to `cover`.
   - `src/utils/image-size.ts`: `publicImageSize()` against real assets and real sharp — correct dimensions for portrait and landscape files, `null` (never a throw) for a missing or undecodable one, and the build-time memo.
   - `src/utils/dates.ts`: `yearSpan()` / `startYear()` across month-precision ranges, ongoing roles, single-year roles and yearless strings, plus a pass over the real `resume.json` asserting every entry yields a rail-shaped value and that the entries stay newest-first.
-  - `src/utils/render.ts`: Hotspot-to-span transformation (verified to use `SEL_HOTSPOT` and `ID_POPOVER`), sequential folio numbering, the `aria-hidden` marker, and that each `createHotspotRenderer()` owns an independent sequence — the guard against a module-scoped counter leaking across server-rendered requests.
+  - `src/utils/render.ts`: Hotspot-to-span transformation, project-aware case-study markers, accurate accessible labels for marginalia-only versus project-backed terms, and feature-flag-aware rendering.
   - `src/utils/feature-flags.ts`: Slug parsing, `isCaseStudyLinkEnabled`, and `applyFeatureFlags` immutability.
   - `src/content/schema.ts`: the zod content schemas, parsed against the real `resume.json`/`popovers.json`/`manifest.json`/case-study JSON plus negative (malformed) cases.
   - `src/middleware.ts`: the auth gate — `/login` and static-asset bypass, fail-closed `503`, redirect on missing/incorrect cookie, the length-mismatch guard around `timingSafeEqual`, and security-header injection.
   - `src/scripts/annotation-engine.ts`: side assignment, cold-start intro lifecycle, and the resize state machine (build on entering the wide tier, tear down on leaving; `resetAnnotationState` preserves the resize listener while `cleanupAnnotations` aborts it).
   - `src/scripts/popover-engine.ts`: above/below flip positioning and horizontal clamp, open/close lifecycle, focus trap, mobile swipe-to-dismiss, desktop drag clamping, and two regression cases pinning the two-sided viewport clamp (term below the fold, term above the fold).
-  - `src/scripts/dom.ts`: DOM construction for popovers, carousels, and accessibility attributes; the glance/dig split (`mediaMode`, `folio`, `includeLink`); that the case-study link renders in the collapsed margin note with its label in its own span; that no affordance glyph leaks into a content string; and per-figure media descriptions. Truncation assertions are driven by `ANNOTATION_TEXT_SENTENCES` rather than a literal, so retuning how much the margin shows stays a one-line change.
+  - `src/scripts/dom.ts`: DOM construction for popovers, carousels, and accessibility attributes; the glance/dig split (`mediaMode`, `includeLink`); placement of project controls after media or before no-media narrative; that the case-study link renders in collapsed marginalia; and per-figure media descriptions.
   - `src/scripts/constants.ts`: Structural invariants — breakpoint ordering, value ranges, `VIDEO_EXTENSIONS` contents, CSS class/selector format, and swipe-gesture thresholds (`SWIPE_DISMISS_THRESHOLD`, `SWIPE_DISMISS_VELOCITY`).
+  - `src/scripts/return-to-resume.ts`: same-tab project tracking, true Back behavior, stale-context rejection, and reconstruction of the saved popover, inner scroll, carousel frame, and dragged position.
+  - `src/scripts/password-visibility.ts`: concealed/visible state, canonical icon semantics, synchronized accessible labels, and focus retention.
+  - `src/components/Icon.astro`: the curated Tabler registry and direct SVG import contract that avoids transforming the library's full component barrel.

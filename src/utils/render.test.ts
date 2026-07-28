@@ -5,14 +5,15 @@ import { SEL_HOTSPOT, ID_POPOVER } from "../scripts/constants";
 const HOTSPOT_CLASS = SEL_HOTSPOT.replace(/^\./, "");
 
 describe("renderHotspots", () => {
-  it("should convert hotspot tags to numbered span elements", () => {
+  it("should leave marginalia-only controls free of redundant icons", () => {
     const input = 'This is a <hotspot key="test">hotspot</hotspot>.';
     const output = renderHotspots(input);
-    expect(output).toBe(
-      `This is a <span class="${HOTSPOT_CLASS}" data-popover="test" data-folio="1"` +
-        ` tabindex="0" role="button" aria-expanded="false" aria-controls="${ID_POPOVER}">` +
-        `hotspot<sup class="hotspot-ref" aria-hidden="true">1</sup></span>.`,
+    expect(output).toContain(
+      `<span class="${HOTSPOT_CLASS}" data-popover="test"`,
     );
+    expect(output).not.toContain('class="hotspot-ref"');
+    expect(output).not.toContain("data-hint");
+    expect(output).not.toContain("data-folio");
   });
 
   it("should use the class name derived from SEL_HOTSPOT constant", () => {
@@ -43,54 +44,45 @@ describe("renderHotspots", () => {
     const output = renderHotspots('<hotspot key="k">label</hotspot>');
     expect(output).toContain('tabindex="0"');
     expect(output).toContain('role="button"');
+    expect(output).toContain('aria-label="label. Marginalia."');
     expect(output).toContain('aria-expanded="false"');
   });
 
-  it("should hide the decorative folio marker from assistive tech", () => {
-    const output = renderHotspots('<hotspot key="k">label</hotspot>');
-    expect(output).toContain(
-      '<sup class="hotspot-ref" aria-hidden="true">1</sup>',
-    );
+  it("should hide the visual marker from assistive tech", () => {
+    const output = renderHotspots('<hotspot key="k">label</hotspot>', {
+      k: { link: "/case-study" },
+    });
+    expect(output).toContain('data-hint="Case study" aria-hidden="true"');
   });
 
-  it("should number hotspots sequentially within one string", () => {
+  it("should add the case-study marker when a deeper page is available", () => {
+    const output = renderHotspots('<hotspot key="project">Project</hotspot>', {
+      project: { link: "/project" },
+    });
+    expect(output).toContain('class="hotspot-ref"');
+    expect(output).toContain('data-hint="Case study"');
+    expect(output).toContain('aria-label="Project. Case study available."');
+  });
+
+  it("should escape quotation marks in the accessible label", () => {
     const output = renderHotspots(
-      '<hotspot key="a">A</hotspot> <hotspot key="b">B</hotspot> <hotspot key="c">C</hotspot>',
+      '<hotspot key="quoted">CNN "Magic Wall"</hotspot>',
     );
-    expect(output).toContain('data-folio="1"');
-    expect(output).toContain('data-folio="2"');
-    expect(output).toContain('data-folio="3"');
+    expect(output).toContain(
+      'aria-label="CNN &quot;Magic Wall&quot;. Marginalia."',
+    );
   });
 });
 
 describe("createHotspotRenderer", () => {
-  it("should continue the folio sequence across separate calls", () => {
-    const render = createHotspotRenderer();
+  it("should preserve destination semantics across separate calls", () => {
+    const render = createHotspotRenderer({
+      a: { link: "/a" },
+      b: {},
+    });
     const first = render('<hotspot key="a">A</hotspot>');
     const second = render('<hotspot key="b">B</hotspot>');
-    const third = render('<hotspot key="c">C</hotspot>');
-
-    expect(first).toContain('data-folio="1"');
-    expect(second).toContain('data-folio="2"');
-    expect(third).toContain('data-folio="3"');
-  });
-
-  it("should give each renderer its own independent sequence", () => {
-    // Guards the server-rendering hazard: a module-scoped counter would leak
-    // across requests and the next visitor would start mid-sequence.
-    const a = createHotspotRenderer();
-    const b = createHotspotRenderer();
-
-    a('<hotspot key="x">x</hotspot>');
-    a('<hotspot key="y">y</hotspot>');
-
-    expect(b('<hotspot key="z">z</hotspot>')).toContain('data-folio="1"');
-  });
-
-  it("renderHotspots should always start a fresh sequence", () => {
-    renderHotspots('<hotspot key="a">A</hotspot>');
-    expect(renderHotspots('<hotspot key="b">B</hotspot>')).toContain(
-      'data-folio="1"',
-    );
+    expect(first).toContain('class="hotspot-ref"');
+    expect(second).not.toContain('class="hotspot-ref"');
   });
 });

@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "title": "Armchair Manager Football",
+    "description": "How I produced a live fantasy-football game for standard-definition interactive television, turning real match events into squad scores, predictions, transfers, and competition.",
+    "ogImage": "/images/armchair-manager/title-screen.webp",
+    "accent": "#009b3a"
+  },
+  "hero": {
+    "label": "Two Way TV · Interactive Sports · 1998-2001",
+    "title": "Making Live Football Playable",
+    "subtitle": "Designed, produced, and technically architected Armchair Manager Football, a live fantasy-sports product that let television viewers build a squad, predict matches, and watch real football events change their score in real time.",
+    "image": "/images/armchair-manager/title-screen.webp",
+    "imageAlt": "Armchair Manager Football title screen showing the product logo, competition details, round lockout time, and remote-control actions"
+  },
+  "context": {
+    "challenge": "Turn live football into a responsive game on standard-definition television, before modern streaming or second-screen apps existed.",
+    "role": "Designer, Producer & Technical Architect",
+    "company": "Two Way TV / Active Digital (Telewest)",
+    "scope": "Game design, interaction design, game systems, and broadcast deployment",
+    "team": "Product, engineering, graphics, research and testing, live data, and broadcast operations",
+    "body": "Armchair Manager Football was an interactive sports-trading game delivered through standard-definition television (pre-HDTV), not a PC game or conventional website. Viewers used a remote control and cable set-top box to create a fantasy squad of real footballers within an imaginary budget of approximately £50 million. They could evaluate players, make transfers, predict match outcomes, and then follow live as goals, bookings, substitutions, and results changed individual and squad scores. I designed and produced the product, served as its technical architect, and designed its database. My work spanned the interaction model, game rules, data structures, and operational tools. The product used web and Java technologies adapted to broadcast platforms, turning live football data into a persistent game service more than twenty years before fantasy sports became a routine companion to streaming."
+  },
+  "sections": [
+    {
+      "key": "squad",
+      "type": "featureRow",
+      "label": "The Core Decision",
+      "title": "Build a squad under real constraints.",
+      "description": "Players assembled an eleven-player team and manager within a fixed budget and formation rules. The interface supported sorting by price, club, position, performance, and points, while immediate feedback explained why a squad was invalid. The design had to make a complex market understandable through a television remote and a low-resolution screen.",
+      "image": "/images/armchair-manager/transfer-market.webp",
+      "imageAlt": "Armchair Manager transfer market showing footballers, clubs, prices, points, bank balance, squad status, and remote-control actions"
+    },
+    {
+      "key": "live-game",
+      "type": "cardGrid",
+      "columns": 3,
+      "isDark": true,
+      "darkBg": "#06351c",
+      "label": "The Live Game Loop",
+      "title": "Real matches became the game engine.",
+      "description": "Before kickoff, the system locked squad changes and predictions. During play, live match events updated footballer values, squad scores, and league positions. The experience connected preparation, prediction, live attention, and competition in one continuous loop.",
+      "cards": [
+        {
+          "title": "Predict the fixtures",
+          "description": "Viewers predicted home wins, away wins, or draws and could inspect fixture and team information before lockout.",
+          "image": "/images/armchair-manager/match-centre.webp",
+          "imageAlt": "Armchair Manager match centre showing Liverpool versus Manchester United, Arsenal versus Leeds, prediction controls, and player information"
+        },
+        {
+          "title": "Follow live events",
+          "description": "Goals, bookings, substitutions, starts, and results flowed into the match view and triggered configurable scoring events.",
+          "image": "/images/armchair-manager/live-events.webp",
+          "imageAlt": "Armchair Manager live event feed listing footballers, clubs, match events, time, and points"
+        },
+        {
+          "title": "Compete in real time",
+          "description": "A continuously updating league table showed round and total scores, turning a solitary television session into a shared competition.",
+          "image": "/images/armchair-manager/league-table.webp",
+          "imageAlt": "Armchair Manager league table showing squad rankings, round scores, and total scores"
+        }
+      ]
+    },
+    {
+      "key": "service-design",
+      "type": "textOnly",
+      "bg": "#e9f4ed",
+      "label": "Behind the Screen",
+      "title": "A configurable live service, not a one-off television graphic.",
+      "description": "The product covered competitions, both season-long and weekly leaderboards. Footballer pricing, transfers, scoring policies, and match events all fed into each competition. Production tools let the operations team configure each competition and refresh content while matches were running. Later versions introduced player auctions with opening bids, reserves, limited market supply, and timed auction stages. The interface was only the visible edge of a substantial product and operational system."
+    },
+    {
+      "key": "bafta",
+      "type": "featureRow",
+      "label": "Nominated for a BAFTA (Sports) · 2000",
+      "title": "First in its category BAFTA nomination",
+      "description": "Armchair Manager was the first interactive television game ever nominated in BAFTA's Sports category, appearing on the category's three-title shortlist against strong international competition in the console space. Sydney 2000, the official Olympic Games from Eidos, was the eventual winner.",
+      "image": "/images/two-way-tv/armchair-manager-press.webp",
+      "imageAlt": "Two-page Telewest cable guide feature titled The Beautiful Game, profiling KC Ingham and Armchair Manager Football with product screens and production photographs",
+      "caption": "A Telewest feature captured the product, process, and team in its original context."
+    },
+    {
+      "key": "bafta-certificate",
+      "type": "captionedImage",
+      "label": "BAFTA Interactive Entertainment Awards · 2000",
+      "image": "/images/awards/bafta-nomination.jpg",
+      "imageAlt": "BAFTA Interactive Entertainment Awards certificate nominating Armchair Manager Football in the Sports category in 2000",
+      "displayWidth": 480,
+      "caption": "Armchair Manager Football's nomination certificate in the Sports category."
+    }
+  ]
+}

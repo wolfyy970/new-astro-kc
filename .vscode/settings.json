@@ -1,32 +1,29 @@
 {
-    "json.schemas": [
-        {
-            "fileMatch": [
-                "/src/content/popovers.json"
-            ],
-            "url": "./.vscode/popovers.schema.json"
-        },
-        {
-            "fileMatch": [
-                "/src/content/resume.json"
-            ],
-            "url": "./.vscode/resume.schema.json"
-        },
-        {
-            "fileMatch": [
-                "/src/content/case-studies/manifest.json"
-            ],
-            "url": "./.vscode/case-study-manifest.schema.json"
-        },
-        {
-            "fileMatch": [
-                "/src/content/case-studies/truist.json",
-                "/src/content/case-studies/upwave.json",
-                "/src/content/case-studies/sparks-grove.json",
-                "/src/content/case-studies/two-way-tv.json",
-                "/src/content/case-studies/felix.json"
-            ],
-            "url": "./.vscode/case-study.schema.json"
-        }
-    ]
+  "json.schemas": [
+    {
+      "fileMatch": ["/src/content/popovers.json"],
+      "url": "./.vscode/popovers.schema.json"
+    },
+    {
+      "fileMatch": ["/src/content/resume.json"],
+      "url": "./.vscode/resume.schema.json"
+    },
+    {
+      "fileMatch": ["/src/content/case-studies/manifest.json"],
+      "url": "./.vscode/case-study-manifest.schema.json"
+    },
+    {
+      "fileMatch": [
+        "/src/content/case-studies/truist.json",
+        "/src/content/case-studies/upwave.json",
+        "/src/content/case-studies/sparks-grove.json",
+        "/src/content/case-studies/two-way-tv.json",
+        "/src/content/case-studies/felix.json",
+        "/src/content/case-studies/fusionfall.json",
+        "/src/content/case-studies/magic-wall.json",
+        "/src/content/case-studies/armchair-manager.json"
+      ],
+      "url": "./.vscode/case-study.schema.json"
+    }
+  ]
 }

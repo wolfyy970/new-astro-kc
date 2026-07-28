@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { buildContentNode, requireGlobal, requireEl } from "./dom";
 import { ANNOTATION_TEXT_SENTENCES } from "./constants";
 import type { PopoverData } from "../types/content";
@@ -139,23 +139,15 @@ describe("buildContentNode", () => {
     linkText: "Read the case study",
   };
 
-  it("should render the folio number on both surfaces", () => {
-    const margin = fragmentToHTML(
-      buildContentNode(richData, "sa", { folio: 7 }),
-    );
+  it("should render the descriptive label without decorative numbering", () => {
+    const margin = fragmentToHTML(buildContentNode(richData, "sa"));
     const popover = fragmentToHTML(
-      buildContentNode(richData, "popover", { wrapBody: true, folio: 7 }),
+      buildContentNode(richData, "popover", { wrapBody: true }),
     );
-    expect(margin).toContain('class="sa-folio"');
-    expect(margin).toContain(">7<");
-    expect(popover).toContain('class="popover-folio"');
-    expect(popover).toContain(">7<");
-  });
-
-  it("should omit the folio element entirely when no number is given", () => {
-    const html = fragmentToHTML(buildContentNode(richData, "popover"));
-    expect(html).not.toContain("popover-folio");
-    expect(html).toContain('class="popover-label"');
+    expect(margin).toContain('class="sa-label"');
+    expect(popover).toContain('class="popover-label"');
+    expect(margin).not.toContain("sa-folio");
+    expect(popover).not.toContain("popover-folio");
   });
 
   it("thumb mode should show one figure and no carousel", () => {
@@ -185,6 +177,46 @@ describe("buildContentNode", () => {
     );
     expect(margin).not.toContain('href="/case-study"');
     expect(popover).toContain('href="/case-study"');
+  });
+
+  it("places a project link directly after media and before the narrative", () => {
+    const container = document.createElement("div");
+    container.appendChild(
+      buildContentNode(richData, "popover", {
+        wrapBody: true,
+        mediaMode: "full",
+      }),
+    );
+
+    const carousel = container.querySelector(".popover-carousel-wrap");
+    const link = container.querySelector(".popover-link");
+    const body = container.querySelector(".popover-body");
+
+    expect(carousel?.nextElementSibling).toBe(link);
+    expect(link?.nextElementSibling).toBe(body);
+  });
+
+  it("places a no-media project link after context and before narrative", () => {
+    const container = document.createElement("div");
+    container.appendChild(
+      buildContentNode(
+        {
+          label: "No image",
+          stat: "42%",
+          text: "Longer explanation.",
+          link: "/project",
+          linkText: "View project",
+        },
+        "popover",
+        { wrapBody: true },
+      ),
+    );
+
+    const body = container.querySelector(".popover-body");
+    expect(body?.children[0].classList.contains("popover-head")).toBe(true);
+    expect(body?.children[1].classList.contains("popover-stat")).toBe(true);
+    expect(body?.children[2].classList.contains("popover-link")).toBe(true);
+    expect(body?.children[3].classList.contains("popover-text")).toBe(true);
   });
 
   it("should give a margin note a real link, in both states", () => {
@@ -230,6 +262,30 @@ describe("buildContentNode", () => {
     expect(html).not.toContain("figure 1 of 1");
   });
 
+  it("places a supporting brand mark beside lone popover media only", () => {
+    const brandedData: PopoverData = {
+      label: "Apple Design Award",
+      text: "Award context.",
+      img: "award.png",
+      brandMark: "apple-rainbow.svg",
+      brandMarkAlt: "Period Apple Computer rainbow logo",
+    };
+
+    const popover = fragmentToHTML(
+      buildContentNode(brandedData, "popover", { mediaMode: "full" }),
+    );
+    const marginalia = fragmentToHTML(
+      buildContentNode(brandedData, "sa", { mediaMode: "full" }),
+    );
+
+    expect(popover).toContain("popover-media--with-brand");
+    expect(popover).toContain('class="popover-brand-mark"');
+    expect(popover).toContain('src="apple-rainbow.svg"');
+    expect(popover).toContain('alt="Period Apple Computer rainbow logo"');
+    expect(marginalia).not.toContain("brand-mark");
+    expect(marginalia).not.toContain("apple-rainbow.svg");
+  });
+
   it("should render a video element properly with correct fallback and autoplay disable structure", () => {
     const videoData: PopoverData = {
       label: "A Video",
@@ -265,6 +321,43 @@ describe("buildContentNode", () => {
     // Assert dots
     expect(html).toContain('class="popover-carousel-dots"');
     expect(html).toContain('class="popover-carousel-dot active"');
+  });
+
+  it("should advance the carousel when the next button is clicked", () => {
+    const container = document.createElement("div");
+    container.appendChild(buildContentNode(richData, "sa"));
+
+    const carousel = container.querySelector(".sa-carousel") as HTMLElement;
+    const slides =
+      container.querySelectorAll<HTMLElement>(".sa-carousel-slide");
+    const scrollTo = vi.fn();
+    Object.defineProperty(carousel, "scrollTo", {
+      value: scrollTo,
+      configurable: true,
+    });
+    Object.defineProperty(slides[0], "offsetLeft", {
+      value: 10,
+      configurable: true,
+    });
+    Object.defineProperty(slides[1], "offsetLeft", {
+      value: 240,
+      configurable: true,
+    });
+
+    const next = container.querySelector(
+      ".sa-carousel-nav.next",
+    ) as HTMLButtonElement;
+    next.click();
+
+    expect(scrollTo).toHaveBeenCalledWith({
+      left: 230,
+      behavior: "smooth",
+    });
+    expect(
+      container
+        .querySelector('[aria-label="Go to slide 2"]')
+        ?.classList.contains("active"),
+    ).toBe(true);
   });
 
   it('should set type="button" on all dynamically created buttons (nav, dots, play)', () => {

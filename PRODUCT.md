@@ -42,15 +42,16 @@ The site's own mechanism is also positioning: **the résumé is the interface.**
 
 ## Capabilities and Constraints
 
-- **Stack:** Astro 5, `output: 'server'`, Vercel adapter.
+- **Stack:** Astro 7, `output: 'server'`, Vercel adapter.
 - **Auth:** site-wide middleware gate on `SITE_PASSWORD`; fail-closed with `503` when the variable is absent; constant-time cookie comparison; full security-header set.
 - **Content model:** `resume.json` and `popovers.json` are the résumé database; each case study is a self-contained JSON file indexed by `manifest.json` and rendered through a type-dispatching section component.
-- **Annotated terms:** 18, enforced strictly 1:1 against their notes at build time.
+- **Annotated terms:** 20, enforced strictly 1:1 against their notes at build time. All use an underline; the nine authored project destinations additionally carry a semantic case-study icon when enabled for the environment.
 - **Reading tiers:** margin notes at ≥1420px (derived from sheet + gutter + column, deliberately under a 1440px laptop); a bottom sheet below that. No content is unreachable at any width.
+- **Marginalia discovery:** between 600px and the wide tier, an in-flow header above the masthead invites readers to widen the browser and shows their progress toward revealing the margin columns. It collapses after the 1420px threshold is crossed.
 - **Feature flag:** `CASE_STUDY_LINKS` controls which case-study links reach the client, filtered server-side, so studies can be published incrementally.
-- **Build gate:** `npm run verify` validates schemas, hotspot mapping, and every media path; the build fails on a broken reference. 148 unit tests cover the interaction engines, content schemas, and the auth gate.
+- **Build gate:** `npm run verify` validates schemas, hotspot mapping, and every media path; the build fails on a broken reference. Prettier, ESLint, Astro diagnostics, and 197 unit tests cover formatting, types, interaction engines, content schemas, navigation restoration, password visibility, icons, and the auth gate.
 
-**Resolved — the headline now matches the objective.** The masthead read *"Fractional product & design leadership,"* which disagreed with the confirmed goal of a senior in-house role and with the primary reader being an executive recruiter. It now reads *"Design leadership at the intersection of product, technology and business."* Fractional and advisory work remains a secondary audience; it is no longer what the headline offers.
+**Resolved — the headline now matches the objective.** The masthead read _"Fractional product & design leadership,"_ which disagreed with the confirmed goal of a senior in-house role and with the primary reader being an executive recruiter. It now reads _"Design leadership at the intersection of product, technology and business."_ Fractional and advisory work remains a secondary audience; it is no longer what the headline offers.
 
 ## Brand Commitments
 
@@ -62,8 +63,8 @@ The site's own mechanism is also positioning: **the résumé is the interface.**
 
 Real, in the repository:
 
-- **5 case studies** — Truist ($66B merger, C-suite foresight), Sparks Grove/Delta (news.delta.com), Upwave (Turner venture), Two Way TV (BAFTA nomination), Felix the Cat (CD-i / CD-ROM).
-- **18 annotated notes**, 71 images and 4 videos under `public/`.
+- **8 case studies** — Truist ($66B merger, C-suite foresight), Sparks Grove/Delta (news.delta.com), Upwave (Turner venture), Two Way TV (interactive television platform), Armchair Manager (live fantasy sports and BAFTA nomination), FusionFall (behavioral design and Self-Determination Theory), CNN Magic Wall (technology strategy and weather), and Felix the Cat (CD-i / CD-ROM).
+- **20 annotated notes**, 88 images and 4 videos under `public/`.
 - **Awards:** Emmy (Outstanding Creative Achievement in Interactive Media), Royal Television Society Award, BAFTA Interactive Entertainment nomination, Webby nomination, Apple Design Project Award.
 - **Patents:** two granted US patents in automatic content recognition.
 - **Metrics:** $32.8M attributable revenue and 7% add-to-cart lift (GPC, 2025); 0→1M monthly uniques in 8 months (upwave); the $66B SunTrust–BB&T merger; a 10-person team scaled to ~50.

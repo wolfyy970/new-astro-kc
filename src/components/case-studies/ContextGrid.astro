@@ -1,111 +1,197 @@
 ---
 interface Props {
-    challenge: string;
-    role: string;
-    company: string;
-    scope: string;
-    team: string;
+  challenge: string;
+  role: string;
+  company: string;
+  scope: string;
+  team: string;
 }
 
 const { challenge, role, company, scope, team } = Astro.props;
 ---
 
 <section class="context">
-    <div class="context-inner">
-        <div>
-            <div class="section-label">The Challenge</div>
-            <h2 class="section-heading">{challenge}</h2>
-            <p class="section-body">
-                <slot />
-            </p>
-        </div>
-        <div>
-            <div class="meta-grid">
-                <div class="meta-item">
-                    <h3>My Role</h3>
-                    <p>{role}</p>
-                </div>
-                <div class="meta-item">
-                    <h3>Company</h3>
-                    <p>{company}</p>
-                </div>
-                <div class="meta-item">
-                    <h3>Scope</h3>
-                    <p>{scope}</p>
-                </div>
-                <div class="meta-item">
-                    <h3>Team</h3>
-                    <p>{team}</p>
-                </div>
-            </div>
-        </div>
+  <div class="context-inner">
+    <div class="context-lead">
+      <div class="section-label">The Challenge</div>
+      <h2 class="section-heading">{challenge}</h2>
     </div>
+    <div class="context-body">
+      <p class="section-body">
+        <slot />
+      </p>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <h3>My Role</h3>
+        <p>{role}</p>
+      </div>
+      <div class="meta-item">
+        <h3>Company</h3>
+        <p>{company}</p>
+      </div>
+      <div class="meta-item">
+        <h3>Scope</h3>
+        <p>{scope}</p>
+      </div>
+      <div class="meta-item">
+        <h3>Team</h3>
+        <p>{team}</p>
+      </div>
+    </div>
+  </div>
 </section>
 
 <style>
+  .context {
+    padding: 120px 80px;
+    background: var(--doc-white, #fff);
+  }
+
+  .context-inner {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 72px;
+    row-gap: 72px;
+    max-width: var(--cs-max-width);
+    margin: 0 auto;
+  }
+
+  .context-lead {
+    grid-column: 1 / span 5;
+  }
+
+  .context-body {
+    grid-column: 7 / -1;
+    padding-top: 42px;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: var(--cs-eyebrow);
+    font-weight: 500;
+    letter-spacing: var(--cs-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--label-color);
+    margin-bottom: 24px;
+  }
+
+  .section-heading {
+    font-family: var(--display);
+    font-size: var(--cs-heading);
+    font-weight: 400;
+    color: var(--text-primary);
+    line-height: 1.25;
+  }
+
+  .section-body {
+    font-family: var(--doc-serif);
+    font-size: var(--cs-body);
+    font-weight: 400;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    max-width: 62ch;
+  }
+
+  .meta-grid {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--doc-rule);
+    padding-top: 28px;
+  }
+
+  .meta-item {
+    padding: 0 32px;
+    border-left: 1px solid var(--doc-rule);
+  }
+
+  .meta-item:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .meta-item:last-child {
+    padding-right: 0;
+  }
+
+  .meta-item h3 {
+    font-family: var(--mono);
+    font-size: var(--cs-eyebrow);
+    font-weight: 500;
+    letter-spacing: var(--cs-eyebrow-tracking);
+    text-transform: uppercase;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+
+  .meta-item p {
+    font-size: var(--cs-card-body);
+    font-weight: 400;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+
+  @media (max-width: 1024px) {
     .context {
-        padding: var(--cs-pad);
-        background: var(--doc-white, #fff);
+      padding: var(--cs-pad-tablet);
     }
 
     .context-inner {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 80px;
-        max-width: var(--cs-max-width);
-        margin: 0 auto;
+      grid-template-columns: 1fr;
+      row-gap: 48px;
     }
 
-    .section-label {
-        font-family: var(--mono);
-        font-size: var(--cs-eyebrow);
-        font-weight: 500;
-        letter-spacing: var(--cs-eyebrow-tracking);
-        text-transform: uppercase;
-        color: var(--label-color);
-        margin-bottom: 24px;
+    .context-lead,
+    .context-body,
+    .meta-grid {
+      grid-column: 1;
     }
 
-    .section-heading {
-        font-family: var(--display);
-        font-size: var(--cs-heading);
-        font-weight: 400;
-        color: var(--text-primary);
-        line-height: 1.25;
-        margin-bottom: 32px;
-    }
-
-    .section-body {
-        font-family: var(--doc-serif);
-        font-size: var(--cs-body);
-        font-weight: 400;
-        color: var(--text-secondary);
-        line-height: 1.8;
+    .context-body {
+      padding-top: 0;
     }
 
     .meta-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 48px;
+      grid-template-columns: 1fr 1fr;
+      row-gap: 32px;
     }
 
-    .meta-item p {
-        font-size: var(--cs-card-body);
-        font-weight: 400;
-        color: var(--text-primary);
-        line-height: 1.4;
+    .meta-item:nth-child(odd) {
+      padding-left: 0;
+      border-left: 0;
     }
 
-    @media (max-width: 1024px) {
-        .context {
-            padding: var(--cs-pad-tablet);
-        }
-        .context-inner {
-            grid-template-columns: 1fr;
-            gap: 48px;
-        }
-        .meta-grid {
-            gap: 32px;
-        }
+    .meta-item:nth-child(even) {
+      padding-right: 0;
     }
+  }
+
+  @media (max-width: 640px) {
+    .context {
+      padding: var(--cs-pad-media-mobile);
+    }
+
+    .context-inner {
+      row-gap: 36px;
+    }
+
+    .meta-grid {
+      grid-template-columns: 1fr;
+      row-gap: 0;
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .meta-item,
+    .meta-item:first-child,
+    .meta-item:last-child,
+    .meta-item:nth-child(odd),
+    .meta-item:nth-child(even) {
+      padding: 20px 0;
+      border-left: 0;
+      border-top: 1px solid var(--doc-rule);
+    }
+  }
 </style>

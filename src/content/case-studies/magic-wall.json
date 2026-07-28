@@ -1,0 +1,52 @@
+{
+  "meta": {
+    "title": "CNN Magic Wall: Interactive Weather",
+    "description": "How I introduced large-format multi-touch technology to CNN, brokered the partner relationship, and led the team that designed its interactive weather experience.",
+    "ogImage": "/images/cnn/magic-wall-hurricane.png",
+    "accent": "#cc0000"
+  },
+  "hero": {
+    "label": "CNN · Emerging Interaction",
+    "title": "Bringing Multi-Touch Storytelling to CNN",
+    "subtitle": "Introduced the large-format multi-touch platform to CNN, brokered the partner relationship, and led the team that designed its interactive weather experience.",
+    "background": "/images/cnn/magic-wall-hurricane.png"
+  },
+  "context": {
+    "challenge": "Move CNN beyond limited touchscreen experiments toward an interaction model that could support live broadcast storytelling.",
+    "role": "Senior Director, Strategic Product",
+    "company": "Turner Broadcasting / CNN",
+    "scope": "Technology strategy, partner selection, product direction, and interaction design leadership",
+    "team": "Turner R&D, CNN Weather, product design and engineering, and the external technology partner",
+    "body": "CNN was evaluating multi-touch approaches that could not support the scale, responsiveness, or interaction model the network needed. I brought in a more capable large-format platform and brokered the relationship with the technology partner, drawing on a relationship I had established before the engagement. My team then designed and built CNN's interactive weather software. The election-night applications that later made the wall famous were produced by other CNN teams. They are part of the platform's adoption story, not work I claim as my team's software."
+  },
+  "sections": [
+    {
+      "key": "weather",
+      "type": "featureRow",
+      "label": "The Product",
+      "title": "Weather was the experience my team built.",
+      "description": "The interface gave meteorologists a direct, spatial way to move through forecasts, storm systems, maps, and supporting data while staying connected to the audience. The work had to function as both an analytical tool and a live performance surface, with interactions clear enough to read instantly on television.",
+      "image": "/images/cnn/magic-wall-hurricane.png",
+      "imageAlt": "CNN meteorologist presenting a hurricane forecast on the large-format interactive weather wall"
+    },
+    {
+      "key": "adoption",
+      "type": "video",
+      "bg": "#eef1f4",
+      "label": "Platform Adoption",
+      "title": "The wall became part of CNN's visual language.",
+      "description": "This footage shows how CNN's election teams used the same class of large-format multi-touch platform for election-night storytelling. Their application was not built by my team. Its relevance here is the wider organizational adoption of the interaction model and partner technology I helped bring into CNN.",
+      "video": "/media/cnn-magic-wall.mp4",
+      "poster": "/images/cnn/magic-wall-hurricane.png",
+      "caption": "Election-night software shown for platform context; KC's team designed and built CNN's weather experience."
+    },
+    {
+      "key": "leadership",
+      "type": "textOnly",
+      "bg": "#f8eaea",
+      "label": "The Leadership Move",
+      "title": "The intervention began before interface design.",
+      "description": "The decisive work was recognizing that the technology choices under consideration would constrain the experience, finding a platform capable of the interaction model, and creating the relationship that allowed CNN to adopt it. Product leadership here meant shaping the conditions in which good interaction design could exist."
+    }
+  ]
+}

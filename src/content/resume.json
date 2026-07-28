@@ -12,12 +12,12 @@
   "hero": {
     "tagline": "Design leadership at the intersection of product, technology and business.",
     "credentials": [
-      "M.S. Human-Centered Computing Systems",
-      "B.S. Computer Science",
+      "MS Human-Centered Computing Systems",
+      "BS Computer Science",
       "Executive MBA"
     ]
   },
-  "summary": "Multi-disciplinary design leader. In an era where AI collapses narrow expertise into a commodity, the future belongs to those who integrate across disciplines — who hold the system, the user, the business, and the technology in one frame. That’s the intersection I’ve been working on my entire career, most often through the lens of design and product strategy.\n\nProven track record building and maturing design organizations, product execution and coaching, delivering measurable business growth, and leading at the intersection of emerging technology and product strategy at Fortune companies and in consulting. Experience spans media, finance, e-commerce, and consulting sectors.",
+  "summary": "Multidisciplinary design leader with a career built on connecting perspectives, bringing the system, the user, the business, and the technology into one frame. As AI changes how specialist expertise is applied, the ability to integrate those perspectives becomes increasingly valuable. That has been the throughline of my work, most often through design and product strategy.\n\nProven track record building and maturing design organizations, product execution and coaching, delivering measurable business growth, and leading at the intersection of emerging technology and product strategy at Fortune companies and in consulting. Experience spans media, finance, e-commerce, and consulting sectors.",
   "experience": [
     {
       "company": "GENUINE PARTS COMPANY",
@@ -81,19 +81,20 @@
       "bullets": [
         "<hotspot key=\"emmy\">Emmy Award</hotspot> (Outstanding Creative Achievement in Interactive Media) by developing the underlying automatic content recognition (ACR) platform that powered the Team Coco sync-to-TV application.",
         "Awarded two <hotspot key=\"patents\">U.S. patents</hotspot> for automatic content recognition and audience engagement technologies that synchronized interactive content with live broadcast television.",
-        "Designed and led development for CNN World Cup Twitter Buzz, producing realtime data visualization that earned a <hotspot key=\"rts-award\">Royal Television Society Award</hotspot> and Fast Company's \"Infographic of the Day\".",
-        "Co-designed the large-format multi-touch <hotspot key=\"magicwall\">CNN \"Magic Wall\"</hotspot>, pioneering data-driven storytelling for election coverage and establishing a new industry paradigm."
+        "Designed and led development for CNN World Cup Twitter Buzz, producing real-time data visualization that earned a <hotspot key=\"rts-award\">Royal Television Society Award</hotspot> and Fast Company's \"Infographic of the Day\".",
+        "Introduced the large-format multi-touch <hotspot key=\"magicwall\">CNN \"Magic Wall\"</hotspot> technology to CNN and brokered the partner relationship, then led the team that designed and built its interactive weather experience."
       ]
     },
     {
       "company": "TURNER (Time Warner)",
       "dates": "Apr 2005 - Dec 2008",
       "title": "Director, Games & Entertainment Technology · Atlanta, GA",
-      "description": "R&D exploration role focused on piloting and promoting emerging platforms into Turner Brands (CNN, Cartoon Network, TBS, TNT)prior to mainstream adoption.",
+      "description": "R&D exploration role focused on piloting and promoting emerging platforms into Turner brands (CNN, Cartoon Network, TBS, TNT) prior to mainstream adoption.",
       "bullets": [
         "Pioneered the first <hotspot key=\"ar\">mobile augmented reality applications</hotspot> in the U.S. for NBA and Cartoon Network in an academic partnership with Georgia Tech. Built on pre-iPhone Nokia devices, successfully predicting mobile's path to AR preeminence.",
+        "Led <hotspot key=\"fusionfall\">behavioral design research for Cartoon Network's FusionFall</hotspot> with Immersyve and Richard Ryan, co-author of Self-Determination Theory and one of the world's most-cited psychologists, translating motivation science into decisions about onboarding, challenge, exploration, social play, and retention.",
         "Established virtual item sales as an incremental revenue stream for Cartoon Network and Adult Swim properties on Sony PlayStation Home's early virtual economies.",
-        "Prototyped early cloud streaming games technology for GameTap using instant-on video technology. Pre-cursor to cloud gaming services like Google Stadia and Nvidia GeForce Now."
+        "Prototyped early cloud-streaming games technology for GameTap using instant-on video technology, a precursor to services such as Google Stadia and Nvidia GeForce Now."
       ]
     },
     {
@@ -112,8 +113,8 @@
       "title": "Solutions Development Manager · London, UK",
       "description": "Founding team member of Two Way TV, a world-leading interactive television pioneer that operated dedicated gaming channels across the UK's major digital platforms and internationally in the US/Canada and Australia. The company held key interactive TV patents, and signed a strategic alliance with Microsoft to bring the technology to the MSTV platform.",
       "bullets": [
-        "Produced \"Armchair Manager - Football,\" earning a <hotspot key=\"bafta\">BAFTA Interactive Entertainment Award</hotspot> Nomination (2000) for realtime interactive sports broadcasting.",
-        "Pioneered the first interactive television multiplayer game service globally via the Challenge TV network on Sky."
+        "Designed, produced, and technically architected \"Armchair Manager - Football,\" including its database. It became the first interactive television game ever nominated in the <hotspot key=\"bafta\">BAFTA Sports category</hotspot> (2000).",
+        "Pioneered the UK's first <hotspot key=\"two-way-games\">interactive television multiplayer game service</hotspot> and a global first with the Challenge TV fully interactive network. All games playable live alongside in studio participants."
       ]
     },
     {

@@ -3,12 +3,12 @@ import { Image } from "astro:assets";
 import { publicImageSize } from "../../utils/image-size";
 
 interface Props {
-    title: string;
-    subtitle: string;
-    label: string;
-    image?: string;
-    imageAlt?: string;
-    background?: string;
+  title: string;
+  subtitle: string;
+  label?: string;
+  image?: string;
+  imageAlt?: string;
+  background?: string;
 }
 
 const { title, subtitle, label, image, imageAlt, background } = Astro.props;
@@ -19,142 +19,142 @@ const bgSize = background ? await publicImageSize(background) : null;
 ---
 
 <div class={`hero ${background ? "has-bg" : ""}`}>
-    {
-        background && (
-            <div class="hero-bg">
-                <Image
-                    src={background}
-                    alt=""
-                    width={bgSize?.width ?? 1920}
-                    height={bgSize?.height ?? 1080}
-                    format="webp"
-                    quality="mid"
-                    loading="eager"
-                />
-            </div>
-        )
-    }
-    <div class="hero-content">
-        <div class="hero-label">{label}</div>
-        <h1 class="hero-title">{title}</h1>
-        <p class="hero-subtitle">{subtitle}</p>
-    </div>
-    {
-        image && (
-            <div class="hero-right">
-                <Image
-                    src={image}
-                    alt={imageAlt || ""}
-                    width={imageSize?.width ?? 800}
-                    height={imageSize?.height ?? 1200}
-                    format="webp"
-                    quality="high"
-                    loading="eager"
-                />
-            </div>
-        )
-    }
+  {
+    background && (
+      <div class="hero-bg">
+        <Image
+          src={background}
+          alt=""
+          width={bgSize?.width ?? 1920}
+          height={bgSize?.height ?? 1080}
+          format="webp"
+          quality="mid"
+          loading="eager"
+        />
+      </div>
+    )
+  }
+  <div class="hero-content">
+    {label && <div class="hero-label">{label}</div>}
+    <h1 class="hero-title">{title}</h1>
+    <p class="hero-subtitle">{subtitle}</p>
+  </div>
+  {
+    image && (
+      <div class="hero-right">
+        <Image
+          src={image}
+          alt={imageAlt || ""}
+          width={imageSize?.width ?? 800}
+          height={imageSize?.height ?? 1200}
+          format="webp"
+          quality="high"
+          loading="eager"
+        />
+      </div>
+    )
+  }
 </div>
 
 <style>
-    .hero {
-        position: relative;
-        min-height: 90vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        background: linear-gradient(
-            135deg,
-            color-mix(in srgb, var(--accent) 60%, #000) 0%,
-            var(--accent) 50%,
-            color-mix(in srgb, var(--accent) 80%, #fff) 100%
-        );
-        overflow: hidden;
-        padding: var(--cs-pad);
-    }
+  .hero {
+    position: relative;
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--accent) 60%, #000) 0%,
+      var(--accent) 50%,
+      color-mix(in srgb, var(--accent) 80%, #fff) 100%
+    );
+    overflow: hidden;
+    padding: var(--cs-pad);
+  }
 
-    .hero.has-bg {
-        background: none;
-    }
+  .hero.has-bg {
+    background: none;
+  }
 
-    .hero-bg {
-        position: absolute;
-        inset: 0;
-        z-index: 0;
-    }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
 
-    .hero-bg img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-    }
+  .hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
 
-    .hero-bg::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        /* Navy, and deliberately not derived from --accent. Only three pages
+  .hero-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* Navy, and deliberately not derived from --accent. Only three pages
            use a hero photograph — Delta, Two Way TV and Felix — and all three
            are blue-field brands. Deriving this from the accent washed Delta's
            imagery red, when navy is Delta's own second colour. */
-        background: rgba(11, 27, 43, 0.6);
-        z-index: 1;
-    }
+    background: rgba(11, 27, 43, 0.6);
+    z-index: 1;
+  }
 
-    .hero-content {
-        position: relative;
-        z-index: 2;
-        max-width: 840px;
-    }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 840px;
+  }
 
-    /* When there's a standalone image (like Truist/Upwave) */
-    .hero:not(.has-bg) .hero-content {
-        margin-bottom: 80px;
-    }
+  /* When there's a standalone image (like Truist/Upwave) */
+  .hero:not(.has-bg) .hero-content {
+    margin-bottom: 80px;
+  }
 
-    .hero-right {
-        z-index: 2;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
+  .hero-right {
+    z-index: 2;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
 
-    /* The product shot sits on the field, it does not hover over it. The 32px
+  /* The product shot sits on the field, it does not hover over it. The 32px
        corner was a device bezel drawn around images that already have their
        own, and the 128px shadow was the page's largest object claiming to
        float — on a surface that scrolls with it. */
-    .hero-right img {
-        max-height: 520px;
-        width: auto;
-        height: auto;
-        max-width: 100%;
-        border-radius: var(--cs-radius);
-        background: #000;
-    }
+  .hero-right img {
+    max-height: 520px;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    border-radius: var(--cs-radius);
+    background: #000;
+  }
 
-    .hero-label {
-        font-family: var(--mono);
-        font-size: var(--cs-eyebrow);
-        font-weight: 500;
-        letter-spacing: var(--cs-eyebrow-tracking);
-        text-transform: uppercase;
-        color: #fff;
-        margin-bottom: 32px;
-    }
+  .hero-label {
+    font-family: var(--mono);
+    font-size: var(--cs-eyebrow);
+    font-weight: 500;
+    letter-spacing: var(--cs-eyebrow-tracking);
+    text-transform: uppercase;
+    color: #fff;
+    margin-bottom: 32px;
+  }
 
-    .hero-title {
-        font-family: var(--display);
-        font-size: var(--cs-hero-title);
-        font-weight: 400;
-        color: #fff;
-        line-height: 1.05;
-        margin-bottom: 40px;
-    }
+  .hero-title {
+    font-family: var(--display);
+    font-size: var(--cs-hero-title);
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.05;
+    margin-bottom: 40px;
+  }
 
-    /* White, and held back from the title by size alone.
+  /* White, and held back from the title by size alone.
        It was rgba(255,255,255,.85), then a color-mix toward the accent — both
        ways of making it dimmer than white. But the field is calibrated so that
        *white* clears 4.9:1; anything below white on it lands under AA (Upwave
@@ -162,24 +162,24 @@ const bgSize = background ? await publicImageSize(background) : null;
        a step down and passes. It does not need one: 20px against an 80px title
        is already a 4× step, which is a stronger signal than a 15% tonal shift
        was ever making. */
-    .hero-subtitle {
-        font-size: var(--cs-hero-subtitle);
-        font-weight: 400;
-        color: #fff;
-        line-height: 1.75;
-        max-width: 640px;
-        margin: 0 auto;
-    }
+  .hero-subtitle {
+    font-size: var(--cs-hero-subtitle);
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.75;
+    max-width: 640px;
+    margin: 0 auto;
+  }
 
-    @media (max-width: 1024px) {
-        .hero {
-            padding: 120px 32px;
-        }
-        .hero-content {
-            margin-bottom: 48px !important;
-        }
-        .hero-right img {
-            max-height: 480px;
-        }
+  @media (max-width: 1024px) {
+    .hero {
+      padding: 120px 32px;
     }
+    .hero-content {
+      margin-bottom: 48px !important;
+    }
+    .hero-right img {
+      max-height: 480px;
+    }
+  }
 </style>

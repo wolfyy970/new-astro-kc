@@ -1,10 +1,11 @@
 ---
 import { getImage } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import WidenPrompt from "../components/WidenPrompt.astro";
 import resume from "../content/resume.json";
 import popoversRaw from "../content/popovers.json";
 import { createHotspotRenderer } from "../utils/render";
-import type { Education, PopoverData } from "../types/content";
+import type { Education } from "../types/content";
 import "../styles/global.css";
 
 import { optimizePopoverImages } from "../utils/images";
@@ -17,77 +18,79 @@ import { yearSpan, startYear } from "../utils/dates";
 // 2. Strip case study links whose slug is not in CASE_STUDY_LINKS env var,
 //    so the client never receives links to unpublished pages.
 
-const popovers = applyFeatureFlags(await optimizePopoverImages(popoversRaw, getImage));
+const popovers = applyFeatureFlags(
+  await optimizePopoverImages(popoversRaw, getImage),
+);
 
-// ── Footnote numbering ───────────────────────────────────────────────────────
-// One renderer for the whole page, used in document order, so annotated terms
-// are numbered 1…n exactly as they are read. Created per render — a module-level
-// counter would leak across requests on a server-rendered site.
-const mark = createHotspotRenderer();
+// ── Annotation markers ───────────────────────────────────────────────────────
+// The feature-flagged map adds a superscript marker only when a deeper case
+// study is actually available in the current environment.
+const mark = createHotspotRenderer(popovers);
 
 const summaryParagraphs = resume.summary.split("\n\n");
-
-
 ---
 
 <BaseLayout
   title={resume.displayName}
   description="Design leadership by KC Wolff-Ingham. Senior product design leader with 30 years spanning banking, health tech, and media."
 >
+  <WidenPrompt />
+
   <!-- ═══════ MASTHEAD — the cover ═══════ -->
   <!-- Full-bleed ink field; the document emerges on light stock below it. -->
   <header class="masthead">
     <div class="masthead-inner">
-    <h1 class="masthead-name">{resume.displayName}</h1>
-    <div class="masthead-rule"></div>
+      <h1 class="masthead-name">{resume.displayName}</h1>
+      <div class="masthead-rule"></div>
 
-    <!-- Everything the reader needs to place this person lives here, once.
+      <!-- Everything the reader needs to place this person lives here, once.
          There is no second identity block on the sheet below: the résumé opens
          straight into the prose. -->
-    <div class="masthead-meta">
-      <div class="masthead-lede">
-        <p class="masthead-role">{resume.titleLine}</p>
-        <p class="masthead-sub">{resume.hero.tagline}</p>
+      <div class="masthead-meta">
+        <div class="masthead-lede">
+          <p class="masthead-role">{resume.titleLine}</p>
+          <p class="masthead-sub">{resume.hero.tagline}</p>
+        </div>
+        <ul class="masthead-credentials" aria-label="Credentials">
+          {
+            resume.hero.credentials.map((credential) => (
+              <li class="masthead-cred">{credential}</li>
+            ))
+          }
+        </ul>
       </div>
-      <div class="masthead-credentials">
-      {
-        resume.hero.credentials.map((c, i) => {
-          const last = i === resume.hero.credentials.length - 1;
-          return (
-            <>
-              <span class="masthead-cred">
-                {c}
-                {!last && (
-                  <span class="masthead-cred-sep" aria-hidden="true">{" ·"}</span>
-                )}
-              </span>
-              {!last && " "}
-            </>
-          );
-        })
-      }
-      </div>
-    </div>
 
-    <div class="masthead-contact">
-      <a href={`mailto:${resume.contact.email}`}>{resume.contact.email}</a>
-      <span aria-hidden="true">·</span>
-      <span>{resume.contact.phone}</span>
-      <span aria-hidden="true">·</span>
-      <a href={resume.contact.linkedinUrl} target="_blank" rel="noopener noreferrer"
-        >{resume.contact.linkedin}</a
-      >
-      <span aria-hidden="true">·</span>
-      <span>{resume.contact.location}</span>
-    </div>
-    <div class="masthead-mobile-hint" aria-label="Best viewed on desktop">
-      <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-        <line x1="8" y1="21" x2="16" y2="21"></line>
-        <line x1="12" y1="17" x2="12" y2="21"></line>
-      </svg>
-      Best on desktop. Highlights are interactive
-    </div>
+      <div class="masthead-contact">
+        <a href={`mailto:${resume.contact.email}`}>{resume.contact.email}</a>
+        <span aria-hidden="true">·</span>
+        <span>{resume.contact.phone}</span>
+        <span aria-hidden="true">·</span>
+        <a
+          href={resume.contact.linkedinUrl}
+          target="_blank"
+          rel="noopener noreferrer">{resume.contact.linkedin}</a
+        >
+        <span aria-hidden="true">·</span>
+        <span>{resume.contact.location}</span>
+      </div>
+      <div class="masthead-mobile-hint" aria-label="Best viewed on desktop">
+        <svg
+          viewBox="0 0 24 24"
+          width="13"
+          height="13"
+          stroke="currentColor"
+          stroke-width="1.5"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+        Best on desktop. Highlights are interactive
+      </div>
     </div>
   </header>
 
@@ -139,8 +142,6 @@ const summaryParagraphs = resume.summary.split("\n\n");
         ))
       }
 
-      <hr class="doc-hr-thin" />
-
       <!-- Education -->
       <h2 class="doc-section-heading">Education</h2>
 
@@ -153,8 +154,6 @@ const summaryParagraphs = resume.summary.split("\n\n");
           </section>
         ))
       }
-
-      <hr class="doc-hr-thin" />
 
       <!-- Patents & Recognition -->
       <h2 class="doc-section-heading">Patents &amp; Recognition</h2>
@@ -196,7 +195,7 @@ const summaryParagraphs = resume.summary.split("\n\n");
 
   <!-- ═══════ PAGE DATA → window globals ═══════ -->
   <!-- define:vars safely serialises build-time data; no template literals used here -->
-  <script define:vars={{ popovers }}>
+  <script is:inline define:vars={{ popovers }}>
     window.__POPOVERS__ = popovers;
   </script>
 

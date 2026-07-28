@@ -23,7 +23,7 @@
   {
     "slug": "two-way-tv",
     "title": "Two Way TV",
-    "description": "Founding team · World's first multiplayer TV games · BAFTA nomination",
+    "description": "Founding team · UK's first multiplayer TV service · Challenge TV network",
     "accent": "#00c2e0",
     "ogImage": "/images/two-way-tv/fruity4some.png"
   },
@@ -33,5 +33,26 @@
     "description": "Interactive comic & edutainment · Designer & producer · CD-i & PC CD-ROM",
     "accent": "#1e4db7",
     "ogImage": "/images/felix/cover.webp"
+  },
+  {
+    "slug": "fusionfall",
+    "title": "FusionFall Behavioral Design",
+    "description": "Player motivation · Self-Determination Theory · Actionable game design",
+    "accent": "#2185c5",
+    "ogImage": "/images/fusionfall/planet-fuse.webp"
+  },
+  {
+    "slug": "magic-wall",
+    "title": "CNN Magic Wall",
+    "description": "Technology strategy · Partner introduction · Interactive weather",
+    "accent": "#cc0000",
+    "ogImage": "/images/cnn/magic-wall-hurricane.png"
+  },
+  {
+    "slug": "armchair-manager",
+    "title": "Armchair Manager Football",
+    "description": "Live fantasy sports · Interactive television · BAFTA nomination",
+    "accent": "#009b3a",
+    "ogImage": "/images/armchair-manager/title-screen.webp"
   }
 ]

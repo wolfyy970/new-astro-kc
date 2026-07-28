@@ -1,4 +1,4 @@
-// Astro 5 requires explicit collection definitions for folders in src/content/.
+// Astro requires explicit collection definitions for folders in src/content/.
 // The case-studies JSON files are imported directly by page files — they are
 // not queried through Astro's content collection API — but we still register the
 // real schema so Astro validates every case-study file at build/sync time. The

@@ -1,13 +1,14 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { initPopoverEngine, closePopover } from "./popover-engine";
+import { initAnnotationEngine, cleanupAnnotations } from "./annotation-engine";
 import type { PopoverMap } from "../types/content";
 import {
   CLS_ACTIVE,
   CLS_OPEN,
   CLS_VISIBLE,
-  CLS_POPOVER_OPEN,
   DRAG_MIN_VISIBLE,
   POPOVER_MARGIN_MIN,
+  POPOVER_MAX_WIDTH,
 } from "./constants";
 
 describe("PopoverEngine", () => {
@@ -246,6 +247,31 @@ describe("PopoverEngine", () => {
       // Clamps to min margin (16px)
       expect(popoverEl.style.left).toBe("16px");
     });
+
+    it("positions against the rendered fluid width rather than a stale constant", () => {
+      window.innerWidth = 800;
+      Object.defineProperty(popoverEl, "offsetWidth", {
+        value: 520,
+        writable: true,
+        configurable: true,
+      });
+      hotspot.getBoundingClientRect = () => ({
+        left: 760,
+        top: 100,
+        width: 40,
+        height: 20,
+        right: 800,
+        bottom: 120,
+        x: 760,
+        y: 100,
+        toJSON: () => {},
+      });
+
+      hotspot.click();
+
+      expect(popoverEl.style.left).toBe("264px");
+      expect(POPOVER_MAX_WIDTH).toBeGreaterThanOrEqual(520);
+    });
   });
 
   describe("Lifecycle and State Changes", () => {
@@ -259,6 +285,7 @@ describe("PopoverEngine", () => {
       expect(hotspot.getAttribute("aria-expanded")).toBe("true");
       expect(overlay.classList.contains(CLS_OPEN)).toBe(true);
       expect(popoverEl.classList.contains(CLS_VISIBLE)).toBe(true);
+      expect(popoverEl.dataset.popoverKey).toBe("testKey");
       expect(annotation.classList.contains("annotation-suppressed")).toBe(true);
 
       closePopover({ returnFocus: false });
@@ -267,9 +294,26 @@ describe("PopoverEngine", () => {
       expect(hotspot.getAttribute("aria-expanded")).toBe("false");
       expect(overlay.classList.contains(CLS_OPEN)).toBe(false);
       expect(popoverEl.classList.contains(CLS_VISIBLE)).toBe(false);
+      expect(popoverEl.dataset.popoverKey).toBeUndefined();
       expect(annotation.classList.contains("annotation-suppressed")).toBe(
         false,
       );
+    });
+
+    it("keeps the project link in the scrolling content before the narrative", () => {
+      hotspot.click();
+
+      const scrollRegion =
+        popoverEl.querySelector<HTMLElement>(".popover-scroll");
+      const projectLink =
+        popoverEl.querySelector<HTMLAnchorElement>(".popover-link");
+
+      expect(scrollRegion).not.toBeNull();
+      expect(projectLink).not.toBeNull();
+      expect(scrollRegion?.contains(projectLink)).toBe(true);
+      expect(
+        projectLink?.nextElementSibling?.classList.contains("popover-text"),
+      ).toBe(true);
     });
 
     it("returns focus to hotspot on close by default", async () => {
@@ -402,13 +446,16 @@ describe("PopoverEngine", () => {
   });
 
   describe("Swipe-to-dismiss (mobile only)", () => {
+    let scrollRegion: HTMLElement;
+
     beforeEach(() => {
       window.innerWidth = 375; // engage mobile mode
       hotspot.click();
+      scrollRegion = popoverEl.querySelector<HTMLElement>(".popover-scroll")!;
     });
 
     it("ignores swipe gestures when scrollTop is greater than 0", () => {
-      Object.defineProperty(popoverEl, "scrollTop", {
+      Object.defineProperty(scrollRegion, "scrollTop", {
         value: 10,
         writable: true,
         configurable: true,
@@ -429,7 +476,7 @@ describe("PopoverEngine", () => {
     });
 
     it("tracks swipe downward when scrollTop is 0", () => {
-      Object.defineProperty(popoverEl, "scrollTop", {
+      Object.defineProperty(scrollRegion, "scrollTop", {
         value: 0,
         writable: true,
         configurable: true,
@@ -452,7 +499,7 @@ describe("PopoverEngine", () => {
     });
 
     it("snaps back when drag distance is insufficient", async () => {
-      Object.defineProperty(popoverEl, "scrollTop", {
+      Object.defineProperty(scrollRegion, "scrollTop", {
         value: 0,
         writable: true,
         configurable: true,
@@ -478,7 +525,7 @@ describe("PopoverEngine", () => {
     });
 
     it("closes popover when drag distance exceeds threshold", async () => {
-      Object.defineProperty(popoverEl, "scrollTop", {
+      Object.defineProperty(scrollRegion, "scrollTop", {
         value: 0,
         writable: true,
         configurable: true,
@@ -505,5 +552,71 @@ describe("PopoverEngine", () => {
       await new Promise((resolve) => setTimeout(resolve, 350));
       expect(popoverEl.classList.contains(CLS_VISIBLE)).toBe(false);
     });
+  });
+});
+
+describe("PopoverEngine and marginalia event boundaries", () => {
+  beforeEach(() => {
+    window.innerWidth = 1440;
+    window.innerHeight = 900;
+    window.scrollY = 0;
+
+    document.body.innerHTML = `
+      <div id="popover-overlay" class="popover-overlay"></div>
+      <div id="popover" class="popover"></div>
+      <div class="doc-page">
+        <button class="hotspot" data-popover="testKey" aria-expanded="false">
+          Test term
+        </button>
+      </div>
+    `;
+
+    window.HTMLElement.prototype.getBoundingClientRect = vi
+      .fn()
+      .mockReturnValue({
+        top: 100,
+        bottom: 130,
+        height: 30,
+        left: 200,
+        right: 300,
+        width: 100,
+      });
+
+    class MockIntersectionObserver {
+      observe = vi.fn();
+      unobserve = vi.fn();
+      disconnect = vi.fn();
+    }
+    (window as any).IntersectionObserver = MockIntersectionObserver;
+
+    const data: PopoverMap = {
+      testKey: {
+        label: "Test Item",
+        text: "First sentence. Second sentence.",
+      },
+    };
+    initAnnotationEngine(data);
+    initPopoverEngine(data);
+  });
+
+  afterEach(() => {
+    closePopover({ returnFocus: false });
+    cleanupAnnotations();
+    document.body.innerHTML = "";
+    vi.restoreAllMocks();
+  });
+
+  it("keeps a marginalia note expanded when its child content is clicked", () => {
+    const annotation = document.querySelector<HTMLElement>(
+      '[data-annotation-key="testKey"]',
+    )!;
+    annotation.querySelector<HTMLElement>(".sa-text")!.click();
+
+    expect(annotation.classList.contains("is-expanded")).toBe(true);
+    expect(
+      document
+        .querySelector<HTMLElement>('[data-popover="testKey"]')
+        ?.getAttribute("aria-expanded"),
+    ).toBe("true");
   });
 });
