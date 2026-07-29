@@ -9,7 +9,7 @@
     "label": "Two Way TV · 1995-2003",
     "title": "Inventing the Multiplayer TV Experience",
     "subtitle": "Founding team member and product design lead for the world's first interactive television gaming network, using web and server technologies to turn broadcast television into a live multiplayer platform.",
-    "background": "/images/two-way-tv/fruity4some.png"
+    "background": "/images/two-way-tv/fruity4some-gameplay.webp"
   },
   "context": {
     "challenge": "Build compelling real-time multiplayer game experiences within the severe technical and latency constraints of 1990s digital television broadcast infrastructure.",
@@ -32,7 +32,7 @@
         {
           "title": "Fruity4some · 2001",
           "description": "UK's first head-to-head interactive multiplayer game on digital cable. Real-time gameplay, in-game chat, and leaderboards, all navigated with a TV remote.",
-          "image": "/images/two-way-tv/fruity4some-game.webp",
+          "image": "/images/two-way-tv/fruity4some-gameplay.webp",
           "imageAlt": "Fruity4some multiplayer game running on Two Way TV's cable service, showing the fruit-grid gameplay, player names, timer, and chat prompt"
         },
         {
@@ -48,6 +48,15 @@
           "imageAlt": "Anorak interactive television trivia screen showing a multiple-choice question, player scores, and remote-control response colors"
         }
       ]
+    },
+    {
+      "key": "press",
+      "type": "featureRow",
+      "label": "In the Press",
+      "title": "Head-to-head interactive game goes live.",
+      "description": "Digital Spy covered the November 2001 launch: the UK's first head-to-head interactive game on digital cable, playable against another household or the TV itself, with real-time chat and live leaderboards. ntl's Director of Ventures said the capability let subscribers “compete with each other in a way that no other TV platform can match.”",
+      "image": "/images/two-way-tv/fruity4some-press.webp",
+      "imageAlt": "Digital Spy news article from November 2001 reporting the launch of Fruity4some, Two Way TV's head-to-head interactive cable game"
     },
     {
       "key": "bigPicture",

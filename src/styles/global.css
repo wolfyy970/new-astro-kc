@@ -1148,20 +1148,26 @@ body.popover-open {
   padding: 14px 14px 0;
 }
 
-.popover-media--with-brand {
-  display: grid;
-  grid-template-columns: clamp(96px, 24%, 128px) minmax(0, 1fr);
-  gap: 24px;
-  align-items: center;
-  padding: 22px 28px 0;
+/* The issuer's device. An archival artifact that does not identify its issuer
+   carries the period-correct mark composed WITH THE STAT — "(apple) 1994"
+   reads as one hallmark, the device vouching the figure — not as a second
+   plate in the media grid. Em-sized against the stat, so the same rule fits
+   the margin's 26px figure and the panel's 34px one; a note without a stat
+   seats the device on its label line instead. */
+.popover-brand-mark,
+.sa-brand-mark {
+  display: block;
+  height: 0.82em;
+  width: auto;
+  align-self: center;
+  flex-shrink: 0;
 }
 
-.popover-brand-mark {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: 150px;
-  object-fit: contain;
+.popover-stat--device,
+.sa-stat--device {
+  display: flex;
+  align-items: center;
+  gap: 0.32em;
 }
 
 .popover-vid-wrap,
@@ -1349,6 +1355,7 @@ body.popover-open {
 .popover-head {
   display: flex;
   align-items: baseline;
+  gap: 10px;
   margin-bottom: 14px;
 }
 
@@ -1764,8 +1771,14 @@ li > .inset-note {
 .inset-note .popover-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
   margin-bottom: 12px;
+}
+
+/* The fold control keeps the right edge; the label and any issuer's device
+   cluster at the left. */
+.inset-note .inset-fold {
+  margin-left: auto;
 }
 
 /* The fold control: the quiet way back. A hairline square in the label row,
@@ -1931,6 +1944,12 @@ li > .inset-note {
       height 0.25s ease,
       background-color 0.3s ease,
       opacity 0.3s ease;
+  }
+
+  .sa-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
   }
 
   .sa-label {
@@ -2519,11 +2538,6 @@ li > .inset-note {
   .popover-media,
   .popover-carousel-wrap {
     padding: 18px 18px 0;
-  }
-
-  .popover-media--with-brand {
-    grid-template-columns: minmax(76px, 24%) minmax(0, 1fr);
-    gap: 16px;
   }
 
   .popover-img,

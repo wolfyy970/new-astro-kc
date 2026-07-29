@@ -82,7 +82,7 @@ Popover data is stored in `src/content/popovers.json`.
 - Media support:
   - `img` (string): For a single legacy image string payload.
   - `media` (array of strings): Use this for rich media (both `.jpg`/`.png` and `.mp4`/`.webm`). If multiple paths are provided, it creates an interactive swipeable carousel containing images and looping videos.
-  - `brandMark` and `brandMarkAlt`: Optional supporting mark for an archival artifact that does not identify its issuer visually. It is composed only on the roomier note surfaces (the bound-in note and the sheet), not in narrow marginalia.
+  - `brandMark` and `brandMarkAlt`: Optional issuer's mark for an archival artifact that does not identify its issuer visually. It renders as a small device on the note's label line, on every surface — margin, bound-in, and sheet.
 
 ## Feature Flags
 

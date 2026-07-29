@@ -383,6 +383,25 @@ function appendBodyFields(
   labelEl.className = `${prefix}-label`;
   labelEl.textContent = data.label;
   head.appendChild(labelEl);
+
+  // The issuer's device. Some archival artifacts don't visually identify the
+  // organization that issued them; the period-correct mark composes with the
+  // STAT — the device vouching the figure, "(apple) 1994" reading as one
+  // hallmark — where the display serif gives it real optical company. Sized
+  // in ems (see CSS), it scales with each surface's stat. A note with no
+  // stat seats the device on its label line instead.
+  const buildDevice = (): HTMLImageElement => {
+    const device = document.createElement("img");
+    device.className = `${prefix}-brand-mark`;
+    device.src = data.brandMark ?? "";
+    device.alt = data.brandMarkAlt ?? "";
+    device.decoding = "async";
+    device.width = 15;
+    device.height = 18;
+    return device;
+  };
+  if (data.brandMark && !data.stat) head.appendChild(buildDevice());
+
   container.appendChild(head);
 
   // The stat slot holds two different kinds of thing. "$32.8M" and "2000" are
@@ -396,7 +415,13 @@ function appendBodyFields(
       data.stat.length > 10
         ? `${prefix}-stat ${prefix}-stat--phrase`
         : `${prefix}-stat`;
-    statEl.textContent = data.stat;
+    if (data.brandMark) {
+      statEl.classList.add(`${prefix}-stat--device`);
+      statEl.appendChild(buildDevice());
+      statEl.appendChild(document.createTextNode(data.stat));
+    } else {
+      statEl.textContent = data.stat;
+    }
     container.appendChild(statEl);
   }
 
@@ -514,23 +539,6 @@ export function buildContentNode(
       const mediaWrap = document.createElement("div");
       mediaWrap.className = `${prefix}-media`;
       mediaWrap.appendChild(media);
-
-      // Some archival artifacts do not visually identify the organization that
-      // issued them. A period-correct brand mark can sit beside the evidence in
-      // the popover, where there is enough room for both. It stays out of the
-      // narrow marginalia so the supporting mark never displaces the artifact.
-      if (prefix === "popover" && data.brandMark) {
-        mediaWrap.classList.add(`${prefix}-media--with-brand`);
-        const brandMark = document.createElement("img");
-        brandMark.className = `${prefix}-brand-mark`;
-        brandMark.src = data.brandMark;
-        brandMark.alt = data.brandMarkAlt ?? "";
-        brandMark.decoding = "async";
-        brandMark.width = 120;
-        brandMark.height = 140;
-        mediaWrap.insertBefore(brandMark, media);
-      }
-
       fragment.appendChild(mediaWrap);
     } else {
       fragment.appendChild(media);

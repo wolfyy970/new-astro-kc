@@ -337,7 +337,7 @@ describe("buildContentNode", () => {
     expect(html).not.toContain("figure 1 of 1");
   });
 
-  it("places a supporting brand mark beside lone popover media only", () => {
+  it("sets the issuer's device on the label line of every surface", () => {
     const brandedData: PopoverData = {
       label: "Apple Design Award",
       text: "Award context.",
@@ -346,19 +346,50 @@ describe("buildContentNode", () => {
       brandMarkAlt: "Period Apple Computer rainbow logo",
     };
 
-    const popover = fragmentToHTML(
-      buildContentNode(brandedData, "popover", { mediaMode: "full" }),
-    );
-    const marginalia = fragmentToHTML(
-      buildContentNode(brandedData, "sa", { mediaMode: "full" }),
-    );
+    for (const prefix of ["popover", "sa"] as const) {
+      const container = document.createElement("div");
+      container.appendChild(
+        buildContentNode(brandedData, prefix, { mediaMode: "full" }),
+      );
 
-    expect(popover).toContain("popover-media--with-brand");
-    expect(popover).toContain('class="popover-brand-mark"');
-    expect(popover).toContain('src="apple-rainbow.svg"');
-    expect(popover).toContain('alt="Period Apple Computer rainbow logo"');
-    expect(marginalia).not.toContain("brand-mark");
-    expect(marginalia).not.toContain("apple-rainbow.svg");
+      // The mark lives in the head row — apparatus, not a second figure.
+      const device = container.querySelector(
+        `.${prefix}-head .${prefix}-brand-mark`,
+      ) as HTMLImageElement;
+      expect(device).toBeTruthy();
+      expect(device.getAttribute("src")).toBe("apple-rainbow.svg");
+      expect(device.getAttribute("alt")).toBe(
+        "Period Apple Computer rainbow logo",
+      );
+
+      // The old media-grid composition is gone.
+      expect(
+        container.querySelector(`.${prefix}-media--with-brand`),
+      ).toBeNull();
+      expect(
+        container.querySelector(`.${prefix}-media .${prefix}-brand-mark`),
+      ).toBeNull();
+    }
+  });
+
+  it("composes the issuer's device with the stat when one exists", () => {
+    const hallmarkData: PopoverData = {
+      label: "Apple Design Award",
+      text: "Award context.",
+      stat: "1994",
+      brandMark: "apple-rainbow.svg",
+    };
+
+    const container = document.createElement("div");
+    container.appendChild(buildContentNode(hallmarkData, "sa"));
+
+    // The device vouches the figure — "(apple) 1994" is one hallmark — so it
+    // sits inside the stat, not on the label line.
+    const stat = container.querySelector(".sa-stat");
+    expect(stat?.classList.contains("sa-stat--device")).toBe(true);
+    expect(stat?.querySelector(".sa-brand-mark")).toBeTruthy();
+    expect(stat?.textContent).toBe("1994");
+    expect(container.querySelector(".sa-head .sa-brand-mark")).toBeNull();
   });
 
   it("should render a video element properly with correct fallback and autoplay disable structure", () => {
