@@ -374,7 +374,7 @@ The named way into a project page, rendered only where a deeper route exists.
 
 ### Media Carousel
 
-Two or more figures share one swipeable, scroll-snapping strip on every surface; a single figure is simply a figure — no chevrons, no dots. On the bound-in note's full-measure plate each slide centres its ink between the chevrons — a lone figure keeps the prose's left edge, but a control should sit with the thing it controls, not over empty stock at the far side of the measure. Navigation is circular: past the last slide "next" carries round to the first, so neither chevron ever disables, fades, or strands the pointer at a dead control on the far side of the gallery. For the same reason the chevrons are resident, never hover-gated — the inset and the sheet are touch-first, where a hover reveal never fires. The dots re-sync after a native swipe via a scroll spy.
+Two or more figures share one swipeable, scroll-snapping strip on every surface; a single figure is simply a figure — no chevrons, no dots. Every slide centres its ink between the chevrons, on every surface — margin, bound-in, and sheet — because the strip's controls are symmetric and the picture between them must be too. A lone figure keeps its surface's flush edge; only sequences centre. Navigation is circular: past the last slide "next" carries round to the first, so neither chevron ever disables, fades, or strands the pointer at a dead control on the far side of the gallery. For the same reason the chevrons are resident, never hover-gated — the inset and the sheet are touch-first, where a hover reveal never fires. The dots re-sync after a native swipe via a scroll spy.
 
 ### Stat
 
