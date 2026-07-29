@@ -105,7 +105,8 @@
   },
   "backprop": {
     "label": "Neural Networks · 1993",
-    "text": "Pioneered early AI tooling by building back-propagation learning capabilities into Apple's HyperCard via custom commands, the same foundational algorithm powering today's LLMs."
+    "text": "Pioneered early AI tooling by building back-propagation learning capabilities into Apple's HyperCard via custom commands, the same foundational algorithm powering today's LLMs.",
+    "img": "/images/hypercard/what-is-hypercard.webp"
   },
   "bafta": {
     "label": "Armchair Manager · BAFTA Nominee",
