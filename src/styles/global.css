@@ -11,8 +11,11 @@
      the page reads as a single publication rather than an assembly of parts.
    • The mono is the annotation apparatus only — section marks, margin labels,
      and interaction hints. It never sets prose.
-   • Every annotated term uses a hairline rule. A superscript Notes icon appears
-     only when a deeper case study also exists, so the icon always adds meaning.
+   • Every annotated term wears a translucent marker stroke — the reader's pen.
+     Yellow says marginalia exists; green says a deeper case study also does.
+     Six hand-tuned stroke shapes keyed off each term make every mark unique
+     but the hand recognisably one. A superscript Notes icon appears only on
+     project terms, outside the ink, so the icon always adds meaning.
    • The margin note and the popover are two rungs of one ladder, not two copies
      of one thing. Margin = the glance (label, figure, one sentence).
      Popover = the dig (full narrative, full media, the case study).
@@ -26,28 +29,64 @@
   box-sizing: border-box;
 }
 
+/* Registered so the ink can transition — gradients themselves cannot animate,
+   but a registered <color> custom property inside one can. Unsupporting
+   browsers simply snap between ink loads. */
+@property --hs-ink {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --hs-ink-b {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
 :root {
   /* Brand palette + fonts live in tokens.css (shared with login + case studies). */
 
-  /* ── Annotation marker system ──
-     The term itself is never filled by default — a filled term reads as a
-     highlighter mark, which is a reader's gesture, not a typographer's. The
-     rule under the term and the superscript semantic icon do the announcing; the
-     wash is reserved for states the reader caused (hover, open). */
-  --hs-rule: rgba(17, 17, 17, 0.32);
-  --hs-rule-hover: rgba(17, 17, 17, 1);
-  --hs-wash-hover: rgba(17, 17, 17, 0.05);
-  --hs-wash-active: rgba(17, 17, 17, 0.09);
-  --hs-transition:
-    color 0.2s ease, background-color 0.25s ease, border-color 0.25s ease;
+  /* ── The reader's pen ──
+     This is an annotated document, and an annotator owns exactly two
+     highlighters: yellow where marginalia exists, green where a deeper case
+     study also does. The stroke is translucent ink laid OVER the sheet and
+     UNDER the letterpress, so the text stays crisp — like a real felt tip, it
+     tints the paper, not the type. These are the only hues the résumé sheet
+     admits besides the photographs; both denote something, which is the
+     palette rule.
+
+     Pigments are RGB triplets (the --accent-rgb pattern from tokens.css).
+     Ink load is ONE alpha knob per state, shared by both pens; the second
+     stroke band derives from the same knob slightly drier. Flat ink, no
+     pooling, no edge — a highlighter is matte. */
+  --mark-note-rgb: 255, 228, 12; /* yellow felt tip */
+  --mark-project-rgb: 92, 214, 42; /* green felt tip */
+  /* Icon ink for project terms — opaque, darkened past the pigment until the
+     glyph holds 3:1 against the sheet (see DESIGN.md contrast table). */
+  --mark-project-ref: #2e7d28;
+
+  /* Ink loads. Rest is one confident pass; hover is the pen pressing; open or
+     margin-revealed is a second pass over the same stroke. A highlighter is
+     vivid — the pigments are light enough that even the active load keeps
+     body text far past AA. */
+  --mark-a: 0.6;
+  --mark-a-hover: 0.72;
+  --mark-a-active: 0.84;
+
+  --hs-transition: --hs-ink 0.24s ease, --hs-ink-b 0.24s ease, color 0.2s ease;
 }
 
-/* Night edition: the wash has to work harder against dark stock. */
+/* Night edition: a marker cannot physically mark dark stock, so the night pen
+   is a luminous tint — brighter pigment at a far lighter load. Tuned, not
+   inverted, like the edition itself. */
 html.theme-dark {
-  --hs-rule: rgba(255, 255, 255, 0.34);
-  --hs-rule-hover: rgba(255, 255, 255, 1);
-  --hs-wash-hover: rgba(255, 255, 255, 0.08);
-  --hs-wash-active: rgba(255, 255, 255, 0.14);
+  --mark-note-rgb: 250, 210, 60;
+  --mark-project-rgb: 118, 224, 82;
+  --mark-project-ref: #7fd95e;
+
+  --mark-a: 0.26;
+  --mark-a-hover: 0.36;
+  --mark-a-active: 0.48;
 }
 
 /* No blend mode on media.
@@ -88,11 +127,6 @@ html.theme-dark {
   --sheet-inset: clamp(24px, 6vw, 88px);
   --margin-col-width: 220px; /* matches MARGIN_COL_WIDTH */
   --margin-col-gutter: 42px; /* matches MARGIN_COL_GUTTER */
-  /* A reading surface, not a tooltip: roughly 50–65 characters per line at
-     the established 17px body size. It grows with the viewport, then stops
-     before it obscures the document context around it. */
-  --popover-width: clamp(480px, 42vw, 560px);
-  --popover-max-height: 78vh; /* matches POPOVER_MAX_HEIGHT_VH = 0.78 */
 }
 
 /* ── The annotation apparatus ──
@@ -205,8 +239,9 @@ body {
     animation: fadeIn 0.7s ease 0.74s backwards;
   }
 
-  .masthead-mobile-hint {
-    animation: fadeIn 0.6s ease 0.9s backwards;
+  /* The portrait arrives with the rule it rests on. */
+  .masthead-portrait {
+    animation: fadeIn 0.7s ease 0.5s backwards;
   }
 }
 
@@ -245,6 +280,142 @@ body {
   }
 }
 
+/* ── The author's portrait ──
+   A title page may carry an engraving. The portrait — a hand-drawn line
+   rendering of the author — sits opposite the name in its own grid column,
+   resting on the masthead rule. The rule spans only the text column, which is
+   what curtails it: the line stops where the figure begins, the way a rule
+   yields to a plate in print. Layout does the shortening — there is no
+   measured offset to drift out of tune.
+
+   The drawing is currentColor line work, so both editions ink it themselves,
+   and the theme wash carries it like any other ink on the page. On first
+   greeting — pointer over it, or a tap — it smiles, once, and the smile stays
+   (smile-portrait.ts adds one class; everything else is here). Warmth as a
+   moment, not a loop. */
+.masthead-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: clamp(24px, 3vw, 30px);
+  width: 100%;
+}
+
+.masthead-head .masthead-name {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: end;
+}
+
+.masthead-head .masthead-rule {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.masthead-portrait {
+  /* How far the figure hangs below the rule's row, into the quiet air right
+     of the colophon labels. The engraving straddles the hairline — head above
+     the line, shoulders below — rather than ballooning the name-to-rule gap
+     to hold its full height. */
+  /* Tuned so the shoulders clear the tagline's right end below — the figure
+     straddles the hairline, it never crosses another line of ink. */
+  --portrait-overhang: 20px;
+  grid-column: 2;
+  grid-row: 1 / 3;
+  align-self: end;
+  /* As large as the head allows: the single-line name measures ~477px of the
+     704px head, and the name must never wrap for a figure. The figure takes
+     the rest, and takes its extra height below the line instead. The floor
+     tracks the name's own floor (40px type), holding the figure near 2.8×
+     the name's height at every width — the proportion, not the pixel, is the
+     constant. */
+  width: clamp(112px, 19vw, 192px);
+  margin: 0 0 calc(-1 * var(--portrait-overhang));
+}
+
+.masthead-portrait svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--doc-heading);
+}
+
+/* The three expression plates. At rest the first face shows. The greeting is
+   a staged crossfade — through the middle expression to the settled smile —
+   run once, held forwards: leaving does not take the smile back. */
+#expression-2,
+#expression-3 {
+  opacity: 0;
+}
+
+.masthead-portrait.is-smiling .expression-state {
+  animation-duration: 1.2s;
+  animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  animation-fill-mode: forwards;
+}
+
+.masthead-portrait.is-smiling #expression-1 {
+  animation-name: smile-plate-1;
+}
+
+.masthead-portrait.is-smiling #expression-2 {
+  animation-name: smile-plate-2;
+}
+
+.masthead-portrait.is-smiling #expression-3 {
+  animation-name: smile-plate-3;
+}
+
+@keyframes smile-plate-1 {
+  0%,
+  10% {
+    opacity: 1;
+  }
+
+  35%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes smile-plate-2 {
+  0%,
+  10% {
+    opacity: 0;
+  }
+
+  35%,
+  55% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes smile-plate-3 {
+  0%,
+  55% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Reduced motion reads the warmest state from the start: the smile, still. */
+@media (prefers-reduced-motion: reduce) {
+  #expression-1,
+  #expression-2 {
+    display: none;
+  }
+
+  #expression-3 {
+    opacity: 1;
+  }
+}
+
 /* Colophon. Stacked flush left, not a two-column row.
    The row worked when the masthead ran to 1560px; on the document's 704px
    measure it wraps, and a wrapped space-between row drops the credentials to
@@ -259,12 +430,10 @@ body {
 }
 
 .masthead-lede {
-  /* Explicit px, not ch. `ch` resolves against the element's own font — this
-     container inherits the 16px UI sans, so 42ch computed to 424px while the 32px
-     serif tagline inside it needs 455px to set on one line. The constraint was
-     silently 30% tighter than it read, which is how the positioning line ended
-     up breaking with an orphaned ampersand. */
-  max-width: 520px;
+  /* No width cap. The tagline is one sentence and reads as one line; its
+     size (--type-editorial-sub) is chosen so the full sentence sets inside
+     the measure, and capping the box was what forced the wrap. */
+  max-width: none;
 }
 
 .masthead-role {
@@ -285,6 +454,9 @@ body {
   color: var(--doc-heading);
   line-height: 1.25;
   margin: 0;
+  /* No widows on the title page. When the tagline wraps, it wraps as two
+     balanced lines — never a paragraph and one orphaned word. */
+  text-wrap: balance;
 }
 
 .masthead-credentials {
@@ -315,9 +487,11 @@ body {
   align-items: baseline;
   gap: 4px 10px;
   width: 100%;
+  /* No rule above. The title page carries exactly two horizontal marks — the
+     name's rule and the editor's note hairline that closes the masthead. A
+     third line between credentials and contact gridded the colophon; the
+     whitespace already says everything the hairline said. */
   margin-top: clamp(28px, 4vh, 48px);
-  padding-top: 20px;
-  border-top: 1px solid var(--doc-rule);
   font-family: var(--mono);
   font-size: 11px;
   font-weight: 500;
@@ -352,10 +526,6 @@ body {
   content: "·";
   margin-left: clamp(9px, 1.5vw, 15px);
   color: var(--doc-light);
-}
-
-.masthead-mobile-hint {
-  display: none;
 }
 
 /* ══════════════════════════════════════
@@ -608,27 +778,248 @@ body {
 }
 
 /* ══════════════════════════════════════
-   ANNOTATED TERMS
-   ══════════════════════════════════════ */
+   ANNOTATED TERMS — the marker strokes
+   ══════════════════════════════════════
+   Each term wears one translucent felt-tip stroke: yellow says "marginalia
+   exists", green says "a case study also does". A real highlighter is FLAT —
+   matte ink, straight chisel-cut ends, no shading — so the stroke is built
+   from exactly three cues:
+
+   1. TWO BANDS — the chisel tip is wider than one pass looks; a stroke is
+      really two slightly staggered horizontal bands. Each band is a
+      hard-stop gradient (flat ink, angled end cuts) sized and offset by the
+      variant. Where the bands overlap, the translucent ink doubles — the
+      only density variation, exactly like a real double pass.
+   2. CHISEL ENDS — the end cuts are straight, set by the band's gradient
+      angle a few degrees off vertical. No rounded corners: radius is 1px,
+      just enough to kill pixel shimmer.
+   3. OVERSHOOT + STAGGER — bands run past the glyphs into the word gaps by
+      different amounts on each side (padding pulled back by negative
+      margins), and their offsets differ, which steps the silhouette the way
+      a real stroke never lands twice in the same place. The overshoot may
+      nick a neighbouring letter, so the ink must behave like ink: .hs-stroke
+      carries z-index: -1, escaping the (non-stacking-context) .hotspot into
+      .doc-page's isolated stacking context, where it paints above the stock
+      but UNDER all letterpress — a marker never sits on top of the print,
+      and an overshot stroke must never block the letter beside it. .doc-page
+      must keep `isolation: isolate` or the strokes vanish behind the page.
+
+   Six hand-tuned variants drift the band heights, offsets and cut angles;
+   render.ts hashes the popover key to pick one, so every mark is unique
+   against its neighbours but stable across visits — the document was marked
+   once. box-decoration-break: clone gives every wrapped line its own
+   complete stroke, which is literally what a human does when a phrase spans
+   two lines.
+
+   The paint lives on .hs-stroke — an inner span holding only the letters —
+   so the ink covers the words and never the superscript icon. .hotspot
+   remains the interactive control (hit area, focus ring, aria). */
 .hotspot {
+  /* Family: yellow unless .hs-project overrides the pigment. */
+  --mark-rgb: var(--mark-note-rgb);
+
+  /* The state ladder swaps this one knob; the ink colours derive from it. */
+  --hs-a: var(--mark-a);
+
+  /* Rest ink — one confident pass; band B runs a touch drier. Translucent on
+     light stock so the band overlap deepens like real double-passed ink. */
+  --hs-ink: rgba(var(--mark-rgb), var(--hs-a));
+  --hs-ink-b: rgba(var(--mark-rgb), calc(var(--hs-a) * 0.88));
+
   position: relative;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   display: inline;
   color: inherit;
-  /* Hairline under the term. box-decoration-break keeps it correct when the
-     term wraps across a line. */
-  border-bottom: 1px solid var(--hs-rule);
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  padding: 1px 2px;
-  margin: 0 -2px;
-  border-radius: 2px;
   transition: var(--hs-transition);
 }
 
-/* Case-study marker. Ordinary marginalia needs no icon because the underline
-   already carries that signal; the superscript appears only for deeper work. */
+/* Night ink is pre-composited against the stock — opaque, so the two bands
+   CANNOT stack. On white paper the overlap deepening reads as marker density;
+   over near-black the same additive overlap glowed as a bright stripe through
+   the middle of every mark. An opaque mix keeps the identical single-band
+   colour while making double coverage a no-op; band B keeps its slightly
+   drier tone, so the stagger stays legible without the glow. */
+html.theme-dark .hotspot {
+  --hs-ink: color-mix(
+    in srgb,
+    rgb(var(--mark-rgb)) calc(var(--hs-a) * 100%),
+    var(--doc-white)
+  );
+  --hs-ink-b: color-mix(
+    in srgb,
+    rgb(var(--mark-rgb)) calc(var(--hs-a) * 88%),
+    var(--doc-white)
+  );
+}
+
+.hs-stroke {
+  /* Band geometry defaults — each hs-mark-* variant retunes these.
+     A band = hard-stop gradient (angle → chisel cut), sized w×h, offset x,y.
+     Widths are calc(100% + extra) so a band can overhang both word ends. */
+  --cut-a: 96deg;
+  --cut-b: 97.5deg;
+  --band-a-h: 58%;
+  --band-a-w: 0.5em;
+  --band-a-x: -0.3em;
+  --band-a-y: 8%;
+  --band-b-h: 54%;
+  --band-b-w: 0.34em;
+  --band-b-x: -0.12em;
+  --band-b-y: 90%;
+  --mark-reach: 0.09em 0.34em 0.12em 0.36em;
+  --mark-neg-l: -0.36em;
+  --mark-neg-r: -0.34em;
+
+  background-image:
+    linear-gradient(
+      var(--cut-a),
+      transparent 0.04em,
+      var(--hs-ink) 0.12em calc(100% - 0.12em),
+      transparent calc(100% - 0.04em)
+    ),
+    linear-gradient(
+      var(--cut-b),
+      transparent 0.04em,
+      var(--hs-ink-b) 0.12em calc(100% - 0.12em),
+      transparent calc(100% - 0.04em)
+    );
+  background-repeat: no-repeat;
+  background-size:
+    calc(100% + var(--band-a-w)) var(--band-a-h),
+    calc(100% + var(--band-b-w)) var(--band-b-h);
+  background-position:
+    var(--band-a-x) var(--band-a-y),
+    var(--band-b-x) var(--band-b-y);
+  /* Ink under the letterpress — see the OVERSHOOT note above. */
+  position: relative;
+  z-index: -1;
+  /* No radius — the sheet's own 0 ({rounded.sheet}). The bands' 0.04em
+     gradient fade already softens the cut edges, and a fifth radius would
+     break the Cut-From-Stock Rule for a clip nobody can see. */
+  padding: var(--mark-reach);
+  margin-inline: var(--mark-neg-l) var(--mark-neg-r);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: var(--hs-transition);
+}
+
+/* Project-backed terms swap to the green pen. The same distinction reaches
+   assistive tech through the aria-label, so colour is never the only channel. */
+.hotspot.hs-project {
+  --mark-rgb: var(--mark-project-rgb);
+}
+
+/* ── Six strokes of the same pen ──
+   Band heights, staggers and cut angles each drift a little. Hand-tuned, not
+   generated: the differences must stay below the threshold of "styled
+   differently" and above the threshold of "stamped". */
+.hs-mark-1 .hs-stroke {
+  --cut-a: 96deg;
+  --cut-b: 97.5deg;
+  --band-a-h: 58%;
+  --band-a-w: 0.5em;
+  --band-a-x: -0.3em;
+  --band-a-y: 8%;
+  --band-b-h: 54%;
+  --band-b-w: 0.34em;
+  --band-b-x: -0.12em;
+  --band-b-y: 90%;
+  --mark-reach: 0.09em 0.34em 0.12em 0.36em;
+  --mark-neg-l: -0.36em;
+  --mark-neg-r: -0.34em;
+}
+
+.hs-mark-2 .hs-stroke {
+  /* Back-lean, right-staggered. */
+  --cut-a: 84deg;
+  --cut-b: 82.6deg;
+  --band-a-h: 56%;
+  --band-a-w: 0.4em;
+  --band-a-x: -0.08em;
+  --band-a-y: 6%;
+  --band-b-h: 58%;
+  --band-b-w: 0.5em;
+  --band-b-x: -0.36em;
+  --band-b-y: 92%;
+  --mark-reach: 0.11em 0.36em 0.1em 0.3em;
+  --mark-neg-l: -0.3em;
+  --mark-neg-r: -0.36em;
+}
+
+.hs-mark-3 .hs-stroke {
+  /* One fat pass with a thin top sliver. */
+  --cut-a: 95deg;
+  --cut-b: 96.2deg;
+  --band-a-h: 30%;
+  --band-a-w: 0.3em;
+  --band-a-x: -0.2em;
+  --band-a-y: 2%;
+  --band-b-h: 68%;
+  --band-b-w: 0.44em;
+  --band-b-x: -0.24em;
+  --band-b-y: 78%;
+  --mark-reach: 0.08em 0.38em 0.14em 0.32em;
+  --mark-neg-l: -0.32em;
+  --mark-neg-r: -0.38em;
+}
+
+.hs-mark-4 .hs-stroke {
+  /* Choppy: strong stagger, shallow overlap. */
+  --cut-a: 98.5deg;
+  --cut-b: 96.8deg;
+  --band-a-h: 52%;
+  --band-a-w: 0.55em;
+  --band-a-x: -0.42em;
+  --band-a-y: 10%;
+  --band-b-h: 50%;
+  --band-b-w: 0.3em;
+  --band-b-x: -0.05em;
+  --band-b-y: 86%;
+  --mark-reach: 0.12em 0.3em 0.09em 0.34em;
+  --mark-neg-l: -0.34em;
+  --mark-neg-r: -0.3em;
+}
+
+.hs-mark-5 .hs-stroke {
+  /* Forward lean, bottom-heavy. */
+  --cut-a: 93.4deg;
+  --cut-b: 95deg;
+  --band-a-h: 48%;
+  --band-a-w: 0.36em;
+  --band-a-x: -0.18em;
+  --band-a-y: 4%;
+  --band-b-h: 60%;
+  --band-b-w: 0.48em;
+  --band-b-x: -0.3em;
+  --band-b-y: 95%;
+  --mark-reach: 0.1em 0.34em 0.12em 0.3em;
+  --mark-neg-l: -0.3em;
+  --mark-neg-r: -0.34em;
+}
+
+.hs-mark-6 .hs-stroke {
+  /* Tall and even, mild stagger. */
+  --cut-a: 97deg;
+  --cut-b: 94.2deg;
+  --band-a-h: 62%;
+  --band-a-w: 0.42em;
+  --band-a-x: -0.3em;
+  --band-a-y: 6%;
+  --band-b-h: 46%;
+  --band-b-w: 0.36em;
+  --band-b-x: -0.14em;
+  --band-b-y: 96%;
+  --mark-reach: 0.1em 0.38em 0.11em 0.36em;
+  --mark-neg-l: -0.36em;
+  --mark-neg-r: -0.38em;
+}
+
+/* Case-study marker. Ordinary marginalia needs no icon because the yellow
+   stroke already carries that signal; the superscript appears only for deeper
+   work, and it writes in the same green ink as its stroke — pen and
+   apparatus agree. The stroke's ink stops before it: the marker covers the
+   letters, never the apparatus. */
 .hotspot-ref {
   position: relative;
   display: inline-flex;
@@ -638,7 +1029,7 @@ body {
   vertical-align: super;
   line-height: 1;
   margin-left: 3px;
-  color: var(--accent);
+  color: var(--mark-project-ref, var(--accent));
   overflow: visible;
   transition:
     color 0.2s ease,
@@ -687,23 +1078,22 @@ body {
   transform: translate(-50%, 0);
 }
 
+/* The pen pressing — the same stroke, more ink. States move the one knob;
+   the theme-appropriate ink formula on .hotspot derives the colours. */
 .hotspot:hover,
-.hotspot.hovered {
-  background-color: var(--hs-wash-hover);
-  border-bottom-color: var(--hs-rule-hover);
+.hotspot.hovered,
+.hotspot:focus-visible {
+  --hs-a: var(--mark-a-hover);
 }
 
-/* Open, or revealed in the margin. */
+/* Open, or revealed in the margin — a deliberate second pass. */
 .hotspot.active,
 .hotspot.scroll-revealed {
-  background-color: var(--hs-wash-active);
-  border-bottom-color: var(--hs-rule-hover);
+  --hs-a: var(--mark-a-active);
 }
 
-/* No radius override — the term keeps the 2px it has at rest. Focus was
-   redrawing the same box at 1px, so the wash changed shape under the outline. */
+/* The stroke keeps its shape under focus; only the ring is added. */
 .hotspot:focus-visible {
-  background-color: var(--hs-wash-hover);
   outline: 2px solid var(--doc-heading);
   outline-offset: 3px;
 }
@@ -728,45 +1118,20 @@ body.popover-open {
   overflow: hidden;
 }
 
+/* The sheet is the only floating note surface left. On wider viewports the
+   note either continues in the margin (wide tier) or sets into the document
+   flow as a bound-in note (middle tier) — so outside the mobile tier this
+   element simply does not exist. The ≤600px block below shapes it into the
+   bottom sheet; every note-content style (.popover-media, -text, -link,
+   -carousel …) stays global because the bound-in note reuses it in flow. */
 .popover {
-  position: absolute;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  width: min(var(--popover-width), calc(100vw - 32px));
-  max-height: var(--popover-max-height);
-  overflow: hidden;
-  overscroll-behavior: contain;
-  background: var(--doc-white);
-  border: 1px solid var(--doc-rule);
-  border-radius: 4px;
-  box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.05),
-    0 12px 28px rgba(0, 0, 0, 0.1),
-    0 32px 64px rgba(0, 0, 0, 0.09);
-  padding: 0;
-  opacity: 0;
-  transform: translateY(6px);
-  transition:
-    opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
-  pointer-events: none;
+  display: none;
 }
 
 .popover-scroll {
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-}
-
-html.theme-dark .popover {
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
-}
-
-.popover.visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
 }
 
 .popover-img,
@@ -854,6 +1219,10 @@ html.theme-dark .popover {
   width: 100%;
 }
 
+/* The chevrons are resident, never hover-gated: navigation is circular, so
+   there is no "end" state to fade toward, and this surface serves the inset
+   note and the sheet — touch-first tiers where a hover reveal simply never
+   fires. A control that stays put is a control the hand can return to. */
 .popover-carousel-nav {
   position: absolute;
   top: 50%;
@@ -872,11 +1241,6 @@ html.theme-dark .popover {
   transition: all 0.2s ease;
   padding: 0;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16);
-  opacity: 0;
-}
-
-.popover-carousel-wrap:hover .popover-carousel-nav {
-  opacity: 1;
 }
 
 .popover-carousel-nav.prev {
@@ -941,33 +1305,6 @@ html.theme-dark .popover {
   transform: scale(1.3);
 }
 
-.popover-handle {
-  position: relative;
-  flex: 0 0 auto;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: grab;
-  user-select: none;
-  background: var(--doc-white);
-  border-radius: 4px 4px 0 0;
-}
-
-.popover-handle::before {
-  content: "";
-  display: block;
-  width: 32px;
-  height: 3px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--doc-light) 58%, transparent);
-  transition: background-color 0.15s ease;
-}
-
-.popover-handle:hover::before {
-  background: var(--doc-light);
-}
-
 .popover-close {
   position: absolute;
   right: 6px;
@@ -1003,15 +1340,6 @@ html.theme-dark .popover {
 .popover-close:focus-visible {
   outline: 2px solid var(--doc-heading);
   outline-offset: -3px;
-}
-
-.popover.is-dragging {
-  transition: none !important;
-  cursor: grabbing;
-}
-
-.popover.is-dragging .popover-handle {
-  cursor: grabbing;
 }
 
 .popover-body {
@@ -1051,9 +1379,6 @@ html.theme-dark .popover {
    it. The crisp document-white surface and black action make it discoverable
    without introducing a muddy third color into the editorial system. */
 .popover-link {
-  position: sticky;
-  top: 0;
-  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1071,7 +1396,24 @@ html.theme-dark .popover {
   text-decoration: none;
   transition:
     background-color 0.2s ease,
-    border-color 0.2s ease;
+    border-color 0.2s ease,
+    transform 0.12s ease;
+}
+
+/* Only the sheet has an inner scroll region, so only there does the gateway
+   stay pinned while longer copy scrolls. Everywhere else the control sits in
+   the document flow, like everything else on the sheet of paper. */
+.popover-scroll .popover-link {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
+/* The press. The control depresses into the paper by exactly one pixel —
+   the same click feel wherever the gateway appears: sheet, bound-in note,
+   margin, and the introductions' demonstration. */
+.popover-link:active {
+  transform: translateY(1px);
 }
 
 .popover-link-label {
@@ -1138,12 +1480,386 @@ html.theme-dark .popover {
 }
 
 /* ══════════════════════════════════════
+   INTRODUCTION APPARATUS — specimens and the staged ladder
+   ══════════════════════════════════════
+   Shared by the two introductions — the wide tier's cold-start margin note
+   and the editor's note bound into the sheet below 1420px. Both are working
+   scale models of the system, so they borrow the system's own parts.
+
+   Specimens demonstrate the pens with the real stroke apparatus: a span
+   carrying .hs-stroke and a variant geometry, needing only the ink
+   derivation .hotspot normally provides. Each host is a stacking context
+   (the margin note via z-index, the editor's note via isolation), so the
+   stroke's z-index: -1 keeps the ink under the specimen's letters exactly
+   as it sits under the document's. */
+.intro-term {
+  --mark-rgb: var(--mark-note-rgb);
+  --hs-ink: rgba(var(--mark-rgb), var(--mark-a));
+  --hs-ink-b: rgba(var(--mark-rgb), calc(var(--mark-a) * 0.88));
+  position: relative;
+  cursor: pointer;
+}
+
+.intro-term--project {
+  --mark-rgb: var(--mark-project-rgb);
+}
+
+/* The staged reveals. The same grid-rows unfold as every continuation on
+   this page; each stage class on the introduction's root opens its own row. */
+.intro-reveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.intro-reveal-inner {
+  overflow: hidden;
+  min-height: 0;
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 0.28s ease,
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.intro-stage-pens .intro-reveal--pens,
+.intro-stage-gateway .intro-reveal--gateway,
+.intro-stage-done .intro-reveal--done {
+  grid-template-rows: 1fr;
+}
+
+.intro-stage-pens .intro-reveal--pens > .intro-reveal-inner,
+.intro-stage-gateway .intro-reveal--gateway > .intro-reveal-inner,
+.intro-stage-done .intro-reveal--done > .intro-reveal-inner {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.1s, 0s;
+}
+
+/* The example gateway is a demonstration, not a route: a span in the real
+   control's clothes. It needs the pointer the real control gets from being
+   an anchor. */
+.intro-demo-link {
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+/* The payoff speaks in the apparatus voice — mono, tracked, quiet. */
+.intro-done {
+  font-family: var(--mono);
+  font-size: var(--type-meta);
+  font-weight: 500;
+  letter-spacing: var(--type-label-spacing);
+  text-transform: uppercase;
+  color: var(--doc-light);
+  margin-top: 12px;
+}
+
+/* ── The introduction's exit ──
+   When the conversation ends, the introduction leaves the way a note should:
+   it settles down to its rule, the rule retracts toward its middle, and a
+   small ink dot pops out where the line was. Staged by intro-payoff.ts;
+   the height collapse itself is driven inline (it must be measured). */
+.intro-leaving {
+  position: relative;
+  transition:
+    height 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    margin 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    padding 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom-color: transparent;
+  pointer-events: none;
+}
+
+.intro-leaving > *:not(.edition-rule):not(.sa-rule) {
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.intro-going .edition-rule,
+.intro-going .sa-rule {
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.55s cubic-bezier(0.55, 0, 0.55, 1);
+}
+
+/* The blip is a SQUARE — the gateway's action square, the sheet's own
+   cornerless geometry. A circle in this system means "control"; a farewell
+   is not a control. */
+.intro-leaving::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: var(--doc-heading);
+  transform: translateX(-50%) scale(0);
+}
+
+.intro-popped::after {
+  animation: intro-pop 0.28s ease-out forwards;
+}
+
+@keyframes intro-pop {
+  0% {
+    transform: translateX(-50%) scale(0);
+    opacity: 1;
+  }
+  55% {
+    transform: translateX(-50%) scale(1.8);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) scale(0.2);
+    opacity: 0;
+  }
+}
+
+/* ══════════════════════════════════════
+   THE EDITOR'S NOTE — introduction below the wide tier
+   ══════════════════════════════════════
+   Bound into the top of the sheet, replacing two pieces of chrome: the black
+   widen-to-reveal bar and the bordered best-on-desktop badge. A printed
+   "how to read this edition" note in the document's own materials — a rule,
+   a mono label, note-size prose, live specimens — carrying the same staged
+   ladder as the wide tier's margin intro. Hidden at the wide tier, where the
+   margin performs the introduction instead. */
+.edition-note {
+  /* Contains the specimens' z-index: -1 strokes (see the apparatus note). */
+  isolation: isolate;
+  border-bottom: 1px solid var(--doc-rule);
+  padding: 0 0 16px;
+  margin: 0 0 36px;
+}
+
+/* The note's rule narrates the demonstration: resting hairline, yellow while
+   the yellow pen is on stage, green when the green pen takes it, and back to
+   rest once the reader has the whole ladder — the apparatus stands down. */
+.edition-rule {
+  width: 100%;
+  height: 1px;
+  background: var(--doc-rule);
+  margin-bottom: 12px;
+  transition:
+    background-color 0.3s ease,
+    height 0.25s ease;
+}
+
+.edition-note.intro-stage-pens .edition-rule {
+  height: 2px;
+  background: rgba(var(--mark-note-rgb), 0.8);
+}
+
+.edition-note.intro-stage-gateway .edition-rule {
+  background: rgba(var(--mark-project-rgb), 0.8);
+}
+
+.edition-note.intro-stage-done .edition-rule {
+  height: 1px;
+  background: var(--doc-rule);
+}
+
+.edition-label {
+  font-family: var(--mono);
+  font-size: var(--type-meta);
+  font-weight: 500;
+  letter-spacing: var(--type-label-spacing);
+  text-transform: uppercase;
+  color: var(--doc-light);
+  margin-bottom: 10px;
+}
+
+.edition-text {
+  font-family: var(--doc-serif);
+  font-size: var(--type-body-sm);
+  font-weight: 400;
+  color: var(--doc-body);
+  line-height: 1.62;
+  margin: 0;
+}
+
+.edition-text--pens {
+  margin-top: 6px;
+}
+
+/* The widen invitation is one quiet clause, shown only where widening is
+   possible — a phone cannot be widened and should not be told to try. */
+.edition-widen {
+  display: none;
+}
+
+@media (min-width: 601px) {
+  .edition-widen {
+    display: inline;
+  }
+}
+
+/* The demo gateway wears the real control's classes; only its spacing is
+   local. */
+.edition-note .popover-link {
+  margin: 12px 0 2px;
+}
+
+/* At the wide tier the margin performs the introduction. */
+@media (min-width: 1420px) {
+  .edition-note {
+    display: none;
+  }
+}
+
+/* ══════════════════════════════════════
+   BOUND-IN NOTE — the middle tier
+   ══════════════════════════════════════
+   Between the sheet and the margins (601–1419px) a note neither floats over
+   the document nor hangs beside it — it sets INTO it, directly after the
+   term's own paragraph or bullet, and the prose below makes room. A hairline
+   above, a hairline below, the label row, the media plate, and the narrative
+   in two columns at the note size, like a footnote block bound into the page.
+   Nothing is covered, nothing dims, and the page remains the only scroll
+   surface.
+
+   The unfold is the same grid-rows mechanism as the margin continuation:
+   0fr → 1fr on the outer grid, with the body fading up a beat behind the
+   room being made. */
+.inset-note {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.inset-note.open {
+  grid-template-rows: 1fr;
+}
+
+.inset-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.inset-body {
+  border-top: 1px solid var(--doc-rule);
+  border-bottom: 1px solid var(--doc-rule);
+  padding: 18px 0 20px;
+  margin: 16px 0 8px;
+  opacity: 0;
+  transform: translateY(5px);
+  transition:
+    opacity 0.3s ease 0.1s,
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.04s;
+}
+
+.inset-note.open .inset-body {
+  opacity: 1;
+  transform: none;
+}
+
+/* A bullet's note belongs to the bullet, so it inherits the list indent; the
+   list marker must not claim it. */
+li > .inset-note {
+  list-style: none;
+}
+
+.inset-note .popover-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+/* The fold control: the quiet way back. A hairline square in the label row,
+   sized for a pointer (Escape, the term, and clicking away also close). */
+.inset-fold {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--doc-rule);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--doc-light);
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.inset-fold svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.inset-fold:hover,
+.inset-fold:focus-visible {
+  color: var(--doc-heading);
+  border-color: var(--doc-heading);
+}
+
+.inset-fold:focus-visible {
+  outline: 2px solid var(--doc-heading);
+  outline-offset: 2px;
+}
+
+/* The narrative sets in columns at the note size — a 704px measure at 14px is
+   a 90-character line, which no note should be asked to hold. Two ~330px
+   columns read like the printed apparatus this is. */
+.inset-note .popover-text {
+  font-size: var(--type-body-sm);
+  line-height: 1.66;
+  columns: 2;
+  column-gap: 36px;
+}
+
+.inset-note .popover-quote {
+  font-size: var(--type-body-sm);
+}
+
+/* The plate: media runs the note's measure, uncropped, flush left — the flow
+   position gives it more room than the old panel ever had. */
+.inset-note .popover-media,
+.inset-note .popover-carousel-wrap {
+  padding: 0;
+  margin-bottom: 14px;
+}
+
+.inset-note .popover-img,
+.inset-note .popover-vid {
+  max-height: 300px;
+  object-position: left center;
+}
+
+/* A lone figure keeps the prose's left edge, but a carousel is a sequence of
+   plates: each slide centres its ink between the chevrons. Left-stranded
+   slides put the next chevron over empty stock at the far side of the
+   measure — a control should sit with the thing it controls. */
+.inset-note .popover-carousel-slide .popover-img,
+.inset-note .popover-carousel-slide .popover-vid {
+  object-position: center;
+}
+
+.inset-note .popover-link {
+  margin: 0 0 14px;
+}
+
+/* One column once the sheet narrows — two 40-character columns are worse
+   than one good one. */
+@media (max-width: 760px) {
+  .inset-note .popover-text {
+    columns: 1;
+  }
+}
+
+/* ══════════════════════════════════════
    MARGIN NOTES — the glance
    ══════════════════════════════════════
-   Below the wide tier no margin notes are shown; underlines still identify all
-   annotated terms and the superscript icon identifies available case studies.
-   Clicking still opens the full note, so nothing is hidden from a narrow reader
-   — only the simultaneous view is.
+   Below the wide tier no margin notes are shown; the marker strokes still
+   identify all annotated terms and the superscript icon identifies available
+   case studies. Clicking still opens the full note — bound into the page —
+   so nothing is hidden from a narrow reader; only the simultaneous view is.
 
    Threshold = 880 sheet + 2 × (42 gutter + 220 column) = 1404, rounded to 1420.
    Still under the 1440px logical width of a 13" MacBook Air. */
@@ -1211,13 +1927,16 @@ html.theme-dark .popover {
     opacity: 1;
     margin-bottom: 13px;
     transition:
-      width 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      height 0.25s ease,
+      background-color 0.3s ease,
       opacity 0.3s ease;
   }
 
   .sa-label {
     color: var(--doc-light);
     line-height: 1.5;
+    transition: color 0.3s ease;
   }
 
   /* Smaller than the panel's, deliberately. The panel is a 480–560px focal
@@ -1279,41 +1998,107 @@ html.theme-dark .popover {
     object-position: top left;
   }
 
-  /* ── Expanded note ──
-     At this width the margin IS the detail view — clicking a marked term opens
-     its note here rather than throwing a panel over the document. So the
-     expanded state needs to behave like a surface: its own stock, its own
-     edge, and a bounded height.
+  /* ── The note continues ──
+     At this width the margin IS the detail view — and opening a note must not
+     turn it into a different kind of object. No stock, no border, no shadow,
+     no height cap, no inner scrollbar, no repositioning: the note's
+     continuation was rendered at build time inside .sa-more, and clicking the
+     term simply lets it unfold in place, the way a printed sidenote keeps
+     going down the margin. Three quiet things mark the open state:
 
-     The height cap is not cosmetic. The longest note runs past 1500px in a
-     220px column, which is four screens of scrolling in a strip 220px wide.
-     Capping and scrolling internally is the same contract the popover has. */
+       1. the continuation unfolds (grid-rows, below);
+       2. the note's hairline extends across the column;
+       3. every other note recedes a step (.margin-focus on the sheet).
+
+     Notes below the opening one are repositioned every animation frame by the
+     engine's reflow loop, so they ride the unfold instead of jumping. A long
+     note runs down the margin and the reader scrolls the PAGE to follow it —
+     the page is the only scroll surface this document has. */
   .scroll-annotation.is-expanded {
-    background: var(--doc-white);
-    border: 1px solid var(--doc-rule);
-    /* Same corner as the popover — this is the same kind of object, a panel
-       laid over the page. It was 3px, which is a third corner nobody chose. */
-    border-radius: 4px;
-    padding: 18px 16px 20px;
-    max-height: 72vh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    /* Neutral. This cast rgba(30, 25, 15, …) — a brown light source in a room
-       with no brown in it, left behind by the warm palette. */
-    box-shadow:
-      0 2px 6px rgba(0, 0, 0, 0.06),
-      0 14px 34px rgba(0, 0, 0, 0.12);
-    z-index: 30;
     cursor: default;
   }
 
-  html.theme-dark .scroll-annotation.is-expanded {
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  .sa-more {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .is-expanded .sa-img,
-  .is-expanded .sa-vid {
-    max-height: 150px;
+  .sa-more-inner {
+    overflow: hidden;
+    min-height: 0;
+    opacity: 0;
+    transform: translateY(4px);
+    transition:
+      opacity 0.28s ease,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .scroll-annotation.is-expanded .sa-more {
+    grid-template-rows: 1fr;
+  }
+
+  .scroll-annotation.is-expanded .sa-more-inner {
+    opacity: 1;
+    transform: none;
+    transition-delay: 0.1s, 0s;
+  }
+
+  /* The continuation continues the same paragraph voice — a small step down
+     from the lead sentence, nothing that reads as a new section. */
+  .sa-more .sa-text {
+    margin-top: 6px;
+  }
+
+  /* The open note is marked by the same pen that marked its term: the
+     hairline stretches across the column and takes the family's highlighter
+     ink — yellow for marginalia, green for a project note — and the label
+     steps up to full ink. Attention in the system's own language; still no
+     box, no shadow, no surface. Geometry is declared with the hover state so
+     hovering an open note cannot shrink its rule back to the hover width;
+     ink is declared separately so the intro's staged demonstration can
+     retint the same rule. */
+  .scroll-annotation.is-expanded .sa-rule,
+  .scroll-annotation.is-expanded.revealed:hover .sa-rule {
+    width: 100%;
+    height: 2px;
+  }
+
+  .scroll-annotation.is-expanded .sa-rule {
+    background: rgba(var(--mark-note-rgb), 0.8);
+  }
+
+  .scroll-annotation.sa-project.is-expanded .sa-rule {
+    background: rgba(var(--mark-project-rgb), 0.8);
+  }
+
+  /* The intro's rule narrates the demonstration: yellow while the yellow
+     pen is on stage, green when the green pen takes it, and back to the
+     resting hairline once the reader has the whole ladder — the apparatus
+     stands down and hands the document back. */
+  .scroll-annotation.is-expanded.intro-stage-gateway .sa-rule {
+    background: rgba(var(--mark-project-rgb), 0.8);
+  }
+
+  .scroll-annotation.is-expanded.intro-stage-done .sa-rule,
+  .scroll-annotation.is-expanded.intro-stage-done.revealed:hover .sa-rule {
+    background: var(--doc-rule);
+    height: 1px;
+  }
+
+  .scroll-annotation.is-expanded .sa-label {
+    color: var(--doc-heading);
+  }
+
+  /* Focus follows the open note. The others step back but stay present —
+     recede, don't vanish — and return under the pointer. The document
+     itself never dims: the reader is still reading it. */
+  .margin-focus .scroll-annotation.revealed:not(.is-expanded) {
+    opacity: 0.35;
+  }
+
+  .margin-focus .scroll-annotation.revealed:not(.is-expanded):hover {
+    opacity: 0.8;
   }
 
   /* ── Margin carousel ──
@@ -1444,15 +2229,13 @@ html.theme-dark .popover {
     text-decoration: none;
     transition:
       background-color 0.2s ease,
-      color 0.2s ease;
+      color 0.2s ease,
+      transform 0.12s ease;
   }
 
-  /* Once an expanded note becomes its own scroll region, keep the gateway
-     available at the top just as the popover does. Collapsed notes stay in
-     normal document flow, avoiding a page-level sticky control. */
-  .scroll-annotation.is-expanded .sa-link {
-    position: sticky;
-    top: 0;
+  /* The same one-pixel press the gateway has on every other surface. */
+  .sa-link:active {
+    transform: translateY(1px);
   }
 
   .sa-link-label {
@@ -1549,6 +2332,39 @@ html.theme-dark .popover {
 }
 
 /* ══════════════════════════════════════
+   RESPONSIVE — NARROW SHEET
+   ══════════════════════════════════════
+   The masthead colophon (credentials, contact) is an inline run punctuated
+   by interpuncts — punctuation that only works while the run holds one line.
+   Below ~760px it wraps, stranding separators at line edges, so both runs
+   become stacked lists instead: one item per line, no dots, flush left. A
+   list needs no punctuation. */
+@media (max-width: 760px) {
+  .masthead-credentials {
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+  }
+
+  /* Must repeat the base separator's :not(:last-child) — a plainer selector
+     loses the specificity contest to it and the dots survive (they did, for
+     as long as the old mobile block tried the short form). */
+  .masthead-credentials .masthead-cred:not(:last-child)::after {
+    content: none;
+  }
+
+  .masthead-contact {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 9px;
+  }
+
+  .masthead-sep {
+    display: none;
+  }
+}
+
+/* ══════════════════════════════════════
    RESPONSIVE — MOBILE
    ══════════════════════════════════════ */
 @media (max-width: 600px) {
@@ -1571,6 +2387,15 @@ html.theme-dark .popover {
     padding: 48px 24px 32px;
   }
 
+  /* No engraving on a phone. The name needs the full measure (the surname
+     must not break at its hyphen), so the figure cannot share its row — and
+     parked beside the rule it floats in the colophon's air, anchored to
+     nothing. A plate with no room is clutter; the phone masthead is a tight
+     colophon and stays one. */
+  .masthead-portrait {
+    display: none;
+  }
+
   /* The colophon row stacks — a baseline-shared row needs width it doesn't
      have on a phone, and right-aligned credentials under a left-aligned
      tagline would read as a mistake. */
@@ -1584,16 +2409,6 @@ html.theme-dark .popover {
     max-width: 100%;
   }
 
-  .masthead-credentials {
-    flex-direction: column;
-    gap: 6px;
-    text-align: left;
-  }
-
-  .masthead-credentials .masthead-cred::after {
-    content: none;
-  }
-
   .masthead-lede {
     max-width: 100%;
   }
@@ -1605,6 +2420,12 @@ html.theme-dark .popover {
   .doc-exp {
     grid-template-columns: 1fr;
     row-gap: 5px;
+    /* The rail's hang comes back in. The base rule pulls the entry left by
+       --sheet-inset so the years sit in the band beside the text; with the
+       rail collapsed there is no band, and the un-reset hang shoved every
+       entry past the sheet edge — clipping the year and the flush-left lines
+       at the viewport. */
+    margin-left: 0;
   }
 
   .doc-exp-years {
@@ -1613,27 +2434,6 @@ html.theme-dark .popover {
 
   .doc-wrapper {
     margin-top: 0;
-  }
-
-  .masthead-mobile-hint {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 28px;
-    padding: 9px 16px;
-    border: 1px solid var(--doc-rule);
-    /* Chrome corner, like every other bordered control. A 100px pill was the
-       only fully-round object on the page and it read as a UI badge dropped
-       onto a printed sheet. */
-    border-radius: 2px;
-    font-family: var(--mono);
-    font-size: var(--type-meta);
-    font-weight: 500;
-    letter-spacing: var(--type-label-spacing);
-    text-transform: uppercase;
-    color: var(--doc-light);
-    opacity: 0;
-    animation: fadeIn 0.6s ease 0.9s forwards;
   }
 
   .doc-wrapper {
@@ -1651,7 +2451,9 @@ html.theme-dark .popover {
     margin: 34px 0 18px;
   }
 
-  /* ── Mobile bottom sheet ── */
+  /* ── Mobile bottom sheet ──
+     The full shell is defined here because the sheet exists only at this
+     tier — the base .popover is display: none everywhere else. */
   .popover-overlay.open {
     background: rgba(0, 0, 0, 0.45);
     backdrop-filter: blur(3px);
@@ -1660,24 +2462,35 @@ html.theme-dark .popover {
 
   .popover {
     position: fixed;
+    z-index: 1000;
     bottom: 0;
-    left: 0 !important;
+    left: 0;
     right: 0;
-    top: auto !important;
-    width: 100% !important;
+    top: auto;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
     max-height: 82vh;
     overflow: hidden;
+    overscroll-behavior: contain;
+    background: var(--doc-white);
+    border-top: 1px solid var(--doc-rule);
     border-radius: 14px 14px 0 0;
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.05),
+      0 12px 28px rgba(0, 0, 0, 0.1),
+      0 32px 64px rgba(0, 0, 0, 0.09);
+    opacity: 0;
+    pointer-events: none;
     /* --sheet-drag-offset is driven by JS during swipe-to-dismiss */
-    transform: translateY(
-      calc(100% + var(--sheet-drag-offset, 0px))
-    ) !important;
+    transform: translateY(calc(100% + var(--sheet-drag-offset, 0px)));
     transition:
       opacity 0.3s cubic-bezier(0.32, 0.72, 0, 1),
       transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  html.theme-dark .popover {
+    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
   }
 
   .popover-scroll {
@@ -1685,8 +2498,14 @@ html.theme-dark .popover {
   }
 
   .popover.visible {
-    transform: translateY(var(--sheet-drag-offset, 0px)) !important;
+    transform: translateY(var(--sheet-drag-offset, 0px));
     opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Transitions off while a swipe gesture is driving the offset directly. */
+  .popover.is-dragging {
+    transition: none;
   }
 
   .popover-media,
@@ -1705,11 +2524,6 @@ html.theme-dark .popover {
     border-radius: 4px;
   }
 
-  /* No hover on touch — the chevrons have to be present. */
-  .popover-carousel-nav {
-    opacity: 0.8;
-  }
-
   .popover-body {
     padding: 18px 20px 24px;
   }
@@ -1723,19 +2537,27 @@ html.theme-dark .popover {
     margin: 0 0 18px;
   }
 
-  /* The handle strip becomes a real swipe affordance. */
+  /* The handle strip — the sheet's swipe affordance and its only chrome row.
+     Defined here in full: no other tier has a handle any more. */
   .popover-handle {
+    position: relative;
+    flex: 0 0 auto;
     height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    background: var(--doc-white);
     border-radius: 14px 14px 0 0;
-    cursor: default;
   }
 
   .popover-handle::before {
+    content: "";
+    display: block;
     width: 36px;
     height: 4px;
     border-radius: 2px;
     background: var(--doc-rule);
-    box-shadow: none;
   }
 
   /* 44×44 touch target, per Apple HIG and WCAG 2.5.5. */
@@ -1785,7 +2607,8 @@ html.theme-dark .popover {
   /* The masthead entrance is declared only under `no-preference`, so there is
      nothing left to switch off here. */
 
-  .hotspot {
+  .hotspot,
+  .hs-stroke {
     transition: none;
   }
 
@@ -1803,5 +2626,24 @@ html.theme-dark .popover {
   .scroll-annotation.annotation-suppressed {
     transform: none;
     transition: none;
+  }
+
+  /* Notes stop unfolding and simply appear at full length; the engines skip
+     their JS-driven reflow loop and smooth scroll assists on the same query. */
+  .sa-more,
+  .sa-more-inner,
+  .inset-note,
+  .inset-body,
+  .intro-reveal,
+  .intro-reveal-inner,
+  .edition-rule {
+    transform: none;
+    transition: none;
+  }
+
+  /* The gateway keeps its colour states but not its press. */
+  .popover-link:active,
+  .sa-link:active {
+    transform: none;
   }
 }

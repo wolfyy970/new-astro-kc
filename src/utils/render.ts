@@ -19,6 +19,23 @@ const iconBody = (svg: string): string =>
 
 const CASE_STUDY_ICON = iconBody(notesSvg);
 
+// ── Marker variance ──────────────────────────────────────────────────────────
+// Every marked term carries one of six hand-tuned stroke shapes (tilt, corner
+// geometry, ink pooling — see the ANNOTATED TERMS block in global.css). A real
+// pen never draws the same stroke twice, but a document must not redraw itself
+// between visits: the variant is a pure hash of the popover key, so each term's
+// mark is unique against its neighbours yet stable across renders.
+export const MARK_VARIANT_COUNT = 6;
+
+export function markVariant(key: string): number {
+  // djb2-xor — tiny, deterministic, good spread on short keys.
+  let h = 5381;
+  for (let i = 0; i < key.length; i++) {
+    h = (h * 33) ^ key.charCodeAt(i);
+  }
+  return ((h >>> 0) % MARK_VARIANT_COUNT) + 1;
+}
+
 function escapeAttribute(value: string): string {
   return value
     .replaceAll("&", "&amp;")
@@ -27,7 +44,9 @@ function escapeAttribute(value: string): string {
     .replaceAll(">", "&gt;");
 }
 
-function renderCaseStudyMarker(): string {
+// Exported for the margin engine's intro specimen: the cold-start note
+// demonstrates the green pen with the real apparatus, not a lookalike.
+export function renderCaseStudyMarker(): string {
   return (
     `<sup class="hotspot-ref" data-hint="Case study" aria-hidden="true">` +
     `<svg class="hotspot-ref-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"` +
@@ -57,11 +76,23 @@ export function createHotspotRenderer(
       const interaction = hasProject ? "Case study available" : "Marginalia";
       const accessibleLabel = escapeAttribute(`${label}. ${interaction}.`);
 
+      // Ink family (yellow note / green project) + stroke shape variant.
+      // Colour is decorative here — the same distinction reaches assistive
+      // tech through the aria-label above.
+      const classes = [
+        HOTSPOT_CLASS,
+        `hs-mark-${markVariant(key)}`,
+        ...(hasProject ? ["hs-project"] : []),
+      ].join(" ");
+
+      // The stroke lives on an inner span so the ink covers the letters only —
+      // a real marker stops at the words; the superscript icon stays clean.
       return (
-        `<span class="${HOTSPOT_CLASS}" data-popover="${key}"` +
+        `<span class="${classes}" data-popover="${key}"` +
         ` tabindex="0" role="button" aria-label="${accessibleLabel}"` +
         ` aria-expanded="false" aria-controls="${ID_POPOVER}">` +
-        `${label}${hasProject ? renderCaseStudyMarker() : ""}</span>`
+        `<span class="hs-stroke">${label}</span>` +
+        `${hasProject ? renderCaseStudyMarker() : ""}</span>`
       );
     });
   };

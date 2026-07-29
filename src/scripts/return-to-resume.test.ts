@@ -98,13 +98,9 @@ describe("context-preserving case-study return", () => {
     cleanup();
   });
 
-  it("records the exact overlay state on the résumé history entry", () => {
+  it("records the sheet state on the résumé history entry", () => {
     document.body.innerHTML = `
-      <div
-        class="popover visible"
-        data-popover-key="truist"
-        style="top: 420px; left: 690px"
-      >
+      <div class="popover visible" data-popover-key="truist">
         <div class="popover-scroll"></div>
         <button class="popover-carousel-dot"></button>
         <button class="popover-carousel-dot active"></button>
@@ -138,8 +134,77 @@ describe("context-preserving case-study return", () => {
         popoverKey: "truist",
         popoverScrollTop: 240,
         carouselIndex: 1,
-        top: "420px",
-        left: "690px",
+      },
+    });
+    cleanup();
+  });
+
+  it("records a bound-in note's state under its own surface", () => {
+    document.body.innerHTML = `
+      <aside class="inset-note open" data-popover-key="upwave">
+        <button class="popover-carousel-dot active"></button>
+        <button class="popover-carousel-dot"></button>
+        <a class="popover-link" href="/upwave">
+          <span>View Upwave project</span>
+        </a>
+      </aside>
+    `;
+
+    const environment = makeEnvironment({
+      location: {
+        href: "https://portfolio.test/",
+        origin: "https://portfolio.test",
+        pathname: "/",
+      },
+    });
+    const cleanup = initResumeReturnTracking(environment);
+    const event = new MouseEvent("click", {
+      bubbles: true,
+      cancelable: true,
+      button: 0,
+    });
+    event.preventDefault();
+    document.querySelector(".popover-link span")?.dispatchEvent(event);
+
+    expect(environment.history.state).toMatchObject({
+      [resumeReturnInternals.VIEW_STATE_KEY]: {
+        surface: "inset",
+        popoverKey: "upwave",
+        carouselIndex: 0,
+      },
+    });
+    cleanup();
+  });
+
+  it("records an expanded margin note's state under the margin surface", () => {
+    document.body.innerHTML = `
+      <aside class="scroll-annotation is-expanded" data-annotation-key="merger">
+        <a class="sa-link" href="/truist">
+          <span>View Truist project</span>
+        </a>
+      </aside>
+    `;
+
+    const environment = makeEnvironment({
+      location: {
+        href: "https://portfolio.test/",
+        origin: "https://portfolio.test",
+        pathname: "/",
+      },
+    });
+    const cleanup = initResumeReturnTracking(environment);
+    const event = new MouseEvent("click", {
+      bubbles: true,
+      cancelable: true,
+      button: 0,
+    });
+    event.preventDefault();
+    document.querySelector(".sa-link span")?.dispatchEvent(event);
+
+    expect(environment.history.state).toMatchObject({
+      [resumeReturnInternals.VIEW_STATE_KEY]: {
+        surface: "margin",
+        popoverKey: "merger",
       },
     });
     cleanup();
@@ -207,7 +272,7 @@ describe("context-preserving case-study return", () => {
     ).toBeNull();
   });
 
-  it("reconstructs the saved popover, carousel frame, and scroll position", () => {
+  it("reconstructs the saved sheet, carousel frame, and scroll position", () => {
     document.body.innerHTML = `
       <button class="hotspot" data-popover="truist">Open Truist</button>
     `;
@@ -243,8 +308,6 @@ describe("context-preserving case-study return", () => {
           popoverKey: "truist",
           popoverScrollTop: 240,
           carouselIndex: 1,
-          top: "420px",
-          left: "690px",
         },
       },
       replaceState: vi.fn(),
@@ -259,14 +322,62 @@ describe("context-preserving case-study return", () => {
       popover?.querySelector<HTMLElement>(".popover-scroll")?.scrollTop,
     ).toBe(240);
     expect(secondDotClick).toHaveBeenCalledOnce();
-    expect(popover?.style.top).toBe("420px");
-    expect(popover?.style.left).toBe("690px");
     vi.unstubAllGlobals();
   });
 
-  it("does not force an overlay when responsive marginalia is present", () => {
+  it("reopens a stored note by clicking its term and letting the tier route it", () => {
+    // The reader left from a bound-in note; the click routes wherever the
+    // CURRENT tier dictates. Here the click handler stands in for the engine
+    // and produces the wide margin's surface instead — the restore must find
+    // the carousel in that container just the same.
     document.body.innerHTML = `
-      <aside class="scroll-annotation"></aside>
+      <button class="hotspot" data-popover="truist">Open Truist</button>
+    `;
+    const hotspot = document.querySelector<HTMLElement>(".hotspot");
+    hotspot?.addEventListener("click", () => {
+      document.body.insertAdjacentHTML(
+        "beforeend",
+        `
+          <aside class="scroll-annotation is-expanded">
+            <button class="sa-carousel-dot active"></button>
+            <button class="sa-carousel-dot"></button>
+          </aside>
+        `,
+      );
+    });
+    const secondDotClick = vi.fn();
+    hotspot?.addEventListener("click", () => {
+      document
+        .querySelectorAll<HTMLButtonElement>(".sa-carousel-dot")[1]
+        ?.addEventListener("click", secondDotClick);
+    });
+    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
+      callback(0);
+      return 1;
+    });
+
+    const history = {
+      length: 2,
+      state: {
+        [resumeReturnInternals.VIEW_STATE_KEY]: {
+          surface: "inset",
+          popoverKey: "truist",
+          carouselIndex: 1,
+        },
+      },
+      replaceState: vi.fn(),
+      back: vi.fn(),
+    };
+
+    restoreResumeReturnView({ document, history });
+
+    expect(secondDotClick).toHaveBeenCalledOnce();
+    vi.unstubAllGlobals();
+  });
+
+  it("does not reopen anything when a note is already open", () => {
+    document.body.innerHTML = `
+      <aside class="scroll-annotation is-expanded"></aside>
       <button class="hotspot" data-popover="truist">Open Truist</button>
     `;
     const hotspot = document.querySelector<HTMLElement>(".hotspot");

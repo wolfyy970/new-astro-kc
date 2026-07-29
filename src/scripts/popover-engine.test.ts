@@ -1,17 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { initPopoverEngine, closePopover } from "./popover-engine";
+import { closeInset } from "./inset-note";
 import { initAnnotationEngine, cleanupAnnotations } from "./annotation-engine";
 import type { PopoverMap } from "../types/content";
-import {
-  CLS_ACTIVE,
-  CLS_OPEN,
-  CLS_VISIBLE,
-  DRAG_MIN_VISIBLE,
-  POPOVER_MARGIN_MIN,
-  POPOVER_MAX_WIDTH,
-} from "./constants";
+import { CLS_ACTIVE, CLS_OPEN, CLS_VISIBLE, ID_INSET } from "./constants";
 
-describe("PopoverEngine", () => {
+describe("NoteEngine", () => {
   let hotspot: HTMLButtonElement;
   let annotation: HTMLElement;
   let overlay: HTMLElement;
@@ -29,7 +23,7 @@ describe("PopoverEngine", () => {
   };
 
   beforeEach(() => {
-    // Set up DOM elements required by PopoverEngine
+    // Set up DOM elements required by the engine
     overlay = document.createElement("div");
     overlay.id = "popover-overlay";
     overlay.className = "popover-overlay";
@@ -38,31 +32,25 @@ describe("PopoverEngine", () => {
     popoverEl = document.createElement("div");
     popoverEl.id = "popover";
     popoverEl.className = "popover";
-    // Add minimal layout fields needed for measurements
-    Object.defineProperty(popoverEl, "offsetHeight", {
-      value: 300,
-      writable: true,
-      configurable: true,
-    });
-    Object.defineProperty(popoverEl, "offsetWidth", {
-      value: 380,
-      writable: true,
-      configurable: true,
-    });
     document.body.appendChild(popoverEl);
 
+    // A summary paragraph hosts the term — the shape the inset binds after.
+    const summary = document.createElement("p");
+    summary.className = "doc-summary";
     hotspot = document.createElement("button");
     hotspot.className = "hotspot";
     hotspot.dataset.popover = "testKey";
     hotspot.setAttribute("aria-expanded", "false");
-    document.body.appendChild(hotspot);
+    hotspot.setAttribute("aria-controls", "popover");
+    summary.appendChild(hotspot);
+    document.body.appendChild(summary);
 
     annotation = document.createElement("div");
     annotation.dataset.annotationKey = "testKey";
     document.body.appendChild(annotation);
 
-    // Reset window dimensions
-    window.innerWidth = 1440;
+    // Middle tier by default; individual suites move to mobile.
+    window.innerWidth = 1024;
     window.innerHeight = 900;
     window.scrollY = 0;
 
@@ -87,194 +75,163 @@ describe("PopoverEngine", () => {
 
   afterEach(() => {
     closePopover({ returnFocus: false });
+    closeInset({ instant: true });
     document.body.innerHTML = "";
     vi.restoreAllMocks();
   });
 
-  describe("Positioning (desktop vs mobile)", () => {
-    it("returns empty position strings on mobile viewport", () => {
-      window.innerWidth = 375; // mobile breakpoint is 768
+  describe("Tier routing", () => {
+    it("binds a note into the flow on the middle tier — nothing floats", () => {
       hotspot.click();
-      expect(popoverEl.style.top).toBe("");
-      expect(popoverEl.style.left).toBe("");
+
+      const inset = document.getElementById(ID_INSET);
+      expect(inset).not.toBeNull();
+      expect(inset?.classList.contains("inset-note")).toBe(true);
+      // In the flow, directly after the term's paragraph — not in the sheet.
+      expect(inset?.previousElementSibling?.classList.contains("doc-summary")) //
+        .toBe(true);
+      expect(popoverEl.classList.contains(CLS_VISIBLE)).toBe(false);
+      expect(overlay.classList.contains(CLS_OPEN)).toBe(false);
     });
 
-    it("places popover below hotspot when space is available", () => {
-      hotspot.getBoundingClientRect = () => ({
-        left: 200,
-        top: 100,
-        width: 100,
-        height: 30,
-        right: 300,
-        bottom: 130,
-        x: 200,
-        y: 100,
-        toJSON: () => {},
-      });
-
-      hotspot.click();
-      // hotspot bottom (130) + offset (10) = 140px
-      expect(popoverEl.style.top).toBe("140px");
-    });
-
-    it("flips popover above hotspot when space is limited below", () => {
-      hotspot.getBoundingClientRect = () => ({
-        left: 200,
-        top: 700, // Near bottom of 900px viewport
-        width: 100,
-        height: 30,
-        right: 300,
-        bottom: 730,
-        x: 200,
-        y: 700,
-        toJSON: () => {},
-      });
-
-      hotspot.click();
-      // worst case height is 0.8 * 900 = 720px. Space below is 900 - 730 - 10 = 160px (insufficient).
-      // hotspot top (700) - worstCaseHeight (720) - offset (10) = -30px (negative, will clamp)
-      // Post-render clamp aligns bottom of popover (actual height 300) above the hotspot if it fits:
-      // hotspot top (700) - actual height (300) - offset (10) = 390px.
-      // Since 390px >= 16px (min margin), it fits above hotspot perfectly.
-      expect(popoverEl.style.top).toBe("390px");
-    });
-
-    it("keeps a tall note on screen when its term is below the fold", () => {
-      // Regression. Two guards were one-sided and covered for each other's gap:
-      // the flip only checked that the panel cleared the TOP margin, and the
-      // clamp only checked the BOTTOM. When the term is outside the viewport —
-      // which happens on the re-clamp that fires as a carousel's figures finish
-      // loading, if the reader has scrolled in the meantime — "above the term"
-      // clears the top margin and still ends far past the bottom of the screen.
-      Object.defineProperty(popoverEl, "offsetHeight", {
-        value: 700, // a media-heavy note
-        writable: true,
-        configurable: true,
-      });
-
-      hotspot.getBoundingClientRect = () => ({
-        left: 200,
-        top: 1100, // below a 900px viewport
-        width: 100,
-        height: 30,
-        right: 300,
-        bottom: 1130,
-        x: 200,
-        y: 1100,
-        toJSON: () => {},
-      });
-
+    it("opens the sheet on the mobile tier", () => {
+      window.innerWidth = 375;
       hotspot.click();
 
-      const top = parseFloat(popoverEl.style.top);
-      expect(top).toBeGreaterThanOrEqual(POPOVER_MARGIN_MIN);
-      expect(top + 700).toBeLessThanOrEqual(
-        window.innerHeight - POPOVER_MARGIN_MIN,
-      );
-    });
-
-    it("keeps a note on screen when its term is above the fold", () => {
-      // The mirror case: the old clamp returned early whenever the bottom edge
-      // was fine, so a panel positioned off the TOP of the viewport was never
-      // corrected at all.
-      Object.defineProperty(popoverEl, "offsetHeight", {
-        value: 400,
-        writable: true,
-        configurable: true,
-      });
-
-      hotspot.getBoundingClientRect = () => ({
-        left: 200,
-        top: -600, // scrolled well above the viewport
-        width: 100,
-        height: 30,
-        right: 300,
-        bottom: -570,
-        x: 200,
-        y: -600,
-        toJSON: () => {},
-      });
-
-      hotspot.click();
-
-      const top = parseFloat(popoverEl.style.top);
-      expect(top).toBeGreaterThanOrEqual(POPOVER_MARGIN_MIN);
-      expect(top + 400).toBeLessThanOrEqual(
-        window.innerHeight - POPOVER_MARGIN_MIN,
-      );
-    });
-
-    it("pins a note taller than the viewport to the top margin", () => {
-      // Nothing can fit; the panel scrolls internally, so the guarantee is that
-      // its top edge stays reachable rather than drifting above the fold.
-      Object.defineProperty(popoverEl, "offsetHeight", {
-        value: 1200, // taller than the 900px viewport
-        writable: true,
-        configurable: true,
-      });
-
-      hotspot.getBoundingClientRect = () => ({
-        left: 200,
-        top: 600,
-        width: 100,
-        height: 30,
-        right: 300,
-        bottom: 630,
-        x: 200,
-        y: 600,
-        toJSON: () => {},
-      });
-
-      hotspot.click();
-      expect(popoverEl.style.top).toBe(`${POPOVER_MARGIN_MIN}px`);
-    });
-
-    it("clamps popover to horizontal viewport margins", () => {
-      hotspot.getBoundingClientRect = () => ({
-        left: 10, // Near left edge
-        top: 100,
-        width: 50,
-        height: 20,
-        right: 60,
-        bottom: 120,
-        x: 10,
-        y: 100,
-        toJSON: () => {},
-      });
-
-      hotspot.click();
-      // Center is (10 + 25) = 35. Center - 380/2 = -155.
-      // Clamps to min margin (16px)
-      expect(popoverEl.style.left).toBe("16px");
-    });
-
-    it("positions against the rendered fluid width rather than a stale constant", () => {
-      window.innerWidth = 800;
-      Object.defineProperty(popoverEl, "offsetWidth", {
-        value: 520,
-        writable: true,
-        configurable: true,
-      });
-      hotspot.getBoundingClientRect = () => ({
-        left: 760,
-        top: 100,
-        width: 40,
-        height: 20,
-        right: 800,
-        bottom: 120,
-        x: 760,
-        y: 100,
-        toJSON: () => {},
-      });
-
-      hotspot.click();
-
-      expect(popoverEl.style.left).toBe("264px");
-      expect(POPOVER_MAX_WIDTH).toBeGreaterThanOrEqual(520);
+      expect(document.getElementById(ID_INSET)).toBeNull();
+      expect(popoverEl.classList.contains(CLS_VISIBLE)).toBe(true);
+      expect(overlay.classList.contains(CLS_OPEN)).toBe(true);
     });
   });
 
-  describe("Lifecycle and State Changes", () => {
+  describe("Bound-in note (middle tier)", () => {
+    it("carries the full note content and the fold control", () => {
+      hotspot.click();
+      const inset = document.getElementById(ID_INSET)!;
+
+      expect(inset.querySelector(".popover-label")?.textContent).toBe(
+        "Test Item",
+      );
+      expect(inset.textContent).toContain("Sentence two.");
+      expect(inset.textContent).toContain("A test quote.");
+      expect(inset.querySelector(".popover-link")).not.toBeNull();
+      expect(inset.querySelector(".popover-head .inset-fold")).not.toBeNull();
+    });
+
+    it("manages term state and aria while open", () => {
+      hotspot.click();
+
+      expect(hotspot.classList.contains(CLS_ACTIVE)).toBe(true);
+      expect(hotspot.getAttribute("aria-expanded")).toBe("true");
+      expect(hotspot.getAttribute("aria-controls")).toBe(ID_INSET);
+
+      hotspot.click(); // toggle closed
+
+      expect(hotspot.classList.contains(CLS_ACTIVE)).toBe(false);
+      expect(hotspot.getAttribute("aria-expanded")).toBe("false");
+      expect(hotspot.getAttribute("aria-controls")).toBe("popover");
+      // The dying note loses the id immediately, so the trigger never points
+      // at a corpse while it folds away.
+      expect(document.getElementById(ID_INSET)).toBeNull();
+    });
+
+    it("binds inside a bullet when the term lives in one", () => {
+      const ul = document.createElement("ul");
+      const li = document.createElement("li");
+      const bulletTerm = document.createElement("button");
+      bulletTerm.className = "hotspot";
+      bulletTerm.dataset.popover = "testKey";
+      li.appendChild(bulletTerm);
+      ul.appendChild(li);
+      document.body.appendChild(ul);
+      initPopoverEngine(mockData); // rebind to pick up the new term
+
+      bulletTerm.click();
+
+      const inset = document.getElementById(ID_INSET)!;
+      expect(inset.parentElement).toBe(li);
+    });
+
+    it("closes on Escape", () => {
+      hotspot.click();
+      expect(document.getElementById(ID_INSET)).not.toBeNull();
+
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+      );
+      expect(document.getElementById(ID_INSET)).toBeNull();
+    });
+
+    it("closes on a click elsewhere but never on a click inside itself", () => {
+      hotspot.click();
+      const inset = document.getElementById(ID_INSET)!;
+
+      inset.querySelector<HTMLElement>(".popover-text")!.click();
+      expect(document.getElementById(ID_INSET)).not.toBeNull();
+
+      document.body.click();
+      expect(document.getElementById(ID_INSET)).toBeNull();
+    });
+
+    it("closes via the fold control", () => {
+      hotspot.click();
+      const inset = document.getElementById(ID_INSET)!;
+
+      inset.querySelector<HTMLButtonElement>(".inset-fold")!.click();
+      expect(document.getElementById(ID_INSET)).toBeNull();
+      expect(hotspot.getAttribute("aria-expanded")).toBe("false");
+    });
+
+    it("folds when the reader scrolls away, forgiving jitter", () => {
+      hotspot.click();
+      expect(document.getElementById(ID_INSET)).not.toBeNull();
+
+      // Below the exit threshold: still reading.
+      document.dispatchEvent(new WheelEvent("wheel", { deltaY: 6 }));
+      document.dispatchEvent(new WheelEvent("wheel", { deltaY: 6 }));
+      expect(document.getElementById(ID_INSET)).not.toBeNull();
+
+      // A deliberate motion is the exit gesture.
+      document.dispatchEvent(new WheelEvent("wheel", { deltaY: 40 }));
+      expect(document.getElementById(ID_INSET)).toBeNull();
+      expect(hotspot.getAttribute("aria-expanded")).toBe("false");
+    });
+
+    it("resets the exit accumulator on each open", () => {
+      hotspot.click();
+      document.dispatchEvent(new WheelEvent("wheel", { deltaY: 20 }));
+      hotspot.click(); // close
+      hotspot.click(); // reopen — accumulated 20 must not carry over
+
+      document.dispatchEvent(new WheelEvent("wheel", { deltaY: 20 }));
+      expect(document.getElementById(ID_INSET)).not.toBeNull();
+    });
+
+    it("swaps to another term's note in a single click", () => {
+      const second = document.createElement("button");
+      second.className = "hotspot";
+      second.dataset.popover = "testKey";
+      const para = document.createElement("p");
+      para.className = "doc-summary";
+      para.appendChild(second);
+      document.body.appendChild(para);
+      initPopoverEngine(mockData);
+
+      hotspot.click();
+      second.click();
+
+      const inset = document.getElementById(ID_INSET)!;
+      expect(inset.previousElementSibling).toBe(para);
+      expect(second.classList.contains(CLS_ACTIVE)).toBe(true);
+      expect(hotspot.classList.contains(CLS_ACTIVE)).toBe(false);
+    });
+  });
+
+  describe("Sheet lifecycle (mobile)", () => {
+    beforeEach(() => {
+      window.innerWidth = 375;
+    });
+
     it("manages hotspot and overlay classes and attributes on open/close", () => {
       expect(hotspot.classList.contains(CLS_ACTIVE)).toBe(false);
       expect(hotspot.getAttribute("aria-expanded")).toBe("false");
@@ -352,7 +309,11 @@ describe("PopoverEngine", () => {
     });
   });
 
-  describe("Focus Trap", () => {
+  describe("Focus trap (sheet only — the one modal surface)", () => {
+    beforeEach(() => {
+      window.innerWidth = 375;
+    });
+
     it("traps focus to rotate from last to first element when tabbing", () => {
       hotspot.click();
 
@@ -391,73 +352,23 @@ describe("PopoverEngine", () => {
 
       expect(document.activeElement).toBe(link);
     });
-  });
 
-  describe("Desktop drag (viewport clamping)", () => {
-    // Synthesises a pointer event jsdom won't construct natively, carrying the
-    // coordinate fields the drag handler reads off the event.
-    const pointerEvent = (
-      type: string,
-      props: Record<string, unknown>,
-    ): Event => {
-      const e = new Event(type, { bubbles: true });
-      Object.assign(e, props);
-      return e;
-    };
-
-    let handle: HTMLElement;
-
-    beforeEach(() => {
-      window.innerWidth = 1440;
-      // jsdom does not implement pointer capture; stub it so drag can engage.
-      popoverEl.setPointerCapture = vi.fn();
-      popoverEl.releasePointerCapture = vi.fn();
+    it("does not trap focus in the non-modal bound-in note", () => {
+      window.innerWidth = 1024;
       hotspot.click();
-      handle = popoverEl.querySelector(".popover-handle") as HTMLElement;
-      expect(handle).not.toBeNull();
-      // Establish a known starting position before dragging.
-      popoverEl.style.left = "100px";
-      popoverEl.style.top = "100px";
-    });
 
-    it("clamps left so the panel cannot be dragged past the right edge", () => {
-      handle.dispatchEvent(
-        pointerEvent("pointerdown", {
-          clientX: 100,
-          clientY: 100,
-          pointerId: 1,
-        }),
-      );
-      popoverEl.dispatchEvent(
-        pointerEvent("pointermove", {
-          clientX: 99999,
-          clientY: 100,
-          pointerId: 1,
-        }),
-      );
+      const inset = document.getElementById(ID_INSET)!;
+      const fold = inset.querySelector<HTMLElement>(".inset-fold")!;
+      fold.focus();
 
-      expect(popoverEl.style.left).toBe(
-        `${window.innerWidth - DRAG_MIN_VISIBLE}px`,
-      );
-    });
+      const tabEvent = new KeyboardEvent("keydown", {
+        key: "Tab",
+        bubbles: true,
+      });
+      inset.dispatchEvent(tabEvent);
 
-    it("clamps left to the minimum margin at the left edge", () => {
-      handle.dispatchEvent(
-        pointerEvent("pointerdown", {
-          clientX: 100,
-          clientY: 100,
-          pointerId: 1,
-        }),
-      );
-      popoverEl.dispatchEvent(
-        pointerEvent("pointermove", {
-          clientX: -99999,
-          clientY: 100,
-          pointerId: 1,
-        }),
-      );
-
-      expect(popoverEl.style.left).toBe(`${POPOVER_MARGIN_MIN}px`);
+      // A disclosure lets Tab continue into the document beyond it.
+      expect(document.activeElement).toBe(fold);
     });
   });
 
@@ -524,7 +435,7 @@ describe("PopoverEngine", () => {
       const touchstart = new TouchEvent("touchstart", {
         touches: [{ clientY: 100 } as Touch],
       });
-      // Swipe down by 50px (less than threshold 120px)
+      // Swipe down by 50px (less than the dismiss threshold)
       const touchmove = new TouchEvent("touchmove", {
         touches: [{ clientY: 150 } as Touch],
       });
@@ -540,7 +451,7 @@ describe("PopoverEngine", () => {
       expect(popoverEl.classList.contains(CLS_VISIBLE)).toBe(true);
     });
 
-    it("closes popover when drag distance exceeds threshold", async () => {
+    it("closes the sheet when drag distance exceeds threshold", async () => {
       Object.defineProperty(scrollRegion, "scrollTop", {
         value: 0,
         writable: true,
@@ -550,7 +461,7 @@ describe("PopoverEngine", () => {
       const touchstart = new TouchEvent("touchstart", {
         touches: [{ clientY: 100 } as Touch],
       });
-      // Swipe down by 250px (greater than threshold 120px)
+      // Swipe down by 250px (well past the threshold)
       const touchmove = new TouchEvent("touchmove", {
         touches: [{ clientY: 350 } as Touch],
       });
@@ -571,7 +482,7 @@ describe("PopoverEngine", () => {
   });
 });
 
-describe("PopoverEngine and marginalia event boundaries", () => {
+describe("NoteEngine and marginalia event boundaries", () => {
   beforeEach(() => {
     window.innerWidth = 1440;
     window.innerHeight = 900;
@@ -622,6 +533,23 @@ describe("PopoverEngine and marginalia event boundaries", () => {
     vi.restoreAllMocks();
   });
 
+  it("expands the margin note on the wide tier — no inset, no sheet", () => {
+    document.querySelector<HTMLElement>('[data-popover="testKey"]')!.click();
+
+    const annotation = document.querySelector<HTMLElement>(
+      '[data-annotation-key="testKey"]',
+    )!;
+    expect(annotation.classList.contains("is-expanded")).toBe(true);
+    expect(document.getElementById(ID_INSET)).toBeNull();
+    expect(
+      document.getElementById("popover")?.classList.contains(CLS_VISIBLE),
+    ).toBe(false);
+    // The rest of the margin recedes behind the open note.
+    expect(
+      document.querySelector(".doc-page")?.classList.contains("margin-focus"),
+    ).toBe(true);
+  });
+
   it("keeps a marginalia note expanded when its child content is clicked", () => {
     const annotation = document.querySelector<HTMLElement>(
       '[data-annotation-key="testKey"]',
@@ -634,5 +562,49 @@ describe("PopoverEngine and marginalia event boundaries", () => {
         .querySelector<HTMLElement>('[data-popover="testKey"]')
         ?.getAttribute("aria-expanded"),
     ).toBe("true");
+  });
+
+  it("folds the note when the reader scrolls away", () => {
+    document.querySelector<HTMLElement>('[data-popover="testKey"]')!.click();
+    const annotation = document.querySelector<HTMLElement>(
+      '[data-annotation-key="testKey"]',
+    )!;
+    expect(annotation.classList.contains("is-expanded")).toBe(true);
+
+    // A deliberate wheel motion is the exit gesture.
+    document.dispatchEvent(new WheelEvent("wheel", { deltaY: 40 }));
+
+    expect(annotation.classList.contains("is-expanded")).toBe(false);
+    expect(
+      document.querySelector(".doc-page")?.classList.contains("margin-focus"),
+    ).toBe(false);
+  });
+
+  it("forgives trackpad jitter below the exit threshold", () => {
+    document.querySelector<HTMLElement>('[data-popover="testKey"]')!.click();
+    const annotation = document.querySelector<HTMLElement>(
+      '[data-annotation-key="testKey"]',
+    )!;
+
+    document.dispatchEvent(new WheelEvent("wheel", { deltaY: 6 }));
+    document.dispatchEvent(new WheelEvent("wheel", { deltaY: 6 }));
+
+    expect(annotation.classList.contains("is-expanded")).toBe(true);
+  });
+
+  it("collapses on Escape and releases the margin focus", () => {
+    document.querySelector<HTMLElement>('[data-popover="testKey"]')!.click();
+
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+    );
+
+    const annotation = document.querySelector<HTMLElement>(
+      '[data-annotation-key="testKey"]',
+    )!;
+    expect(annotation.classList.contains("is-expanded")).toBe(false);
+    expect(
+      document.querySelector(".doc-page")?.classList.contains("margin-focus"),
+    ).toBe(false);
   });
 });

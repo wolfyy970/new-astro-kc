@@ -12,6 +12,11 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "preview"],
       "port": 4321
+    },
+    {
+      "name": "astro-attach",
+      "url": "http://localhost:4321",
+      "port": 4321
     }
   ]
 }

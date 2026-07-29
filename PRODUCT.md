@@ -45,9 +45,9 @@ The site's own mechanism is also positioning: **the résumé is the interface.**
 - **Stack:** Astro 7, `output: 'server'`, Vercel adapter.
 - **Auth:** site-wide middleware gate on `SITE_PASSWORD`; fail-closed with `503` when the variable is absent; constant-time cookie comparison; full security-header set.
 - **Content model:** `resume.json` and `popovers.json` are the résumé database; each case study is a self-contained JSON file indexed by `manifest.json` and rendered through a type-dispatching section component.
-- **Annotated terms:** 20, enforced strictly 1:1 against their notes at build time. All use an underline; the nine authored project destinations additionally carry a semantic case-study icon when enabled for the environment.
-- **Reading tiers:** margin notes at ≥1420px (derived from sheet + gutter + column, deliberately under a 1440px laptop); a bottom sheet below that. No content is unreachable at any width.
-- **Marginalia discovery:** between 600px and the wide tier, an in-flow header above the masthead invites readers to widen the browser and shows their progress toward revealing the margin columns. It collapses after the 1420px threshold is crossed.
+- **Annotated terms:** 20, enforced strictly 1:1 against their notes at build time. All wear a highlighter marker stroke — yellow for marginalia, green for project-backed terms — and the nine authored project destinations additionally carry a semantic case-study icon when enabled for the environment.
+- **Reading tiers:** margin notes at ≥1420px (derived from sheet + gutter + column, deliberately under a 1440px laptop); a note bound into the document flow between 600px and that; a bottom sheet at ≤600px. Nothing floats over the page on a desktop, and no content is unreachable at any width.
+- **Marginalia discovery:** below the wide tier, an editor's note bound into the top of the sheet introduces the system by demonstrating it — a live yellow specimen, a staged reveal of the green pen, an example project gateway, and a payoff line — with a one-clause widen invitation shown where widening is possible. At ≥1420px the note yields to the margin's own cold-start introduction.
 - **Feature flag:** `CASE_STUDY_LINKS` controls which case-study links reach the client, filtered server-side, so studies can be published incrementally.
 - **Build gate:** `npm run verify` validates schemas, hotspot mapping, and every media path; the build fails on a broken reference. Prettier, ESLint, Astro diagnostics, and 200 unit tests cover formatting, types, interaction engines, content schemas, navigation restoration, password visibility, icons, and the auth gate.
 
@@ -64,7 +64,7 @@ The site's own mechanism is also positioning: **the résumé is the interface.**
 Real, in the repository:
 
 - **8 case studies** — Truist ($66B merger, C-suite foresight), Sparks Grove/Delta (news.delta.com), Upwave (Turner venture), Two Way TV (interactive television platform), Armchair Manager (live fantasy sports and BAFTA nomination), FusionFall (behavioral design and Self-Determination Theory), CNN Magic Wall (technology strategy and weather), and Felix the Cat (CD-i / CD-ROM).
-- **20 annotated notes**, 94 images and 4 videos under `public/`.
+- **20 annotated notes**, 93 images and 4 videos under `public/`.
 - **Awards:** Emmy (Outstanding Creative Achievement in Interactive Media), Royal Television Society Award, BAFTA Interactive Entertainment nomination, Webby nomination, Apple Design Project Award.
 - **Patents:** two granted US patents in automatic content recognition.
 - **Metrics:** $32.8M attributable revenue and 7% add-to-cart lift (GPC, 2025); 0→1M monthly uniques in 8 months (upwave); the $66B SunTrust–BB&T merger; a 10-person team scaled to ~50.
@@ -85,4 +85,4 @@ Absences future work must not fabricate: there are no testimonials, no named ref
 
 ## Accessibility & Inclusion
 
-Target WCAG 2.1 AA. Established requirements: full keyboard operation with focus trapping in the note panel; 44×44px minimum touch targets; `prefers-reduced-motion` honored throughout; and — because the interface palette is achromatic — no information is ever carried by colour alone.
+Target WCAG 2.1 AA. Established requirements: full keyboard operation with focus trapping in the modal sheet (the in-flow surfaces are non-modal by design); 44×44px minimum touch targets; `prefers-reduced-motion` honored throughout; and — because the interface palette is achromatic — no information is ever carried by colour alone.

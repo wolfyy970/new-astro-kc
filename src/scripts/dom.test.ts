@@ -1,5 +1,10 @@
 import { describe, it, expect, vi } from "vitest";
-import { buildContentNode, requireGlobal, requireEl } from "./dom";
+import {
+  buildContentNode,
+  splitAtSentences,
+  requireGlobal,
+  requireEl,
+} from "./dom";
 import { ANNOTATION_TEXT_SENTENCES } from "./constants";
 import type { PopoverData } from "../types/content";
 
@@ -46,44 +51,71 @@ describe("buildContentNode", () => {
     expect(html).toContain("This is sentence three."); // Full text
   });
 
-  it("should truncate a margin note at ANNOTATION_TEXT_SENTENCES when there are more", () => {
-    const frag = buildContentNode(
-      { ...mockData, text: sentences(LIMIT + 2) },
-      "sa",
-      { truncateText: true, prependRule: true },
+  it("should split a glance note: lead visible, continuation inside sa-more", () => {
+    const container = document.createElement("div");
+    container.appendChild(
+      buildContentNode({ ...mockData, text: sentences(LIMIT + 2) }, "sa", {
+        splitGlance: true,
+        prependRule: true,
+      }),
     );
-    const html = fragmentToHTML(frag);
-    expect(html).toContain('class="sa-rule"');
-    expect(html).toContain(`Sentence ${LIMIT}.`);
-    expect(html).not.toContain(`Sentence ${LIMIT + 1}.`);
+    expect(container.querySelector(".sa-rule")).toBeTruthy();
+
+    // The lead sentence is the always-visible glance…
+    const lead = container.querySelector(".sa-text");
+    expect(lead?.textContent).toContain(`Sentence ${LIMIT}.`);
+    expect(lead?.textContent).not.toContain(`Sentence ${LIMIT + 1}.`);
+
+    // …and the remainder is rendered too — the note is never re-rendered on
+    // expand — but waits inside the collapsed continuation wrapper.
+    const more = container.querySelector(".sa-more .sa-more-inner");
+    expect(more?.textContent).toContain(`Sentence ${LIMIT + 1}.`);
+    expect(more?.textContent).not.toContain(`Sentence ${LIMIT}.`);
   });
 
-  it("should NOT truncate a margin note that already fits", () => {
-    const frag = buildContentNode(
-      { ...mockData, text: sentences(LIMIT) },
-      "sa",
-      {
-        truncateText: true,
-      },
+  it("keeps the quote in the continuation, not the glance", () => {
+    const container = document.createElement("div");
+    container.appendChild(
+      buildContentNode({ ...mockData, text: sentences(LIMIT + 2) }, "sa", {
+        splitGlance: true,
+      }),
     );
-    expect(fragmentToHTML(frag)).toContain(`Sentence ${LIMIT}.`);
+    expect(container.querySelector(".sa-more .sa-quote")).toBeTruthy();
   });
 
-  it("should not split on abbreviations like U.S. when truncating", () => {
+  it("renders no continuation wrapper when the note already fits", () => {
+    const container = document.createElement("div");
+    container.appendChild(
+      buildContentNode({ label: "Fits", text: sentences(LIMIT) }, "sa", {
+        splitGlance: true,
+      }),
+    );
+    expect(container.querySelector(".sa-text")?.textContent).toContain(
+      `Sentence ${LIMIT}.`,
+    );
+    expect(container.querySelector(".sa-more")).toBeNull();
+  });
+
+  it("should not split on abbreviations like U.S.", () => {
     const parts = [
       "Two U.S. patents granted in 2015.",
       ...Array.from({ length: LIMIT }, (_, i) => `Follow-up ${i + 1}.`),
     ];
-    const frag = buildContentNode(
-      { ...mockData, text: parts.join(" ") },
-      "sa",
-      { truncateText: true },
+    const container = document.createElement("div");
+    container.appendChild(
+      buildContentNode({ ...mockData, text: parts.join(" ") }, "sa", {
+        splitGlance: true,
+      }),
     );
-    const html = fragmentToHTML(frag);
     // 'U.S.' must not read as a sentence boundary, so the opening sentence
-    // survives intact and the overflow sentence is the one dropped.
-    expect(html).toContain("Two U.S. patents granted in 2015.");
-    expect(html).not.toContain(`Follow-up ${LIMIT}.`);
+    // survives intact in the glance and the follow-ups wait in the
+    // continuation.
+    expect(container.querySelector(".sa-text")?.textContent).toBe(
+      "Two U.S. patents granted in 2015.",
+    );
+    expect(container.querySelector(".sa-more")?.textContent).toContain(
+      `Follow-up ${LIMIT}.`,
+    );
   });
 
   it("should handle missing optional fields", () => {
@@ -111,19 +143,22 @@ describe("buildContentNode", () => {
     expect(html).not.toContain("href");
   });
 
-  it("should not append a period to text that was never truncated", () => {
+  it("splitAtSentences never appends a period to text that was not split", () => {
     const parts = [
       ...Array.from({ length: LIMIT - 1 }, (_, i) => `Lead ${i + 1}.`),
       "Short final sentence without a period",
     ];
-    const frag = buildContentNode(
-      { label: "Text Fix", text: parts.join(" ") },
-      "popover",
-      { truncateText: true },
-    );
-    const html = fragmentToHTML(frag);
-    expect(html).toContain("Short final sentence without a period");
-    expect(html).not.toContain("Short final sentence without a period.");
+    const { lead, rest } = splitAtSentences(parts.join(" "), LIMIT);
+    expect(lead).toBe(parts.join(" "));
+    expect(rest).toBe("");
+  });
+
+  it("splitAtSentences closes the lead's final period when it does split", () => {
+    const { lead, rest } = splitAtSentences(sentences(LIMIT + 2), LIMIT);
+    expect(lead.endsWith(".")).toBe(true);
+    expect(lead).toContain(`Sentence ${LIMIT}.`);
+    expect(rest).toContain(`Sentence ${LIMIT + 1}.`);
+    expect(rest).not.toContain(`Sentence ${LIMIT}.`);
   });
 
   // ── The glance / dig ladder ──
@@ -264,7 +299,7 @@ describe("buildContentNode", () => {
     // expanding first and hunting for it at the foot of the column.
     const collapsed = fragmentToHTML(
       buildContentNode(richData, "sa", {
-        truncateText: true,
+        splitGlance: true,
         includeLink: true,
       }),
     );
@@ -398,6 +433,60 @@ describe("buildContentNode", () => {
         .querySelector('[aria-label="Go to slide 2"]')
         ?.classList.contains("active"),
     ).toBe(true);
+  });
+
+  it("wraps at the ends — the strip is a loop, so both chevrons always work", () => {
+    const container = document.createElement("div");
+    container.appendChild(buildContentNode(richData, "sa"));
+
+    const carousel = container.querySelector(".sa-carousel") as HTMLElement;
+    const slides =
+      container.querySelectorAll<HTMLElement>(".sa-carousel-slide");
+    const scrollTo = vi.fn();
+    Object.defineProperty(carousel, "scrollTo", {
+      value: scrollTo,
+      configurable: true,
+    });
+    slides.forEach((slide, i) =>
+      Object.defineProperty(slide, "offsetLeft", {
+        value: i * 300,
+        configurable: true,
+      }),
+    );
+
+    const prev = container.querySelector(
+      ".sa-carousel-nav.prev",
+    ) as HTMLButtonElement;
+    const next = container.querySelector(
+      ".sa-carousel-nav.next",
+    ) as HTMLButtonElement;
+
+    // From the first slide, "previous" carries round to the last…
+    prev.click();
+    expect(scrollTo).toHaveBeenLastCalledWith({
+      left: 600,
+      behavior: "smooth",
+    });
+    expect(
+      container
+        .querySelector('[aria-label="Go to slide 3"]')
+        ?.classList.contains("active"),
+    ).toBe(true);
+
+    // …and from the last slide, "next" returns to the first.
+    next.click();
+    expect(scrollTo).toHaveBeenLastCalledWith({ left: 0, behavior: "smooth" });
+    expect(
+      container
+        .querySelector('[aria-label="Go to slide 1"]')
+        ?.classList.contains("active"),
+    ).toBe(true);
+
+    // Neither chevron ever retires — no inline fade, no pointer lockout.
+    expect(prev.style.opacity).toBe("");
+    expect(next.style.opacity).toBe("");
+    expect(prev.style.pointerEvents).toBe("");
+    expect(next.style.pointerEvents).toBe("");
   });
 
   it('should set type="button" on all dynamically created buttons (nav, dots, play)', () => {

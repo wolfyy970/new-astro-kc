@@ -15,12 +15,11 @@ interface ResumeReturnContext {
 }
 
 interface ResumeViewState {
-  surface: "popover";
+  /** Which note surface the reader left from — sheet, bound-in, or margin. */
+  surface: "popover" | "inset" | "margin";
   popoverKey: string;
   popoverScrollTop: number;
   carouselIndex: number;
-  top: string;
-  left: string;
 }
 
 interface NavigationLocation {
@@ -102,23 +101,41 @@ function getObjectState(history: NavigationHistory): Record<string, unknown> {
 }
 
 function captureResumeView(link: HTMLAnchorElement): ResumeViewState | null {
-  const popover = link.closest<HTMLElement>(".popover");
-  const popoverKey = popover?.dataset.popoverKey;
-  if (!popover || !popoverKey) return null;
+  // The project link can live on any of the three note surfaces. Each carries
+  // its key differently, but all reopen the same way: click the marked term
+  // and let the current tier route it.
+  const container = link.closest<HTMLElement>(
+    ".popover, .inset-note, .scroll-annotation",
+  );
+  if (!container) return null;
+
+  const surface: ResumeViewState["surface"] = container.classList.contains(
+    "scroll-annotation",
+  )
+    ? "margin"
+    : container.classList.contains("inset-note")
+      ? "inset"
+      : "popover";
+
+  const popoverKey =
+    surface === "margin"
+      ? container.dataset.annotationKey
+      : container.dataset.popoverKey;
+  if (!popoverKey) return null;
 
   const dots = Array.from(
-    popover.querySelectorAll<HTMLElement>(".popover-carousel-dot"),
+    container.querySelectorAll<HTMLElement>(
+      ".popover-carousel-dot, .sa-carousel-dot",
+    ),
   );
   const activeIndex = dots.findIndex((dot) => dot.classList.contains("active"));
 
   return {
-    surface: "popover",
+    surface,
     popoverKey,
     popoverScrollTop:
-      popover.querySelector<HTMLElement>(".popover-scroll")?.scrollTop ?? 0,
+      container.querySelector<HTMLElement>(".popover-scroll")?.scrollTop ?? 0,
     carouselIndex: Math.max(0, activeIndex),
-    top: popover.style.top,
-    left: popover.style.left,
   };
 }
 
@@ -237,9 +254,12 @@ export function initCaseStudyBackNavigation(
 }
 
 /**
- * Reconstructs an overlay only when the résumé had to be rebuilt during Back
- * navigation. Browser-native scroll restoration handles the document position;
- * this restores the transient UI that a reload would otherwise discard.
+ * Reconstructs the open note only when the résumé had to be rebuilt during
+ * Back navigation. Browser-native scroll restoration handles the document
+ * position; this restores the transient UI that a reload would otherwise
+ * discard. The stored surface is advisory — the reader may have resized while
+ * away, so the restore simply clicks the stored term and lets the CURRENT
+ * tier route it: margin unfold, bound-in note, or sheet.
  */
 export function restoreResumeReturnView(
   environment: Pick<NavigationEnvironment, "document" | "history"> = {
@@ -250,13 +270,17 @@ export function restoreResumeReturnView(
   const state = getObjectState(environment.history);
   const view = state[VIEW_STATE_KEY] as Partial<ResumeViewState> | undefined;
 
+  const knownSurface =
+    view?.surface === "popover" ||
+    view?.surface === "inset" ||
+    view?.surface === "margin";
+
   if (
-    view?.surface !== "popover" ||
-    typeof view.popoverKey !== "string" ||
+    !knownSurface ||
+    typeof view?.popoverKey !== "string" ||
     environment.document.querySelector(".popover.visible") ||
-    // If the reader changed to the wide tier while viewing the case study,
-    // return to the responsive marginalia rather than forcing an overlay.
-    environment.document.querySelector(".scroll-annotation")
+    environment.document.querySelector(".inset-note") ||
+    environment.document.querySelector(".scroll-annotation.is-expanded")
   ) {
     return;
   }
@@ -269,17 +293,21 @@ export function restoreResumeReturnView(
   hotspot.click();
 
   requestAnimationFrame(() => {
-    const popover =
-      environment.document.querySelector<HTMLElement>(".popover.visible");
-    if (!popover) return;
+    const container = environment.document.querySelector<HTMLElement>(
+      ".popover.visible, .inset-note, .scroll-annotation.is-expanded",
+    );
+    if (!container) return;
 
-    const scrollRegion = popover.querySelector<HTMLElement>(".popover-scroll");
+    const scrollRegion =
+      container.querySelector<HTMLElement>(".popover-scroll");
     if (scrollRegion && typeof view.popoverScrollTop === "number") {
       scrollRegion.scrollTop = view.popoverScrollTop;
     }
 
     const dots = Array.from(
-      popover.querySelectorAll<HTMLButtonElement>(".popover-carousel-dot"),
+      container.querySelectorAll<HTMLButtonElement>(
+        ".popover-carousel-dot, .sa-carousel-dot",
+      ),
     );
     if (
       typeof view.carouselIndex === "number" &&
@@ -287,13 +315,6 @@ export function restoreResumeReturnView(
       view.carouselIndex < dots.length
     ) {
       dots[view.carouselIndex]?.click();
-    }
-
-    if (typeof view.top === "string" && view.top) {
-      popover.style.top = view.top;
-    }
-    if (typeof view.left === "string" && view.left) {
-      popover.style.left = view.left;
     }
   });
 }

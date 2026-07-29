@@ -38,7 +38,36 @@
     function toggleTheme() {
       const next = resolveTheme() === "dark" ? "light" : "dark";
       localStorage.setItem("portfolio-theme", next);
-      applyTheme(next);
+
+      // The ink wash. The next edition blooms out of the toggle itself — an
+      // ink drop spreading from the reader's own gesture (see the THEME WASH
+      // block in controls.css). The button's live position becomes the
+      // drop's origin, so the wash emanates from the control on every
+      // viewport and on every page that carries it. The .theme-washing class
+      // scopes the custom view-transition styles to theme changes only.
+      // Browsers without the View Transition API keep the instant switch;
+      // reduced-motion readers get the API's quiet default crossfade because
+      // the wash styles live behind a no-preference media query.
+      if (document.startViewTransition) {
+        const root = document.documentElement;
+        const btn = document.getElementById("theme-toggle");
+        if (btn) {
+          const r = btn.getBoundingClientRect();
+          root.style.setProperty("--wash-x", r.left + r.width / 2 + "px");
+          root.style.setProperty("--wash-y", r.top + r.height / 2 + "px");
+        }
+        root.classList.add("theme-washing");
+        const transition = document.startViewTransition(function () {
+          applyTheme(next);
+        });
+        transition.finished.finally(function () {
+          root.classList.remove("theme-washing");
+          root.style.removeProperty("--wash-x");
+          root.style.removeProperty("--wash-y");
+        });
+      } else {
+        applyTheme(next);
+      }
     }
 
     // Apply immediately to prevent a flash of the wrong theme.

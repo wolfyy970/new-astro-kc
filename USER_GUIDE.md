@@ -47,7 +47,7 @@ The entire portfolio is protected by an elegant password gate powered by Astro m
 - **Privacy:** Crawler indexing is disabled project-wide via `X-Robots-Tag` headers and a global `robots.txt` exclusion.
 - **Session:** A secure, `HttpOnly` cookie maintains the session for 7 days.
 
-### 3. Content Verification & Integrity
+## Content Verification & Integrity
 
 To ensure that the resume and its interactive layers remain synchronized, use the built-in verification suite:
 
@@ -57,7 +57,7 @@ npm run verify
 
 This script validates the content JSON against the shared Zod schemas (`src/content/schema.ts`), confirms that every `<hotspot>` in `resume.json` has a corresponding entry in `popovers.json`, that no hotspot is used more than once (enforcing a strict 1:1 mapping), and that all referenced image, video, poster, and brand-mark paths exist on disk. It runs automatically during `npm run build`.
 
-### 4. Image Optimization
+## Image Optimization
 
 The project leverages Astro 7's Image Service for high-performance delivery:
 
@@ -82,7 +82,7 @@ Popover data is stored in `src/content/popovers.json`.
 - Media support:
   - `img` (string): For a single legacy image string payload.
   - `media` (array of strings): Use this for rich media (both `.jpg`/`.png` and `.mp4`/`.webm`). If multiple paths are provided, it creates an interactive swipeable carousel containing images and looping videos.
-  - `brandMark` and `brandMarkAlt`: Optional supporting mark for an archival artifact that does not identify its issuer visually. It is composed only in the roomier popover, not in narrow marginalia.
+  - `brandMark` and `brandMarkAlt`: Optional supporting mark for an archival artifact that does not identify its issuer visually. It is composed only on the roomier note surfaces (the bound-in note and the sheet), not in narrow marginalia.
 
 ## Feature Flags
 
