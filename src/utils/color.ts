@@ -11,7 +11,7 @@ const HEX6_RE = /^#[0-9a-fA-F]{6}$/;
  *  page is about." A page that names no company has nothing to identify, so
  *  the token resolves to the ink and disappears, exactly as it does on the
  *  résumé. This was `#70541C`, an amber left over from the warm palette. */
-export const DEFAULT_ACCENT = "#000000";
+const DEFAULT_ACCENT = "#000000";
 
 /** Parses six hex digits (no leading `#`) into an `[r, g, b]` triplet. */
 function hex6ToRgb(hex6: string): [number, number, number] {

@@ -1,0 +1,53 @@
+---
+import { Image } from "astro:assets";
+import type { CaseStudySectionData } from "../../types/content";
+import { publicImageSize } from "../../utils/image-size";
+import ShowcaseSection from "./ShowcaseSection.astro";
+
+type LargeImageSectionData = Extract<
+  CaseStudySectionData,
+  { type: "largeImage" }
+>;
+
+interface Props {
+  section: LargeImageSectionData;
+  isDark: boolean;
+}
+
+const { section, isDark } = Astro.props;
+const size = await publicImageSize(section.image);
+---
+
+<ShowcaseSection
+  label={section.label}
+  title={section.title ?? ""}
+  description={section.description ?? ""}
+  {isDark}
+>
+  <div class="large-image-container">
+    <Image
+      src={section.image}
+      alt={section.imageAlt}
+      width={section.imageWidth ?? size?.width ?? 1300}
+      height={section.imageHeight ?? size?.height ?? 800}
+      format="webp"
+    />
+  </div>
+</ShowcaseSection>
+
+<style>
+  .large-image-container {
+    margin: 80px auto 0;
+    overflow: hidden;
+    max-width: 1300px;
+    background: var(--doc-white);
+    border: 1px solid var(--doc-rule);
+    border-radius: var(--cs-radius);
+  }
+
+  .large-image-container img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

@@ -20,11 +20,13 @@
 //   - Handle strip has aria-hidden (purely presentational)
 
 import type { PopoverMap } from "../types/content.ts";
-import { requireEl, buildContentNode } from "./dom.ts";
+import { requireEl } from "./dom.ts";
+import { buildContentNode } from "./note-content.ts";
 import { toggleAnnotation, collapseAnnotation } from "./annotation-engine.ts";
 import {
   toggleInset,
   closeInset,
+  cleanupInset,
   isInsetTarget,
   activeInsetTerm,
 } from "./inset-note.ts";
@@ -124,7 +126,10 @@ function disableFocusTrap(container: HTMLElement): void {
 // The touchmove listener is intentionally non-passive so it can call
 // preventDefault() to stop the page beneath from scrolling during a dismiss.
 
-function makeMobileSwipeable(popoverEl: HTMLElement): void {
+function makeMobileSwipeable(
+  popoverEl: HTMLElement,
+  signal: AbortSignal,
+): void {
   let touchStartY = 0;
   let touchCurrentY = 0;
   let touchStartTime = 0;
@@ -139,42 +144,46 @@ function makeMobileSwipeable(popoverEl: HTMLElement): void {
       touchStartTime = Date.now();
       isSwiping = false;
     },
-    { passive: true },
+    { passive: true, signal },
   );
 
   // NOT passive — we must call preventDefault() to stop page scroll when a
   // valid dismiss swipe is in progress. The call is scoped tightly: only when
   // delta > 0 (downward) AND scrollTop === 0 (at top of sheet content), so
   // normal in-sheet scrolling and all upward drags remain unaffected.
-  popoverEl.addEventListener("touchmove", (e: TouchEvent) => {
-    if (!isMobileScreen()) return;
-    touchCurrentY = e.touches[0].clientY;
-    const delta = touchCurrentY - touchStartY;
-    const scrollRegion =
-      popoverEl.querySelector<HTMLElement>(".popover-scroll");
-    const scrollTop = scrollRegion?.scrollTop ?? popoverEl.scrollTop;
+  popoverEl.addEventListener(
+    "touchmove",
+    (e: TouchEvent) => {
+      if (!isMobileScreen()) return;
+      touchCurrentY = e.touches[0].clientY;
+      const delta = touchCurrentY - touchStartY;
+      const scrollRegion =
+        popoverEl.querySelector<HTMLElement>(".popover-scroll");
+      const scrollTop = scrollRegion?.scrollTop ?? popoverEl.scrollTop;
 
-    if (delta <= 0 || scrollTop > 0) {
-      if (isSwiping) {
-        // User scrolled back up mid-gesture — cancel
-        isSwiping = false;
-        popoverEl.classList.remove(CLS_IS_DRAGGING);
-        popoverEl.style.removeProperty(CSS_PROP_SHEET_OFFSET);
+      if (delta <= 0 || scrollTop > 0) {
+        if (isSwiping) {
+          // User scrolled back up mid-gesture — cancel
+          isSwiping = false;
+          popoverEl.classList.remove(CLS_IS_DRAGGING);
+          popoverEl.style.removeProperty(CSS_PROP_SHEET_OFFSET);
+        }
+        return;
       }
-      return;
-    }
 
-    // Confirmed downward swipe from scroll-top: own the gesture so the page
-    // beneath doesn't scroll simultaneously.
-    e.preventDefault();
+      // Confirmed downward swipe from scroll-top: own the gesture so the page
+      // beneath doesn't scroll simultaneously.
+      e.preventDefault();
 
-    isSwiping = true;
-    popoverEl.classList.add(CLS_IS_DRAGGING); // disables CSS transition while dragging
+      isSwiping = true;
+      popoverEl.classList.add(CLS_IS_DRAGGING); // disables CSS transition while dragging
 
-    // Slight resistance gives a rubber-band feel and signals the pull direction
-    const offset = delta * SWIPE_RESISTANCE;
-    popoverEl.style.setProperty(CSS_PROP_SHEET_OFFSET, `${offset}px`);
-  });
+      // Slight resistance gives a rubber-band feel and signals the pull direction
+      const offset = delta * SWIPE_RESISTANCE;
+      popoverEl.style.setProperty(CSS_PROP_SHEET_OFFSET, `${offset}px`);
+    },
+    { passive: false, signal },
+  );
 
   const endSwipe = () => {
     if (!isMobileScreen() || !isSwiping) return;
@@ -188,23 +197,44 @@ function makeMobileSwipeable(popoverEl: HTMLElement): void {
     if (delta > SWIPE_DISMISS_THRESHOLD || velocity > SWIPE_DISMISS_VELOCITY) {
       // Animate the sheet down off-screen, then clean up
       popoverEl.style.setProperty(CSS_PROP_SHEET_OFFSET, SHEET_DISMISS_OFFSET);
-      setTimeout(() => closePopover(), SHEET_DISMISS_ANIM_MS);
+      scheduleSheetTimer(() => closePopover(), SHEET_DISMISS_ANIM_MS);
     } else {
       // Not far/fast enough — snap back to resting position
       popoverEl.style.setProperty(CSS_PROP_SHEET_OFFSET, "0px");
-      setTimeout(
+      scheduleSheetTimer(
         () => popoverEl.style.removeProperty(CSS_PROP_SHEET_OFFSET),
         SHEET_SNAPBACK_MS,
       );
     }
   };
 
-  popoverEl.addEventListener("touchend", endSwipe, { passive: true });
-  popoverEl.addEventListener("touchcancel", endSwipe, { passive: true });
+  popoverEl.addEventListener("touchend", endSwipe, { passive: true, signal });
+  popoverEl.addEventListener("touchcancel", endSwipe, {
+    passive: true,
+    signal,
+  });
 }
 
 let activeHotspot: HTMLElement | null = null;
 let popovers: PopoverMap = {};
+let engineAbortController: AbortController | null = null;
+let sheetOpenFrame = 0;
+let sheetGeneration = 0;
+let resizeTimer = 0;
+const sheetTimers = new Set<number>();
+
+function scheduleSheetTimer(callback: () => void, delay: number): void {
+  const timer = window.setTimeout(() => {
+    sheetTimers.delete(timer);
+    callback();
+  }, delay);
+  sheetTimers.add(timer);
+}
+
+function clearSheetTimers(): void {
+  sheetTimers.forEach((timer) => window.clearTimeout(timer));
+  sheetTimers.clear();
+}
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -244,6 +274,7 @@ function openPopover(hotspot: HTMLElement): void {
   const data = popovers[key];
 
   closePopover({ returnFocus: false });
+  const generation = ++sheetGeneration;
 
   activeHotspot = hotspot;
   popoverEl.dataset.popoverKey = key;
@@ -268,7 +299,8 @@ function openPopover(hotspot: HTMLElement): void {
   overlay.classList.add(CLS_OPEN);
   document.body.classList.add(CLS_POPOVER_OPEN);
 
-  requestAnimationFrame(() => {
+  sheetOpenFrame = requestAnimationFrame(() => {
+    if (generation !== sheetGeneration || activeHotspot !== hotspot) return;
     popoverEl.classList.add(CLS_VISIBLE);
     closeBtn.focus();
     enableFocusTrap(popoverEl);
@@ -285,8 +317,13 @@ export function closePopover(options: CloseOptions = {}): void {
   const overlay = requireEl(ID_OVERLAY, "PopoverEngine");
   const popoverEl = requireEl(ID_POPOVER, "PopoverEngine");
 
+  sheetGeneration += 1;
+  cancelAnimationFrame(sheetOpenFrame);
+  sheetOpenFrame = 0;
+  clearSheetTimers();
   disableFocusTrap(popoverEl);
   popoverEl.classList.remove(CLS_VISIBLE);
+  popoverEl.classList.remove(CLS_IS_DRAGGING);
   delete popoverEl.dataset.popoverKey;
   popoverEl.style.removeProperty(CSS_PROP_SHEET_OFFSET); // clean up any swipe-dismiss offset
   overlay.classList.remove(CLS_OPEN);
@@ -307,20 +344,31 @@ export function closePopover(options: CloseOptions = {}): void {
 
 // ── Event binding ─────────────────────────────────────────────────────────────
 
-export function initPopoverEngine(popoverData: PopoverMap): void {
+export function initPopoverEngine(popoverData: PopoverMap): () => void {
+  cleanupPopoverEngine();
   popovers = popoverData;
 
   const overlay = requireEl(ID_OVERLAY, "PopoverEngine");
   const popoverEl = requireEl(ID_POPOVER, "PopoverEngine");
+  engineAbortController = new AbortController();
+  const { signal } = engineAbortController;
 
   // Wire up interactions — once, persistent across open/close cycles
-  makeMobileSwipeable(popoverEl);
+  makeMobileSwipeable(popoverEl, signal);
 
   document.querySelectorAll<HTMLElement>(SEL_HOTSPOT).forEach((el) => {
-    el.addEventListener("pointerenter", () => toggleHotspotState(el, true));
-    el.addEventListener("pointerleave", () => toggleHotspotState(el, false));
-    el.addEventListener("focus", () => toggleHotspotState(el, true));
-    el.addEventListener("blur", () => toggleHotspotState(el, false));
+    el.addEventListener("pointerenter", () => toggleHotspotState(el, true), {
+      signal,
+    });
+    el.addEventListener("pointerleave", () => toggleHotspotState(el, false), {
+      signal,
+    });
+    el.addEventListener("focus", () => toggleHotspotState(el, true), {
+      signal,
+    });
+    el.addEventListener("blur", () => toggleHotspotState(el, false), {
+      signal,
+    });
 
     const trigger = (e: Event) => {
       e.stopPropagation();
@@ -329,65 +377,117 @@ export function initPopoverEngine(popoverData: PopoverMap): void {
       // toggleAnnotation returns false only when the margin cannot take it
       // (narrow tier, or notes not built yet), and then we fall through.
       const key = el.dataset.popover;
-      if (key && toggleAnnotation(key)) return;
+      if (isWideScreen()) {
+        closePopover({ returnFocus: false });
+        closeInset({ instant: true });
+        if (key) toggleAnnotation(key);
+        return;
+      }
 
       // Middle tier: the note sets into the document flow after the term's
       // own block. Nothing floats, nothing is covered.
       if (!isMobileScreen()) {
+        closePopover({ returnFocus: false });
+        collapseAnnotation();
         toggleInset(el, popovers);
         return;
       }
 
       // Mobile: the bottom sheet.
+      closeInset({ instant: true });
+      collapseAnnotation();
       if (activeHotspot === el) closePopover();
       else openPopover(el);
     };
 
-    el.addEventListener("click", trigger);
-    el.addEventListener("keydown", (e: KeyboardEvent) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        trigger(e);
-      }
-    });
+    el.addEventListener("click", trigger, { signal });
+    el.addEventListener(
+      "keydown",
+      (e: KeyboardEvent) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          trigger(e);
+        }
+      },
+      { signal },
+    );
   });
 
-  overlay.addEventListener("click", () => closePopover());
+  overlay.addEventListener("click", () => closePopover(), { signal });
 
-  document.addEventListener("keydown", (e: KeyboardEvent) => {
-    if (e.key !== "Escape") return;
-    closePopover();
-    closeInset();
-    collapseAnnotation();
-  });
+  document.addEventListener(
+    "keydown",
+    (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      closePopover();
+      closeInset();
+      collapseAnnotation();
+    },
+    { signal },
+  );
 
   // A click anywhere else in the document closes an open note — margin or
   // bound-in — the same way the overlay closes the sheet. Clicks INSIDE an
   // open note never close it: it is a reading surface.
-  document.addEventListener("click", (e: MouseEvent) => {
-    const insideAnnotation = e
-      .composedPath()
-      .some(
-        (node) =>
-          node instanceof HTMLElement &&
-          node.classList.contains("scroll-annotation"),
-      );
-    if (!insideAnnotation && !isInsetTarget(e.target)) {
-      collapseAnnotation();
-      closeInset();
-    }
-  });
+  document.addEventListener(
+    "click",
+    (e: MouseEvent) => {
+      const insideAnnotation = e
+        .composedPath()
+        .some(
+          (node) =>
+            node instanceof HTMLElement &&
+            node.classList.contains("scroll-annotation"),
+        );
+      if (!insideAnnotation && !isInsetTarget(e.target)) {
+        collapseAnnotation();
+        closeInset();
+      }
+    },
+    { signal },
+  );
 
   // Crossing a tier boundary with a bound-in note open: the surface no longer
   // belongs to the layout, so it leaves without ceremony. The wide margin and
   // the sheet handle their own tiers.
-  let resizeTimer = 0;
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = window.setTimeout(() => {
-      if (activeInsetTerm() && (isWideScreen() || isMobileScreen())) {
-        closeInset({ instant: true });
-      }
-    }, RESIZE_DEBOUNCE_MS);
-  });
+  window.addEventListener(
+    "resize",
+    () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        if (isMobileScreen()) {
+          collapseAnnotation();
+          if (activeInsetTerm()) closeInset({ instant: true });
+        } else if (isWideScreen()) {
+          closePopover({ returnFocus: false });
+          if (activeInsetTerm()) closeInset({ instant: true });
+        } else {
+          closePopover({ returnFocus: false });
+          collapseAnnotation();
+        }
+      }, RESIZE_DEBOUNCE_MS);
+    },
+    { signal },
+  );
+
+  return cleanupPopoverEngine;
+}
+
+/** Disposes all listeners and transient state owned by the note router. */
+export function cleanupPopoverEngine(): void {
+  engineAbortController?.abort();
+  engineAbortController = null;
+  window.clearTimeout(resizeTimer);
+  resizeTimer = 0;
+  cleanupInset();
+
+  if (
+    document.getElementById(ID_OVERLAY) &&
+    document.getElementById(ID_POPOVER)
+  ) {
+    closePopover({ returnFocus: false });
+  } else {
+    activeHotspot = null;
+    clearSheetTimers();
+  }
 }

@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import {
-  renderHotspots,
   createHotspotRenderer,
   markVariant,
   MARK_VARIANT_COUNT,
@@ -8,6 +7,10 @@ import {
 import { SEL_HOTSPOT, ID_POPOVER } from "../scripts/constants";
 
 const HOTSPOT_CLASS = SEL_HOTSPOT.replace(/^\./, "");
+const renderHotspots = (
+  text: string,
+  destinations: Record<string, { link?: string }> = {},
+) => createHotspotRenderer(destinations)(text);
 
 describe("renderHotspots", () => {
   it("should leave marginalia-only controls free of redundant icons", () => {

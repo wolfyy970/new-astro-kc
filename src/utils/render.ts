@@ -97,14 +97,3 @@ export function createHotspotRenderer(
     });
   };
 }
-
-/**
- * Single-shot convenience wrapper. Pass destinations when project-aware
- * markers are needed; otherwise every hotspot is treated as marginalia-only.
- */
-export function renderHotspots(
-  text: string,
-  destinations: HotspotDestinations = {},
-): string {
-  return createHotspotRenderer(destinations)(text);
-}

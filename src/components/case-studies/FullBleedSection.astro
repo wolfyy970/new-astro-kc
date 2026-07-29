@@ -1,0 +1,41 @@
+---
+import { Image } from "astro:assets";
+import type { CaseStudySectionData } from "../../types/content";
+import { publicImageSize } from "../../utils/image-size";
+
+type FullBleedSectionData = Extract<
+  CaseStudySectionData,
+  { type: "fullBleed" }
+>;
+
+interface Props {
+  section: FullBleedSectionData;
+}
+
+const { section } = Astro.props;
+const size = await publicImageSize(section.image);
+---
+
+<section class="full-bleed">
+  <Image
+    src={section.image}
+    alt={section.imageAlt}
+    width={size?.width ?? 1920}
+    height={size?.height ?? 800}
+    format="webp"
+  />
+</section>
+
+<style>
+  .full-bleed {
+    height: 70vh;
+    overflow: hidden;
+  }
+
+  .full-bleed img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>

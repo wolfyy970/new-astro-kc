@@ -4,6 +4,16 @@
 
 The portfolio is built on **Astro 7**, using server output through the Vercel adapter with minimal client JavaScript.
 
+### Development Server Lifecycle
+
+Astro 7 auto-backgrounds `astro dev` when it detects Codex. A detached process
+outlives the invoking terminal and is reused through `.astro/dev.json`, which
+made local verification vulnerable to an hours-old server. `npm run dev` routes
+through `scripts/dev-server.ts`, which removes only Astro's Codex detector marker
+from the child environment, keeps the server foreground-owned, forwards terminal
+signals, and removes only its own dead lock. Recovery commands belong in
+`USER_GUIDE.md`; this section records why the launcher exists.
+
 ## Component & Layout Strategy
 
 ### Layouts
@@ -50,12 +60,12 @@ Manages the "magazine-style" margin content:
 - **Automatic DOM Mapping:** Dynamically parses `.hotspot` anchors in the DOM and automatically alternates left/right side assignments for marginalia (decoupling content creation from configuration).
 - **Intersection Observation:** Rebuilds and positions margin annotations as hotspots scroll into view.
 - **Overlap Resolution:** Algorithmic adjustment to prevent vertical collisions between adjacent annotations.
-- **The note continues — expansion is a state, not a render.** Every note is rendered ONCE at build time carrying both lengths: the glance (label, media, one sentence) plus the remaining narrative and quote inside a collapsed `.sa-more` wrapper (`splitGlance` in `dom.ts`). Clicking the term toggles `is-expanded` and the continuation unfolds in place via `grid-template-rows` — no re-render, no surface change (no stock, border, shadow, height cap, or inner scrollbar), and no repositioning of the note itself. A long note runs down the margin like a printed sidenote and the reader scrolls the page to follow it.
+- **The note continues — expansion is a state, not a render.** Every note is rendered ONCE at build time carrying both lengths: the glance (label, media, one sentence) plus the remaining narrative and quote inside a collapsed `.sa-more` wrapper (`splitGlance` in `note-content.ts`). Clicking the term toggles `is-expanded` and the continuation unfolds in place via `grid-template-rows` — no re-render, no surface change (no stock, border, shadow, height cap, or inner scrollbar), and no repositioning of the note itself. A long note runs down the margin like a printed sidenote and the reader scrolls the page to follow it.
 - **The margin re-typesets continuously.** While a continuation unfolds or folds, `animateReflow()` re-runs overlap resolution every animation frame for `UNFOLD_REFLOW_MS`, so the notes below ride the changing height instead of jumping to a precomputed position. Under `prefers-reduced-motion` this collapses to a single synchronous pass (the CSS transitions are off too).
 - **Focus, not modality.** While one note is open, `.margin-focus` on the sheet recedes every other revealed note to 35% — the eye is answered, not shouted at — and they return under the pointer. The document itself never dims. The open note is marked by the same pen that marked its term: its stretched rule takes the family's highlighter ink (`sa-project` decides green vs yellow) and its label steps to full ink.
 - **The assist aims at the final extent.** The continuation unfolds downward, so a note whose top is on screen can still do all of its unfolding below the fold. `assistIntoView` measures where the note will END (`.sa-more-inner.scrollHeight` while collapsed) and drifts the page until that end has `ASSIST_BOTTOM_GAP` of air above the fold — bounded so the note top never passes `ASSIST_NOTE_TOP` and the clicked term never leaves the viewport.
 - **Scroll is the way out.** The first deliberate wheel or touch motion (`SCROLL_EXIT_THRESHOLD` of accumulated input, forgiving jitter) folds the open note behind the departing reader. Input events, never the scroll event, so the assist's own smooth scroll cannot close the note it just opened. A note taller than the viewport is exempt until the reader scrolls past its extent — scrolling is how such a note is read — and a touch drag starting inside the note (its carousel) never counts as leaving. Clicks inside an open note never collapse it; the term, Escape, scrolling away, and clicks elsewhere do.
-- **Cold-Start Intro Annotation:** When the engine initializes at wide screen and no hotspots are immediately in the viewport, an introductory annotation is injected at the top of the margin — and it is a working scale model of the system it introduces. Its own key phrase wears a genuine yellow specimen stroke (the real `.hs-stroke` apparatus, built by `buildIntroSpecimen`), and clicking it does exactly what clicking any mark does at this tier: the note continues in place via the same `.sa-more` unfold, revealing the two-pen rule with the green pen shown as a live specimen carrying the real superscript marker from `render.ts`. Specimens are spans, never controls — the intro stays `aria-hidden`, so nothing inside it may take focus; keyboard and screen-reader users are taught by the genuinely accessible marked terms instead. It dissolves the moment the first real annotation reveals, and is cleaned up on resize/teardown via `resetAnnotationState`.
+- **Cold-Start Intro Annotation:** When the engine initializes at wide screen and no hotspots are immediately in the viewport, `margin-intro.ts` mounts an introductory annotation at the top of the margin — a working scale model of the system it introduces. Its own key phrase wears a genuine yellow specimen stroke, and clicking it continues the note in place via the same `.sa-more` unfold, revealing the two-pen rule with a green specimen carrying the real superscript marker from `render.ts`. Specimens are spans, never controls — the intro stays `aria-hidden`, so nothing inside it may take focus; keyboard and screen-reader users are taught by the genuinely accessible marked terms instead. The annotation engine owns when this vignette mounts and dissolves, while the vignette module owns its DOM and conversation.
 - **The payoff conversation (`intro-payoff.ts`):** shared by both introductions. The demo gateway's first click unfolds the authored payoff untyped; every later click is answered by the apparatus — typed at constant letters-per-second, always sub-second. A trailing debounce makes a click burst one utterance (the reply lands when the clicking stops), and a small state machine classifies each burst — rapid drumming, steady, or a contemplative single click after a long pause — into pools with their own wry voice. The conversation is hard-capped at `PAYOFF_MAX_REPLIES` (5) before the farewell, a bind guard on the gateway prevents a second attachment from ever double-answering (the source of any apparent looping), and at the finale the introduction leaves with a choreographed exit: content settles down to its rule, the rule retracts to its middle, and a small ink square blips out; then the element is removed. Reduced motion gets instant text and a plain fade.
 - **Resize tier handling:** A debounced `resize` handler builds annotations on entering the wide tier (≥1420px) and tears them down on leaving it.
 - **The threshold is derived, not chosen:** `BREAKPOINT_WIDE` = 880 (sheet) + 2 × (42 gutter + 220 column) = 1404, rounded to 1420. The original 1460 sat just above the 1440px logical width of a 13" MacBook Air, so the feature the entire reading experience is built around was unreachable on a very common laptop no matter how the window was sized. If any of `DOC_MAX_WIDTH`, `MARGIN_COL_WIDTH` or `MARGIN_COL_GUTTER` changes, the threshold must be recomputed.
@@ -187,9 +197,12 @@ src/components/case-studies/
   ShowcaseGrid.astro     ← 1/2/3-column CSS grid
   ShowcaseCard.astro     ← image + title + description card
   FeatureRow.astro       ← 50/50 image-beside-text row
+  LargeImageSection.astro ← constrained full-width image section
+  FullBleedSection.astro ← full-viewport image section
   CaptionedImage.astro   ← full-width image + one caption line
   PhotoGrid.astro        ← contextual header + uncropped image grid
   StatRow.astro          ← typographic outcome numbers band
+  VideoSection.astro     ← native video with contextual heading/caption
 
 src/layouts/
   CaseStudyLayout.astro  ← HTML shell, fonts, back nav, accent theming
@@ -201,26 +214,26 @@ src/layouts/
 2. `truist.json` (etc.) — imported directly by the page file. Contains `meta`, `hero`, `context`, and an ordered `sections` array.
 3. `truist.astro` — imports its JSON and renders `<CaseStudyPage cs={cs} />`. Nothing else.
 4. `CaseStudyPage.astro` — validates the study against `caseStudyDataSchema` (zod) at the boundary, then composes `CaseStudyLayout` (`meta` + `accent`), `CaseStudyHero` (spread `{...cs.hero}`, which subsumes both the image and background hero variants), `ContextGrid` (`cs.context`), and maps `cs.sections` through `CaseStudySection`.
-5. `CaseStudySection.astro` — reads `section.type` and renders the correct component tree. Also handles `bg` (background color/gradient wrapper) and `darkBg` (`--case-study-dark` override).
+5. `CaseStudySection.astro` — reads `section.type`, applies the shared `bg`/`darkBg` wrapper, and delegates specialized variants to their focused renderer components.
 
 #### Section Type Catalog
 
 Every section in a study JSON file must have a `type` field. `CaseStudySection.astro` switches on this value.
 
-| `type`           | What renders                                                             | Required JSON fields                        | Optional JSON fields                                                                                            |
-| ---------------- | ------------------------------------------------------------------------ | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `cardGrid`       | ShowcaseSection + ShowcaseGrid + ShowcaseCard[]                          | `cards[]`                                   | `columns` (1-3, default 2), `isDark`, `bg`, `darkBg`                                                            |
-| `mixedGrid`      | ShowcaseSection + 1-col grid (primaryCard) + 2-col grid (secondaryCards) | `primaryCard`, `secondaryCards[]`           | `isDark`, `bg`, `darkBg`                                                                                        |
-| `featureRow`     | FeatureRow (image beside text, optionally reversed)                      | `title`, `description`, `image`, `imageAlt` | `reverse`, `label`, `caption`, `link`, `linkText`, `bg`                                                         |
-| `textOnly`       | ShowcaseSection with no child grid                                       | `title`, `description`                      | `label`, `isDark`, `bg`, `darkBg`                                                                               |
-| `largeImage`     | ShowcaseSection + constrained full-width Image                           | `image`, `imageAlt`                         | `label`, `title`, `description`, `imageWidth`, `imageHeight`, `bg`                                              |
-| `fullBleed`      | Full-viewport `<section>` + Image (no text)                              | `image`, `imageAlt`                         | `bg`                                                                                                            |
-| `captionedImage` | Content-width image + single caption line                                | `image`, `imageAlt`                         | `caption` (one short sentence), `label`, `displayWidth` (maximum rendered width for supporting artifacts), `bg` |
-| `photoGrid`      | Context header followed by a grid of uncropped images                    | `images[]` (each: `src`, `alt`)             | `columns` (1-3, default 2), `gap` (tight/normal/loose), `label`, `title`, `description`, `bg`, `isDark`         |
-| `statRow`        | Horizontal band of large typographic outcome numbers                     | `stats[]` (each: `value`, `label`)          | `label`, `bg`, `isDark`                                                                                         |
-| `video`          | ShowcaseSection + native video player + optional context caption         | `video`                                     | `poster`, `caption`, `label`, `title`, `description`, `bg`, `isDark`                                            |
+| `type`           | What renders                                                             | Required JSON fields                        | Optional JSON fields                                                                                                        |
+| ---------------- | ------------------------------------------------------------------------ | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `cardGrid`       | ShowcaseSection + ShowcaseGrid + ShowcaseCard[]                          | `cards[]`                                   | `columns` (1-3, default 2), `isDark`, `bg`, `darkBg`                                                                        |
+| `mixedGrid`      | ShowcaseSection + 1-col grid (primaryCard) + 2-col grid (secondaryCards) | `primaryCard`, `secondaryCards[]`           | `isDark`, `bg`, `darkBg`                                                                                                    |
+| `featureRow`     | FeatureRow (image beside text, optionally reversed)                      | `title`, `description`, `image`, `imageAlt` | `reverse`, `label`, `caption`, `link`, `linkText`, `bg`                                                                     |
+| `textOnly`       | ShowcaseSection with no child grid                                       | `title`, `description`                      | `label`, `isDark`, `bg`, `darkBg`                                                                                           |
+| `largeImage`     | ShowcaseSection + constrained full-width Image                           | `image`, `imageAlt`                         | `label`, `title`, `description`, `imageWidth`, `imageHeight`, `bg`                                                          |
+| `fullBleed`      | Full-viewport `<section>` + Image (no text)                              | `image`, `imageAlt`                         | `bg`                                                                                                                        |
+| `captionedImage` | Content-width image + single caption line                                | `image`, `imageAlt`                         | `caption` (one short sentence), `label`, `isMobile`, `displayWidth` (maximum rendered width for supporting artifacts), `bg` |
+| `photoGrid`      | Context header followed by a grid of uncropped images                    | `images[]` (each: `src`, `alt`)             | `columns` (1-3, default 2), `gap` (tight/normal/loose), `label`, `title`, `description`, `bg`, `isDark`                     |
+| `statRow`        | Horizontal band of large typographic outcome numbers                     | `stats[]` (each: `value`, `label`)          | `label`, `bg`, `isDark`                                                                                                     |
+| `video`          | ShowcaseSection + native video player + optional context caption         | `video`, `title`                            | `poster`, `caption`, `label`, `description`, `bg`, `isDark`                                                                 |
 
-**Shared optional fields on every section:** `key` (identifier, not rendered), `label` (eyebrow text), `bg` (any CSS color or gradient), `isDark` (dark variant), `darkBg` (overrides accent-derived dark background).
+**Shared fields on every section:** `key` is a required unique identifier. `label` (eyebrow text), `bg` (any CSS color or gradient), `isDark` (dark variant), and `darkBg` (overrides the dark background) are optional. Section objects are strict discriminated unions: unsupported or misspelled fields fail validation instead of being discarded.
 
 #### Brand Colour Theming
 
@@ -250,7 +263,7 @@ Dark sections (`isDark: true`) compute their background using `color-mix(in srgb
 #### How to add a new section type
 
 1. Add the new type string to `caseStudySectionTypeSchema` in `src/content/schema.ts`, and add any new fields to `caseStudySectionSchema`. This is the runtime + type source of truth; the TS types in `src/types/content.ts` are `z.infer`'d from it, so they update automatically.
-2. Add a conditional branch in `src/components/case-studies/CaseStudySection.astro` (follow the existing pattern), plus any new props to its `Props` interface and destructuring block.
+2. Add a focused renderer component when the variant has its own logic, then map the discriminated variant to it in `src/components/case-studies/CaseStudySection.astro`.
 3. Add a row to the Section Type Catalog table above.
 4. (Optional, editor autocomplete only) mirror the type's `enum`/required fields in `.vscode/case-study.schema.json`.
 
@@ -262,22 +275,30 @@ A custom TypeScript-driven verification system that ensures 100% link safety:
 
 - **Schema Validation:** Parses `resume.json`, `popovers.json`, `manifest.json`, and every case-study JSON against the shared **zod** schemas in `src/content/schema.ts` — the same schemas that back `content.config.ts` and the `z.infer`'d TS types in `src/types/content.ts`, so validation, runtime config, and compile-time types are one source of truth. A `try/catch` around `JSON.parse` turns malformed files into a clean error rather than a stack trace.
 - **Hotspot Validation:** Cross-references `<hotspot>` tags in `resume.json` against `popovers.json` inventory, and enforces a strict 1:1 mapping by failing the build if any duplicate hotspots are used in the resume.
-- **Media Validation:** Validates that every `img` path and every path within `media` arrays exists in the `public/` directory.
+- **Media Validation:** Validates that every popover `img`, `brandMark`, and `media` path exists in the `public/` directory.
 - **Case Study Validation:** Reads `src/content/case-studies/manifest.json` to enumerate all studies, then for each slug verifies that the individual `<slug>.json` file exists and that every image referenced in `meta`, `hero`, and all `sections` entries resolves to a real file in `public/`.
 - **Build Guard:** Integrated into the `npm run build` process to prevent broken deployments.
 
-### 2. Image Optimization Pipeline
+### 2. Image Delivery Pipeline
 
-Leverages Astro 7's Image Service for modern asset delivery:
+Image delivery is explicit rather than uniform:
 
-- **Static Assets:** Automatic WebP conversion and resizing within case study components.
-- **Dynamic Assets:** Build-time pre-optimization of all popover images in `index.astro`, ensuring even dynamically loaded content is hashed and optimized. Sized with `fit: "inside"` — 600×400 is a bounding box, not a mandate. As `cover` it hard-cropped every figure to 3:2 at build time, so a 1100×2070 portrait lost two thirds of itself before any stylesheet saw it.
+- **Case-study assets:** Files live under `public/`. Every renderer emits real
+  source dimensions; components using Astro's `<Image>` additionally request
+  WebP output, while `CaptionedImage` and `PhotoGrid` deliberately serve the
+  original public file.
+- **Popover assets:** In server output, `index.astro` calls `getImage()` before
+  serializing note data to the client. It requests WebP constrained with
+  `fit: "inside"` — 600×400 is a bounding box, not a crop — and carries the
+  returned width and height with the URL so notes reserve the correct geometry.
 
 #### Image geometry: two rules that must hold together
 
-Case-study artwork lives in `public/`, which Astro does **not** process — `<Image>` there simply stamps whatever width and height it was handed onto the tag. The real files run from 0.47 to 2.36 in aspect ratio, so both of these are required:
+Case-study artwork lives in `public/`, so no transformation happens merely
+because a file is present there. The real files run from 0.47 to 2.36 in aspect
+ratio, so both of these are required:
 
-1. **Declared dimensions must be true.** `src/utils/image-size.ts → publicImageSize()` reads the real pixel dimensions at build time via sharp (which ships with Astro's image service, so no new dependency) and memoises them. Components pass those instead of the per-component constants they used to hardcode — `800×600`, `800×500`, `800×1200`, `1920×800`, and a `1300×800` default buried in `CaseStudySection`'s props. Every one of those declared a ratio its picture did not have. A missing or unreadable file returns `null` and the caller falls back, matching the warn-and-degrade policy below.
+1. **Declared dimensions must be true.** `src/utils/image-size.ts → publicImageSize()` reads the real pixel dimensions at build time through the project's direct `sharp` dependency and memoises them. Components pass those instead of the per-component constants they used to hardcode — `800×600`, `800×500`, `800×1200`, `1920×800`, and a `1300×800` default buried in `CaseStudySection`'s props. Every one of those declared a ratio its picture did not have. A missing or unreadable file returns `null` and the caller falls back, matching the warn-and-degrade policy below.
 2. **CSS must release the height.** An image rule that sets `width: 100%` without `height: auto` leaves the attribute height in force, so the picture is drawn at container-width × attribute-height and squashed. This is what distorted the case-study imagery even after the attributes were corrected.
 
 `object-fit: cover` is reserved for surfaces that genuinely must fill — the hero background band and the full-bleed strip. Everywhere else, art fits inside a bounded box: `ShowcaseCard` caps height and lets width fall out of the ratio, so a portrait screenshot sits narrower on its card rather than being cropped to landscape or rendering 2443px tall. A full-width `mixedGrid` lead card holding portrait art turns sideways instead — image beside caption, the pair centred — because a tall artifact in a wide container can never fill it.
@@ -290,12 +311,13 @@ Authentication lives in `src/middleware.ts`; the session cookie name (`SESSION_C
 - **Constant-time comparison:** `safeEqual()` wraps Node's `crypto.timingSafeEqual`, short-circuiting on a length mismatch first (since `timingSafeEqual` throws on unequal-length buffers), to resist timing attacks on cookie validation.
 - **Asset bypass:** the `ASSET_EXT` regex (its video extensions sourced from the shared `VIDEO_EXTENSIONS` constant) matches static file extensions, plus a `/_astro` prefix check — avoiding the overly broad `.includes('.')` approach.
 - **Security headers:** every authenticated response applies the full `SECURITY_HEADERS` set — `X-Robots-Tag`, `Cache-Control`, `Pragma`, `Expires`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, and `Referrer-Policy: no-referrer`.
+- **Origin check deployment exception:** Astro's built-in form-origin check is disabled because Vercel's proxy host/origin combination rejected the same-origin login POST in production. This site has no authenticated state-changing endpoint beyond that login, and its cookie is `SameSite=Strict`; re-enable the framework check if the deployment topology changes.
 
 ## Error-Handling Convention
 
 The codebase uses three deliberate strategies, chosen by failure context — not ad hoc:
 
-- **Build-time content validators collect and fail loud.** `scripts/verify-content.ts` accumulates every problem into an `errors[]` array and `process.exit(1)` so a broken deploy is impossible. Schema parsing (`src/content/schema.ts`) throws on malformed data at the page boundary (`CaseStudyPage.astro`).
+- **Build-time content validators collect and fail loud.** `scripts/content-verifier.ts` accumulates every problem into an `errors[]` array; the thin `scripts/verify-content.ts` CLI reports them and sets a failing exit code so a broken deploy is impossible. Schema parsing (`src/content/schema.ts`) rejects malformed data at the page boundary.
 - **The request gate fails closed.** `src/middleware.ts` returns `503` if `SITE_PASSWORD` is absent and redirects on any auth failure — never an open default.
 - **Render/build-time asset helpers warn and degrade.** `src/utils/images.ts`, `src/utils/color.ts` and `src/utils/image-size.ts` log a `console.warn` and fall back to the original/default value rather than throwing, so one bad asset never blanks a page. (A _legitimately absent_ value stays silent; only a malformed one warns.)
 
@@ -315,7 +337,7 @@ The vocabulary difference between `CaseStudyHero` and the section components is 
 
 `bg` is a section _color_; `background` is the hero _image_ — keep them distinct.
 
-**`.hero` belongs to case studies; the résumé's title page is `.masthead`.** `CaseStudyLayout` imports `global.css`, so any unscoped selector there also lands on every case-study page. Both surfaces used to define `.hero`, and because `CaseStudyHero`'s scoped styles never set `max-width` or `margin`, the résumé's `.hero { max-width: 820px; margin: 0 auto }` won by default — clamping every full-bleed case-study hero to a centred 820px column with the page background showing as bars either side (692px of dead space at 1512px) while every section below it ran full width. Two different things had one name. Do not reintroduce a global `.hero` rule in `global.css`.
+**`.hero` belongs to case studies; the résumé's title page is `.masthead`.** The two page families share only `base.css` (tokens, controls, reset, and document defaults). `global.css` is résumé-only and `case-study.css` is case-study-only, so their layout selectors cannot leak across surfaces.
 
 The same hazard applied to `theme-light`/`theme-dark`, which were simultaneously the document-level edition flag on `<html>` and the section wrapper classes emitted by `CaseStudySection`. The section variants are now `section-light`/`section-dark`.
 
@@ -332,12 +354,17 @@ The same hazard applied to `theme-light`/`theme-dark`, which were simultaneously
   - `src/utils/feature-flags.ts`: Slug parsing, `isCaseStudyLinkEnabled`, and `applyFeatureFlags` immutability.
   - `src/content/schema.ts`: the zod content schemas, parsed against the real `resume.json`/`popovers.json`/`manifest.json`/case-study JSON plus negative (malformed) cases.
   - `src/middleware.ts`: the auth gate — `/login` and static-asset bypass, fail-closed `503`, redirect on missing/incorrect cookie, the length-mismatch guard around `timingSafeEqual`, and security-header injection.
-  - `src/scripts/annotation-engine.ts`: side assignment, cold-start intro lifecycle including the full demonstration ladder (mark → note → gateway → payoff), margin carousels surviving expansion without a rebuild, and the resize state machine (build on entering the wide tier, tear down on leaving; `resetAnnotationState` preserves the resize listener while `cleanupAnnotations` aborts it).
+  - `src/scripts/annotation-engine.ts`: side assignment, intro mount/dismiss timing, margin carousels surviving expansion without a rebuild, and the resize state machine (build on entering the wide tier, tear down on leaving; `resetAnnotationState` preserves the resize listener while `cleanupAnnotations` aborts it).
+  - `src/scripts/margin-intro.ts`: cold-start demonstration DOM and the full ladder (mark → note → gateway → payoff), composed with `intro-payoff.ts`.
   - `src/scripts/popover-engine.ts`: the three-tier routing (margin unfold, bound-in note, sheet — nothing floats on desktop) and, through it, `inset-note.ts`: binding into flow and inside bullets, single-click swap between terms, scroll-away fold with jitter forgiveness and a per-open exit accumulator, Escape/outside-click/fold-control closes, sheet lifecycle with focus trap and swipe-to-dismiss (the non-modal bound-in note is exempt from trapping), and the wide tier's margin expand with wheel exit.
-  - `src/scripts/dom.ts`: DOM construction for popovers, carousels, and accessibility attributes; the glance/dig split (`mediaMode`, `includeLink`); circular carousel navigation (the chevrons wrap past either end and never disable or fade); placement of project controls after media or before no-media narrative; that the case-study link renders in collapsed marginalia; and per-figure media descriptions.
+  - `src/scripts/note-content.ts`: shared note construction, the glance/dig split (`mediaMode`, `includeLink`), project-control placement, and accessible prose/quote structure.
+  - `src/scripts/note-media.ts`: image/video construction, intrinsic media dimensions, circular carousel navigation, and nearest-slide scroll tracking.
+  - `src/scripts/dom.ts`: small DOM and media-readiness primitives shared by the interaction engines.
   - `src/scripts/constants.ts`: Structural invariants — breakpoint ordering, value ranges, `VIDEO_EXTENSIONS` contents, CSS class/selector format, and swipe-gesture thresholds (`SWIPE_DISMISS_THRESHOLD`, `SWIPE_DISMISS_VELOCITY`).
   - `src/scripts/return-to-resume.ts`: same-tab project tracking, true Back behavior, stale-context rejection, and reconstruction of the saved note on whichever surface the current tier routes to (margin, bound-in, or sheet), including inner scroll and carousel frame.
   - `src/scripts/intro-payoff.ts`: burst classification (rapid/steady/contemplative), the untyped first payoff, one reply per burst, typed completion, the reply cap and choreographed goodbye, and the one-brain-per-button bind guard.
   - `src/scripts/password-visibility.ts`: concealed/visible state, canonical icon semantics, synchronized accessible labels, and focus retention.
   - `src/scripts/smile-portrait.ts`: the masthead portrait's one-time greeting — smiles on first pointerenter or tap, the smile survives pointerleave, and a duplicate attachment (dev hot reload) is a guarded no-op.
   - `src/components/Icon.astro`: the curated Tabler registry and direct SVG import contract that avoids transforming the library's full component barrel.
+  - `scripts/content-verifier.ts`: valid fixtures plus malformed schemas, bidirectional hotspot/note parity, manifest/JSON/page inventory drift, and public-path traversal.
+  - `scripts/dev-server.ts`: Codex marker isolation and lock cleanup boundaries — owned/dead locks are removed, while live or foreign locks are preserved.

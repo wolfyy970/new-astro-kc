@@ -18,7 +18,7 @@ High-fidelity Design Leadership Portfolio built with Astro 7. This project demon
 - **Two Editions:** Light is the default — the paper metaphor only holds on paper. Dark is a tuned night edition with its own stock (near-black, not true black, so the photographs have something to sit on), not an inversion. The edition flag is `html.theme-dark`; case-study section wrappers use `section-light`/`section-dark` so a section and the global edition can never collide in the cascade. Switching editions is an ink wash, not a flash: the next edition blooms out of the toggle itself (View Transition API + an SVG mask whose blob edge undulates via embedded SMIL as it spreads), with a half-opacity bleed halo soaking ahead of the front. Reduced motion gets a quiet crossfade; browsers without the API keep the instant switch.
 - **Feature Flags:** Server-side `CASE_STUDY_LINKS` controls which case-study links and semantic markers reach popovers and marginalia, supporting incremental publishing without code changes.
 - **Content Integrity Suite:** Automated validation of hotspot links, image paths, and media arrays to prevent regressions.
-- **Image Optimization Pipeline:** Build-time asset processing using Astro 7 for high-performance WebP delivery.
+- **Verified Asset Pipeline:** Intrinsic image dimensions are read at render time, optimized popover URLs retain their output geometry, and content verification blocks missing media before deployment.
 - **Brand-Accurate Case Study Theming:** Each case study is its client's environment — Delta reads as Delta, Truist as Truist. `CaseStudyLayout` takes the page's `accent` and a validated server-side utility (`src/utils/color.ts`) derives `--accent`, `--accent-rgb`, `--accent-contrast` and `--accent-ink`, applied as an inline body style so brand colours can never bleed between pages regardless of CSS bundle order. `--accent-ink` darkens a brand only as far as legibility requires, so a light brand can set 11px type without dropping under AA.
 - **Data-Driven Case Studies:** Content-separated architecture — each study is a self-contained `<slug>.json` file; a dispatcher component (`CaseStudySection.astro`) switches on a `type` field to render the correct layout composition. Adding a new case study or a new section type requires no changes to existing pages.
 - **Context-Preserving Project Navigation:** Returning from a case study restores the exact résumé position and reopens the note the reader left from — margin, bound-in, or sheet, per the current tier — including its carousel frame, when the browser cache does not retain them.
@@ -29,11 +29,14 @@ High-fidelity Design Leadership Portfolio built with Astro 7. This project demon
 npm install     # Install dependencies
 npm run verify  # Validate content integrity (hotspots & images)
 npm run dev     # Start development server
+npm run dev:status # Inspect a server left by an older session
+npm run dev:stop   # Stop a server left by an older session
 npm run format  # Apply Prettier formatting
 npm run lint    # Run ESLint across Astro, TypeScript, and JavaScript
 npm run check   # Run Astro type and template diagnostics
 npm run test    # Run unit tests
 npm run build   # Production-ready build (runs verify automatically)
+npm run quality # Run the complete pre-deployment gate
 ```
 
 ## Documentation Map

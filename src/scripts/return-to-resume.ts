@@ -43,6 +43,66 @@ interface NavigationEnvironment {
   now: () => number;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isFiniteNonNegative(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0;
+}
+
+function decodeResumeReturnContext(
+  value: unknown,
+  now: number,
+): ResumeReturnContext | null {
+  if (
+    !isRecord(value) ||
+    typeof value.destinationPath !== "string" ||
+    !value.destinationPath.startsWith("/") ||
+    !isFiniteNonNegative(value.createdAt)
+  ) {
+    return null;
+  }
+
+  const age = now - value.createdAt;
+  return age >= 0 && age <= MAX_CONTEXT_AGE_MS
+    ? {
+        destinationPath: value.destinationPath,
+        createdAt: value.createdAt,
+      }
+    : null;
+}
+
+function decodeResumeViewState(value: unknown): ResumeViewState | null {
+  if (
+    !isRecord(value) ||
+    (value.surface !== "popover" &&
+      value.surface !== "inset" &&
+      value.surface !== "margin") ||
+    typeof value.popoverKey !== "string" ||
+    value.popoverKey.trim().length === 0
+  ) {
+    return null;
+  }
+
+  const popoverScrollTop = value.popoverScrollTop ?? 0;
+  const carouselIndex = value.carouselIndex ?? 0;
+  if (
+    !isFiniteNonNegative(popoverScrollTop) ||
+    !isFiniteNonNegative(carouselIndex) ||
+    !Number.isInteger(carouselIndex)
+  ) {
+    return null;
+  }
+
+  return {
+    surface: value.surface,
+    popoverKey: value.popoverKey,
+    popoverScrollTop,
+    carouselIndex,
+  };
+}
+
 function getBrowserEnvironment(): NavigationEnvironment {
   return {
     document,
@@ -71,33 +131,27 @@ function readContext(
     const raw = storage.getItem(STORAGE_KEY);
     if (!raw) return null;
 
-    const parsed = JSON.parse(raw) as Partial<ResumeReturnContext>;
-    const isValid =
-      typeof parsed.destinationPath === "string" &&
-      typeof parsed.createdAt === "number" &&
-      now - parsed.createdAt >= 0 &&
-      now - parsed.createdAt <= MAX_CONTEXT_AGE_MS;
-
-    if (!isValid) storage.removeItem(STORAGE_KEY);
-    return isValid ? (parsed as ResumeReturnContext) : null;
+    const parsed: unknown = JSON.parse(raw);
+    const context = decodeResumeReturnContext(parsed, now);
+    if (!context) storage.removeItem(STORAGE_KEY);
+    return context;
   } catch {
     // Navigation should remain functional if storage is unavailable or corrupt.
+    try {
+      storage.removeItem(STORAGE_KEY);
+    } catch {
+      // Storage may be unavailable entirely.
+    }
     return null;
   }
 }
 
 function hasReturnState(history: NavigationHistory): boolean {
-  return (
-    typeof history.state === "object" &&
-    history.state !== null &&
-    (history.state as Record<string, unknown>)[HISTORY_STATE_KEY] === true
-  );
+  return isRecord(history.state) && history.state[HISTORY_STATE_KEY] === true;
 }
 
 function getObjectState(history: NavigationHistory): Record<string, unknown> {
-  return typeof history.state === "object" && history.state !== null
-    ? { ...(history.state as Record<string, unknown>) }
-    : {};
+  return isRecord(history.state) ? { ...history.state } : {};
 }
 
 function captureResumeView(link: HTMLAnchorElement): ResumeViewState | null {
@@ -194,10 +248,16 @@ export function initResumeReturnTracking(
     const link = target.closest<HTMLAnchorElement>(".popover-link, .sa-link");
     if (!link || (link.target && link.target !== "_self")) return;
 
-    const destination = new URL(
-      link.getAttribute("href") ?? link.href,
-      location.href,
-    );
+    let destination: URL;
+    try {
+      destination = new URL(
+        link.getAttribute("href") ?? link.href,
+        location.href,
+      );
+    } catch {
+      // Leave malformed links to the browser's native handling.
+      return;
+    }
     if (destination.origin !== location.origin) return;
 
     rememberResumeView(link, history, location);
@@ -268,16 +328,10 @@ export function restoreResumeReturnView(
   },
 ): void {
   const state = getObjectState(environment.history);
-  const view = state[VIEW_STATE_KEY] as Partial<ResumeViewState> | undefined;
-
-  const knownSurface =
-    view?.surface === "popover" ||
-    view?.surface === "inset" ||
-    view?.surface === "margin";
+  const view = decodeResumeViewState(state[VIEW_STATE_KEY]);
 
   if (
-    !knownSurface ||
-    typeof view?.popoverKey !== "string" ||
+    !view ||
     environment.document.querySelector(".popover.visible") ||
     environment.document.querySelector(".inset-note") ||
     environment.document.querySelector(".scroll-annotation.is-expanded")
@@ -300,7 +354,7 @@ export function restoreResumeReturnView(
 
     const scrollRegion =
       container.querySelector<HTMLElement>(".popover-scroll");
-    if (scrollRegion && typeof view.popoverScrollTop === "number") {
+    if (scrollRegion) {
       scrollRegion.scrollTop = view.popoverScrollTop;
     }
 
@@ -309,17 +363,15 @@ export function restoreResumeReturnView(
         ".popover-carousel-dot, .sa-carousel-dot",
       ),
     );
-    if (
-      typeof view.carouselIndex === "number" &&
-      view.carouselIndex > 0 &&
-      view.carouselIndex < dots.length
-    ) {
+    if (view.carouselIndex > 0 && view.carouselIndex < dots.length) {
       dots[view.carouselIndex]?.click();
     }
   });
 }
 
 export const resumeReturnInternals = {
+  decodeResumeReturnContext,
+  decodeResumeViewState,
   HISTORY_STATE_KEY,
   MAX_CONTEXT_AGE_MS,
   STORAGE_KEY,

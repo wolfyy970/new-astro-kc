@@ -2,27 +2,34 @@
   "name": "kc-portfolio",
   "type": "module",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
-    "dev": "astro dev",
+    "dev": "tsx scripts/dev-server.ts",
+    "dev:status": "astro dev status",
+    "dev:stop": "astro dev stop",
     "build": "npm run verify && astro build",
     "check": "astro check",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "preview": "astro preview",
+    "quality": "npm run format:check && npm run lint && npm run check && npm run test && npm run build",
     "test": "vitest run",
     "verify": "tsx scripts/verify-content.ts"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.3",
     "@astrojs/vercel": "^11.0.4",
     "@tabler/icons": "^3.45.0",
     "astro": "^7.1.5",
+    "sharp": "^0.35.3",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@eslint/js": "^10.0.1",
+    "@types/node": "^24.13.3",
     "eslint": "^10.8.0",
     "eslint-plugin-astro": "^1.7.0",
     "globals": "^17.8.0",

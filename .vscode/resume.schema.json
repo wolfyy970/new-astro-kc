@@ -9,7 +9,6 @@
     "titleLine",
     "summary",
     "hero",
-    "keyAchievements",
     "experience",
     "education",
     "contact",
@@ -65,28 +64,6 @@
         "linkedinUrl": { "type": "string", "format": "uri" },
         "location": { "type": "string" }
       }
-    },
-    "keyAchievements": {
-      "type": "array",
-      "description": "Clusters of achievement bullets grouped by theme.",
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["heading", "items"],
-        "properties": {
-          "heading": {
-            "type": "string",
-            "description": "Theme heading for this cluster."
-          },
-          "items": {
-            "type": "array",
-            "description": "Achievement bullets. May contain <hotspot> markup.",
-            "items": { "type": "string" },
-            "minItems": 1
-          }
-        }
-      },
-      "minItems": 1
     },
     "experience": {
       "type": "array",

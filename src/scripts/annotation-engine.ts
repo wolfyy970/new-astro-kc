@@ -5,20 +5,16 @@
 // Below the wide tier, no margin annotations are shown.
 
 import type { PopoverData, PopoverMap } from "../types/content.ts";
-import { buildContentNode, onMediaReady } from "./dom.ts";
-import { renderCaseStudyMarker } from "../utils/render.ts";
-import { attachIntroPayoff } from "./intro-payoff.ts";
+import { onMediaReady } from "./dom.ts";
+import { buildContentNode } from "./note-content.ts";
+import { dismissMarginIntro, mountMarginIntro } from "./margin-intro.ts";
 import {
   ANNOTATION_MIN_GAP,
   ANNOTATION_ROOT_MARGIN,
   UNFOLD_REFLOW_MS,
   ASSIST_BOTTOM_GAP,
   ASSIST_NOTE_TOP,
-  ASSIST_TERM_MIN,
   SCROLL_EXIT_THRESHOLD,
-  INTRO_TOP,
-  INTRO_REVEAL_MS,
-  INTRO_DISMISS_MS,
   RESIZE_DEBOUNCE_MS,
   SEL_HOTSPOT,
   SEL_DOC_PAGE,
@@ -28,10 +24,9 @@ import {
   CLS_ANNOTATION_SUPPRESSED,
   CLS_EXPANDED,
   CLS_MARGIN_FOCUS,
-  CLS_INTRO_GATEWAY,
-  CLS_INTRO_DONE,
 } from "./constants.ts";
 import { isWideScreen, prefersReducedMotion } from "../utils/viewport.ts";
+import { assistNoteIntoView } from "./note-geometry.ts";
 
 // ── Engine state ───────────────────────────────────────────────────────────────
 
@@ -47,8 +42,10 @@ let annotationsBuilt = false;
 let marginObserver: IntersectionObserver | null = null;
 let resizeAbortController: AbortController | null = null;
 let introAnnotationEl: HTMLElement | null = null;
+let resizeTimer = 0;
 
-// Kept so a note can be re-rendered at full length when it expands.
+// Retained so the engine can validate that an annotation still has content
+// before changing its state.
 let popoverData: PopoverMap = {};
 // At most one note is ever expanded — two open notes in a 220px column would
 // push each other halfway down the page.
@@ -139,7 +136,10 @@ function buildAllAnnotations(popovers: PopoverMap): void {
     .forEach((media) => onMediaReady(media, resolveAllOverlaps));
 
   // Final safety pass once everything is definitely in place
-  window.addEventListener("load", resolveAllOverlaps);
+  window.addEventListener("load", resolveAllOverlaps, {
+    once: true,
+    signal: resizeAbortController?.signal,
+  });
 
   annotationsBuilt = true;
 }
@@ -211,26 +211,7 @@ function animateReflow(): void {
  * and the reader follows it down the margin, as with any long sidenote.
  */
 function assistIntoView(entry: AnnotationEntry): void {
-  const noteRect = entry.el.getBoundingClientRect();
-  const termTop = entry.hotspot.getBoundingClientRect().top;
-  // The grid-rows mechanism sizes .sa-more-inner to 0 while collapsed; its
-  // scrollHeight is the height its content will occupy once unfolded.
-  const inner = entry.el.querySelector<HTMLElement>(".sa-more-inner");
-  const growth = inner ? inner.scrollHeight - inner.offsetHeight : 0;
-  const finalBottom = noteRect.top + entry.el.offsetHeight + growth;
-
-  const wanted = finalBottom - (window.innerHeight - ASSIST_BOTTOM_GAP);
-  const delta = Math.min(
-    wanted,
-    noteRect.top - ASSIST_NOTE_TOP,
-    termTop - ASSIST_TERM_MIN,
-  );
-  if (delta > 0) {
-    window.scrollBy({
-      top: delta,
-      behavior: prefersReducedMotion() ? "auto" : "smooth",
-    });
-  }
+  assistNoteIntoView(entry.el, entry.hotspot, ".sa-more-inner");
 }
 
 // ── Scroll-as-exit ────────────────────────────────────────────────────────────
@@ -350,142 +331,21 @@ function resolveOverlaps(side: "left" | "right"): void {
 // so the margin isn't empty and the interactive feature isn't invisible.
 // Dismissed (animated) the moment the first real annotation scrolls into view.
 
-/**
- * A specimen of the reader's pen for the intro note — the real stroke
- * apparatus (.hs-stroke + a variant geometry), never a lookalike. A span,
- * not a control: the intro is an aria-hidden visual convenience, so nothing
- * inside it may take focus. The green specimen carries the genuine
- * superscript marker from render.ts.
- */
-function buildIntroSpecimen(text: string, project: boolean): HTMLElement {
-  const term = document.createElement("span");
-  term.className = project
-    ? "intro-term intro-term--project hs-mark-6"
-    : "intro-term hs-mark-3";
-  const stroke = document.createElement("span");
-  stroke.className = "hs-stroke";
-  stroke.textContent = text;
-  term.appendChild(stroke);
-  if (project) term.insertAdjacentHTML("beforeend", renderCaseStudyMarker());
-  return term;
-}
-
 function showIntroAnnotation(): void {
   if (introAnnotationEl) return;
   const docPage = document.querySelector<HTMLElement>(SEL_DOC_PAGE);
   if (!docPage) return;
 
-  const el = document.createElement("div");
-  el.className = `scroll-annotation side-left`;
-  el.dataset.intro = "true";
-  el.style.top = INTRO_TOP;
-
-  const rule = document.createElement("div");
-  rule.className = "sa-rule";
-
-  const label = document.createElement("div");
-  label.className = "sa-label";
-  label.textContent = "Interactive";
-
-  // The introduction is a working scale model of the system it introduces.
-  // The glance marks its own key phrase with the actual yellow stroke…
-  const text = document.createElement("div");
-  text.className = "sa-text";
-  text.append(
-    "Scroll to reveal. As you read, ",
-    buildIntroSpecimen("highlighted terms", false),
-    " surface detail, data, and media here in the margin.",
-  );
-
-  // …and clicking it does exactly what clicking any mark does at this tier:
-  // the note continues in place. The continuation reveals the system's
-  // second rung — the two pens — with the green pen a genuine, CLICKABLE
-  // specimen: the ladder demonstrates its own third rung.
-  const more = document.createElement("div");
-  more.className = "sa-more";
-  const moreInner = document.createElement("div");
-  moreInner.className = "sa-more-inner";
-  const moreText = document.createElement("div");
-  moreText.className = "sa-text";
-  const greenSpecimen = buildIntroSpecimen("green mark", true);
-  moreText.append(
-    "A yellow mark holds a note like this one; a ",
-    greenSpecimen,
-    " leads onward to a complete project.",
-  );
-  moreInner.appendChild(moreText);
-
-  // Rung three, staged: the green specimen reveals an example of the real
-  // project gateway (the same .sa-link control every project note carries)…
-  const gateway = document.createElement("div");
-  gateway.className = "intro-reveal intro-reveal--gateway";
-  const gatewayInner = document.createElement("div");
-  gatewayInner.className = "intro-reveal-inner";
-  const demoLink = document.createElement("span");
-  demoLink.className = "sa-link intro-demo-link";
-  const demoLabel = document.createElement("span");
-  demoLabel.className = "sa-link-label";
-  demoLabel.textContent = "View project";
-  demoLink.appendChild(demoLabel);
-  gatewayInner.appendChild(demoLink);
-  gateway.appendChild(gatewayInner);
-  moreInner.appendChild(gateway);
-
-  // …and the gateway, being a demonstration, pays off honestly instead of
-  // navigating: the apparatus itself congratulates the reader and hands the
-  // document back.
-  const done = document.createElement("div");
-  done.className = "intro-reveal intro-reveal--done";
-  const doneInner = document.createElement("div");
-  doneInner.className = "intro-reveal-inner";
-  const doneLine = document.createElement("div");
-  doneLine.className = "intro-done";
-  doneLine.textContent = "You got it! Scroll away.";
-  doneInner.appendChild(doneLine);
-  done.appendChild(doneInner);
-  moreInner.appendChild(done);
-
-  greenSpecimen.addEventListener("click", () =>
-    el.classList.add(CLS_INTRO_GATEWAY),
-  );
-  // First click unfolds the authored payoff; every click after that is the
-  // payoff module's conversation, ending in the choreographed exit.
-  attachIntroPayoff({
-    root: el,
-    link: demoLink,
-    line: doneLine,
-    doneClass: CLS_INTRO_DONE,
-    onRemoved: () => {
-      if (introAnnotationEl === el) introAnnotationEl = null;
-    },
+  introAnnotationEl = mountMarginIntro(docPage, (element) => {
+    if (introAnnotationEl === element) introAnnotationEl = null;
   });
-
-  more.appendChild(moreInner);
-
-  el.appendChild(rule);
-  el.appendChild(label);
-  el.appendChild(text);
-  el.appendChild(more);
-
-  // Same contract as a real note: a click on the glance opens it; clicks on
-  // an open note are inert (it is a reading surface). It closes the way the
-  // whole intro closes — by scrolling on, which dissolves it entirely the
-  // moment the first real annotation reveals.
-  el.addEventListener("click", () => el.classList.add(CLS_EXPANDED));
-
-  docPage.appendChild(el);
-  introAnnotationEl = el;
-
-  // Brief delay so the element is in the DOM before the transition fires
-  setTimeout(() => el.classList.add(CLS_REVEALED), INTRO_REVEAL_MS);
 }
 
 function dismissIntroAnnotation(): void {
   if (!introAnnotationEl) return;
   const el = introAnnotationEl;
   introAnnotationEl = null;
-  el.classList.remove(CLS_REVEALED);
-  setTimeout(() => el.remove(), INTRO_DISMISS_MS);
+  dismissMarginIntro(el);
 }
 
 function revealAnnotation(key: string): void {
@@ -508,7 +368,8 @@ function resetAnnotationState(): void {
   }
   Object.values(annotationEls).forEach(({ el, hotspot }) => {
     el.remove();
-    hotspot.classList.remove(CLS_SCROLL_REVEALED);
+    hotspot.classList.remove(CLS_ACTIVE, CLS_SCROLL_REVEALED);
+    hotspot.setAttribute("aria-expanded", "false");
   });
   document
     .querySelector<HTMLElement>(SEL_DOC_PAGE)
@@ -525,12 +386,14 @@ function resetAnnotationState(): void {
 export function cleanupAnnotations(): void {
   resizeAbortController?.abort();
   resizeAbortController = null;
+  window.clearTimeout(resizeTimer);
+  resizeTimer = 0;
   resetAnnotationState();
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 
-export function initAnnotationEngine(popovers: PopoverMap): void {
+export function initAnnotationEngine(popovers: PopoverMap): () => void {
   // Reset state for this instance (handles View Transitions/page changes)
   cleanupAnnotations();
   popoverData = popovers;
@@ -599,7 +462,6 @@ export function initAnnotationEngine(popovers: PopoverMap): void {
 
   // Handle resize — AbortController ensures this listener is removed on cleanup
   resizeAbortController = new AbortController();
-  let resizeTimer = 0;
   window.addEventListener(
     "resize",
     () => {
@@ -643,4 +505,5 @@ export function initAnnotationEngine(popovers: PopoverMap): void {
   }
 
   init();
+  return cleanupAnnotations;
 }

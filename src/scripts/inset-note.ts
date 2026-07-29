@@ -15,19 +15,19 @@
 // contract the expanded margin note honours.
 
 import type { PopoverMap } from "../types/content.ts";
-import { buildContentNode } from "./dom.ts";
+import { buildContentNode } from "./note-content.ts";
 import {
   ID_INSET,
   ID_POPOVER,
   INSET_COLLAPSE_MS,
   ASSIST_BOTTOM_GAP,
   ASSIST_NOTE_TOP,
-  ASSIST_TERM_MIN,
   SCROLL_EXIT_THRESHOLD,
   CLS_ACTIVE,
   CLS_OPEN,
 } from "./constants.ts";
 import { prefersReducedMotion } from "../utils/viewport.ts";
+import { assistNoteIntoView } from "./note-geometry.ts";
 
 // Canonical Tabler "X", matching the sheet's close control.
 const ICON_FOLD =
@@ -35,6 +35,8 @@ const ICON_FOLD =
 
 let activeTerm: HTMLElement | null = null;
 let activeNote: HTMLElement | null = null;
+let exitAbortController: AbortController | null = null;
+const collapseTimers = new Set<number>();
 
 /**
  * The block the note binds in after. A term inside a bullet keeps its note
@@ -65,24 +67,7 @@ function bindingPoint(term: HTMLElement): {
  * viewport pins near the top and the reader follows it down the page.
  */
 function assistIntoView(note: HTMLElement, term: HTMLElement): void {
-  const noteRect = note.getBoundingClientRect();
-  const termTop = term.getBoundingClientRect().top;
-  const inner = note.querySelector<HTMLElement>(".inset-inner");
-  const growth = inner ? inner.scrollHeight - inner.offsetHeight : 0;
-  const finalBottom = noteRect.top + note.offsetHeight + growth;
-
-  const wanted = finalBottom - (window.innerHeight - ASSIST_BOTTOM_GAP);
-  const delta = Math.min(
-    wanted,
-    noteRect.top - ASSIST_NOTE_TOP,
-    termTop - ASSIST_TERM_MIN,
-  );
-  if (delta > 0) {
-    window.scrollBy({
-      top: delta,
-      behavior: prefersReducedMotion() ? "auto" : "smooth",
-    });
-  }
+  assistNoteIntoView(note, term, ".inset-inner");
 }
 
 // ── Scroll-as-exit ────────────────────────────────────────────────────────────
@@ -95,7 +80,6 @@ function assistIntoView(note: HTMLElement, term: HTMLElement): void {
 // scroll position compensated in the same frame — nothing visible moves.
 
 let scrollExitAcc = 0;
-let exitListenersBound = false;
 
 /** Instant close that keeps everything currently on screen exactly still. */
 function closeNoteScrolledPast(note: HTMLElement): void {
@@ -135,12 +119,13 @@ function onReaderScrollIntent(delta: number): void {
 }
 
 function bindExitListeners(): void {
-  if (exitListenersBound) return;
-  exitListenersBound = true;
+  if (exitAbortController) return;
+  exitAbortController = new AbortController();
+  const { signal } = exitAbortController;
   document.addEventListener(
     "wheel",
     (e: WheelEvent) => onReaderScrollIntent(e.deltaY),
-    { passive: true },
+    { passive: true, signal },
   );
   document.addEventListener(
     "touchmove",
@@ -153,7 +138,7 @@ function bindExitListeners(): void {
       }
       onReaderScrollIntent(SCROLL_EXIT_THRESHOLD / 2);
     },
-    { passive: true },
+    { passive: true, signal },
   );
 }
 
@@ -234,11 +219,15 @@ export function closeInset(options: { instant?: boolean } = {}): void {
   }
 
   note.classList.remove(CLS_OPEN);
-  window.setTimeout(() => note.remove(), INSET_COLLAPSE_MS);
+  const timer = window.setTimeout(() => {
+    collapseTimers.delete(timer);
+    note.remove();
+  }, INSET_COLLAPSE_MS);
+  collapseTimers.add(timer);
 }
 
 /** Opens the note for a term, closing any other. */
-export function openInset(term: HTMLElement, popovers: PopoverMap): void {
+function openInset(term: HTMLElement, popovers: PopoverMap): void {
   const key = term.dataset.popover;
   if (!key) return;
 
@@ -291,4 +280,14 @@ export function toggleInset(term: HTMLElement, popovers: PopoverMap): void {
 /** The term whose note is open, if any — used by restore and tier changes. */
 export function activeInsetTerm(): HTMLElement | null {
   return activeTerm;
+}
+
+/** Fully disposes the inset surface and its document-level listeners. */
+export function cleanupInset(): void {
+  exitAbortController?.abort();
+  exitAbortController = null;
+  collapseTimers.forEach((timer) => window.clearTimeout(timer));
+  collapseTimers.clear();
+  closeInset({ instant: true });
+  document.querySelectorAll(".inset-note").forEach((note) => note.remove());
 }

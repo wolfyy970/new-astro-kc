@@ -14,7 +14,7 @@ import sharp from "sharp";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
-export interface ImageSize {
+interface ImageSize {
   width: number;
   height: number;
 }
