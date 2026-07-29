@@ -2,7 +2,9 @@
   "gpc-revenue": {
     "label": "Research & Business Impact",
     "text": "Leading design for the digital transformation of a $8B e-commerce platform. Customer research uncovered a key insight: B2B parts lookup is fundamentally different from traditional e-commerce. Service advisors often have the part in hand; they need to identify it, not shop for it. The \"ways of finding\" strategy (keyword search, category search, part number lookup, job type, legacy PDF catalogs) delivered a 7% add-to-cart improvement representing a $32.8M lift in revenue for the pro segment (2025).",
-    "stat": "$32.8M"
+    "stat": "$32.8M",
+    "brandMark": "/images/gpc/napa-hexagon.webp",
+    "brandMarkAlt": "NAPA Auto Parts hexagon badge"
   },
   "bolt": {
     "label": "Bolt Design System",

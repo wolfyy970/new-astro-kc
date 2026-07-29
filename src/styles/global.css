@@ -818,8 +818,10 @@ body {
   /* Family: yellow unless .hs-project overrides the pigment. */
   --mark-rgb: var(--mark-note-rgb);
 
-  /* The state ladder swaps this one knob; the ink colours derive from it. */
-  --hs-a: var(--mark-a);
+  /* The state ladder swaps this one knob; the ink colours derive from it.
+     --hs-recede scales every state at once — the focus answer below sets it
+     while another term's note is open. */
+  --hs-a: calc(var(--mark-a) * var(--hs-recede, 1));
 
   /* Rest ink — one confident pass; band B runs a touch drier. Translucent on
      light stock so the band overlap deepens like real double-passed ink. */
@@ -1026,6 +1028,11 @@ html.theme-dark .hotspot {
   font-size: 1em;
   width: 0.78em;
   height: 0.78em;
+  /* The superscript marker recedes with its term's ink (see the focus
+     answer) — a full-strength icon over a whispered mark would point the
+     wrong way. */
+  opacity: var(--hs-recede, 1);
+  transition: opacity 0.24s ease;
   vertical-align: super;
   line-height: 1;
   margin-left: 3px;
@@ -1083,13 +1090,33 @@ html.theme-dark .hotspot {
 .hotspot:hover,
 .hotspot.hovered,
 .hotspot:focus-visible {
-  --hs-a: var(--mark-a-hover);
+  --hs-a: calc(var(--mark-a-hover) * var(--hs-recede, 1));
 }
 
 /* Open, or revealed in the margin — a deliberate second pass. */
 .hotspot.active,
 .hotspot.scroll-revealed {
-  --hs-a: var(--mark-a-active);
+  --hs-a: calc(var(--mark-a-active) * var(--hs-recede, 1));
+}
+
+/* ── The focus answer ──
+   While one note is open — continuing in the margin (.margin-focus) or bound
+   into the flow (the inset present in the page) — every OTHER term's ink
+   recedes the same step the margin takes, so the mark driving the open note
+   is unmistakable. The words never dim (they are the résumé); only the
+   reader's ink steps back, and it returns under the pointer — the same
+   invitation the receded margin notes make. The open term is exempt via
+   aria-expanded, which all three engines maintain. */
+.margin-focus .hotspot:not([aria-expanded="true"]),
+.doc-page:has(#inset-note) .hotspot:not([aria-expanded="true"]) {
+  --hs-recede: 0.35;
+}
+
+.margin-focus .hotspot:not([aria-expanded="true"]):hover,
+.margin-focus .hotspot:not([aria-expanded="true"]):focus-visible,
+.doc-page:has(#inset-note) .hotspot:not([aria-expanded="true"]):hover,
+.doc-page:has(#inset-note) .hotspot:not([aria-expanded="true"]):focus-visible {
+  --hs-recede: 1;
 }
 
 /* The stroke keeps its shape under focus; only the ring is added. */
@@ -1755,6 +1782,17 @@ body.popover-open {
   transition:
     opacity 0.3s ease 0.1s,
     transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.04s;
+  /* The note announces itself first: label row (with the fold control at the
+     note's own top right — not the text block's), then any hallmark, then the
+     plate, then the narrative. The builder emits media first for the sheet;
+     here flex order restores the printed structure DESIGN.md describes. */
+  display: flex;
+  flex-direction: column;
+}
+
+.inset-body > .popover-head,
+.inset-body > .popover-stat {
+  order: -1;
 }
 
 .inset-note.open .inset-body {
