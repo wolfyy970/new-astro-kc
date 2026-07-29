@@ -13,9 +13,14 @@ describe("Constants", () => {
     expect(constants.RESIZE_DEBOUNCE_MS).toBeLessThan(2000);
   });
 
-  it("POPOVER_MAX_HEIGHT_VH should be a valid fractional viewport height (0–1)", () => {
-    expect(constants.POPOVER_MAX_HEIGHT_VH).toBeGreaterThan(0);
-    expect(constants.POPOVER_MAX_HEIGHT_VH).toBeLessThanOrEqual(1);
+  it("UNFOLD_REFLOW_MS should outlast the CSS grid-rows transition (0.5s)", () => {
+    expect(constants.UNFOLD_REFLOW_MS).toBeGreaterThanOrEqual(500);
+    expect(constants.UNFOLD_REFLOW_MS).toBeLessThan(2000);
+  });
+
+  it("INSET_COLLAPSE_MS should cover the fold-up before DOM removal", () => {
+    expect(constants.INSET_COLLAPSE_MS).toBeGreaterThanOrEqual(300);
+    expect(constants.INSET_COLLAPSE_MS).toBeLessThan(2000);
   });
 
   it("ANNOTATION_TEXT_SENTENCES should be a positive integer", () => {

@@ -1,36 +1,41 @@
-// ── Popover Engine ────────────────────────────────────────────────────────────
-// Manages open/close lifecycle and dragging for the detail popover panel.
-// On desktop: absolutely positioned near the clicked hotspot; draggable.
-// On mobile:  fixed bottom-sheet (CSS handles this via @media); not draggable.
+// ── Note Engine ───────────────────────────────────────────────────────────────
+// Routes a marked term's click to the tier-appropriate note surface and owns
+// the one surface that still floats: the mobile bottom sheet.
 //
-// Drag implementation:
-//   - Drag handle strip at top of panel (above content, grip dots indicator)
-//   - setPointerCapture so drag tracks outside the panel boundary
-//   - Viewport-constrained: at least 48px of the panel must stay on-screen
-//   - Position resets to hotspot each time a popover opens (no stale drag state)
+//   ≥1420px   the note CONTINUES in the margin (annotation-engine unfolds it)
+//   601–1419  the note sets INTO the document flow (inset-note binds it in)
+//   ≤600px    the note rises as a bottom sheet (this module)
 //
-// Accessibility:
+// The floating desktop popover — positioned, clamped, draggable — is gone.
+// Nothing on a desktop viewport is laid over the document any more; the
+// document makes room instead. What remains here is the sheet's lifecycle
+// (open/close, swipe-to-dismiss, focus trap — the sheet IS modal) and the
+// shared hotspot wiring for all three tiers.
+//
+// Accessibility (sheet):
 //   - Opens with focus on the × close button (first interactive child)
 //   - Tab/Shift+Tab trapped inside the dialog while open
 //   - Escape closes and returns focus to the triggering hotspot
 //   - aria-label updates to the entry's label on each open
-//   - Drag handle has aria-hidden (purely presentational)
+//   - Handle strip has aria-hidden (purely presentational)
 
 import type { PopoverMap } from "../types/content.ts";
-import { requireEl, buildContentNode, onMediaReady } from "./dom.ts";
+import { requireEl, buildContentNode } from "./dom.ts";
 import { toggleAnnotation, collapseAnnotation } from "./annotation-engine.ts";
 import {
-  POPOVER_MAX_WIDTH,
-  POPOVER_MARGIN_MIN,
-  POPOVER_OFFSET_Y,
-  POPOVER_MAX_HEIGHT_VH,
-  DRAG_MIN_VISIBLE,
+  toggleInset,
+  closeInset,
+  isInsetTarget,
+  activeInsetTerm,
+} from "./inset-note.ts";
+import {
   SWIPE_DISMISS_THRESHOLD,
   SWIPE_DISMISS_VELOCITY,
   SWIPE_RESISTANCE,
   SHEET_DISMISS_OFFSET,
   SHEET_DISMISS_ANIM_MS,
   SHEET_SNAPBACK_MS,
+  RESIZE_DEBOUNCE_MS,
   ID_OVERLAY,
   ID_POPOVER,
   CLS_ACTIVE,
@@ -42,16 +47,16 @@ import {
   CLS_IS_DRAGGING,
   SEL_HOTSPOT,
 } from "./constants.ts";
+import { isMobileScreen, isWideScreen } from "../utils/viewport.ts";
 
 // CSS custom property used to animate the bottom-sheet during swipe-to-dismiss.
 // The mobile transform rules reference this variable so JS can drive the offset
 // without fighting the `!important` declarations directly.
 const CSS_PROP_SHEET_OFFSET = "--sheet-drag-offset";
-// Canonical Tabler "X" geometry. The popover chrome is built client-side, so
-// it cannot render the Astro icon component used by server-rendered controls.
+// Canonical Tabler "X" geometry. The sheet chrome is built client-side, so it
+// cannot render the Astro icon component used by server-rendered controls.
 const ICON_CLOSE =
   '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>';
-import { isMobileScreen } from "../utils/viewport.ts";
 
 // ── Annotation dissolve ───────────────────────────────────────────────────────
 
@@ -113,71 +118,8 @@ function disableFocusTrap(container: HTMLElement): void {
   }
 }
 
-// ── Drag ──────────────────────────────────────────────────────────────────────
-
-function makeDraggable(popoverEl: HTMLElement): void {
-  let isDragging = false;
-  let startPtrX = 0;
-  let startPtrY = 0;
-  let startElLeft = 0;
-  let startElTop = 0;
-
-  popoverEl.addEventListener("pointerdown", (e: PointerEvent) => {
-    const target = e.target as HTMLElement;
-    // Only drag from the handle strip — not from the close button inside it
-    // (close button is a child of .popover-handle so closest() would match it)
-    if (!target.closest(".popover-handle")) return;
-    if (target.closest("button")) return;
-    // Bottom-sheet mode on mobile — no drag
-    if (isMobileScreen()) return;
-
-    isDragging = true;
-    startPtrX = e.clientX;
-    startPtrY = e.clientY;
-    startElLeft = parseFloat(popoverEl.style.left) || 0;
-    startElTop = parseFloat(popoverEl.style.top) || 0;
-
-    popoverEl.classList.add(CLS_IS_DRAGGING);
-    popoverEl.setPointerCapture(e.pointerId);
-    e.preventDefault(); // prevent text selection during drag
-  });
-
-  popoverEl.addEventListener("pointermove", (e: PointerEvent) => {
-    if (!isDragging) return;
-
-    const dx = e.clientX - startPtrX;
-    const dy = e.clientY - startPtrY;
-
-    let newLeft = startElLeft + dx;
-    let newTop = startElTop + dy;
-
-    // Constrain to viewport (document coordinates; page is vertical-only scroll)
-    newLeft = Math.max(
-      POPOVER_MARGIN_MIN,
-      Math.min(newLeft, window.innerWidth - DRAG_MIN_VISIBLE),
-    );
-    newTop = Math.max(
-      window.scrollY + POPOVER_MARGIN_MIN,
-      Math.min(newTop, window.scrollY + window.innerHeight - DRAG_MIN_VISIBLE),
-    );
-
-    popoverEl.style.left = newLeft + "px";
-    popoverEl.style.top = newTop + "px";
-  });
-
-  const stopDrag = (e: PointerEvent) => {
-    if (!isDragging) return;
-    isDragging = false;
-    popoverEl.classList.remove(CLS_IS_DRAGGING);
-    popoverEl.releasePointerCapture(e.pointerId);
-  };
-
-  popoverEl.addEventListener("pointerup", stopDrag);
-  popoverEl.addEventListener("pointercancel", stopDrag);
-}
-
 // ── Mobile swipe-to-dismiss ───────────────────────────────────────────────────
-// Attach once on the popover element. Engages only when isMobileScreen() is
+// Attach once on the sheet element. Engages only when isMobileScreen() is
 // true and the user drags downward from the top of the sheet's scroll region.
 // The touchmove listener is intentionally non-passive so it can call
 // preventDefault() to stop the page beneath from scrolling during a dismiss.
@@ -266,7 +208,7 @@ let popovers: PopoverMap = {};
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
-function injectPopoverChrome(
+function injectSheetChrome(
   popoverEl: HTMLElement,
   label: string,
 ): HTMLButtonElement {
@@ -287,120 +229,11 @@ function injectPopoverChrome(
   return closeBtn;
 }
 
-function calculatePopoverPosition(
-  hotspot: HTMLElement,
-  popoverEl: HTMLElement,
-): {
-  top: string;
-  left: string;
-} {
-  if (isMobileScreen()) return { top: "", left: "" };
-
-  const rect = hotspot.getBoundingClientRect();
-  const scrollY = window.scrollY;
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  // CSS owns the fluid reading width. Measuring the actual panel keeps hotspot
-  // centering and viewport clamping truthful at every point in that range.
-  const popoverWidth =
-    popoverEl.offsetWidth ||
-    Math.min(POPOVER_MAX_WIDTH, Math.max(0, vw - POPOVER_MARGIN_MIN * 2));
-
-  // Horizontal: centred on the hotspot, clamped to viewport edges
-  let left = rect.left + rect.width / 2 - popoverWidth / 2;
-  left = Math.max(
-    POPOVER_MARGIN_MIN,
-    Math.min(left, vw - popoverWidth - POPOVER_MARGIN_MIN),
-  );
-
-  // Vertical: the CSS guarantees max-height of POPOVER_MAX_HEIGHT_VH, so use that as the
-  // worst-case height for the flip decision rather than fragile hardcoded estimates.
-  const worstCaseHeight = vh * POPOVER_MAX_HEIGHT_VH;
-  const spaceBelow = vh - rect.bottom - POPOVER_OFFSET_Y;
-
-  const below = rect.bottom + scrollY + POPOVER_OFFSET_Y;
-  // Neither side has full room — default below; post-render clamp handles the rest.
-  const top =
-    spaceBelow >= worstCaseHeight
-      ? below
-      : (topAboveIfItFits(rect.top, worstCaseHeight, scrollY) ?? below);
-
-  return { top: top + "px", left: left + "px" };
-}
-
-/**
- * Document-coordinate `top` that places a popover of `height` above the hotspot,
- * or null when it would not fit there. Shared by the build-time estimate and the
- * post-render clamp so the flip arithmetic lives once.
- *
- * Both edges are checked. Testing only the top edge looks sufficient — "above"
- * intuitively means "higher up" — but it is not: when the term itself sits below
- * the fold, a placement above it can clear the top margin and still finish well
- * past the bottom of the viewport. That is exactly the case that put a
- * seven-figure note 57px off-screen.
- */
-function topAboveIfItFits(
-  rectTop: number,
-  height: number,
-  scrollY: number,
-): number | null {
-  const topIfAbove = rectTop + scrollY - height - POPOVER_OFFSET_Y;
-  const clearsTop = topIfAbove >= scrollY + POPOVER_MARGIN_MIN;
-  const clearsBottom =
-    topIfAbove + height <= scrollY + window.innerHeight - POPOVER_MARGIN_MIN;
-  return clearsTop && clearsBottom ? topIfAbove : null;
-}
-
 function toggleHotspotState(el: HTMLElement, isHovered: boolean): void {
   el.classList.toggle(CLS_HOVERED, isHovered);
 }
 
-/**
- * Measures the rendered popover and pulls it back inside the viewport if it
- * overflows: flip above the term when there is room, otherwise sit it on the
- * bottom margin.
- *
- * This must be callable more than once per open. The build-time estimate uses
- * POPOVER_MAX_HEIGHT_VH as the worst case, and the first post-render pass
- * measures whatever has laid out so far — but popover figures carry no
- * width/height, so a carousel that has not yet decoded contributes nothing to
- * offsetHeight and the panel grows *after* it has been positioned. That is how
- * a seven-figure note ends up hanging 260px below the fold. Re-running this as
- * each figure resolves is what makes the guarantee real.
- */
-function clampToViewport(popoverEl: HTMLElement, hotspot: HTMLElement): void {
-  if (isMobileScreen()) return;
-
-  const height = popoverEl.offsetHeight;
-  const top = parseFloat(popoverEl.style.top);
-  if (Number.isNaN(top)) return;
-
-  const minTop = window.scrollY + POPOVER_MARGIN_MIN;
-  const maxTop =
-    window.scrollY + window.innerHeight - POPOVER_MARGIN_MIN - height;
-
-  // Already fully on screen — leave it where the reader's click put it.
-  if (top >= minTop && top <= maxTop) return;
-
-  // Prefer flipping above the term, but only when the whole panel fits there.
-  const above = topAboveIfItFits(
-    hotspot.getBoundingClientRect().top,
-    height,
-    window.scrollY,
-  );
-  if (above !== null) {
-    popoverEl.style.top = above + "px";
-    return;
-  }
-
-  // Otherwise pin inside the viewport. Clamping both edges matters: guarding
-  // only the bottom pushed tall notes off the top instead, which is the same
-  // bug wearing a different hat. When the panel is taller than the viewport
-  // (maxTop < minTop) minTop wins and the panel scrolls internally.
-  popoverEl.style.top = Math.max(minTop, Math.min(top, maxTop)) + "px";
-}
-
-// ── Core open/close ────────────────────────────────────────────────────────────
+// ── Sheet open/close ──────────────────────────────────────────────────────────
 
 function openPopover(hotspot: HTMLElement): void {
   const overlay = requireEl(ID_OVERLAY, "PopoverEngine");
@@ -430,29 +263,12 @@ function openPopover(hotspot: HTMLElement): void {
   scrollRegion.appendChild(content);
 
   popoverEl.replaceChildren(scrollRegion);
-  const closeBtn = injectPopoverChrome(popoverEl, data.label);
-
-  const pos = calculatePopoverPosition(hotspot, popoverEl);
-  popoverEl.style.top = pos.top;
-  popoverEl.style.left = pos.left;
+  const closeBtn = injectSheetChrome(popoverEl, data.label);
 
   overlay.classList.add(CLS_OPEN);
-  if (isMobileScreen()) {
-    document.body.classList.add(CLS_POPOVER_OPEN);
-  }
-
-  // Re-clamp as each figure resolves. Without this the first open of a
-  // media-heavy note is positioned against a height that has not happened yet.
-  popoverEl.querySelectorAll(".popover-img, .popover-vid").forEach((media) =>
-    onMediaReady(media, () => {
-      // Guard against a late load from a note the reader has already closed.
-      if (activeHotspot === hotspot) clampToViewport(popoverEl, hotspot);
-    }),
-  );
+  document.body.classList.add(CLS_POPOVER_OPEN);
 
   requestAnimationFrame(() => {
-    clampToViewport(popoverEl, hotspot);
-
     popoverEl.classList.add(CLS_VISIBLE);
     closeBtn.focus();
     enableFocusTrap(popoverEl);
@@ -498,7 +314,6 @@ export function initPopoverEngine(popoverData: PopoverMap): void {
   const popoverEl = requireEl(ID_POPOVER, "PopoverEngine");
 
   // Wire up interactions — once, persistent across open/close cycles
-  makeDraggable(popoverEl);
   makeMobileSwipeable(popoverEl);
 
   document.querySelectorAll<HTMLElement>(SEL_HOTSPOT).forEach((el) => {
@@ -511,13 +326,19 @@ export function initPopoverEngine(popoverData: PopoverMap): void {
       e.stopPropagation();
 
       // Wide enough for margins: the note belongs in the margin, full stop.
-      // Opening a panel over the document to show content the reader could
-      // simply be shown *beside* it is the redundancy the whole layout exists
-      // to avoid. toggleAnnotation returns false only when the margin cannot
-      // take it (narrow tier, or notes not built yet), and then we fall through.
+      // toggleAnnotation returns false only when the margin cannot take it
+      // (narrow tier, or notes not built yet), and then we fall through.
       const key = el.dataset.popover;
       if (key && toggleAnnotation(key)) return;
 
+      // Middle tier: the note sets into the document flow after the term's
+      // own block. Nothing floats, nothing is covered.
+      if (!isMobileScreen()) {
+        toggleInset(el, popovers);
+        return;
+      }
+
+      // Mobile: the bottom sheet.
       if (activeHotspot === el) closePopover();
       else openPopover(el);
     };
@@ -536,24 +357,37 @@ export function initPopoverEngine(popoverData: PopoverMap): void {
   document.addEventListener("keydown", (e: KeyboardEvent) => {
     if (e.key !== "Escape") return;
     closePopover();
+    closeInset();
     collapseAnnotation();
   });
 
-  // A click anywhere else in the document closes an expanded margin note, the
-  // same way the overlay closes a popover.
+  // A click anywhere else in the document closes an open note — margin or
+  // bound-in — the same way the overlay closes the sheet. Clicks INSIDE an
+  // open note never close it: it is a reading surface.
   document.addEventListener("click", (e: MouseEvent) => {
-    // renderAnnotation() replaces a note's children during this same click.
-    // By the time the event reaches document, e.target may therefore be
-    // detached and .closest() can no longer find its former annotation parent.
-    // composedPath() preserves the original propagation path.
-    const startedInsideAnnotation = e
+    const insideAnnotation = e
       .composedPath()
       .some(
         (node) =>
           node instanceof HTMLElement &&
           node.classList.contains("scroll-annotation"),
       );
-    if (startedInsideAnnotation) return;
-    collapseAnnotation();
+    if (!insideAnnotation && !isInsetTarget(e.target)) {
+      collapseAnnotation();
+      closeInset();
+    }
+  });
+
+  // Crossing a tier boundary with a bound-in note open: the surface no longer
+  // belongs to the layout, so it leaves without ceremony. The wide margin and
+  // the sheet handle their own tiers.
+  let resizeTimer = 0;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(() => {
+      if (activeInsetTerm() && (isWideScreen() || isMobileScreen())) {
+        closeInset({ instant: true });
+      }
+    }, RESIZE_DEBOUNCE_MS);
   });
 }

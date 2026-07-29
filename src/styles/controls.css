@@ -85,3 +85,106 @@ html.theme-dark .back-link {
     left: 16px;
   }
 }
+
+/* On a phone the toggle shrinks to its glyph. The word named the current
+   edition, but the edition is self-evident — the page is its own label — and
+   a floating word chip beside the name was the loudest thing on the masthead.
+   The aria-label carries the name for assistive tech; even padding keeps the
+   chip square and comfortably tappable. */
+@media (max-width: 600px) {
+  .theme-toggle {
+    padding: 10px;
+  }
+
+  .theme-toggle .theme-label-text {
+    display: none;
+  }
+}
+
+/* ── THEME WASH ───────────────────────────────────────────────────────────────
+   Switching editions is not a flash — the next edition is an ink drop that
+   BLOOMS OUT OF THE TOGGLE ITSELF, spreading across the sheet from the
+   reader's own gesture until the new stock holds the whole page.
+
+   Mechanism: ThemeScript records the button's live centre in --wash-x/-y and
+   wraps the class flip in a View Transition. The old edition holds perfectly
+   still underneath; the new edition's snapshot is revealed through an SVG
+   mask — an irregular ink blob — whose size grows from a pinprick to past
+   the far corner. Three details make it read as ink on stock, not a wipe:
+
+   1. THE EDGE IS ALIVE. The mask is not a static image: SMIL animations
+      inside the SVG morph both blob paths between two wobble phases on a
+      slow loop while the bloom scales them up, so the front genuinely
+      undulates as it spreads — liquid finding its edge, not a stamp
+      enlarging. Browsers that freeze SVG animation inside masks simply get
+      the static blob: the same bloom, one grace note quieter.
+   2. THE BLEED. A half-opacity halo (the SVG's outer blob) runs ahead of
+      the front, the way ink soaks into stock ahead of the wet edge — and it
+      breathes on its own phase, slightly out of step with the front.
+   3. THE ORIGIN IS THE GESTURE. The drop lands exactly where the reader
+      pressed, on every page and viewport that carries the toggle — and it
+      breathes there before it goes. The bloom is two movements: a soft
+      landing that dwells by the button (the first ~40% of the time buys
+      only a hand-sized blot, long enough to watch the edge wobble), then a
+      hard acceleration that carries the front past the far corner. Ink
+      soaks, then it takes the page.
+
+   The blob's centre sits at the SVG's midpoint, and the keyframes move
+   mask-position by exactly half of mask-size on the same easing, so the
+   centre stays pinned to the button at every frame.
+
+   Two sizes are corner-derived, not chosen, and both must be computed
+   against the blob's MINIMUM radius (~27.6% of the image width at the
+   deepest wobble), never its mean — the corners are exactly where a too
+   small radius shows. The dwell blot (400px) is the smallest size whose
+   minimum radius swallows the viewport corner nearest the toggle (~70px
+   away); smaller, and that corner spends the whole dwell grazing the
+   undulating edge, half-toned by the bleed, "filling in" late. The final
+   size (640vmax) puts the minimum radius (~177vmax) past the farthest
+   possible corner (√2 · 100vmax ≈ 141vmax, plus the toggle's inset from
+   its own corner) with ~25% margin — an earlier 480vmax left the minimum
+   radius at ~132vmax, so on square-ish viewports the far corners were
+   still uncovered when the transition tore down and snapped to the final
+   theme. Scoped by .theme-washing (set only for theme toggles), wrapped in
+   no-preference (reduced motion keeps the API's quiet default crossfade),
+   and absent browsers keep the instant switch. */
+@media (prefers-reduced-motion: no-preference) {
+  html.theme-washing::view-transition-old(root) {
+    /* The outgoing edition neither fades nor moves — it is simply washed
+       over, exactly like paper. */
+    animation: none;
+  }
+
+  html.theme-washing::view-transition-new(root) {
+    /* The timing functions live on the keyframe segments, not here: the
+       landing eases OUT (settle into the soak) and the departure eases IN
+       (accelerate away — the end of the curve is off-screen, so ending at
+       full speed is exactly right). */
+    animation: theme-ink-wash 1.15s both;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'%3E%3Cpath fill='%23fff' fill-opacity='.38' d='M852 500C852 420 838 288 776 224 714 160 592 159 500 159 408 159 282 153 217 217 152 281 151 410 151 500 151 590 192 684 254 746 316 808 408 872 500 872 592 872 698 814 756 756 814 698 852 590 852 500Z'%3E%3Canimate attributeName='d' dur='0.85s' repeatCount='indefinite' begin='-0.4s' values='M852 500C852 420 838 288 776 224 714 160 592 159 500 159 408 159 282 153 217 217 152 281 151 410 151 500 151 590 192 684 254 746 316 808 408 872 500 872 592 872 698 814 756 756 814 698 852 590 852 500Z%3BM866 500C866 428 846 302 788 238 730 174 596 180 500 180 404 180 296 168 229 231 162 294 172 418 172 500 172 582 205 676 267 738 329 800 404 856 500 856 596 856 684 826 742 768 800 710 866 582 866 500Z%3BM852 500C852 420 838 288 776 224 714 160 592 159 500 159 408 159 282 153 217 217 152 281 151 410 151 500 151 590 192 684 254 746 316 808 408 872 500 872 592 872 698 814 756 756 814 698 852 590 852 500Z'/%3E%3C/path%3E%3Cpath fill='%23fff' d='M805 500C805 420 785 330 728 272 671 214 578 212 500 212 422 212 330 207 265 265 200 323 200 420 200 500 200 580 243 642 301 699 359 756 420 820 500 820 580 820 651 766 709 709 767 652 805 580 805 500Z'%3E%3Canimate attributeName='d' dur='0.85s' repeatCount='indefinite' values='M805 500C805 420 785 330 728 272 671 214 578 212 500 212 422 212 330 207 265 265 200 323 200 420 200 500 200 580 243 642 301 699 359 756 420 820 500 820 580 820 651 766 709 709 767 652 805 580 805 500Z%3BM818 500C818 432 796 318 742 262 688 206 590 224 500 224 410 224 318 196 252 258 186 320 214 428 214 500 214 572 231 656 291 709 351 762 408 806 500 806 592 806 665 780 721 721 777 662 818 568 818 500Z%3BM805 500C805 420 785 330 728 272 671 214 578 212 500 212 422 212 330 207 265 265 200 323 200 420 200 500 200 580 243 642 301 699 359 756 420 820 500 820 580 820 651 766 709 709 767 652 805 580 805 500Z'/%3E%3C/path%3E%3C/svg%3E");
+    mask-repeat: no-repeat;
+    mask-size: 24px 24px;
+    mask-position: calc(var(--wash-x, 100vw) - 12px)
+      calc(var(--wash-y, 0px) - 12px);
+  }
+
+  @keyframes theme-ink-wash {
+    from {
+      mask-size: 24px 24px;
+      mask-position: calc(var(--wash-x, 100vw) - 12px)
+        calc(var(--wash-y, 0px) - 12px);
+      animation-timing-function: cubic-bezier(0.3, 0.7, 0.5, 1);
+    }
+    42% {
+      mask-size: 400px 400px;
+      mask-position: calc(var(--wash-x, 100vw) - 200px)
+        calc(var(--wash-y, 0px) - 200px);
+      animation-timing-function: cubic-bezier(0.7, 0, 0.9, 0.5);
+    }
+    to {
+      mask-size: 640vmax 640vmax;
+      mask-position: calc(var(--wash-x, 100vw) - 320vmax)
+        calc(var(--wash-y, 0px) - 320vmax);
+    }
+  }
+}

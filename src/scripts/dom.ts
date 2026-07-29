@@ -66,16 +66,27 @@ const ICON_CHEVRON_NEXT =
   '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
 
 /**
- * Clips text to at most `maxSentences` sentences. Splits on a period that is
- * NOT preceded by an uppercase letter (avoids breaking on abbreviations like
- * U.S., No., Inc.) and is followed by a capital letter (the start of the next
- * sentence). Returns the original text unchanged when it is already short enough.
+ * Splits text at a sentence boundary: the first `maxSentences` sentences, and
+ * whatever remains. Splits on a period that is NOT preceded by an uppercase
+ * letter (avoids breaking on abbreviations like U.S., No., Inc.) and is
+ * followed by a capital letter (the start of the next sentence). The remainder
+ * is the empty string when the text is already short enough.
+ *
+ * Both halves are kept because the margin note renders BOTH at build time —
+ * the glance shows the first sentence and the remainder waits, collapsed, in
+ * the same DOM. Expansion is then a pure CSS state change: the note continues
+ * rather than being re-rendered, which is what lets it unfold softly instead
+ * of swapping.
  */
-function truncateToSentences(text: string, maxSentences: number): string {
+export function splitAtSentences(
+  text: string,
+  maxSentences: number,
+): { lead: string; rest: string } {
   const sentences = text.split(/(?<![A-Z])\.\s+(?=[A-Z])/);
-  if (sentences.length <= maxSentences) return text;
+  if (sentences.length <= maxSentences) return { lead: text, rest: "" };
   const clipped = sentences.slice(0, maxSentences).join(". ");
-  return clipped.endsWith(".") ? clipped : `${clipped}.`;
+  const lead = clipped.endsWith(".") ? clipped : `${clipped}.`;
+  return { lead, rest: sentences.slice(maxSentences).join(". ") };
 }
 
 function isVideoSrc(src: string): boolean {
@@ -208,8 +219,11 @@ function buildMediaElement(
 
 /**
  * Builds a swipeable carousel for 2+ media items: scroll-snapping slides,
- * fading prev/next chevrons, pagination dots, and a scroll-spy that re-syncs
- * the active state after a native swipe.
+ * wrap-around prev/next chevrons, pagination dots, and a scroll-spy that
+ * re-syncs the active state after a native swipe. Navigation is circular —
+ * past the last slide "next" returns to the first — so neither chevron ever
+ * disables or leaves the screen, and the pointer never has to cross the
+ * carousel to keep going.
  */
 function buildCarousel(
   data: PopoverData,
@@ -245,12 +259,7 @@ function buildCarousel(
   // Track current index explicitly — avoids depending on offsetWidth at build time.
   let currentIdx = 0;
 
-  const syncNavState = () => {
-    btnPrev.style.opacity = currentIdx === 0 ? "0" : "1";
-    btnPrev.style.pointerEvents = currentIdx === 0 ? "none" : "auto";
-    btnNext.style.opacity = currentIdx === mediaList.length - 1 ? "0" : "1";
-    btnNext.style.pointerEvents =
-      currentIdx === mediaList.length - 1 ? "none" : "auto";
+  const syncDots = () => {
     const dots = dotsList.children;
     for (let j = 0; j < dots.length; j++) {
       dots[j].classList.toggle("active", j === currentIdx);
@@ -270,7 +279,7 @@ function buildCarousel(
       carousel.scrollTo({ left: targetLeft, behavior: "smooth" });
     }
     currentIdx = clamped;
-    syncNavState();
+    syncDots();
   };
 
   const createNavButton = (dir: "prev" | "next") => {
@@ -283,7 +292,9 @@ function buildCarousel(
     );
     btn.innerHTML = dir === "prev" ? ICON_CHEVRON_PREV : ICON_CHEVRON_NEXT;
     btn.addEventListener("click", () => {
-      goToSlide(dir === "prev" ? currentIdx - 1 : currentIdx + 1);
+      const step = dir === "prev" ? -1 : 1;
+      const count = mediaList.length;
+      goToSlide((currentIdx + step + count) % count);
     });
     return btn;
   };
@@ -305,17 +316,14 @@ function buildCarousel(
   });
   wrap.appendChild(dotsList);
 
-  // Scroll spy — re-syncs state after native swipe/scroll.
+  // Scroll spy — re-syncs the index and dots after native swipe/scroll.
   const updateNav = () => {
     if (carousel.offsetWidth) {
       currentIdx = Math.round(carousel.scrollLeft / carousel.offsetWidth);
     }
-    syncNavState();
+    syncDots();
   };
   carousel.addEventListener("scroll", updateNav, { passive: true });
-
-  // Initial state synchronously — index 0: prev hidden, next visible.
-  syncNavState();
 
   return wrap;
 }
@@ -347,23 +355,25 @@ function appendBodyFields(
   options: {
     projectLink?: HTMLAnchorElement | null;
     linkPlacement?: "before-text" | "after-text";
+    splitGlance?: boolean;
   } = {},
 ): void {
-  const { projectLink = null, linkPlacement = "after-text" } = options;
+  const {
+    projectLink = null,
+    linkPlacement = "after-text",
+    splitGlance = false,
+  } = options;
 
   const appendField = (
+    parent: Node,
     tag: string,
     className: string,
     content: string,
-    href?: string,
   ) => {
     const el = document.createElement(tag);
     el.className = className;
     el.textContent = content; // Safely escapes HTML
-    if (href && tag === "a") {
-      (el as HTMLAnchorElement).href = href;
-    }
-    container.appendChild(el);
+    parent.appendChild(el);
   };
 
   const head = document.createElement("div");
@@ -398,8 +408,30 @@ function appendBodyFields(
     container.appendChild(projectLink);
   }
 
-  appendField("div", `${prefix}-text`, text);
-  if (data.quote) appendField("div", `${prefix}-quote`, data.quote);
+  if (!splitGlance) {
+    appendField(container, "div", `${prefix}-text`, text);
+    if (data.quote)
+      appendField(container, "div", `${prefix}-quote`, data.quote);
+  } else {
+    // The glance and the continuation live in one DOM. The first sentence is
+    // always visible; the remainder (and the quote) wait inside a collapsed
+    // `${prefix}-more` wrapper that a pure CSS state unfolds — the note
+    // continues in place, it is never re-rendered.
+    const { lead, rest } = splitAtSentences(text, ANNOTATION_TEXT_SENTENCES);
+    appendField(container, "div", `${prefix}-text`, lead);
+
+    if (rest || data.quote) {
+      const more = document.createElement("div");
+      more.className = `${prefix}-more`;
+      const moreInner = document.createElement("div");
+      moreInner.className = `${prefix}-more-inner`;
+      if (rest) appendField(moreInner, "div", `${prefix}-text`, rest);
+      if (data.quote)
+        appendField(moreInner, "div", `${prefix}-quote`, data.quote);
+      more.appendChild(moreInner);
+      container.appendChild(more);
+    }
+  }
 
   if (projectLink && linkPlacement === "after-text") {
     container.appendChild(projectLink);
@@ -407,23 +439,26 @@ function appendBodyFields(
 }
 
 /**
- * Builds a DocumentFragment containing DOM elements for a popover card or margin annotation.
- * Both surfaces use the same data shape but differ in class prefix, text length,
- * structural wrapper, and leading rule element. This is a thin orchestrator over
- * truncateToSentences / buildMediaElement / buildCarousel / appendBodyFields.
+ * Builds a DocumentFragment containing DOM elements for a note surface — the
+ * mobile sheet, the in-flow inset note, or a margin annotation. All surfaces
+ * use the same data shape but differ in class prefix, glance/continuation
+ * split, structural wrapper, and leading rule element. This is a thin
+ * orchestrator over splitAtSentences / buildMediaElement / buildCarousel /
+ * appendBodyFields.
  *
  * @param data         The popover entry (from popovers.json)
  * @param prefix       CSS class prefix: 'popover' | 'sa'
  * @param options
- *   truncateText  — clip body text to ANNOTATION_TEXT_SENTENCES sentences (for annotations)
- *   wrapBody      — wrap content fields in <div class="{prefix}-body"> (for popovers)
+ *   splitGlance   — render the first sentence visible and the remainder inside
+ *                   a collapsed `${prefix}-more` wrapper (margin annotations)
+ *   wrapBody      — wrap content fields in <div class="{prefix}-body"> (sheet)
  *   prependRule   — prepend <div class="{prefix}-rule"></div> (for annotations)
  */
 export function buildContentNode(
   data: PopoverData,
   prefix: string,
   options: {
-    truncateText?: boolean;
+    splitGlance?: boolean;
     wrapBody?: boolean;
     prependRule?: boolean;
     mediaMode?: "full" | "thumb" | "none";
@@ -431,7 +466,7 @@ export function buildContentNode(
   } = {},
 ): DocumentFragment {
   const {
-    truncateText = false,
+    splitGlance = false,
     wrapBody = false,
     prependRule = false,
     mediaMode = "full",
@@ -439,9 +474,7 @@ export function buildContentNode(
   } = options;
   const fragment = document.createDocumentFragment();
 
-  const text = truncateText
-    ? truncateToSentences(data.text, ANNOTATION_TEXT_SENTENCES)
-    : data.text;
+  const text = data.text;
 
   if (prependRule) {
     const rule = document.createElement("div");
@@ -526,6 +559,7 @@ export function buildContentNode(
   appendBodyFields(bodyContainer, data, prefix, text, {
     projectLink: linkFollowsMedia ? null : projectLink,
     linkPlacement: "before-text",
+    splitGlance,
   });
 
   if (wrapBody) {

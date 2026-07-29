@@ -221,6 +221,52 @@ describe("Intro annotation (cold-start)", () => {
     expect(introEl!.textContent).toContain("Scroll to reveal");
   });
 
+  it("demonstrates the whole ladder: mark → note → gateway → payoff", () => {
+    window.HTMLElement.prototype.getBoundingClientRect = vi
+      .fn()
+      .mockReturnValue({
+        top: 1000,
+        bottom: 1200,
+        height: 200,
+        left: 0,
+        right: 0,
+        width: 0,
+      });
+
+    initAnnotationEngine({ item1: { label: "Item 1", text: "Text 1" } });
+    const introEl = document.querySelector<HTMLElement>(
+      ".scroll-annotation[data-intro]",
+    )!;
+
+    // Rung one: the glance marks itself with a genuine yellow specimen and a
+    // click continues the note, exactly like a real mark.
+    expect(introEl.querySelector(".intro-term .hs-stroke")).not.toBeNull();
+    introEl.click();
+    expect(introEl.classList.contains("is-expanded")).toBe(true);
+
+    // Rung two: the continuation carries a live green specimen, icon and all.
+    const green = introEl.querySelector<HTMLElement>(".intro-term--project")!;
+    expect(green.querySelector(".hotspot-ref")).not.toBeNull();
+    green.click();
+    expect(introEl.classList.contains("intro-stage-gateway")).toBe(true);
+
+    // Rung three: the example gateway wears the real control's classes and
+    // pays off with the apparatus line instead of navigating.
+    const demo = introEl.querySelector<HTMLElement>(".intro-demo-link")!;
+    expect(demo.classList.contains("sa-link")).toBe(true);
+    expect(demo.querySelector(".sa-link-label")?.textContent).toBe(
+      "View project",
+    );
+    demo.click();
+    expect(introEl.classList.contains("intro-stage-done")).toBe(true);
+    expect(introEl.querySelector(".intro-done")?.textContent).toBe(
+      "You got it! Scroll away.",
+    );
+
+    // Nothing in the demonstration may take focus — the intro is aria-hidden.
+    expect(introEl.querySelectorAll("a, button, [tabindex]").length).toBe(0);
+  });
+
   it("does NOT show intro annotation when at least one hotspot is in the viewport", () => {
     // Hotspot within viewport
     window.HTMLElement.prototype.getBoundingClientRect = vi

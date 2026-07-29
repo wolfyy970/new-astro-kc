@@ -6,10 +6,16 @@
 
 import type { PopoverData, PopoverMap } from "../types/content.ts";
 import { buildContentNode, onMediaReady } from "./dom.ts";
+import { renderCaseStudyMarker } from "../utils/render.ts";
+import { attachIntroPayoff } from "./intro-payoff.ts";
 import {
   ANNOTATION_MIN_GAP,
-  EXPANDED_VIEWPORT_MARGIN,
   ANNOTATION_ROOT_MARGIN,
+  UNFOLD_REFLOW_MS,
+  ASSIST_BOTTOM_GAP,
+  ASSIST_NOTE_TOP,
+  ASSIST_TERM_MIN,
+  SCROLL_EXIT_THRESHOLD,
   INTRO_TOP,
   INTRO_REVEAL_MS,
   INTRO_DISMISS_MS,
@@ -21,8 +27,11 @@ import {
   CLS_SCROLL_REVEALED,
   CLS_ANNOTATION_SUPPRESSED,
   CLS_EXPANDED,
+  CLS_MARGIN_FOCUS,
+  CLS_INTRO_GATEWAY,
+  CLS_INTRO_DONE,
 } from "./constants.ts";
-import { isWideScreen } from "../utils/viewport.ts";
+import { isWideScreen, prefersReducedMotion } from "../utils/viewport.ts";
 
 // ── Engine state ───────────────────────────────────────────────────────────────
 
@@ -77,6 +86,10 @@ function buildAllAnnotations(popovers: PopoverMap): void {
 
       const el = document.createElement("div");
       el.className = `scroll-annotation side-${side}`;
+      // The pen family, carried onto the note: when this note opens, its
+      // stretched rule takes the same highlighter ink as its marked term —
+      // yellow for marginalia, green for a project note.
+      if (data.link) el.classList.add("sa-project");
       el.dataset.annotationKey = key; // used by popover-engine to suppress on open
 
       // The margin note is a visual convenience that restates, in shortened
@@ -85,10 +98,14 @@ function buildAllAnnotations(popovers: PopoverMap): void {
       // in the popover. The marked term is the accessible control.
       el.setAttribute("aria-hidden", "true");
 
-      renderAnnotation(el, data, false);
+      renderAnnotation(el, data);
 
-      // Clicking the note toggles it, exactly like clicking its term.
+      // Clicking a glance opens it, exactly like clicking its term. An OPEN
+      // note is a reading surface: clicks inside it must never collapse it —
+      // selecting a phrase or missing a chevron by 4px is not a request to
+      // close. Collapse belongs to the term, Escape, and clicks elsewhere.
       el.addEventListener("click", (e) => {
+        if (el.classList.contains(CLS_EXPANDED)) return;
         const target = e.target;
         if (!(target instanceof Element)) return;
 
@@ -128,26 +145,24 @@ function buildAllAnnotations(popovers: PopoverMap): void {
 }
 
 /**
- * Renders a note's contents at one of its two lengths.
+ * Renders a note's contents once, at build time, carrying both of its lengths:
  *
- *   glance   label, every figure as a carousel, one sentence.
- *   expanded the whole thing — full narrative, every figure as a carousel,
- *            the quote, and the case-study link where one exists.
+ *   glance        label, every figure as a carousel, one sentence.
+ *   continuation  the remaining narrative and the quote, waiting inside a
+ *                 collapsed `.sa-more` wrapper in the same DOM.
  *
- * The expanded form makes the wide layout self-sufficient. Not every note has
- * a case study behind it, so "click through to the detail page" cannot be the
- * wide-screen answer on its own; marginalia-only entries still need the full
- * narrative to be available in place.
+ * Expansion never re-renders — it is a class toggle that lets the note
+ * CONTINUE in place, the way a printed note simply keeps going. The full form
+ * makes the wide layout self-sufficient: not every note has a case study
+ * behind it, so "click through to the detail page" cannot be the wide-screen
+ * answer on its own; marginalia-only entries still need the full narrative to
+ * be available in place.
  */
-function renderAnnotation(
-  el: HTMLElement,
-  data: PopoverData,
-  expanded: boolean,
-): void {
+function renderAnnotation(el: HTMLElement, data: PopoverData): void {
   el.replaceChildren(
     buildContentNode(data, "sa", {
       prependRule: true,
-      truncateText: !expanded,
+      splitGlance: true,
       // Marginalia is the wide-screen media experience, not a teaser for one.
       // Keep every image and video available in both states; expansion adds
       // the full narrative without changing or replacing the media controls.
@@ -158,31 +173,114 @@ function renderAnnotation(
       includeLink: true,
     }),
   );
-  el.classList.toggle(CLS_EXPANDED, expanded);
-  // Collapsed notes restate content reachable from the term, so they are hidden
-  // from assistive tech. An expanded note IS the content, so it is exposed.
-  el.setAttribute("aria-hidden", String(!expanded));
+}
+
+/**
+ * Re-runs overlap resolution every frame for the duration of the unfold, so
+ * the notes below an opening (or closing) note ride its changing height
+ * instead of jumping once to a precomputed position. The margin re-typesets
+ * itself continuously — no teleports, no two-step settling.
+ */
+let reflowUntil = 0;
+function animateReflow(): void {
+  const now = performance.now();
+  const alreadyRunning = reflowUntil > now;
+  reflowUntil = now + UNFOLD_REFLOW_MS;
+  if (alreadyRunning || prefersReducedMotion()) {
+    // Reduced motion: the .sa-more transition is disabled in CSS, so a single
+    // synchronous pass lands everything in its final position.
+    resolveAllOverlaps();
+    return;
+  }
+  const tick = (t: number) => {
+    resolveAllOverlaps();
+    if (t < reflowUntil) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+/**
+ * The continuation unfolds DOWNWARD, so a note whose top sits comfortably on
+ * screen can still do all of its unfolding below the fold — the reader clicks
+ * and sees nothing but the rule stretch. The assist therefore aims at the
+ * note's FINAL extent: it measures where the note will end once .sa-more has
+ * unfolded (the wrapper's scrollHeight is its final height, measurable while
+ * still collapsed) and drifts the page so that end is on screen — bounded so
+ * the note's own top never rises past ASSIST_NOTE_TOP, and the clicked term
+ * never leaves the viewport. A note taller than the screen pins near the top
+ * and the reader follows it down the margin, as with any long sidenote.
+ */
+function assistIntoView(entry: AnnotationEntry): void {
+  const noteRect = entry.el.getBoundingClientRect();
+  const termTop = entry.hotspot.getBoundingClientRect().top;
+  // The grid-rows mechanism sizes .sa-more-inner to 0 while collapsed; its
+  // scrollHeight is the height its content will occupy once unfolded.
+  const inner = entry.el.querySelector<HTMLElement>(".sa-more-inner");
+  const growth = inner ? inner.scrollHeight - inner.offsetHeight : 0;
+  const finalBottom = noteRect.top + entry.el.offsetHeight + growth;
+
+  const wanted = finalBottom - (window.innerHeight - ASSIST_BOTTOM_GAP);
+  const delta = Math.min(
+    wanted,
+    noteRect.top - ASSIST_NOTE_TOP,
+    termTop - ASSIST_TERM_MIN,
+  );
+  if (delta > 0) {
+    window.scrollBy({
+      top: delta,
+      behavior: prefersReducedMotion() ? "auto" : "smooth",
+    });
+  }
+}
+
+// ── Scroll-as-exit ────────────────────────────────────────────────────────────
+// The reader's own scroll is the way out of an open note: move on, and the
+// note folds behind you. Listening to wheel/touch INPUT rather than the
+// scroll event is what makes this safe — the assist's smooth scrollBy fires
+// scroll events but no input events, so the note never closes itself.
+
+let scrollExitAcc = 0;
+
+function onReaderScrollIntent(delta: number): void {
+  if (!expandedKey) return;
+  const entry = annotationEls[expandedKey];
+  if (!entry) return;
+
+  // A note taller than the viewport is READ by scrolling; it folds only once
+  // the reader has genuinely left its extent, in either direction.
+  const rect = entry.el.getBoundingClientRect();
+  if (rect.height > window.innerHeight - ASSIST_NOTE_TOP) {
+    const leftBelow = rect.bottom < ASSIST_NOTE_TOP;
+    const leftAbove = rect.top > window.innerHeight - ASSIST_BOTTOM_GAP;
+    if (leftBelow || leftAbove) collapseAnnotation();
+    return;
+  }
+
+  scrollExitAcc += Math.abs(delta);
+  if (scrollExitAcc >= SCROLL_EXIT_THRESHOLD) collapseAnnotation();
 }
 
 /** Collapses whichever note is open, if any. */
 export function collapseAnnotation(): void {
   if (!expandedKey) return;
   const entry = annotationEls[expandedKey];
-  const key = expandedKey;
   expandedKey = null;
   if (entry) {
-    const data = popoverData[key];
-    if (data) renderAnnotation(entry.el, data, false);
+    entry.el.classList.remove(CLS_EXPANDED);
+    entry.el.setAttribute("aria-hidden", "true");
     entry.hotspot.classList.remove(CLS_ACTIVE);
     entry.hotspot.setAttribute("aria-expanded", "false");
   }
-  resolveAllOverlaps();
+  document
+    .querySelector<HTMLElement>(SEL_DOC_PAGE)
+    ?.classList.remove(CLS_MARGIN_FOCUS);
+  animateReflow();
 }
 
 /**
  * Expands one note in the margin, collapsing any other. Returns false when the
  * note cannot be shown there (no margins at this width, or no note built), so
- * the caller can fall back to the popover. Internal — callers use
+ * the caller can fall back to the in-flow note. Internal — callers use
  * toggleAnnotation().
  */
 function expandAnnotation(key: string): boolean {
@@ -194,51 +292,24 @@ function expandAnnotation(key: string): boolean {
   if (expandedKey && expandedKey !== key) collapseAnnotation();
 
   expandedKey = key;
-  renderAnnotation(entry.el, data, true);
-  entry.el.classList.add(CLS_REVEALED);
+  scrollExitAcc = 0;
+  entry.el.classList.add(CLS_EXPANDED, CLS_REVEALED);
+  // Collapsed notes restate content reachable from the term, so they are
+  // hidden from assistive tech. An expanded note IS the content.
+  entry.el.setAttribute("aria-hidden", "false");
   entry.hotspot.classList.add(CLS_ACTIVE);
   entry.hotspot.setAttribute("aria-expanded", "true");
 
-  resolveAllOverlaps();
-  clampExpandedIntoView(entry);
+  // The rest of the margin recedes a step while one note is being read —
+  // the eye is answered, not shouted at. The document itself never dims.
+  document
+    .querySelector<HTMLElement>(SEL_DOC_PAGE)
+    ?.classList.add(CLS_MARGIN_FOCUS);
 
-  // Figures arrive late and change the note's height, which moves every note
-  // below it — the same reason the popover has to re-clamp.
-  entry.el.querySelectorAll(".sa-img, .sa-vid").forEach((media) =>
-    onMediaReady(media, () => {
-      resolveAllOverlaps();
-      if (expandedKey === key) clampExpandedIntoView(entry);
-    }),
-  );
+  animateReflow();
+  assistIntoView(entry);
 
   return true;
-}
-
-/**
- * Pulls an expanded note into the viewport.
- *
- * A collapsed note sits at its term's own height, which is right — it is an
- * annotation *of that line*. An expanded one is 600px+ tall, so anchoring it to
- * the same line drops most of it below the fold. Same problem the popover has,
- * same answer: clamp into [top margin, bottom margin], and pin to the top when
- * it is taller than the viewport (it scrolls internally).
- */
-function clampExpandedIntoView(entry: AnnotationEntry): void {
-  const docPage = document.querySelector<HTMLElement>(SEL_DOC_PAGE);
-  if (!docPage) return;
-
-  const docTopDoc = docPage.getBoundingClientRect().top + window.scrollY;
-  const height = entry.el.offsetHeight;
-  const minTop = window.scrollY + EXPANDED_VIEWPORT_MARGIN;
-  const maxTop =
-    window.scrollY + window.innerHeight - EXPANDED_VIEWPORT_MARGIN - height;
-  const currentTop = docTopDoc + (parseFloat(entry.el.style.top) || 0);
-
-  const clamped = Math.max(
-    minTop,
-    Math.min(currentTop, Math.max(minTop, maxTop)),
-  );
-  entry.el.style.top = clamped - docTopDoc + "px";
 }
 
 /** Toggles a note: expand it, or collapse it if it is already open. */
@@ -279,6 +350,26 @@ function resolveOverlaps(side: "left" | "right"): void {
 // so the margin isn't empty and the interactive feature isn't invisible.
 // Dismissed (animated) the moment the first real annotation scrolls into view.
 
+/**
+ * A specimen of the reader's pen for the intro note — the real stroke
+ * apparatus (.hs-stroke + a variant geometry), never a lookalike. A span,
+ * not a control: the intro is an aria-hidden visual convenience, so nothing
+ * inside it may take focus. The green specimen carries the genuine
+ * superscript marker from render.ts.
+ */
+function buildIntroSpecimen(text: string, project: boolean): HTMLElement {
+  const term = document.createElement("span");
+  term.className = project
+    ? "intro-term intro-term--project hs-mark-6"
+    : "intro-term hs-mark-3";
+  const stroke = document.createElement("span");
+  stroke.className = "hs-stroke";
+  stroke.textContent = text;
+  term.appendChild(stroke);
+  if (project) term.insertAdjacentHTML("beforeend", renderCaseStudyMarker());
+  return term;
+}
+
 function showIntroAnnotation(): void {
   if (introAnnotationEl) return;
   const docPage = document.querySelector<HTMLElement>(SEL_DOC_PAGE);
@@ -296,14 +387,92 @@ function showIntroAnnotation(): void {
   label.className = "sa-label";
   label.textContent = "Interactive";
 
+  // The introduction is a working scale model of the system it introduces.
+  // The glance marks its own key phrase with the actual yellow stroke…
   const text = document.createElement("div");
   text.className = "sa-text";
-  text.textContent =
-    "Scroll to reveal. As you read, highlighted terms surface detail, data, and media here in the margin.";
+  text.append(
+    "Scroll to reveal. As you read, ",
+    buildIntroSpecimen("highlighted terms", false),
+    " surface detail, data, and media here in the margin.",
+  );
+
+  // …and clicking it does exactly what clicking any mark does at this tier:
+  // the note continues in place. The continuation reveals the system's
+  // second rung — the two pens — with the green pen a genuine, CLICKABLE
+  // specimen: the ladder demonstrates its own third rung.
+  const more = document.createElement("div");
+  more.className = "sa-more";
+  const moreInner = document.createElement("div");
+  moreInner.className = "sa-more-inner";
+  const moreText = document.createElement("div");
+  moreText.className = "sa-text";
+  const greenSpecimen = buildIntroSpecimen("green mark", true);
+  moreText.append(
+    "A yellow mark holds a note like this one; a ",
+    greenSpecimen,
+    " leads onward to a complete project.",
+  );
+  moreInner.appendChild(moreText);
+
+  // Rung three, staged: the green specimen reveals an example of the real
+  // project gateway (the same .sa-link control every project note carries)…
+  const gateway = document.createElement("div");
+  gateway.className = "intro-reveal intro-reveal--gateway";
+  const gatewayInner = document.createElement("div");
+  gatewayInner.className = "intro-reveal-inner";
+  const demoLink = document.createElement("span");
+  demoLink.className = "sa-link intro-demo-link";
+  const demoLabel = document.createElement("span");
+  demoLabel.className = "sa-link-label";
+  demoLabel.textContent = "View project";
+  demoLink.appendChild(demoLabel);
+  gatewayInner.appendChild(demoLink);
+  gateway.appendChild(gatewayInner);
+  moreInner.appendChild(gateway);
+
+  // …and the gateway, being a demonstration, pays off honestly instead of
+  // navigating: the apparatus itself congratulates the reader and hands the
+  // document back.
+  const done = document.createElement("div");
+  done.className = "intro-reveal intro-reveal--done";
+  const doneInner = document.createElement("div");
+  doneInner.className = "intro-reveal-inner";
+  const doneLine = document.createElement("div");
+  doneLine.className = "intro-done";
+  doneLine.textContent = "You got it! Scroll away.";
+  doneInner.appendChild(doneLine);
+  done.appendChild(doneInner);
+  moreInner.appendChild(done);
+
+  greenSpecimen.addEventListener("click", () =>
+    el.classList.add(CLS_INTRO_GATEWAY),
+  );
+  // First click unfolds the authored payoff; every click after that is the
+  // payoff module's conversation, ending in the choreographed exit.
+  attachIntroPayoff({
+    root: el,
+    link: demoLink,
+    line: doneLine,
+    doneClass: CLS_INTRO_DONE,
+    onRemoved: () => {
+      if (introAnnotationEl === el) introAnnotationEl = null;
+    },
+  });
+
+  more.appendChild(moreInner);
 
   el.appendChild(rule);
   el.appendChild(label);
   el.appendChild(text);
+  el.appendChild(more);
+
+  // Same contract as a real note: a click on the glance opens it; clicks on
+  // an open note are inert (it is a reading surface). It closes the way the
+  // whole intro closes — by scrolling on, which dissolves it entirely the
+  // moment the first real annotation reveals.
+  el.addEventListener("click", () => el.classList.add(CLS_EXPANDED));
+
   docPage.appendChild(el);
   introAnnotationEl = el;
 
@@ -341,9 +510,14 @@ function resetAnnotationState(): void {
     el.remove();
     hotspot.classList.remove(CLS_SCROLL_REVEALED);
   });
+  document
+    .querySelector<HTMLElement>(SEL_DOC_PAGE)
+    ?.classList.remove(CLS_MARGIN_FOCUS);
   annotationEls = {};
   annotationsBuilt = false;
   expandedKey = null;
+  reflowUntil = 0;
+  scrollExitAcc = 0;
   marginObserver?.disconnect();
 }
 
@@ -433,6 +607,31 @@ export function initAnnotationEngine(popovers: PopoverMap): void {
       resizeTimer = window.setTimeout(applyResponsiveState, RESIZE_DEBOUNCE_MS);
     },
     { signal: resizeAbortController.signal },
+  );
+
+  // Scroll-as-exit listens to INPUT (wheel/touch), never the scroll event —
+  // see onReaderScrollIntent. Passive: the reader's scroll must never jank.
+  document.addEventListener(
+    "wheel",
+    (e: WheelEvent) => onReaderScrollIntent(e.deltaY),
+    { passive: true, signal: resizeAbortController.signal },
+  );
+  document.addEventListener(
+    "touchmove",
+    // A touch drag has no per-event delta worth trusting; a real swipe fires
+    // dozens of these, so a fixed step reaches the threshold immediately
+    // while a resting finger's jitter does not. A drag that STARTS inside the
+    // open note is reading — swiping its carousel — not leaving.
+    (e: TouchEvent) => {
+      if (
+        e.target instanceof Element &&
+        e.target.closest(".scroll-annotation.is-expanded")
+      ) {
+        return;
+      }
+      onReaderScrollIntent(SCROLL_EXIT_THRESHOLD / 2);
+    },
+    { passive: true, signal: resizeAbortController.signal },
   );
 
   // Reconcile annotations to the current viewport tier: build on entering the

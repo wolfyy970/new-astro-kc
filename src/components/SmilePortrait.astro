@@ -1,0 +1,16 @@
+---
+// The author's portrait — the title page's engraving, set opposite the name.
+// Inlined (not an <img>) so the line work takes the document's ink through
+// currentColor in both editions, and so the one-time smile can be staged by
+// class from smile-portrait.ts. The drawing carries its own accessible name;
+// the figure is layout.
+import portrait from "../assets/smile-portrait.svg?raw";
+---
+
+<figure class="masthead-portrait" id="smile-portrait" set:html={portrait} />
+
+<script>
+  import { attachSmilePortrait } from "../scripts/smile-portrait.ts";
+
+  attachSmilePortrait(document.getElementById("smile-portrait"));
+</script>

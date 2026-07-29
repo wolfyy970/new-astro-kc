@@ -1,7 +1,8 @@
 ---
 import { getImage } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import WidenPrompt from "../components/WidenPrompt.astro";
+import EditionNote from "../components/EditionNote.astro";
+import SmilePortrait from "../components/SmilePortrait.astro";
 import resume from "../content/resume.json";
 import popoversRaw from "../content/popovers.json";
 import { createHotspotRenderer } from "../utils/render";
@@ -34,14 +35,18 @@ const summaryParagraphs = resume.summary.split("\n\n");
   title={resume.displayName}
   description="Design leadership by KC Wolff-Ingham. Senior product design leader with 30 years spanning banking, health tech, and media."
 >
-  <WidenPrompt />
-
   <!-- ═══════ MASTHEAD — the cover ═══════ -->
   <!-- Full-bleed ink field; the document emerges on light stock below it. -->
   <header class="masthead">
     <div class="masthead-inner">
-      <h1 class="masthead-name">{resume.displayName}</h1>
-      <div class="masthead-rule"></div>
+      <!-- The head is a two-column grid: name and rule in the text column,
+           the author's portrait in its own column opposite — which is what
+           curtails the rule. It stops where the figure's column begins. -->
+      <div class="masthead-head">
+        <h1 class="masthead-name">{resume.displayName}</h1>
+        <SmilePortrait />
+        <div class="masthead-rule"></div>
+      </div>
 
       <!-- Everything the reader needs to place this person lives here, once.
          There is no second identity block on the sheet below: the résumé opens
@@ -62,34 +67,16 @@ const summaryParagraphs = resume.summary.split("\n\n");
 
       <div class="masthead-contact">
         <a href={`mailto:${resume.contact.email}`}>{resume.contact.email}</a>
-        <span aria-hidden="true">·</span>
+        <span class="masthead-sep" aria-hidden="true">·</span>
         <span>{resume.contact.phone}</span>
-        <span aria-hidden="true">·</span>
+        <span class="masthead-sep" aria-hidden="true">·</span>
         <a
           href={resume.contact.linkedinUrl}
           target="_blank"
           rel="noopener noreferrer">{resume.contact.linkedin}</a
         >
-        <span aria-hidden="true">·</span>
+        <span class="masthead-sep" aria-hidden="true">·</span>
         <span>{resume.contact.location}</span>
-      </div>
-      <div class="masthead-mobile-hint" aria-label="Best viewed on desktop">
-        <svg
-          viewBox="0 0 24 24"
-          width="13"
-          height="13"
-          stroke="currentColor"
-          stroke-width="1.5"
-          fill="none"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-          <line x1="8" y1="21" x2="16" y2="21"></line>
-          <line x1="12" y1="17" x2="12" y2="21"></line>
-        </svg>
-        Best on desktop. Highlights are interactive
       </div>
     </div>
   </header>
@@ -98,8 +85,12 @@ const summaryParagraphs = resume.summary.split("\n\n");
   <main class="doc-wrapper" id="main-content">
     <article class="doc-page reveal" aria-label="Resume Content">
       <!-- No identity block. The masthead above states who this is, what they
-           do, what they hold and how to reach them — once. The sheet is the
-           document body and opens straight into the prose. -->
+           do, what they hold and how to reach them — once. Below the wide
+           tier the sheet opens with the editor's note — the introduction as
+           a piece of the document, not chrome above it — then straight into
+           the prose. At the wide tier the margin performs the introduction
+           and the note does not render its box at all. -->
+      <EditionNote />
 
       <!-- Executive Summary -->
       {

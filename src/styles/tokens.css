@@ -76,7 +76,11 @@
      ratio, and the top of one type hierarchy rather than a separate register.
      It also sets on one line at every width, so the hyphen never breaks. */
   --type-editorial: clamp(40px, 5.2vw, 68px);
-  --type-editorial-sub: clamp(20px, 2.4vw, 32px);
+  /* Sized to the sentence, not the other way round: the tagline is one line
+     of the title page, and 23px is the largest size at which the full
+     sentence sets inside the 704px measure. At 32px it always wrapped, and
+     a broken tagline read as an accident at the top of the document. */
+  --type-editorial-sub: clamp(20px, 2.1vw, 23px);
   --type-h2: 22px;
   --type-h3: 11px;
   --type-h4: 17px;
