@@ -152,12 +152,9 @@ function renderAnnotation(
       // Keep every image and video available in both states; expansion adds
       // the full narrative without changing or replacing the media controls.
       mediaMode: "full",
-      // Both states. Reaching a project used to require expanding the note
-      // first and then finding a line of 11px type at the bottom of a column
-      // that hangs below the fold — where a sticky footer cannot help, because
-      // a note shorter than its own max-height never scrolls and so never
-      // sticks. A visible, underlined link in the collapsed note removes the
-      // step entirely.
+      // Both states. The shared renderer places the gateway directly after the
+      // media, or after the label/stat when no media exists, so wide marginalia
+      // follows the same CTA hierarchy as the overlay.
       includeLink: true,
     }),
   );

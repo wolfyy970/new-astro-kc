@@ -506,12 +506,12 @@ export function buildContentNode(
     fragment.appendChild(buildCarousel(data, prefix, mediaList));
   }
 
-  // In the overlay, the project destination belongs immediately after the
-  // visual evidence. It starts in the natural reading order and can then stick
-  // within the scroll region. Wide marginalia keeps its existing link at the
-  // end of the note.
-  const linkFollowsMedia =
-    prefix === "popover" && mediaList.length > 0 && projectLink;
+  // The project destination belongs immediately after the visual evidence on
+  // both responsive surfaces. If there is no media, appendBodyFields places it
+  // after the label/stat context and before the narrative. Keeping that order
+  // consistent prevents the wide marginalia from reverting to the old
+  // afterthought-at-the-bottom treatment.
+  const linkFollowsMedia = mediaList.length > 0 && projectLink;
   if (linkFollowsMedia) {
     fragment.appendChild(projectLink);
   }
@@ -525,7 +525,7 @@ export function buildContentNode(
 
   appendBodyFields(bodyContainer, data, prefix, text, {
     projectLink: linkFollowsMedia ? null : projectLink,
-    linkPlacement: prefix === "popover" ? "before-text" : "after-text",
+    linkPlacement: "before-text",
   });
 
   if (wrapBody) {

@@ -332,16 +332,15 @@ The glance. A 220px column entry: label, a 26×1px hairline, an optional figure 
 
 - **Media:** every authored image and video remains available in the default note. Expansion changes narrative depth, not the available media.
 - **Expanded** (≥1420px): becomes a real surface — stock background, hairline border, `{rounded.panel}`, note shadow, capped at 72vh with internal scroll. At this width the margin _is_ the detail view; the panel never opens over the document.
-- **Case-study link:** notes that lead to a project close on a real, underlined link — in the collapsed state too, so reaching a case study never requires expanding anything first.
+- **Case-study link:** notes that lead to a project include the framed black-and-white gateway in the collapsed state too, so reaching a case study never requires expanding anything first.
 - **Hover:** the rule grows 26px → 34px. One invitation, not two.
 
 ### Case-Study Control
 
 The named way into a project page, rendered only where a deeper route exists.
 
-- **Marginalia:** normal flow after the note content.
-- **Popover and mobile sheet:** inserted directly after media, or after the heading/stat when no media exists, then sticky at the top of `.popover-scroll`. Its document-white field, black boundary, and black action square remove the dirty gray middle tone; hover/focus invert the entire control rather than changing only the arrow.
-- The label is a nested `-link-label` span so the underline belongs to the words and does not drag the arrow into it.
+- **Wide marginalia, popover, and mobile sheet:** inserted directly after media, or after the heading/stat when no media exists. In collapsed marginalia it stays in natural flow; in an expanded scrolling note it sticks to the top, matching the popover and mobile-sheet behavior. Its document-white field, black boundary, and black action square remove the dirty gray middle tone; hover/focus invert the entire control rather than changing only the arrow.
+- The label is a nested `-link-label` span so its typography remains independent from the action square.
 - The arrow is a pseudo-element, never part of the link text. It was inside the content string (`"View Truist project →"`), which put a design decision in the database and produced two arrows on one note.
 
 ### Stat

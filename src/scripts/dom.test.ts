@@ -127,9 +127,8 @@ describe("buildContentNode", () => {
   });
 
   // ── The glance / dig ladder ──
-  // The margin note and the popover must not be two copies of one thing. These
-  // lock in the split: the margin shows one figure and no link, the popover
-  // shows everything.
+  // Both surfaces share the complete media set and project hierarchy. The
+  // margin truncates only its narrative until expanded.
 
   const richData: PopoverData = {
     label: "Rich Entry",
@@ -196,6 +195,25 @@ describe("buildContentNode", () => {
     expect(link?.nextElementSibling).toBe(body);
   });
 
+  it("uses the same project hierarchy in wide marginalia", () => {
+    const container = document.createElement("div");
+    container.appendChild(
+      buildContentNode(richData, "sa", {
+        mediaMode: "full",
+        includeLink: true,
+      }),
+    );
+
+    const carousel = container.querySelector(".sa-carousel-wrap");
+    const link = container.querySelector(".sa-link");
+    const head = container.querySelector(".sa-head");
+    const text = container.querySelector(".sa-text");
+
+    expect(carousel?.nextElementSibling).toBe(link);
+    expect(link?.nextElementSibling).toBe(head);
+    expect(head?.nextElementSibling).toBe(text);
+  });
+
   it("places a no-media project link after context and before narrative", () => {
     const container = document.createElement("div");
     container.appendChild(
@@ -217,6 +235,28 @@ describe("buildContentNode", () => {
     expect(body?.children[1].classList.contains("popover-stat")).toBe(true);
     expect(body?.children[2].classList.contains("popover-link")).toBe(true);
     expect(body?.children[3].classList.contains("popover-text")).toBe(true);
+  });
+
+  it("places a no-media marginalia link after context and before narrative", () => {
+    const container = document.createElement("div");
+    container.appendChild(
+      buildContentNode(
+        {
+          label: "No image",
+          stat: "42%",
+          text: "Longer explanation.",
+          link: "/project",
+          linkText: "View project",
+        },
+        "sa",
+        { includeLink: true },
+      ),
+    );
+
+    expect(container.children[0].classList.contains("sa-head")).toBe(true);
+    expect(container.children[1].classList.contains("sa-stat")).toBe(true);
+    expect(container.children[2].classList.contains("sa-link")).toBe(true);
+    expect(container.children[3].classList.contains("sa-text")).toBe(true);
   });
 
   it("should give a margin note a real link, in both states", () => {

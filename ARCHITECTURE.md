@@ -117,8 +117,8 @@ On wide screens the marginalia is the media experience, not a preview of it. Ima
 
 **The case-study control.** Project-backed notes expose one named destination in the collapsed and expanded margin note as well as the popover. Its placement follows the surface:
 
-1. **Wide marginalia:** normal flow. A sticky position cannot help a note shorter than its own cap, so the destination sits naturally after the note content.
-2. **Popover and mobile sheet:** the destination is inserted directly after the media; when no media exists, it follows the label/stat and precedes the narrative. It is sticky at the top of `.popover-scroll`, so the reader encounters it early and it remains available while longer copy scrolls. The control uses a document-white field with a black boundary and action square, then inverts as one unit on hover/focus.
+1. **Wide marginalia:** the destination is inserted directly after the media; when no media exists, it follows the label/stat and precedes the narrative. It stays in normal flow in the collapsed note, then becomes sticky at the top only when the expanded note is its own scrolling surface.
+2. **Popover and mobile sheet:** the same destination order is used and the control is sticky at the top of `.popover-scroll`, so the reader encounters it early and it remains available while longer copy scrolls. Across all three responsive surfaces, the control uses a document-white field with a black boundary and action square, then inverts as one unit on hover/focus.
 
 The collapsed note used to end in a bare `→` glyph cued on "the popover holds more", which fired for one extra sentence or one extra image as readily as for a case study. The arrow now belongs to a real link and lives in CSS rather than inside `linkText` in `popovers.json`.
 

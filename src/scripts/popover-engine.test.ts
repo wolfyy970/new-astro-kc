@@ -316,6 +316,22 @@ describe("PopoverEngine", () => {
       ).toBe(true);
     });
 
+    it("keeps the accessible close button outside the aria-hidden handle", () => {
+      hotspot.click();
+
+      const handle = popoverEl.querySelector(".popover-handle");
+      const closeButton = popoverEl.querySelector(".popover-close");
+      const scrollRegion = popoverEl.querySelector(".popover-scroll");
+
+      expect(Array.from(popoverEl.children)).toEqual([
+        handle,
+        closeButton,
+        scrollRegion,
+      ]);
+      expect(handle?.getAttribute("aria-hidden")).toBe("true");
+      expect(closeButton?.parentElement).toBe(popoverEl);
+    });
+
     it("returns focus to hotspot on close by default", async () => {
       const focusSpy = vi.spyOn(hotspot, "focus");
       hotspot.click();
