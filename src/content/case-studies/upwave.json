@@ -2,14 +2,14 @@
   "meta": {
     "title": "Upwave: Health & Wellness Platform",
     "description": "How I led product and design for Upwave, Turner's health and wellness venture, from concept to 1 million users in 8 months.",
-    "ogImage": "/images/upwave/turner-upwave-site.png",
+    "ogImage": "/images/upwave/upwave-homepage-desktop-mobile.webp",
     "accent": "#f26522"
   },
   "hero": {
     "label": "Upwave",
     "title": "Building a Platform That Makes Wellness Stick",
     "subtitle": "I led product and design for Turner's health and wellness venture, partnering with IDEO on market validation, then taking it from concept to 1M monthly users in eight months.",
-    "image": "/images/upwave/turner-upwave-site.png",
+    "image": "/images/upwave/upwave-homepage-desktop-mobile.webp",
     "imageAlt": "Upwave homepage on desktop and mobile"
   },
   "context": {
@@ -33,20 +33,20 @@
         {
           "title": "Content Strategy & Platform",
           "description": "Directed the UX strategies for a responsive media platform built to drive engagement and recirculation.",
-          "image": "/images/upwave/8dc0f0d910df1c24b3620919604df9b218d4ad07_190917_110730.png",
-          "imageAlt": "Upwave content platform desktop and mobile"
+          "image": "/images/upwave/upwave-content-inspiration.webp",
+          "imageAlt": "Upwave inspiration experience across desktop and mobile"
         },
         {
           "title": "Behavioral Challenges",
           "description": "Oversaw the design framework for multi-day wellness challenges, applying behavioral science to daily progress tracking.",
-          "image": "/images/upwave/upwave_challenge_screens_desktop_mobile.webp",
-          "imageAlt": "Upwave challenge feature"
+          "image": "/images/upwave/upwave-challenge-desktop-mobile.webp",
+          "imageAlt": "Upwave challenge experience on desktop and mobile"
         },
         {
           "title": "TrackIt Analytics",
           "description": "Guided the strategic integration of emerging wearables and fitness trackers with a unified personal health dashboard.",
-          "image": "/images/upwave/turner-upwave-trackit.png",
-          "imageAlt": "Upwave TrackIt analytics dashboard"
+          "image": "/images/upwave/upwave-trackit-sync.webp",
+          "imageAlt": "Upwave TrackIt interface for connecting health and fitness data"
         }
       ]
     },
@@ -63,14 +63,14 @@
         {
           "title": "Architecture Directorship",
           "description": "Directed the UX and product teams to establish the foundational information architecture and component strategy.",
-          "image": "/images/upwave/turner-upwave-ux-01b-1024x587.png",
-          "imageAlt": "Upwave UX wireframes"
+          "image": "/images/upwave/upwave-responsive-product-system.webp",
+          "imageAlt": "Upwave responsive product system across onboarding, challenges, and collections"
         },
         {
           "title": "Interaction Systems",
-          "description": "Managed multidisciplinary teams ensuring complex health data intersections were logically translated into accessible interfaces.",
-          "image": "/images/upwave/turner-upwave-ux-02-1024x768.png",
-          "imageAlt": "Upwave UX design documentation"
+          "description": "Led multidisciplinary teams translating content, video, challenges, profiles, and social actions into an accessible, repeatable interaction system.",
+          "image": "/images/upwave/upwave-personalized-homepage.webp",
+          "imageAlt": "Personalized Upwave homepage combining content, video, challenges, and social features"
         }
       ]
     },
