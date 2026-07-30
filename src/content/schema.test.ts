@@ -64,6 +64,73 @@ describe("content schemas — reject malformed data", () => {
     expect(caseStudyDataSchema.safeParse(bad).success).toBe(false);
   });
 
+  it.each([
+    ["cardGrid", { type: "cardGrid", key: "missing-cards" }],
+    [
+      "featureRow",
+      {
+        type: "featureRow",
+        key: "missing-image",
+        title: "Title",
+        description: "Description",
+      },
+    ],
+    [
+      "textOnly",
+      { type: "textOnly", key: "missing-description", title: "Title" },
+    ],
+    ["photoGrid", { type: "photoGrid", key: "missing-images" }],
+    ["video", { type: "video", key: "missing-video", title: "Title" }],
+  ])("rejects an incomplete %s section", (_type, section) => {
+    const bad = { ...truist, sections: [section] };
+    expect(caseStudyDataSchema.safeParse(bad).success).toBe(false);
+  });
+
+  it("rejects unknown fields instead of silently stripping typos", () => {
+    const bad = {
+      ...truist,
+      sections: [
+        {
+          type: "textOnly",
+          key: "typo",
+          title: "Title",
+          description: "Description",
+          descriptoin: "This typo must not disappear",
+        },
+      ],
+    };
+    expect(caseStudyDataSchema.safeParse(bad).success).toBe(false);
+  });
+
+  it("requires paired feature-row link fields", () => {
+    const featureRow = armchairManager.sections[0];
+    const bad = {
+      ...armchairManager,
+      sections: [{ ...featureRow, link: "/example" }],
+    };
+    expect(caseStudyDataSchema.safeParse(bad).success).toBe(false);
+  });
+
+  it("rejects duplicate section keys", () => {
+    const [first, second] = truist.sections;
+    const bad = {
+      ...truist,
+      sections: [first, { ...second, key: first.key }],
+    };
+    expect(caseStudyDataSchema.safeParse(bad).success).toBe(false);
+  });
+
+  it("rejects a popover brand mark without alternative text", () => {
+    const bad = {
+      k: {
+        label: "Artifact",
+        text: "Details",
+        brandMark: "/images/issuer.png",
+      },
+    };
+    expect(popoverMapSchema.safeParse(bad).success).toBe(false);
+  });
+
   it("rejects a manifest entry missing `slug`", () => {
     expect(
       manifestSchema.safeParse([

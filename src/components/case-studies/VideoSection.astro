@@ -1,0 +1,61 @@
+---
+import type { CaseStudySectionData } from "../../types/content";
+import ShowcaseSection from "./ShowcaseSection.astro";
+
+type VideoSectionData = Extract<CaseStudySectionData, { type: "video" }>;
+
+interface Props {
+  section: VideoSectionData;
+  isDark: boolean;
+}
+
+const { section, isDark } = Astro.props;
+const videoType = section.video.toLowerCase().endsWith(".webm")
+  ? "video/webm"
+  : "video/mp4";
+---
+
+<ShowcaseSection
+  label={section.label}
+  title={section.title}
+  description={section.description ?? ""}
+  {isDark}
+>
+  <figure class="case-study-video">
+    <video
+      controls
+      playsinline
+      preload="metadata"
+      poster={section.poster}
+      aria-label={section.title}
+    >
+      <source src={section.video} type={videoType} />
+      Your browser does not support embedded video.
+    </video>
+    {section.caption && <figcaption>{section.caption}</figcaption>}
+  </figure>
+</ShowcaseSection>
+
+<style>
+  .case-study-video {
+    width: min(100%, 1120px);
+    margin: 72px auto 0;
+  }
+
+  .case-study-video video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border: 1px solid var(--doc-rule);
+    border-radius: var(--cs-radius);
+  }
+
+  .case-study-video figcaption {
+    margin-top: 14px;
+    color: var(--doc-light);
+    font-family: var(--mono);
+    font-size: var(--cs-caption);
+    line-height: 1.5;
+  }
+</style>

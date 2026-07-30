@@ -5,16 +5,20 @@ import ThemeScript from "../components/ThemeScript.astro";
 import ThemeToggleButton from "../components/ThemeToggleButton.astro";
 import HeadFonts from "../components/HeadFonts.astro";
 import Icon from "../components/Icon.astro";
-import { SESSION_COOKIE_NAME } from "../utils/auth.ts";
+import {
+  readSitePassword,
+  safeEqual,
+  SESSION_COOKIE_NAME,
+} from "../utils/auth.ts";
 
-const password = process.env.SITE_PASSWORD || import.meta.env.SITE_PASSWORD;
+const password = readSitePassword();
 let error = false;
 
 if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
   const input = formData.get("password");
 
-  if (input === password) {
+  if (typeof input === "string" && password && safeEqual(input, password)) {
     Astro.cookies.set(SESSION_COOKIE_NAME, password as string, {
       path: "/",
       httpOnly: true,
@@ -36,7 +40,6 @@ if (Astro.request.method === "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Confidential: KC Wolff-Ingham</title>
     <meta name="robots" content="noindex, nofollow" />
-    <link rel="icon" href="/favicon.png" />
     <HeadFonts />
     <ThemeScript />
     <style>

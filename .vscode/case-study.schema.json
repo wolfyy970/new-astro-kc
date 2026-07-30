@@ -36,6 +36,18 @@
       "type": "object",
       "required": ["label", "title", "subtitle"],
       "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": ["image", "imageAlt"],
+          "not": { "required": ["background"] }
+        },
+        {
+          "required": ["background"],
+          "not": {
+            "anyOf": [{ "required": ["image"] }, { "required": ["imageAlt"] }]
+          }
+        }
+      ],
       "properties": {
         "label": {
           "type": "string",
@@ -206,11 +218,21 @@
           "type": "string",
           "description": "Overrides the computed dark background. Use when the accent-derived dark doesn't match the brand palette (e.g. Upwave charcoal #1e1e1e, Sparks Grove navy #0b1b2b). Sets --case-study-dark on the wrapper."
         }
+      },
+      "dependencies": {
+        "link": ["linkText"],
+        "linkText": ["link"]
       }
     },
 
     "Section": {
-      "allOf": [{ "$ref": "#/definitions/SectionBase" }],
+      "allOf": [
+        { "$ref": "#/definitions/SectionBase" },
+        {
+          "if": { "properties": { "type": { "const": "textOnly" } } },
+          "then": { "required": ["title", "description"] }
+        }
+      ],
       "if": { "properties": { "type": { "const": "cardGrid" } } },
       "then": {
         "required": ["cards"],
@@ -318,8 +340,10 @@
                       "minimum": 1,
                       "description": "Optional maximum rendered width for documentary or supporting imagery."
                     },
-                    "imageWidth": { "type": "integer", "default": 1800 },
-                    "imageHeight": { "type": "integer", "default": 1000 }
+                    "isMobile": {
+                      "type": "boolean",
+                      "description": "Marks a narrow mobile capture so the component uses its documentary presentation."
+                    }
                   }
                 },
                 "else": {
@@ -335,16 +359,14 @@
                       },
                       "columns": {
                         "type": "integer",
-                        "enum": [1, 2, 3, 4],
+                        "enum": [1, 2, 3],
                         "default": 2
                       },
                       "gap": {
                         "type": "string",
                         "enum": ["tight", "normal", "loose"],
                         "default": "normal"
-                      },
-                      "imageWidth": { "type": "integer", "default": 900 },
-                      "imageHeight": { "type": "integer", "default": 675 }
+                      }
                     }
                   },
                   "else": {
@@ -364,7 +386,7 @@
                     "else": {
                       "if": { "properties": { "type": { "const": "video" } } },
                       "then": {
-                        "required": ["video"],
+                        "required": ["video", "title"],
                         "properties": {
                           "video": {
                             "type": "string",

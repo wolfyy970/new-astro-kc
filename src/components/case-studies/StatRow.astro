@@ -6,13 +6,10 @@
  * Use to surface impact metrics as a scannable visual break between sections.
  */
 
-interface StatItem {
-  value: string;
-  label: string;
-}
+import type { CaseStudyStatItem } from "../../types/content";
 
 interface Props {
-  stats: StatItem[];
+  stats: CaseStudyStatItem[];
   label?: string;
   isDark?: boolean;
 }

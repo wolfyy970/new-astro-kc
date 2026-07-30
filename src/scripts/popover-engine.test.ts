@@ -1,9 +1,20 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { initPopoverEngine, closePopover } from "./popover-engine";
-import { closeInset } from "./inset-note";
+import {
+  initPopoverEngine,
+  closePopover,
+  cleanupPopoverEngine,
+} from "./popover-engine";
 import { initAnnotationEngine, cleanupAnnotations } from "./annotation-engine";
 import type { PopoverMap } from "../types/content";
-import { CLS_ACTIVE, CLS_OPEN, CLS_VISIBLE, ID_INSET } from "./constants";
+import {
+  CLS_ACTIVE,
+  CLS_IS_DRAGGING,
+  CLS_OPEN,
+  CLS_POPOVER_OPEN,
+  CLS_VISIBLE,
+  ID_INSET,
+  RESIZE_DEBOUNCE_MS,
+} from "./constants";
 
 describe("NoteEngine", () => {
   let hotspot: HTMLButtonElement;
@@ -74,8 +85,7 @@ describe("NoteEngine", () => {
   });
 
   afterEach(() => {
-    closePopover({ returnFocus: false });
-    closeInset({ instant: true });
+    cleanupPopoverEngine();
     document.body.innerHTML = "";
     vi.restoreAllMocks();
   });
@@ -101,6 +111,64 @@ describe("NoteEngine", () => {
       expect(document.getElementById(ID_INSET)).toBeNull();
       expect(popoverEl.classList.contains(CLS_VISIBLE)).toBe(true);
       expect(overlay.classList.contains(CLS_OPEN)).toBe(true);
+    });
+
+    it("is idempotent when initialized more than once", () => {
+      initPopoverEngine(mockData);
+      initPopoverEngine(mockData);
+
+      hotspot.click();
+
+      expect(document.getElementById(ID_INSET)).not.toBeNull();
+      expect(hotspot.getAttribute("aria-expanded")).toBe("true");
+    });
+
+    it("fully closes a mobile sheet when resizing to the middle tier", async () => {
+      window.innerWidth = 375;
+      hotspot.click();
+      expect(document.body.classList.contains(CLS_POPOVER_OPEN)).toBe(true);
+
+      window.innerWidth = 1024;
+      window.dispatchEvent(new Event("resize"));
+      await new Promise((resolve) =>
+        setTimeout(resolve, RESIZE_DEBOUNCE_MS + 20),
+      );
+
+      expect(popoverEl.classList.contains(CLS_VISIBLE)).toBe(false);
+      expect(overlay.classList.contains(CLS_OPEN)).toBe(false);
+      expect(document.body.classList.contains(CLS_POPOVER_OPEN)).toBe(false);
+      expect(hotspot.getAttribute("aria-expanded")).toBe("false");
+    });
+
+    it("clears an in-progress sheet gesture when crossing tiers", async () => {
+      window.innerWidth = 375;
+      hotspot.click();
+      const scrollRegion =
+        popoverEl.querySelector<HTMLElement>(".popover-scroll")!;
+      Object.defineProperty(scrollRegion, "scrollTop", {
+        value: 0,
+        configurable: true,
+      });
+      popoverEl.dispatchEvent(
+        new TouchEvent("touchstart", {
+          touches: [{ clientY: 100 } as Touch],
+        }),
+      );
+      popoverEl.dispatchEvent(
+        new TouchEvent("touchmove", {
+          touches: [{ clientY: 200 } as Touch],
+        }),
+      );
+      expect(popoverEl.classList.contains(CLS_IS_DRAGGING)).toBe(true);
+
+      window.innerWidth = 1024;
+      window.dispatchEvent(new Event("resize"));
+      await new Promise((resolve) =>
+        setTimeout(resolve, RESIZE_DEBOUNCE_MS + 20),
+      );
+
+      expect(popoverEl.classList.contains(CLS_IS_DRAGGING)).toBe(false);
+      expect(popoverEl.style.getPropertyValue("--sheet-drag-offset")).toBe("");
     });
   });
 
@@ -527,7 +595,7 @@ describe("NoteEngine and marginalia event boundaries", () => {
   });
 
   afterEach(() => {
-    closePopover({ returnFocus: false });
+    cleanupPopoverEngine();
     cleanupAnnotations();
     document.body.innerHTML = "";
     vi.restoreAllMocks();

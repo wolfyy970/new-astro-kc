@@ -13,6 +13,12 @@
    npm run dev
    ```
    The site will be available at `http://localhost:4321`.
+   The project launcher keeps Astro attached to the terminal even when it is
+   invoked by an AI coding agent. Press `Ctrl-C` when finished; this stops the
+   server and removes its process lock.
+
+If a server from an older session is still running, inspect it with
+`npm run dev:status` and stop it with `npm run dev:stop`.
 
 The project uses **Vitest** with a **jsdom** environment for unit testing core logic and DOM utilities.
 
@@ -22,6 +28,7 @@ The project uses **Vitest** with a **jsdom** environment for unit testing core l
 - **Verify formatting:** `npm run format:check`
 - **Lint source:** `npm run lint`
 - **Run Astro diagnostics:** `npm run check`
+- **Run the complete local gate:** `npm run quality`
 
 ## Deployment
 
@@ -34,7 +41,7 @@ The project is configured for **manual production deployment** to Vercel via the
    ```
 
 2. **Integration Checks:**
-   Run `npm run format:check`, `npm run lint`, `npm run check`, `npm run test`, and `npm run build` before pushing to production.
+   Run `npm run quality` before pushing to production.
 
 ## Password Protection
 
@@ -55,14 +62,21 @@ To ensure that the resume and its interactive layers remain synchronized, use th
 npm run verify
 ```
 
-This script validates the content JSON against the shared Zod schemas (`src/content/schema.ts`), confirms that every `<hotspot>` in `resume.json` has a corresponding entry in `popovers.json`, that no hotspot is used more than once (enforcing a strict 1:1 mapping), and that all referenced image, video, poster, and brand-mark paths exist on disk. It runs automatically during `npm run build`.
+This script validates the content JSON against the shared strict Zod schemas (`src/content/schema.ts`), confirms exact 1:1 hotspot-to-popover parity, checks manifest/JSON/page inventory alignment, and verifies that all referenced image, video, poster, and brand-mark paths exist on disk. It runs automatically during `npm run build`.
 
-## Image Optimization
+## Image Handling
 
-The project leverages Astro 7's Image Service for high-performance delivery:
+The project preserves source geometry instead of forcing media into a shared
+aspect ratio:
 
-- **Case Studies:** Use the standard `Image` component from `astro:assets`.
-- **Popovers:** Images in `popovers.json` are automatically pre-optimized and hashed during the build process in `index.astro`.
+- **Case studies:** Keep assets under `public/images/<slug>/`. Components read
+  each file's real dimensions through `publicImageSize()`; components using
+  Astro's `Image` request WebP output, while direct `<img>` renderers serve the
+  original public file.
+- **Popovers:** Before serializing note data to the client, `index.astro` asks
+  Astro's image service for WebP URLs constrained inside a 600×400 bounding box
+  and retains the returned dimensions.
+- **Asset quarantine:** Tracked images with no source, content, CSS, or manifest reference live under `asset-quarantine/images/`, preserving their former project grouping. The directory sits outside `public`, so quarantined files are not deployed. It exists as a reversible holding area until browser verification confirms those assets can be deleted.
 
 ## Managing Content
 

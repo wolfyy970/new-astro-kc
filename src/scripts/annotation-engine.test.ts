@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { initAnnotationEngine, cleanupAnnotations } from "./annotation-engine";
+import {
+  initAnnotationEngine,
+  cleanupAnnotations,
+  toggleAnnotation,
+} from "./annotation-engine";
 import { SEL_DOC_PAGE, BREAKPOINT_WIDE, RESIZE_DEBOUNCE_MS } from "./constants";
 import type { PopoverMap } from "../types/content";
 
@@ -389,6 +393,24 @@ describe("Resize state machine", () => {
     fireResizeSettled();
 
     expect(annotationCount()).toBe(0);
+  });
+
+  it("restores hotspot state when an expanded margin note leaves its tier", () => {
+    setWidth(BREAKPOINT_WIDE);
+    initAnnotationEngine(mockPopovers);
+    const hotspot = document.querySelector<HTMLElement>(
+      '[data-popover="item1"]',
+    )!;
+
+    expect(toggleAnnotation("item1")).toBe(true);
+    expect(hotspot.classList.contains("active")).toBe(true);
+    expect(hotspot.getAttribute("aria-expanded")).toBe("true");
+
+    setWidth(BREAKPOINT_WIDE - 100);
+    fireResizeSettled();
+
+    expect(hotspot.classList.contains("active")).toBe(false);
+    expect(hotspot.getAttribute("aria-expanded")).toBe("false");
   });
 
   it("builds annotations on near-wide → wide", () => {

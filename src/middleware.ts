@@ -1,6 +1,10 @@
 import { defineMiddleware } from "astro:middleware";
-import { timingSafeEqual } from "node:crypto";
-import { SESSION_COOKIE_NAME, SECURITY_HEADERS } from "./utils/auth.ts";
+import {
+  readSitePassword,
+  safeEqual,
+  SESSION_COOKIE_NAME,
+  SECURITY_HEADERS,
+} from "./utils/auth.ts";
 import { VIDEO_EXTENSIONS } from "./scripts/constants.ts";
 
 // Static assets bypass the auth gate. The video extensions are sourced from the
@@ -12,19 +16,6 @@ const ASSET_EXT = new RegExp(
   `\\.(jpg|jpeg|png|webp|gif|svg|ico|${VIDEO_EXT}|css|js|mjs|woff2?|txt|xml|json)$`,
   "i",
 );
-
-/**
- * Constant-time string comparison. Returns false on length mismatch (which also
- * sidesteps timingSafeEqual throwing on unequal-length buffers) and otherwise
- * delegates to the vetted Node primitive.
- */
-function safeEqual(a: string, b: string): boolean {
-  const enc = new TextEncoder();
-  const ab = enc.encode(a);
-  const bb = enc.encode(b);
-  if (ab.length !== bb.length) return false;
-  return timingSafeEqual(ab, bb);
-}
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { url, cookies, redirect } = context;
@@ -39,7 +30,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 
   // 2. Require SITE_PASSWORD to be configured — fail closed if absent
-  const password = process.env.SITE_PASSWORD || import.meta.env.SITE_PASSWORD;
+  const password = readSitePassword();
   if (!password) {
     return new Response("Service unavailable", { status: 503 });
   }

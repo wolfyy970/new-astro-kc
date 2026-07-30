@@ -10,7 +10,10 @@ describe("optimizePopoverImages", () => {
     };
 
     const mockGetImage = vi.fn().mockImplementation(async ({ src }) => {
-      return { src: `/optimized${src}` };
+      return {
+        src: `/optimized${src}`,
+        attributes: { width: 300, height: 400 },
+      };
     });
 
     const optimized = await optimizePopoverImages(raw, mockGetImage);
@@ -19,7 +22,11 @@ describe("optimizePopoverImages", () => {
     expect(mockGetImage).toHaveBeenCalledWith(
       expect.objectContaining({ src: "/img1.jpg" }),
     );
-    expect(optimized.item1.img).toBe("/optimized/img1.jpg");
+    expect(optimized.item1.img).toEqual({
+      src: "/optimized/img1.jpg",
+      width: 300,
+      height: 400,
+    });
     expect(optimized.item2.img).toBeUndefined();
   });
 
@@ -27,9 +34,10 @@ describe("optimizePopoverImages", () => {
     const raw: Record<string, PopoverData> = {
       item1: { label: "Item 1", text: "Text 1", img: "/img1.jpg" },
     };
-    const mockGetImage = vi
-      .fn()
-      .mockImplementation(async ({ src }) => ({ src: `/opt${src}` }));
+    const mockGetImage = vi.fn().mockImplementation(async ({ src }) => ({
+      src: `/opt${src}`,
+      attributes: { width: 600, height: 400 },
+    }));
 
     await optimizePopoverImages(raw, mockGetImage);
 
@@ -50,9 +58,10 @@ describe("optimizePopoverImages", () => {
     const raw: Record<string, PopoverData> = {
       item1: { label: "Item 1", text: "Text 1", img: "/tall.jpg" },
     };
-    const mockGetImage = vi
-      .fn()
-      .mockImplementation(async ({ src }) => ({ src: `/opt${src}` }));
+    const mockGetImage = vi.fn().mockImplementation(async ({ src }) => ({
+      src: `/opt${src}`,
+      attributes: { width: 213, height: 400 },
+    }));
 
     await optimizePopoverImages(raw, mockGetImage);
 
@@ -73,9 +82,10 @@ describe("optimizePopoverImages", () => {
         media: ["/promo.WEBM", "/thumb.jpg"],
       },
     };
-    const mockGetImage = vi
-      .fn()
-      .mockImplementation(async ({ src }) => ({ src: `/optimized${src}` }));
+    const mockGetImage = vi.fn().mockImplementation(async ({ src }) => ({
+      src: `/optimized${src}`,
+      attributes: { width: 600, height: 400 },
+    }));
 
     const optimized = await optimizePopoverImages(raw, mockGetImage);
 
@@ -102,9 +112,29 @@ describe("optimizePopoverImages", () => {
 
     expect(optimized.item1.img).toBe("/fail.jpg"); // Remains unchanged
     expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Failed to optimize image for popover "item1"'),
+      expect.stringContaining(
+        'Failed to optimize media item "/fail.jpg" for popover "item1"',
+      ),
     );
 
     consoleSpy.mockRestore();
+  });
+
+  it("preserves the exact optimized dimensions for portrait media", async () => {
+    const raw: Record<string, PopoverData> = {
+      item1: { label: "Portrait", text: "Text", img: "/portrait.jpg" },
+    };
+    const mockGetImage = vi.fn().mockResolvedValue({
+      src: "/optimized/portrait.webp",
+      attributes: { width: "213", height: "400" },
+    });
+
+    const optimized = await optimizePopoverImages(raw, mockGetImage);
+
+    expect(optimized.item1.img).toEqual({
+      src: "/optimized/portrait.webp",
+      width: 213,
+      height: 400,
+    });
   });
 });

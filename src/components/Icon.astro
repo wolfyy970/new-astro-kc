@@ -11,7 +11,7 @@ const icons = {
   sun: sunSvg,
 } as const;
 
-export type IconName = keyof typeof icons;
+type IconName = keyof typeof icons;
 
 interface Props {
   name: IconName;

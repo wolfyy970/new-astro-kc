@@ -9,38 +9,31 @@
 // (`import type`), so zod is fully erased and never enters the client bundle.
 import type { z } from "zod";
 import type {
-  educationSchema,
-  experienceEntrySchema,
-  contactSchema,
-  patentsAndRecognitionSchema,
-  resumeSchema,
   popoverDataSchema,
   popoverMapSchema,
-  caseStudyMetaSchema,
-  caseStudyHeroSchema,
-  caseStudyContextSchema,
-  caseStudySectionTypeSchema,
-  caseStudyCardSchema,
   caseStudyPhotoItemSchema,
   caseStudyStatItemSchema,
   caseStudySectionSchema,
   caseStudyDataSchema,
 } from "../content/schema.ts";
 
-export type Education = z.infer<typeof educationSchema>;
-export type ExperienceEntry = z.infer<typeof experienceEntrySchema>;
-export type Contact = z.infer<typeof contactSchema>;
-export type PatentsAndRecognition = z.infer<typeof patentsAndRecognitionSchema>;
-export type ResumeData = z.infer<typeof resumeSchema>;
+type AuthoredPopoverData = z.infer<typeof popoverDataSchema>;
+export type AuthoredPopoverMap = z.infer<typeof popoverMapSchema>;
 
-export type PopoverData = z.infer<typeof popoverDataSchema>;
-export type PopoverMap = z.infer<typeof popoverMapSchema>;
+/** Image metadata produced at build time and serialized for client rendering. */
+export interface OptimizedPopoverImage {
+  src: string;
+  width: number;
+  height: number;
+}
 
-export type CaseStudyMeta = z.infer<typeof caseStudyMetaSchema>;
-export type CaseStudyHeroData = z.infer<typeof caseStudyHeroSchema>;
-export type CaseStudyContext = z.infer<typeof caseStudyContextSchema>;
-export type CaseStudySectionType = z.infer<typeof caseStudySectionTypeSchema>;
-export type CaseStudyCard = z.infer<typeof caseStudyCardSchema>;
+export type PopoverMedia = string | OptimizedPopoverImage;
+export type PopoverData = Omit<AuthoredPopoverData, "img" | "media"> & {
+  img?: PopoverMedia;
+  media?: PopoverMedia[];
+};
+export type PopoverMap = Record<string, PopoverData>;
+
 export type CaseStudyPhotoItem = z.infer<typeof caseStudyPhotoItemSchema>;
 export type CaseStudyStatItem = z.infer<typeof caseStudyStatItemSchema>;
 export type CaseStudySectionData = z.infer<typeof caseStudySectionSchema>;

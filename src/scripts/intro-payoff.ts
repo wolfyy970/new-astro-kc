@@ -89,7 +89,7 @@ export function classifyBurst(
   return "steady";
 }
 
-export interface IntroPayoffOptions {
+interface IntroPayoffOptions {
   /** The introduction's root (receives the stage/exit classes). */
   root: HTMLElement;
   /** The example gateway control. */

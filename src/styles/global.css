@@ -1,5 +1,4 @@
-@import "./tokens.css";
-@import "./controls.css";
+@import "./base.css";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    THE ANNOTATED DOCUMENT
@@ -20,14 +19,6 @@
      of one thing. Margin = the glance (label, figure, one sentence).
      Popover = the dig (full narrative, full media, the case study).
    ═══════════════════════════════════════════════════════════════════════════ */
-
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 
 /* Registered so the ink can transition — gradients themselves cannot animate,
    but a registered <color> custom property inside one can. Unsupporting
@@ -141,27 +132,6 @@ html.theme-dark {
   font-size: var(--type-meta);
   letter-spacing: var(--type-label-spacing);
   text-transform: uppercase;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
-}
-
-body {
-  font-family: var(--doc-sans);
-  background: var(--doc-white);
-  color: var(--doc-body);
-  /* No -webkit-font-smoothing: antialiased.
-     Inherited and never questioned. On macOS it replaces subpixel rendering
-     with greyscale, which renders every glyph noticeably THINNER — and this
-     page sets its display serif at weight 200–300 and its body at 400.
-     Thinning light type on white is precisely how black text starts reading as
-     grey. Removing it lets the type render at the weight it was specified at.
-
-     text-rendering: optimizeLegibility went with it: a no-op or a
-     ligature/font-loading hazard in every current browser. */
 }
 
 /* ══════════════════════════════════════

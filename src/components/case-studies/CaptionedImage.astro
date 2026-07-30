@@ -8,6 +8,7 @@
  *
  * Use this when the work should speak for itself.
  */
+import { publicImageSize } from "../../utils/image-size";
 
 interface Props {
   image: string;
@@ -20,13 +21,21 @@ interface Props {
 
 const { image, imageAlt, caption, label, isMobile, displayWidth } = Astro.props;
 const innerStyle = displayWidth ? `max-width: ${displayWidth}px` : undefined;
+const size = await publicImageSize(image);
 ---
 
 <section class="captioned-image-section">
   <div class="captioned-image-inner" style={innerStyle}>
     {label && <p class="image-label">{label}</p>}
     <div class={`captioned-image-frame${isMobile ? " is-mobile" : ""}`}>
-      <img src={image} alt={imageAlt} loading="lazy" decoding="async" />
+      <img
+        src={image}
+        alt={imageAlt}
+        width={size?.width}
+        height={size?.height}
+        loading="lazy"
+        decoding="async"
+      />
     </div>
     {caption && <p class="image-caption">{caption}</p>}
   </div>

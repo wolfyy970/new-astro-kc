@@ -1,10 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import {
-  buildContentNode,
-  splitAtSentences,
-  requireGlobal,
-  requireEl,
-} from "./dom";
+import { requireGlobal, requireEl } from "./dom";
+import { buildContentNode, splitAtSentences } from "./note-content";
 import { ANNOTATION_TEXT_SENTENCES } from "./constants";
 import type { PopoverData } from "../types/content";
 
@@ -49,6 +45,25 @@ describe("buildContentNode", () => {
     expect(html).toContain('href="https://example.com"');
     expect(html).toContain("Learn More");
     expect(html).toContain("This is sentence three."); // Full text
+  });
+
+  it("reserves the exact optimized image geometry", () => {
+    const container = document.createElement("div");
+    container.appendChild(
+      buildContentNode(
+        {
+          label: "Portrait",
+          text: "Portrait evidence.",
+          img: { src: "/portrait.webp", width: 213, height: 400 },
+        },
+        "popover",
+      ),
+    );
+
+    const image = container.querySelector<HTMLImageElement>("img")!;
+    expect(image.src).toContain("/portrait.webp");
+    expect(image.width).toBe(213);
+    expect(image.height).toBe(400);
   });
 
   it("should split a glance note: lead visible, continuation inside sa-more", () => {

@@ -37,6 +37,15 @@
         "type": "string",
         "description": "An optional pull-quote or testimonial."
       },
+      "brandMark": {
+        "type": "string",
+        "pattern": "^/images/.*",
+        "description": "Optional issuer mark shown beside the note label. Requires brandMarkAlt."
+      },
+      "brandMarkAlt": {
+        "type": "string",
+        "description": "Accessible name for brandMark. Required when brandMark is present."
+      },
       "link": {
         "type": "string",
         "description": "Internal or external URL. Requires 'linkText' to be present."
@@ -47,6 +56,8 @@
       }
     },
     "dependencies": {
+      "brandMark": ["brandMarkAlt"],
+      "brandMarkAlt": ["brandMark"],
       "link": ["linkText"],
       "linkText": ["link"]
     }

@@ -272,6 +272,46 @@ describe("context-preserving case-study return", () => {
     ).toBeNull();
   });
 
+  it("removes corrupt return context without interrupting navigation", () => {
+    document.body.innerHTML = '<a data-resume-back href="/">Back to resume</a>';
+    window.sessionStorage.setItem(
+      resumeReturnInternals.STORAGE_KEY,
+      "{not-json",
+    );
+
+    expect(() => initCaseStudyBackNavigation(makeEnvironment())).not.toThrow();
+    expect(
+      window.sessionStorage.getItem(resumeReturnInternals.STORAGE_KEY),
+    ).toBeNull();
+  });
+
+  it("leaves malformed project links to native browser handling", () => {
+    document.body.innerHTML =
+      '<a class="popover-link" href="http://[">Malformed project link</a>';
+    const cleanup = initResumeReturnTracking(
+      makeEnvironment({
+        location: {
+          href: "https://portfolio.test/",
+          origin: "https://portfolio.test",
+          pathname: "/",
+        },
+      }),
+    );
+    const event = new MouseEvent("click", {
+      bubbles: true,
+      cancelable: true,
+      button: 0,
+    });
+
+    expect(() =>
+      document.querySelector("a")?.dispatchEvent(event),
+    ).not.toThrow();
+    expect(
+      window.sessionStorage.getItem(resumeReturnInternals.STORAGE_KEY),
+    ).toBeNull();
+    cleanup();
+  });
+
   it("reconstructs the saved sheet, carousel frame, and scroll position", () => {
     document.body.innerHTML = `
       <button class="hotspot" data-popover="truist">Open Truist</button>
@@ -390,6 +430,42 @@ describe("context-preserving case-study return", () => {
           popoverKey: "truist",
         },
       },
+      replaceState: vi.fn(),
+      back: vi.fn(),
+    };
+
+    restoreResumeReturnView({ document, history });
+
+    expect(clickSpy).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    {
+      surface: "popover",
+      popoverKey: "",
+      popoverScrollTop: 0,
+      carouselIndex: 0,
+    },
+    {
+      surface: "popover",
+      popoverKey: "truist",
+      popoverScrollTop: -1,
+      carouselIndex: 0,
+    },
+    {
+      surface: "popover",
+      popoverKey: "truist",
+      popoverScrollTop: 0,
+      carouselIndex: 1.5,
+    },
+  ])("ignores malformed saved view state %#", (savedView) => {
+    document.body.innerHTML =
+      '<button class="hotspot" data-popover="truist">Open Truist</button>';
+    const hotspot = document.querySelector<HTMLElement>(".hotspot");
+    const clickSpy = vi.spyOn(hotspot as HTMLElement, "click");
+    const history = {
+      length: 2,
+      state: { [resumeReturnInternals.VIEW_STATE_KEY]: savedView },
       replaceState: vi.fn(),
       back: vi.fn(),
     };

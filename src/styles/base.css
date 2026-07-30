@@ -1,0 +1,24 @@
+@import "./tokens.css";
+@import "./controls.css";
+
+/* Shared document foundation. Page-specific layout and component rules belong
+   in global.css (résumé) or case-study.css (case studies). */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  font-family: var(--doc-sans);
+  background: var(--doc-white);
+  color: var(--doc-body);
+}

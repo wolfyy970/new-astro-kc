@@ -6,7 +6,7 @@
   "minItems": 1,
   "items": {
     "type": "object",
-    "required": ["slug", "title", "description", "accent"],
+    "required": ["slug", "title", "description", "accent", "ogImage"],
     "additionalProperties": false,
     "properties": {
       "slug": {
@@ -30,7 +30,7 @@
       "ogImage": {
         "type": "string",
         "pattern": "^/images/.*",
-        "description": "Optional thumbnail for listing cards. Mirrors the ogImage from the individual study file."
+        "description": "Required thumbnail for inventory and share metadata. Mirrors the ogImage from the individual study file."
       }
     }
   }
