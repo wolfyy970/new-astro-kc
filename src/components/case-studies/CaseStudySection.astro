@@ -7,6 +7,7 @@
 import type { CaseStudySectionData } from "../../types/content";
 import { isHexColorDark } from "../../utils/color";
 import CaptionedImage from "./CaptionedImage.astro";
+import ExternalVideoSection from "./ExternalVideoSection.astro";
 import FeatureRow from "./FeatureRow.astro";
 import FullBleedSection from "./FullBleedSection.astro";
 import LargeImageSection from "./LargeImageSection.astro";
@@ -146,6 +147,12 @@ const sectionClass = isSectionDark
   {
     section.type === "video" && (
       <VideoSection section={section} isDark={isSectionDark} />
+    )
+  }
+
+  {
+    section.type === "externalVideo" && (
+      <ExternalVideoSection section={section} isDark={isSectionDark} />
     )
   }
 </div>

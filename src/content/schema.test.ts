@@ -81,6 +81,10 @@ describe("content schemas — reject malformed data", () => {
     ],
     ["photoGrid", { type: "photoGrid", key: "missing-images" }],
     ["video", { type: "video", key: "missing-video", title: "Title" }],
+    [
+      "externalVideo",
+      { type: "externalVideo", key: "missing-embed", title: "Title" },
+    ],
   ])("rejects an incomplete %s section", (_type, section) => {
     const bad = { ...truist, sections: [section] };
     expect(caseStudyDataSchema.safeParse(bad).success).toBe(false);
@@ -116,6 +120,22 @@ describe("content schemas — reject malformed data", () => {
     const bad = {
       ...truist,
       sections: [first, { ...second, key: first.key }],
+    };
+    expect(caseStudyDataSchema.safeParse(bad).success).toBe(false);
+  });
+
+  it("rejects an unapproved external video host", () => {
+    const bad = {
+      ...truist,
+      sections: [
+        {
+          type: "externalVideo",
+          key: "unapproved-embed",
+          title: "External video",
+          embedUrl: "https://example.com/embed/video",
+          sourceUrl: "https://example.com/video",
+        },
+      ],
     };
     expect(caseStudyDataSchema.safeParse(bad).success).toBe(false);
   });

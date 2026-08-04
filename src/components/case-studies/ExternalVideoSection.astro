@@ -1,0 +1,81 @@
+---
+import type { CaseStudySectionData } from "../../types/content";
+import ShowcaseSection from "./ShowcaseSection.astro";
+
+type ExternalVideoSectionData = Extract<
+  CaseStudySectionData,
+  { type: "externalVideo" }
+>;
+
+interface Props {
+  section: ExternalVideoSectionData;
+  isDark: boolean;
+}
+
+const { section, isDark } = Astro.props;
+---
+
+<ShowcaseSection
+  label={section.label}
+  title={section.title}
+  description={section.description ?? ""}
+  {isDark}
+>
+  <figure class="case-study-external-video">
+    <div class="case-study-external-video__frame">
+      <iframe
+        src={section.embedUrl}
+        title={section.title}
+        loading="lazy"
+        allow="autoplay; fullscreen; picture-in-picture"
+        allowfullscreen
+        referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </div>
+    <figcaption>
+      {section.caption && <span>{section.caption}</span>}
+      <a href={section.sourceUrl} target="_blank" rel="noopener noreferrer">
+        Watch on TED
+      </a>
+    </figcaption>
+  </figure>
+</ShowcaseSection>
+
+<style>
+  .case-study-external-video {
+    width: min(100%, 1120px);
+    margin: 72px auto 0;
+  }
+
+  .case-study-external-video__frame {
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border: 1px solid var(--doc-rule);
+    border-radius: var(--cs-radius);
+  }
+
+  .case-study-external-video iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .case-study-external-video figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+    margin-top: 14px;
+    color: var(--doc-light);
+    font-family: var(--mono);
+    font-size: var(--cs-caption);
+    line-height: 1.5;
+  }
+
+  .case-study-external-video a {
+    color: var(--text-primary);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+</style>

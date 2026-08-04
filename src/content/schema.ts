@@ -14,6 +14,13 @@ const videoPathSchema = nonEmptyString.regex(
   /^\/media\/.*\.(mp4|webm)$/i,
   "Expected an .mp4 or .webm path below /media/",
 );
+const webUrlSchema = z
+  .url()
+  .refine((url) => url.startsWith("https://"), "Expected an HTTPS URL");
+const approvedEmbedUrlSchema = webUrlSchema.refine(
+  (url) => new URL(url).hostname === "embed.ted.com",
+  "Expected an approved TED embed URL",
+);
 const accentSchema = nonEmptyString.regex(
   /^#[0-9a-fA-F]{6}$/,
   "Expected a 6-digit hex color",
@@ -277,6 +284,14 @@ const videoSectionSchema = sectionSchema("video", {
   caption: nonEmptyString.optional(),
 });
 
+const externalVideoSectionSchema = sectionSchema("externalVideo", {
+  title: nonEmptyString,
+  description: nonEmptyString.optional(),
+  embedUrl: approvedEmbedUrlSchema,
+  sourceUrl: webUrlSchema,
+  caption: nonEmptyString.optional(),
+});
+
 export const caseStudySectionSchema = z
   .discriminatedUnion("type", [
     cardGridSectionSchema,
@@ -289,6 +304,7 @@ export const caseStudySectionSchema = z
     photoGridSectionSchema,
     statRowSectionSchema,
     videoSectionSchema,
+    externalVideoSectionSchema,
   ])
   .superRefine((section, context) => {
     if (

@@ -10,3 +10,11 @@ dist/
 .env.local
 build/
 *.log
+
+# Local editorial source copies; the canonical external archive is documented
+# in USER_GUIDE.md and only selected web-ready assets belong in the repository.
+_resume/
+
+# Unselected image-generation experiments retained locally for review.
+public/images/linkedin-*.png
+public/images/me-friendly-smile-800.png

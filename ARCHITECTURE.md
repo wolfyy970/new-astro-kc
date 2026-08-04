@@ -232,6 +232,7 @@ Every section in a study JSON file must have a `type` field. `CaseStudySection.a
 | `photoGrid`      | Context header followed by a grid of uncropped images                    | `images[]` (each: `src`, `alt`)             | `columns` (1-3, default 2), `gap` (tight/normal/loose), `label`, `title`, `description`, `bg`, `isDark`                     |
 | `statRow`        | Horizontal band of large typographic outcome numbers                     | `stats[]` (each: `value`, `label`)          | `label`, `bg`, `isDark`                                                                                                     |
 | `video`          | ShowcaseSection + native video player + optional context caption         | `video`, `title`                            | `poster`, `caption`, `label`, `description`, `bg`, `isDark`                                                                 |
+| `externalVideo`  | ShowcaseSection + approved external video embed + source link            | `embedUrl`, `sourceUrl`, `title`            | `caption`, `label`, `description`, `bg`, `isDark`                                                                           |
 
 **Shared fields on every section:** `key` is a required unique identifier. `label` (eyebrow text), `bg` (any CSS color or gradient), `isDark` (dark variant), and `darkBg` (overrides the dark background) are optional. Section objects are strict discriminated unions: unsupported or misspelled fields fail validation instead of being discarded.
 

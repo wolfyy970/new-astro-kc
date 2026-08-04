@@ -155,6 +155,7 @@ function sectionAssetReferences(
         [section.video, "video"],
         ...(section.poster ? ([[section.poster, "poster"]] as const) : []),
       ];
+    case "externalVideo":
     case "textOnly":
     case "statRow":
       return [];

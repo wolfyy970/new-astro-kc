@@ -69,6 +69,10 @@ This script validates the content JSON against the shared strict Zod schemas (`s
 The project preserves source geometry instead of forcing media into a shared
 aspect ratio:
 
+- **Canonical source library:** The complete source archive for résumé,
+  marginalia, awards, and case-study illustrations is mounted at
+  `/Volumes/home/_Jobs - CV - Resume/Resume in Action`. Search this library
+  before sourcing or generating replacement artwork.
 - **Case studies:** Keep assets under `public/images/<slug>/`. Components read
   each file's real dimensions through `publicImageSize()`; components using
   Astro's `Image` request WebP output, while direct `<img>` renderers serve the
@@ -77,6 +81,43 @@ aspect ratio:
   Astro's image service for WebP URLs constrained inside a 600×400 bounding box
   and retains the returned dimensions.
 - **Asset quarantine:** Tracked images with no source, content, CSS, or manifest reference live under `asset-quarantine/images/`, preserving their former project grouping. The directory sits outside `public`, so quarantined files are not deployed. It exists as a reversible holding area until browser verification confirms those assets can be deleted.
+
+### Source Material Library
+
+`/Volumes/home/_Jobs - CV - Resume/Resume in Action` is the canonical external
+archive of materials available to illustrate the portfolio's résumé entries,
+popover and marginalia notes, awards, education, and case studies. It is
+organized primarily by career era or organization:
+
+- `_Awards`
+- `_Turner`, with project collections such as CNN Magic Wall, AR, Google Earth,
+  TV Everywhere, upwave, and Cartoon Network work
+- `_Wolff Co`
+- `_Sparksgrove`
+- `_TwoWayTV`
+- `_Epic Multimedia`
+- `_MSc` and `_BSc`
+- Keynote source decks at the archive root
+
+The archive is a source library, not a deployable directory:
+
+1. Check the relevant archive collection before searching the web or generating
+   new imagery.
+2. Select an artifact that supports the factual résumé entry or case-study
+   narrative. Do not modify or reorganize the archive original.
+3. Copy only the selected asset into `public/images/<slug-or-entry>/`, using a
+   descriptive lowercase filename. Export or transcode `.key`, `.doc`, `.mov`,
+   or other non-web-ready source formats as needed while preserving the
+   original in the archive.
+4. Reference only the repository copy from content JSON. Paths under
+   `/Volumes/home` are local-machine paths and cannot work in production.
+5. Leave unused candidates in the source archive rather than copying them into
+   the repository or asset quarantine.
+6. Run `npm run verify` and `npm run quality` after wiring a selected asset into
+   the portfolio.
+
+If `/Volumes/home` is not mounted, treat the library as temporarily unavailable,
+not missing or deleted.
 
 ## Managing Content
 

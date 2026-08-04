@@ -1,8 +1,10 @@
 # Asset Quarantine
 
-This directory holds 29 tracked images moved out of `public/` on 2026-07-29
-after repository-wide source, content, CSS, and manifest searches found no
-references to their former URLs.
+This directory holds tracked images moved out of `public/` after they were found
+to be unused or unsuitable for the portfolio's documented work. The original 29
+unreferenced images were quarantined on 2026-07-29. The CNN Hurricane Idalia
+still was added on 2026-07-30 when the Magic Wall case study was corrected:
+the 2023 broadcast image was anachronistic to the 2006–2008 project.
 
 The project groupings are preserved so each move is reversible. Files here are
 not deployed and must not be referenced by production code. Delete them only

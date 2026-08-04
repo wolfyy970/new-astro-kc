@@ -1,49 +1,101 @@
 {
   "meta": {
-    "title": "CNN Magic Wall: Interactive Weather",
-    "description": "How I introduced large-format multi-touch technology to CNN, brokered the partner relationship, and led the team that designed its interactive weather experience.",
-    "ogImage": "/images/cnn/magic-wall-hurricane.png",
+    "title": "CNN Magic Wall: From TED to Broadcast",
+    "description": "How a relationship formed after Jeff Han's breakthrough TED2006 demo brought Perceptive Pixel's platform to CNN—and gave Turner R&D and CNN Weather a new canvas for live forecasting.",
+    "ogImage": "/images/cnn/magic-wall-election-interaction.jpg",
     "accent": "#cc0000"
   },
   "hero": {
-    "label": "CNN · Emerging Interaction",
-    "title": "Bringing Multi-Touch Storytelling to CNN",
-    "subtitle": "Introduced the large-format multi-touch platform to CNN, brokered the partner relationship, and led the team that designed its interactive weather experience.",
-    "background": "/images/cnn/magic-wall-hurricane.png"
+    "label": "CNN · Technology Scouting & Product Development",
+    "title": "From a TED Demo to CNN's Magic Wall",
+    "subtitle": "After seeing Jeff Han unveil his breakthrough multi-touch interface at TED2006, I connected with him and brokered Perceptive Pixel's engagement with CNN. Turner R&D then designed and built the weather application with CNN Weather.",
+    "background": "/images/cnn/magic-wall-election-interaction.jpg"
   },
   "context": {
     "challenge": "Move CNN beyond limited touchscreen experiments toward an interaction model that could support live broadcast storytelling.",
-    "role": "Senior Director, Strategic Product",
+    "role": "Director, Games & Entertainment Technologies",
     "company": "Turner Broadcasting / CNN",
-    "scope": "Technology strategy, partner selection, product direction, and interaction design leadership",
-    "team": "Turner R&D, CNN Weather, product design and engineering, and the external technology partner",
-    "body": "CNN was evaluating multi-touch approaches that could not support the scale, responsiveness, or interaction model the network needed. I brought in a more capable large-format platform and brokered the relationship with the technology partner, drawing on a relationship I had established before the engagement. My team then designed and built CNN's interactive weather software. The election-night applications that later made the wall famous were produced by other CNN teams. They are part of the platform's adoption story, not work I claim as my team's software."
+    "scope": "Technology scouting, relationship brokering, product direction, and interaction design leadership",
+    "team": "Turner R&D and CNN Weather for the weather application; Perceptive Pixel and CNN for the election-night application",
+    "body": "The relationship I built with Jeff Han after TED2006 became Perceptive Pixel's path into CNN. Turner R&D, under my direction, designed and built the weather application's UI in close collaboration with CNN Weather, whose meteorologists brought the domain expertise, on-air workflow, and presentation requirements. The person demonstrating the application in the video is CNN chief meteorologist Chad Myers. The election-night application that later made the wall famous was a separate collaboration between Perceptive Pixel and CNN."
   },
   "sections": [
     {
-      "key": "weather",
-      "type": "featureRow",
-      "label": "The Product",
-      "title": "Weather was the experience my team built.",
-      "description": "The interface gave meteorologists a direct, spatial way to move through forecasts, storm systems, maps, and supporting data while staying connected to the audience. The work had to function as both an analytical tool and a live performance surface, with interactions clear enough to read instantly on television.",
-      "image": "/images/cnn/magic-wall-hurricane.png",
-      "imageAlt": "CNN meteorologist presenting a hurricane forecast on the large-format interactive weather wall"
+      "key": "ted-origin",
+      "type": "externalVideo",
+      "bg": "#eef1f4",
+      "label": "The Origin",
+      "title": "The technology was impossible to ignore.",
+      "description": "Jeff Han's TED2006 presentation was multi-touch's breakthrough public moment. The relationship formed after the talk became the introduction and engagement that brought Perceptive Pixel's platform into CNN.",
+      "embedUrl": "https://embed.ted.com/talks/jeff_han_the_radical_promise_of_the_multi_touch_interface",
+      "sourceUrl": "https://www.ted.com/talks/jeff_han_the_radical_promise_of_the_multi_touch_interface",
+      "caption": "Jeff Han, “The radical promise of the multi-touch interface,” TED2006."
     },
     {
-      "key": "adoption",
+      "key": "weather",
       "type": "video",
+      "label": "The Product",
+      "title": "Weather turned the wall into a broadcast tool.",
+      "description": "Turner R&D designed the interface and built the application in collaboration with CNN Weather. Together, the teams translated meteorologists' domain knowledge and on-air workflow into a direct, spatial way to move through forecasts, storm systems, maps, warnings, and supporting data while staying connected to the audience.",
+      "video": "/media/cnn-magic-wall.mp4",
+      "poster": "/images/cnn/magic-wall-weather-demo.jpg",
+      "caption": "CNN chief meteorologist Chad Myers demonstrates the interactive weather application, designed and built by Turner R&D with CNN Weather."
+    },
+    {
+      "key": "weather-development",
+      "type": "photoGrid",
+      "bg": "#f8eaea",
+      "label": "Inside the Product",
+      "title": "Designed for live manipulation.",
+      "description": "Development captures show the weather interface's map navigation, severe-weather warnings, drawing tools, and on-air controls—the working product behind the broadcast demonstration.",
+      "columns": 3,
+      "gap": "tight",
+      "images": [
+        {
+          "src": "/images/cnn/magic-wall-weather-map.jpg",
+          "alt": "Development capture of the CNN Magic Wall weather application displaying an interactive satellite map of Atlanta"
+        },
+        {
+          "src": "/images/cnn/magic-wall-weather-warnings.jpg",
+          "alt": "Development capture of the CNN Magic Wall weather application with map, flash-flood warning, and weather controls"
+        },
+        {
+          "src": "/images/cnn/magic-wall-weather-tools.jpg",
+          "alt": "Development capture of the CNN Magic Wall severe weather center with drawing and annotation tools"
+        }
+      ]
+    },
+    {
+      "key": "election-adoption",
+      "type": "photoGrid",
       "bg": "#eef1f4",
       "label": "Platform Adoption",
-      "title": "The wall became part of CNN's visual language.",
-      "description": "This footage shows how CNN's election teams used the same class of large-format multi-touch platform for election-night storytelling. Their application was not built by my team. Its relevance here is the wider organizational adoption of the interaction model and partner technology I helped bring into CNN.",
-      "video": "/media/cnn-magic-wall.mp4",
-      "poster": "/images/cnn/magic-wall-hurricane.png",
-      "caption": "Election-night software shown for platform context; KC's team designed and built CNN's weather experience."
+      "title": "Election night made the wall famous.",
+      "description": "These 2007–2008 development and studio photographs document the election-night application created collaboratively by Perceptive Pixel and CNN. They show the platform's wider adoption at CNN; they do not depict the weather application designed by Turner R&D with CNN Weather.",
+      "columns": 2,
+      "gap": "normal",
+      "images": [
+        {
+          "src": "/images/cnn/magic-wall-election-prototype.jpg",
+          "alt": "Early Perceptive Pixel and CNN election application showing a person manipulating a county-level United States results map"
+        },
+        {
+          "src": "/images/cnn/magic-wall-election-studio.jpg",
+          "alt": "CNN election studio during preparation with the Magic Wall positioned among cameras and production staff"
+        },
+        {
+          "src": "/images/cnn/magic-wall-election-interaction.jpg",
+          "alt": "John King interacting with county-level Michigan election results on CNN's Magic Wall"
+        },
+        {
+          "src": "/images/cnn/magic-wall-election-results.jpg",
+          "alt": "CNN Magic Wall displaying Michigan election results in the 2008 election studio"
+        }
+      ]
     },
     {
       "key": "leadership",
       "type": "textOnly",
-      "bg": "#f8eaea",
       "label": "The Leadership Move",
       "title": "The intervention began before interface design.",
       "description": "The decisive work was recognizing that the technology choices under consideration would constrain the experience, finding a platform capable of the interaction model, and creating the relationship that allowed CNN to adopt it. Product leadership here meant shaping the conditions in which good interaction design could exist."

@@ -1,14 +1,14 @@
 {
   "meta": {
     "title": "Upwave: Health & Wellness Platform",
-    "description": "How I led product and design for Upwave, Turner's health and wellness venture, from concept to 1 million users in 8 months.",
+    "description": "The product and design leadership behind Upwave, Turner's health and wellness venture, from concept to 1 million users in eight months.",
     "ogImage": "/images/upwave/upwave-homepage-desktop-mobile.webp",
     "accent": "#f26522"
   },
   "hero": {
     "label": "Upwave",
     "title": "Building a Platform That Makes Wellness Stick",
-    "subtitle": "I led product and design for Turner's health and wellness venture, partnering with IDEO on market validation, then taking it from concept to 1M monthly users in eight months.",
+    "subtitle": "I ran product and design for Turner's health and wellness venture, leading its internal designers and an external agency team from concept to 1M monthly users in eight months.",
     "image": "/images/upwave/upwave-homepage-desktop-mobile.webp",
     "imageAlt": "Upwave homepage on desktop and mobile"
   },
@@ -17,8 +17,8 @@
     "role": "Vice President, Product & UX",
     "company": "Upwave (Internal Venture)",
     "scope": "Product Leadership, Lean Methodology, Team Directorship",
-    "team": "0 to 1M Users in 8 mos, Webby Nomination",
-    "body": "Upwave was Turner's IoT-driven digital health venture, exploring the intersection of quantified-self data and personalized content. As Vice President, Product & UX, I led the specialized teams responsible for taking the venture from concept to market. Partnering with IDEO for initial market validation, I established the product strategy and introduced a lean methodology that enabled daily release cycles, accelerating growth to 1M monthly unique users in just eight months."
+    "team": "Internal product and design teams, engineering, and an external agency working alongside our designers",
+    "body": "Upwave was Turner's IoT-driven digital health venture, exploring the intersection of quantified-self data and personalized content. As Vice President, Product & UX, I ran product and design, leading an internal eight-person UX, product, and design team and the external agency working alongside it. IDEO had served as the research partner during opportunity shaping and product positioning. A lean delivery model enabled daily releases and helped grow the venture to 1M monthly unique users in eight months."
   },
   "sections": [
     {
@@ -28,23 +28,23 @@
       "bg": "#fff8f4",
       "label": "The Platform",
       "title": "An ecosystem of content, challenges, and analytics.",
-      "description": "I directed the product roadmap and user experience strategy across the entire Upwave ecosystem, guiding teams to ensure a seamless integration between media consumption and health tracking behaviors.",
+      "description": "A single product and UX direction aligned the internal design team and agency partner around an ecosystem connecting media consumption with health-tracking behaviors.",
       "cards": [
         {
           "title": "Content Strategy & Platform",
-          "description": "Directed the UX strategies for a responsive media platform built to drive engagement and recirculation.",
+          "description": "A responsive media platform connected editorial content, personalized recommendations, and pathways designed to deepen engagement.",
           "image": "/images/upwave/upwave-content-inspiration.webp",
           "imageAlt": "Upwave inspiration experience across desktop and mobile"
         },
         {
           "title": "Behavioral Challenges",
-          "description": "Oversaw the design framework for multi-day wellness challenges, applying behavioral science to daily progress tracking.",
+          "description": "Multi-day wellness challenges applied behavioral principles to goals, daily progress, and sustained participation.",
           "image": "/images/upwave/upwave-challenge-desktop-mobile.webp",
           "imageAlt": "Upwave challenge experience on desktop and mobile"
         },
         {
           "title": "TrackIt Analytics",
-          "description": "Guided the strategic integration of emerging wearables and fitness trackers with a unified personal health dashboard.",
+          "description": "Emerging wearables and fitness trackers fed a unified dashboard for personal health data.",
           "image": "/images/upwave/upwave-trackit-sync.webp",
           "imageAlt": "Upwave TrackIt interface for connecting health and fitness data"
         }
@@ -58,31 +58,21 @@
       "darkBg": "#1e1e1e",
       "label": "Market Validation & Delivery",
       "title": "From validation to daily releases.",
-      "description": "Building a platform at the forefront of quantified-self technology (pre-Apple Watch) required rigorous methodology. I initiated a partnership with IDEO to secure product-market fit and validate key assumptions before large-scale investment. Working cross-functionally, I led the transition of the teams to a lean product methodology, establishing a cadence of daily release cycles that increased platform recirculation from 5% to 24%.",
+      "description": "Building a quantified-self platform before the Apple Watch required disciplined validation rather than a rush to build. I brought in IDEO to test the opportunity, shape the positioning, and challenge key assumptions before large-scale investment. The resulting lean product model established daily release cycles and increased platform recirculation from 5% to 24%.",
       "cards": [
         {
           "title": "Architecture Directorship",
-          "description": "Directed the UX and product teams to establish the foundational information architecture and component strategy.",
+          "description": "A shared information architecture and component strategy gave product and design teams a stable foundation for rapid delivery.",
           "image": "/images/upwave/upwave-responsive-product-system.webp",
           "imageAlt": "Upwave responsive product system across onboarding, challenges, and collections"
         },
         {
           "title": "Interaction Systems",
-          "description": "Led multidisciplinary teams translating content, video, challenges, profiles, and social actions into an accessible, repeatable interaction system.",
+          "description": "Content, video, challenges, profiles, and social actions came together in an accessible, repeatable interaction system.",
           "image": "/images/upwave/upwave-personalized-homepage.webp",
           "imageAlt": "Personalized Upwave homepage combining content, video, challenges, and social features"
         }
       ]
-    },
-    {
-      "key": "technology",
-      "type": "textOnly",
-      "isDark": true,
-      "bg": "linear-gradient(135deg, #1a1a1a 0%, #2e1d1a 100%)",
-      "darkBg": "#1a1a1a",
-      "label": "Emerging Technology",
-      "title": "Defining the future of broadcast.",
-      "description": "Prior to leading Upwave, my tenure at Turner included serving as Senior Director of Strategic Product spanning CNN, Cartoon Network, TBS & TNT. I led multi-disciplinary R&D teams that pioneered early mobile augmented reality applications and the sync-to-TV technology that ultimately won a Primetime Emmy Award. These efforts resulted in two granted U.S. patents for automatic content recognition. I also collaborated on the design of the CNN 'Magic Wall,' introducing a massive multi-touch paradigm that redefined data storytelling across the broadcast industry."
     }
   ]
 }

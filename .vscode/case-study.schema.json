@@ -182,7 +182,8 @@
             "captionedImage",
             "photoGrid",
             "statRow",
-            "video"
+            "video",
+            "externalVideo"
           ],
           "description": "Determines which component tree CaseStudySection renders. See ARCHITECTURE.md § Section Type Catalog for field requirements per type."
         },
@@ -401,6 +402,32 @@
                           "caption": {
                             "type": "string",
                             "description": "Short attribution or context line below the video."
+                          }
+                        }
+                      },
+                      "else": {
+                        "if": {
+                          "properties": {
+                            "type": { "const": "externalVideo" }
+                          }
+                        },
+                        "then": {
+                          "required": ["embedUrl", "sourceUrl", "title"],
+                          "properties": {
+                            "embedUrl": {
+                              "type": "string",
+                              "pattern": "^https://embed\\.ted\\.com/",
+                              "description": "Approved TED iframe URL."
+                            },
+                            "sourceUrl": {
+                              "type": "string",
+                              "pattern": "^https://",
+                              "description": "Canonical public page for the embedded talk."
+                            },
+                            "caption": {
+                              "type": "string",
+                              "description": "Short attribution or context line below the embedded video."
+                            }
                           }
                         }
                       }

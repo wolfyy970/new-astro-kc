@@ -42,7 +42,7 @@ npm run quality # Run the complete pre-deployment gate
 ## Documentation Map
 
 - [**PRODUCT.md**](./PRODUCT.md) — Feature specifications and strategic value proposition.
-- [**USER_GUIDE.md**](./USER_GUIDE.md) — Setup, content management, and manual deployment workflows.
+- [**USER_GUIDE.md**](./USER_GUIDE.md) — Setup, source-material and content management, and deployment workflows.
 - [**ARCHITECTURE.md**](./ARCHITECTURE.md) — Technical design, modular interactive engines, and data flow.
 - [**DESIGN.md**](./DESIGN.md) — The visual system: palette doctrine, type roles, layout rules, components. Machine-readable tokens in the frontmatter.
 - [**DOCUMENTATION.md**](./DOCUMENTATION.md) — Meta-documentation philosophy and maintenance rules.

@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Sparks Grove: Delta Air Lines",
-    "description": "How I led design for the Delta News Hub, a unified communications platform for the world's most-traveled airline, serving 90,000 employees and millions of customers.",
+    "description": "The design leadership behind Delta News Hub, a unified communications platform serving 90,000 employees and millions of customers.",
     "ogImage": "/images/sparks-grove/news-hub.jpg",
     "accent": "#c8102e"
   },
@@ -16,8 +16,8 @@
     "role": "UX Design Practice Leader",
     "company": "Sparks Grove, North Highland",
     "scope": "Practice Leadership, Strategic Consulting",
-    "team": "Secured $3M+ client engagement",
-    "body": "As UX Practice Leader for Sparks Grove (North Highland's innovation agency), I led the strategic consulting engagement for the Delta News Hub. Delta's internal and external communications lived across fragmented legacy systems. I directed our agency teams to architect a unified platform serving corporate comms, media relations, and 90,000 employees under one cohesive, premium experience."
+    "team": "Multidisciplinary agency and Delta stakeholder teams",
+    "body": "As UX Practice Leader for Sparks Grove, North Highland's innovation agency, I led the strategic consulting engagement for Delta News Hub. Delta's internal and external communications lived across fragmented legacy systems. The agency team unified corporate communications, media relations, and employee news in a cohesive platform designed to serve 90,000 employees and millions of customers."
   },
   "sections": [
     {
@@ -27,23 +27,23 @@
       "darkBg": "#0b1b2b",
       "label": "The Work",
       "title": "Delta News Hub Leadership",
-      "description": "I led the agency's multidisciplinary product and design teams in establishing a content-rich platform that balanced editorial storytelling with real-time operational priorities.",
+      "description": "A multidisciplinary product and design team created a content-rich platform that balanced editorial storytelling with real-time operational priorities.",
       "primaryCard": {
         "title": "Editorial Architecture",
-        "description": "Directed the strategy for a modular, category-driven framework designed to scale globally.",
+        "description": "A modular, category-driven framework gave the newsroom room to scale globally.",
         "image": "/images/sparks-grove/news-hub.jpg",
         "imageAlt": "News Hub Desktop"
       },
       "secondaryCards": [
         {
           "title": "Information Strategy",
-          "description": "Oversaw the IA development, prioritizing real-time audience needs.",
+          "description": "The information architecture prioritized real-time audience needs without flattening the editorial hierarchy.",
           "image": "/images/sparks-grove/DNH01.jpg",
           "imageAlt": "IA & Header"
         },
         {
           "title": "Design Oversight",
-          "description": "Managed the visual execution to ensure editorial quality was maintained across all touchpoints.",
+          "description": "A governed visual system preserved editorial quality across desktop and mobile touchpoints.",
           "image": "/images/sparks-grove/delta-4.jpg",
           "imageAlt": "Mobile Views"
         }
@@ -55,7 +55,7 @@
       "bg": "#080d14",
       "label": "Practice Leadership",
       "title": "Transforming the agency.",
-      "description": "The Delta engagement represented just one key aspect of my purview. As Practice Leader, I led the transformation of the agency itself from a traditional waterfall model to agile software development and lean product management, repositioning the entire practice around \"Human Experience Design\" (HxD). Over 2.5 years, I pitched and won $4.7M+ in new business and provided product methodology coaching for executives at major Fortune 500s, including The Home Depot. This transformation earned the National Impact Award in 2016.",
+      "description": "Delta was one expression of a broader practice transformation. As Practice Leader, I moved the agency from traditional waterfall delivery toward agile software development and lean product management, repositioning the practice around \"Human Experience Design\" (HxD). Over 2.5 years, that model helped win $2.7M in new business and supported product-methodology coaching for Fortune 500 executives, including leaders at The Home Depot. The transformation earned North Highland's National Impact Award in 2016.",
       "image": "/images/sparks-grove/gala_5.jpg",
       "imageAlt": "Human Experience Design"
     },

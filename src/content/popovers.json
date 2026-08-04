@@ -55,7 +55,7 @@
   },
   "upwave": {
     "label": "Upwave · Turner Broadcasting",
-    "text": "Prescient IoT-driven digital health venture at the intersection of wearables and personalized content delivery. Partnered with IDEO for market validation and product-market fit. Introduced lean product methodology enabling daily release cycles. The product was ahead of mainstream wearable adoption: pre-Apple Watch.",
+    "text": "I ran product and design for this IoT-driven digital health venture, leading our internal designers and an external agency working alongside them. Partnered with IDEO for market validation and product-market fit, then introduced lean product methodology enabling daily release cycles. The product was ahead of mainstream wearable adoption: pre-Apple Watch.",
     "img": "/images/upwave/upwave-homepage-desktop-mobile.webp",
     "link": "/upwave",
     "linkText": "View Upwave project",
@@ -72,9 +72,9 @@
   },
   "magicwall": {
     "label": "CNN Magic Wall",
-    "text": "I brought the large-format multi-touch technology into CNN and brokered the relationship with the technology partner after seeing that the alternatives under consideration were not capable of the interaction model the network needed. My team designed and built the weather software shown here. CNN's election teams subsequently made the wall famous with their own election-night applications; that footage documents the wider adoption of the platform, not software built by my team.",
+    "text": "After seeing Jeff Han's breakthrough multi-touch presentation at TED2006, I connected with him and brokered Perceptive Pixel's engagement with CNN. Turner R&D designed and built the interactive weather application with CNN Weather. The election-night application that made the wall famous was a separate Perceptive Pixel and CNN collaboration.",
     "media": [
-      "/images/cnn/magic-wall-hurricane.png",
+      "/images/cnn/magic-wall-election-interaction.jpg",
       "/media/cnn-magic-wall.mp4"
     ],
     "link": "/magic-wall",

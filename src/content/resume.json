@@ -81,8 +81,7 @@
       "bullets": [
         "<hotspot key=\"emmy\">Emmy Award</hotspot> (Outstanding Creative Achievement in Interactive Media) by developing the underlying automatic content recognition (ACR) platform that powered the Team Coco sync-to-TV application.",
         "Awarded two <hotspot key=\"patents\">U.S. patents</hotspot> for automatic content recognition and audience engagement technologies that synchronized interactive content with live broadcast television.",
-        "Designed and led development for CNN World Cup Twitter Buzz, producing real-time data visualization that earned a <hotspot key=\"rts-award\">Royal Television Society Award</hotspot> and Fast Company's \"Infographic of the Day\".",
-        "Introduced the large-format multi-touch <hotspot key=\"magicwall\">CNN \"Magic Wall\"</hotspot> technology to CNN and brokered the partner relationship, then led the team that designed and built its interactive weather experience."
+        "Designed and led development for CNN World Cup Twitter Buzz, producing real-time data visualization that earned a <hotspot key=\"rts-award\">Royal Television Society Award</hotspot> and Fast Company's \"Infographic of the Day\"."
       ]
     },
     {
@@ -92,6 +91,7 @@
       "description": "R&D exploration role focused on piloting and promoting emerging platforms into Turner brands (CNN, Cartoon Network, TBS, TNT) prior to mainstream adoption.",
       "bullets": [
         "Pioneered the first <hotspot key=\"ar\">mobile augmented reality applications</hotspot> in the U.S. for NBA and Cartoon Network in an academic partnership with Georgia Tech. Built on pre-iPhone Nokia devices, successfully predicting mobile's path to AR preeminence.",
+        "Scouted and brokered Perceptive Pixel's large-format multi-touch technology into CNN News after meeting founder Jeff Han at his breakthrough TED2006 presentation; Turner R&D then designed and built CNN's <hotspot key=\"magicwall\">\"Magic Wall\" weather application</hotspot> with CNN Weather.",
         "Led <hotspot key=\"fusionfall\">behavioral design research for Cartoon Network's FusionFall</hotspot> with Immersyve and Richard Ryan, co-author of Self-Determination Theory and one of the world's most-cited psychologists, translating motivation science into decisions about onboarding, challenge, exploration, social play, and retention.",
         "Established virtual item sales as an incremental revenue stream for Cartoon Network and Adult Swim properties on Sony PlayStation Home's early virtual economies.",
         "Prototyped early cloud-streaming games technology for GameTap using instant-on video technology, a precursor to services such as Google Stadia and Nvidia GeForce Now."
