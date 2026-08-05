@@ -1,5 +1,12 @@
 [
   {
+    "slug": "bolt",
+    "title": "Bolt Design System",
+    "description": "Global themeable design system · Figma 1:1 with code · adopted across North America, Europe & APAC",
+    "accent": "#011EC1",
+    "ogImage": "/images/bolt/bolt-cover.webp"
+  },
+  {
     "slug": "truist",
     "title": "Truist Financial",
     "description": "50-person design org · $66B merger · America's 7th largest bank",

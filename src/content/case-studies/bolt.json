@@ -1,0 +1,144 @@
+{
+  "meta": {
+    "title": "Bolt: A Global Design System",
+    "description": "The Bolt design system — a themeable, token-driven library kept 1:1 with code and adopted across North America, Europe, and Asia Pacific at Genuine Parts Company.",
+    "ogImage": "/images/bolt/bolt-cover.webp",
+    "accent": "#011EC1"
+  },
+  "hero": {
+    "label": "Bolt Design System",
+    "title": "One Design System, Three Continents",
+    "subtitle": "A themeable, token-driven library built end to end and kept 1:1 with code — cutting front-end development time roughly 25% and unifying product design across North America, Europe, and Asia Pacific.",
+    "image": "/images/bolt/bolt-cover.webp",
+    "imageAlt": "Bolt UI Kit cover — the Bolt hexagon logo, version 1.0.1, marked Live and ready for consumption"
+  },
+  "context": {
+    "challenge": "Ship one themeable design system across three continents — with Figma that never drifts from code.",
+    "role": "Senior Director & Head of UX Design and Research",
+    "company": "Genuine Parts Company",
+    "scope": "Global design system: foundations, tokens, component library, theming, governance",
+    "team": "Design engineering & product designers",
+    "body": "Bolt is a global, themeable design system built end to end — a token architecture and component library kept 1:1 with production code, so a design in Figma and its built counterpart never diverge. My design-engineering team built it from the foundations up: color, typography, spacing, elevation, and interaction tokens feeding a full component set, then governed its rollout across North America, Europe, and Asia Pacific. The result cut front-end development time by roughly 25% and gave a Fortune Global 500 parts distributor a single, accessible design language."
+  },
+  "sections": [
+    {
+      "key": "color",
+      "type": "largeImage",
+      "bg": "#f4f6ff",
+      "label": "Foundations · Color",
+      "title": "A Tokenized Color System",
+      "description": "Every hue is a semantic token — static, interactive, and feedback roles, each graded weakest to strongest — so brand, state, and accessibility become decisions the system makes, not the designer. Every default pairing meets WCAG AA.",
+      "image": "/images/bolt/bolt-color.webp",
+      "imageAlt": "Bolt color foundations: static, interactive, and feedback token ramps with hex values and AA contrast notes, badged with the GPC hexagon"
+    },
+    {
+      "key": "type-depth",
+      "type": "photoGrid",
+      "columns": 2,
+      "gap": "normal",
+      "label": "Foundations · Type & Elevation",
+      "images": [
+        {
+          "src": "/images/bolt/bolt-typography.webp",
+          "alt": "Bolt typographic scale — heading, body, and caption roles with sizes, weights, and line-heights defined as tokens"
+        },
+        {
+          "src": "/images/bolt/bolt-depth.webp",
+          "alt": "Bolt elevation scale — a graded set of depth and shadow tokens from flat surfaces to raised overlays"
+        }
+      ]
+    },
+    {
+      "key": "grid",
+      "type": "largeImage",
+      "bg": "#f4f6ff",
+      "label": "Foundations · Layout",
+      "title": "Built on a Responsive Grid",
+      "description": "Four breakpoints, a shared gap-and-padding rhythm, and an 8px horizontal grid — documented with live column overlays at every size, capped at a 1164px content measure. Layout stops being a per-screen negotiation.",
+      "image": "/images/bolt/bolt-grid.webp",
+      "imageAlt": "Bolt breakpoints and grids documentation — a breakpoint table plus XSmall, Small, Medium, and Large layouts with column overlays and a 1164px max width"
+    },
+    {
+      "key": "space-radius",
+      "type": "photoGrid",
+      "columns": 2,
+      "gap": "normal",
+      "label": "Foundations · Space & Radius",
+      "images": [
+        {
+          "src": "/images/bolt/bolt-spacing.webp",
+          "alt": "Bolt spacing tokens — a scale in 4px increments shown as graded swatches, applied to gaps and margins"
+        },
+        {
+          "src": "/images/bolt/bolt-radius.webp",
+          "alt": "Bolt corner-radius tokens with a nesting diagram showing how radii step down as elements nest"
+        }
+      ]
+    },
+    {
+      "key": "theming",
+      "type": "featureRow",
+      "label": "Themeable by Design",
+      "title": "Themeable to the Core",
+      "description": "Bolt themes from tokens, not overrides — every component ships light and dark from a single source of truth. Here, the full input-field system in both editions: placeholders, validation, prefixes, and focus states, all resolved from the same token names.",
+      "image": "/images/bolt/bolt-comp-theming.webp",
+      "imageAlt": "The Bolt input-field system side by side in light and dark themes — placeholder, value, dropdown, currency prefix, required/error, search, and date variants with helper text"
+    },
+    {
+      "key": "components",
+      "type": "cardGrid",
+      "columns": 3,
+      "title": "A Library, Composed",
+      "description": "Not a component dump — a considered set. A few of the pieces that make Bolt feel like one product rather than a parts bin.",
+      "cards": [
+        {
+          "title": "Buttons",
+          "description": "Primary, secondary, destructive, and warning intents — each as solid, outline, and text, with every state tokenized so a button is never a one-off.",
+          "image": "/images/bolt/bolt-comp-buttons.webp",
+          "imageAlt": "Bolt button variants — primary blue, secondary, destructive red, and warning yellow, each in solid, outline, and text styles"
+        },
+        {
+          "title": "Checkboxes",
+          "description": "Checked, unchecked, and indeterminate — resolved in light and dark from the same token names, so state reads identically in either edition.",
+          "image": "/images/bolt/bolt-comp-checkboxes.webp",
+          "imageAlt": "Bolt checkbox states — unchecked, checked, and indeterminate — shown in both light and dark themes"
+        },
+        {
+          "title": "Date Range Picker",
+          "description": "A two-month range picker with smart presets — the kind of complex input that usually fragments across teams, solved once.",
+          "image": "/images/bolt/bolt-comp-datepicker.webp",
+          "imageAlt": "Bolt date-range picker showing February and March 2025 side by side with Last 10/30/60/90-day presets and a reset action"
+        },
+        {
+          "title": "Selection Cards",
+          "description": "Radio and checkbox choices promoted to first-class, describable cards with selected, hover, and disabled states.",
+          "image": "/images/bolt/bolt-comp-cards.webp",
+          "imageAlt": "Bolt selection cards with title and description, shown in unselected, selected, and disabled states"
+        },
+        {
+          "title": "Avatars",
+          "description": "Identity at every size — photo, initials, and fallback — so people read consistently across the whole product.",
+          "image": "/images/bolt/bolt-comp-avatars.webp",
+          "imageAlt": "Bolt avatar system: a grid of photo, initials, and placeholder avatars across multiple sizes"
+        },
+        {
+          "title": "Order Tracker",
+          "description": "A domain-aware progress tracker — order placed to delivered — proving the system carries real commerce flows, not just controls.",
+          "image": "/images/bolt/bolt-comp-tracker.webp",
+          "imageAlt": "Bolt order-status tracker stepping through Order Placed, Invoice Created, Preparing Order, Out for Delivery, and Delivered with completed checkmarks"
+        }
+      ]
+    },
+    {
+      "key": "outcomes",
+      "type": "statRow",
+      "label": "Impact",
+      "stats": [
+        { "value": "~25%", "label": "Less Front-End Dev Time" },
+        { "value": "3", "label": "Continents Adopted" },
+        { "value": "1:1", "label": "Figma-to-Code Parity" },
+        { "value": "AA", "label": "Accessibility Baseline" }
+      ]
+    }
+  ]
+}
