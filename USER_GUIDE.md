@@ -177,7 +177,7 @@ The résumé uses semantic CSS custom properties (`--type-editorial`, `--type-h2
 
 Case studies are data-driven: content lives in JSON files and a thin `.astro` page imports and renders them. See `ARCHITECTURE.md → Case Study Template System` for the full section type reference.
 
-1. **Create `src/content/case-studies/<slug>.json`** following the schema in `.vscode/case-study.schema.json`. Include `meta`, `hero`, `context`, and a `sections` array where each item has a `type` field (e.g. `cardGrid`, `featureRow`, `textOnly`). Existing slugs are `truist`, `upwave`, `sparks-grove`, `two-way-tv`, `felix`, `fusionfall`, `magic-wall`, and `armchair-manager`.
+1. **Create `src/content/case-studies/<slug>.json`** following the schema in `.vscode/case-study.schema.json`. Include `meta`, `hero`, `context`, and a `sections` array where each item has a `type` field (e.g. `cardGrid`, `featureRow`, `textOnly`). Existing slugs are `bolt`, `truist`, `upwave`, `sparks-grove`, `two-way-tv`, `felix`, `fusionfall`, `magic-wall`, and `armchair-manager`.
 2. **Add an entry to `src/content/case-studies/manifest.json`** with `slug`, `title`, `description`, `accent` (6-digit hex), and `ogImage`.
 3. **Create `src/pages/<slug>.astro`** — copy any existing page. The whole body is:
    ```astro
