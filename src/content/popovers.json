@@ -8,7 +8,10 @@
   },
   "bolt": {
     "label": "Bolt Design System",
-    "text": "Design engineering team designed and built aglobal themeable design system end to end - Figma 1 to 1 with code. Adopted across North America, Europe, and Asia Pacific. Reduced front-end development time by approximately 25%."
+    "text": "Design engineering team designed and built a global themeable design system end to end - Figma 1 to 1 with code. Adopted across North America, Europe, and Asia Pacific. Reduced front-end development time by approximately 25%.",
+    "img": "/images/bolt/bolt-cover.webp",
+    "link": "/bolt",
+    "linkText": "View Bolt project"
   },
   "agentic": {
     "label": "Agentic AI",
