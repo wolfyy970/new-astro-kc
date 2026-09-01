@@ -38,7 +38,7 @@ if (Astro.request.method === "POST") {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Confidential: KC Wolff-Ingham</title>
+    <title>KC Wolff-Ingham</title>
     <meta name="robots" content="noindex, nofollow" />
     <HeadFonts />
     <ThemeScript />
@@ -61,7 +61,8 @@ if (Astro.request.method === "POST") {
       /* min-height, not height, and no overflow: hidden. The gate is one
                screen tall by intent, but a fixed 100vh with hidden overflow
                silently clips the form on a short window — and the title now
-               scales with the viewport, so there is more to clip. */
+               scales with the viewport, so there is more to clip.
+               Optical centering lifts the stack slightly above mathematical midpoint. */
       body {
         font-family: var(--doc-sans);
         background: var(--bg);
@@ -70,6 +71,7 @@ if (Astro.request.method === "POST") {
         display: flex;
         align-items: center;
         justify-content: center;
+        padding-bottom: clamp(24px, 6vh, 64px);
       }
 
       .login-container {
@@ -79,16 +81,32 @@ if (Astro.request.method === "POST") {
         display: flex;
         flex-direction: column;
         align-items: center;
-        opacity: 0;
-        transform: translateY(16px);
-        animation: reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+
+      /* Visible by default. A document that has to be read does not put
+               its content behind a keyframe — the résumé masthead already
+               animates FROM a readable default; the gate used to start at
+               opacity 0 and only exist if the animation ran. */
+      @media (prefers-reduced-motion: no-preference) {
+        .login-container {
+          animation: reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        }
       }
 
       @keyframes reveal {
-        to {
-          opacity: 1;
-          transform: translateY(0);
+        from {
+          opacity: 0;
+          transform: translateY(16px);
         }
+      }
+
+      .login-sheet {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        width: max-content;
+        max-width: 100%;
+        min-width: 0;
       }
 
       /* The display role, the same one the masthead uses. The gate shows
@@ -97,6 +115,11 @@ if (Astro.request.method === "POST") {
                display size nor any other step, and `nowrap` on the name put it
                over the edge of a 375px phone. */
       .logo {
+        display: block;
+      }
+
+      .logo-name {
+        display: block;
         font-family: var(--display);
         font-size: var(--type-editorial);
         font-weight: 200;
@@ -104,12 +127,6 @@ if (Astro.request.method === "POST") {
         letter-spacing: -0.022em;
         line-height: 1.02;
         color: var(--doc-heading);
-        margin-bottom: 14px;
-      }
-
-      .logo-name {
-        display: block;
-        white-space: nowrap;
       }
 
       /* The label role. It was sans at 0.28em — the one apparatus line on
@@ -126,23 +143,25 @@ if (Astro.request.method === "POST") {
       }
 
       .divider {
-        width: 24px;
+        width: 100%;
         height: 1px;
-        background: var(--accent);
-        margin: 28px auto 32px;
+        margin: 28px 0 40px;
+        border: 0;
+        background: var(--doc-heading);
       }
 
       form {
         display: flex;
         flex-direction: column;
-        gap: 14px;
+        gap: 24px;
         width: 100%;
-        max-width: 360px;
+        align-self: stretch;
       }
 
       .password-label {
         display: block;
-        margin-bottom: 8px;
+        margin: 0 0 8px;
+        line-height: 1;
         color: var(--doc-light);
         font-family: var(--mono);
         font-size: var(--type-meta);
@@ -152,44 +171,53 @@ if (Astro.request.method === "POST") {
       }
 
       .password-control {
-        position: relative;
-      }
-
-      /* 17px, not 15px. iOS Safari zooms the viewport whenever a focused
-               input is set below 16px, so the gate was scaling itself on every
-               phone the moment the reader tapped the field. 17px is also the
-               body step, so the number is not a new one. */
-      input {
+        display: flex;
+        flex-direction: column;
         width: 100%;
-        padding: 13px 44px;
-        background: transparent;
-        border: none;
-        border-bottom: 1px solid var(--doc-rule);
-        font-family: var(--doc-sans);
-        font-size: var(--type-body);
-        text-align: center;
-        outline: none;
-        transition: border-color 0.25s ease;
-        color: var(--doc-heading);
       }
 
-      input:focus {
+      /* The line is the field. 8px under the 22px type so the dots and
+               the eye sit above the rule, not on it. */
+      .password-field {
+        position: relative;
+        width: 100%;
+        border-bottom: 1px solid var(--doc-rule);
+        transition: border-color 0.25s ease;
+      }
+
+      .password-field:focus-within {
         border-bottom-color: var(--accent);
       }
 
-      input[aria-invalid="true"] {
-        border-bottom: 2px solid var(--doc-heading);
+      .password-control:has(input[aria-invalid="true"]) .password-field {
+        border-bottom-color: var(--doc-heading);
+      }
+
+      input {
+        display: block;
+        box-sizing: content-box;
+        width: 100%;
+        height: 22px;
+        padding: 0 44px 8px 0;
+        background: transparent;
+        border: none;
+        font-family: var(--doc-sans);
+        font-size: var(--type-body);
+        line-height: 22px;
+        text-align: left;
+        outline: none;
+        color: var(--doc-heading);
       }
 
       .password-toggle {
         position: absolute;
         right: 0;
-        bottom: 0;
+        top: 0;
         display: inline-flex;
         width: 44px;
-        height: 44px;
+        height: 22px;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-end;
         margin: 0;
         padding: 0;
         background: transparent;
@@ -197,6 +225,13 @@ if (Astro.request.method === "POST") {
         border: none;
         cursor: pointer;
         transition: color 0.2s ease;
+      }
+
+      /* Expand the tap target without moving the glyph onto the rule. */
+      .password-toggle::before {
+        content: "";
+        position: absolute;
+        inset: -11px 0;
       }
 
       .password-toggle:hover,
@@ -228,18 +263,6 @@ if (Astro.request.method === "POST") {
         display: inline-flex;
       }
 
-      input::placeholder {
-        color: var(--doc-light);
-        font-style: italic;
-        opacity: 1;
-      }
-
-      /* `color: white` was a literal, and --accent is #000 in the day
-               edition but #ffffff at night — so the night gate rendered a white
-               label on a white button at 1:1 and the only control on the page
-               was invisible. --bg is the page's own stock, which inverts with
-               the edition and is by definition the maximum contrast against
-               the ink filling the button. */
       .submit-button {
         align-self: center;
         background: var(--accent);
@@ -247,9 +270,6 @@ if (Astro.request.method === "POST") {
         border: 1px solid var(--accent);
         border-radius: 2px;
         padding: 11px 40px;
-        /* The only control on the page, and it measured 39px tall from
-                   its padding alone. Stated rather than inferred from font
-                   metrics, so it holds at any label length. */
         min-height: 44px;
         font-family: var(--mono);
         font-size: var(--type-meta);
@@ -260,11 +280,9 @@ if (Astro.request.method === "POST") {
         transition:
           background 0.25s ease,
           color 0.25s ease;
-        margin-top: 8px;
+        margin-top: 4px;
       }
 
-      /* Inverts rather than shifting hue. The old hover went to a rust
-               (#8f2d16) that belonged to no palette, and dimmed with opacity. */
       .submit-button:hover,
       .submit-button:focus-visible {
         background: var(--bg);
@@ -276,14 +294,34 @@ if (Astro.request.method === "POST") {
         outline-offset: 2px;
       }
 
-      /* The failed attempt stays close to the field, like an editorial
-               margin note: visible enough to catch, quiet enough not to turn a
-               small mistake into a rejection state. */
+      .submit-button[aria-busy="true"] {
+        cursor: wait;
+      }
+
+      /* Quiet situational notice when caps lock is active */
+      .caps-warning {
+        display: none;
+        width: 100%;
+        margin: -10px 0 0;
+        padding: 0;
+        color: var(--doc-light);
+        font-family: var(--doc-sans);
+        font-size: var(--type-body-sm);
+        font-weight: 400;
+        line-height: 1.4;
+        text-align: left;
+      }
+
+      .caps-warning[data-active="true"] {
+        display: block;
+      }
+
+      /* The failed attempt stays close to the field: quiet and flush-left,
+               matching the caps warning notice. */
       .error-msg {
         width: 100%;
-        margin: 0;
-        padding: 0 0 0 12px;
-        border-left: 1px solid var(--doc-rule);
+        margin: -10px 0 0;
+        padding: 0;
         color: var(--doc-body);
         font-family: var(--doc-sans);
         font-size: var(--type-body-sm);
@@ -295,61 +333,88 @@ if (Astro.request.method === "POST") {
   </head>
   <body>
     <ThemeToggleButton />
-    <div class="login-container">
-      <div class="logo">
-        <span class="logo-name">KC Wolff-Ingham</span>
-        <span class="logo-subtitle">Resume and Selected Work</span>
-      </div>
+    <main class="login-container">
+      <div class="login-sheet">
+        <header class="logo">
+          <h1 class="logo-name">KC Wolff-<wbr />Ingham</h1>
+          <p class="logo-subtitle">Resume and Selected Work</p>
+        </header>
 
-      <div class="divider"></div>
+        <hr class="divider" aria-hidden="true" />
 
-      <form method="POST">
-        <div class="password-control">
-          <label class="password-label" for="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            placeholder="Enter password"
-            required
-            autofocus
-            autocomplete="current-password"
-            autocapitalize="off"
-            spellcheck="false"
-            aria-invalid={error ? "true" : "false"}
-            aria-describedby={error ? "password-error" : undefined}
-          />
-          <button
-            class="password-toggle"
-            type="button"
-            aria-controls="password"
-            aria-label="Show password"
-            aria-pressed="false"
-            data-visible="false"
+        <form method="POST">
+          <div class="password-control">
+            <label class="password-label" for="password">Password</label>
+            <div class="password-field">
+              <input
+                id="password"
+                type="password"
+                name="password"
+                required
+                autofocus
+                autocomplete="current-password"
+                autocapitalize="off"
+                spellcheck="false"
+                aria-invalid={error ? "true" : "false"}
+                aria-describedby={error ? "password-error" : undefined}
+              />
+              <button
+                class="password-toggle"
+                type="button"
+                aria-controls="password"
+                aria-label="Show password"
+                aria-pressed="false"
+                data-visible="false"
+              >
+                <span class="password-icon password-icon--hidden">
+                  <Icon name="eye-off" size={16} />
+                </span>
+                <span class="password-icon password-icon--visible">
+                  <Icon name="eye" size={16} />
+                </span>
+              </button>
+            </div>
+          </div>
+          <p
+            id="caps-warning"
+            class="caps-warning"
+            role="status"
+            aria-live="polite"
           >
-            <span class="password-icon password-icon--hidden">
-              <Icon name="eye-off" size={20} />
-            </span>
-            <span class="password-icon password-icon--visible">
-              <Icon name="eye" size={20} />
-            </span>
-          </button>
-        </div>
-        {
-          error && (
-            <p id="password-error" class="error-msg" role="alert">
-              That didn’t match. Please try again.
-            </p>
-          )
-        }
-        <button class="submit-button" type="submit">Unlock Access</button>
-      </form>
-    </div>
+            Caps Lock is on
+          </p>
+          {
+            error && (
+              <p id="password-error" class="error-msg" role="alert">
+                That didn’t match. Please try again.
+              </p>
+            )
+          }
+          <button class="submit-button" type="submit">Continue</button>
+        </form>
+      </div>
+    </main>
 
     <script>
       import { initPasswordVisibilityToggle } from "../scripts/password-visibility.ts";
+      import { initCapsLockWarning } from "../scripts/caps-lock.ts";
 
       initPasswordVisibilityToggle();
+      initCapsLockWarning();
+
+      const form = document.querySelector("form");
+      const submit = document.querySelector(".submit-button");
+      form?.addEventListener("submit", (event) => {
+        if (!(submit instanceof HTMLButtonElement)) return;
+        // Do not disable the control here — some browsers abort the POST
+        // when the clicked submit button is disabled in this handler.
+        if (submit.dataset.opening === "true") {
+          event.preventDefault();
+          return;
+        }
+        submit.dataset.opening = "true";
+        submit.setAttribute("aria-busy", "true");
+      });
     </script>
   </body>
 </html>
