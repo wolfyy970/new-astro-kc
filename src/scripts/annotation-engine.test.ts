@@ -225,7 +225,8 @@ describe("Intro annotation (cold-start)", () => {
     expect(introEl!.textContent).toContain("Highlighted terms are interactive");
     expect(introEl!.textContent).toContain("Click to reveal detail");
     expect(introEl!.textContent).toContain("Yellow");
-    expect(introEl!.textContent).toContain("navigates to the project detail");
+    expect(introEl!.textContent).toContain("opens an in page note");
+    expect(introEl!.textContent).toContain("opens with a link to the project");
   });
 
   it("keeps the margin intro static — specimens are spans, not controls", () => {

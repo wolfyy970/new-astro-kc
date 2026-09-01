@@ -9,6 +9,6 @@ export const INTERACTIVE_LEAD_TAP =
 export const INTERACTIVE_PENS = {
   yellowWord: "Yellow",
   greenWord: "green",
-  betweenYellow: " highlight opens in page note; ",
-  afterGreen: " navigates to the project detail.",
+  betweenYellow: " highlight opens an in page note; ",
+  afterGreen: " opens with a link to the project.",
 } as const;
