@@ -1599,9 +1599,8 @@ button.intro-demo-link:focus-visible {
    Bound into the top of the sheet, replacing two pieces of chrome: the black
    widen-to-reveal bar and the bordered best-on-desktop badge. A printed
    "how to read this edition" note in the document's own materials — a rule,
-   a mono label, note-size prose, live specimens — carrying the same staged
-   ladder as the wide tier's margin intro. Hidden at the wide tier, where the
-   margin performs the introduction instead. */
+   a mono label, note-size prose, and live specimens. Hidden at the wide tier,
+   where the margin performs the introduction instead. */
 .edition-note {
   /* Contains the specimens' z-index: -1 strokes (see the apparatus note). */
   isolation: isolate;
@@ -1648,6 +1647,10 @@ button.intro-demo-link:focus-visible {
   margin: 0;
 }
 
+.edition-text--mobile {
+  display: none;
+}
+
 .edition-text--pens {
   margin-top: 6px;
 }
@@ -1657,6 +1660,20 @@ button.intro-demo-link:focus-visible {
   .edition-note {
     display: none;
   }
+}
+
+@media (max-width: 600px) {
+  .edition-text--desktop {
+    display: none;
+  }
+
+  .edition-text--mobile {
+    display: block;
+  }
+}
+
+.scroll-annotation[data-intro] .sa-text--pens {
+  margin-top: 6px;
 }
 
 /* ══════════════════════════════════════

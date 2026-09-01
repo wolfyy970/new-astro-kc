@@ -222,10 +222,13 @@ describe("Intro annotation (cold-start)", () => {
     vi.advanceTimersByTime(300);
     expect(introEl!.classList.contains("revealed")).toBe(true);
     expect(introEl!.classList.contains("side-left")).toBe(true);
-    expect(introEl!.textContent).toContain("Scroll to reveal");
+    expect(introEl!.textContent).toContain("Highlighted terms are interactive");
+    expect(introEl!.textContent).toContain("Click to reveal detail");
+    expect(introEl!.textContent).toContain("Yellow");
+    expect(introEl!.textContent).toContain("navigates to the project detail");
   });
 
-  it("demonstrates the whole ladder: mark → note → gateway → payoff", () => {
+  it("keeps the margin intro static — specimens are spans, not controls", () => {
     window.HTMLElement.prototype.getBoundingClientRect = vi
       .fn()
       .mockReturnValue({
@@ -242,36 +245,14 @@ describe("Intro annotation (cold-start)", () => {
       ".scroll-annotation[data-intro]",
     )!;
 
-    // Rung one: the glance marks itself with a genuine yellow specimen and a
-    // click continues the note, exactly like a real mark.
-    const yellow = introEl.querySelector<HTMLElement>(
-      ".intro-term:not(.intro-term--project)",
-    )!;
-    expect(yellow.querySelector(".hs-stroke")).not.toBeNull();
-    yellow.click();
-    expect(introEl.classList.contains("is-expanded")).toBe(true);
-
-    // Rung two: the continuation carries a live green specimen, icon and all.
-    const green = introEl.querySelector<HTMLElement>(".intro-term--project")!;
-    expect(green.querySelector(".hotspot-ref")).not.toBeNull();
-    green.click();
-    expect(introEl.classList.contains("intro-stage-gateway")).toBe(true);
-
-    // Rung three: the example gateway wears the real control's classes and
-    // pays off with the apparatus line instead of navigating.
-    const demo = introEl.querySelector<HTMLElement>(".intro-demo-link")!;
-    expect(demo.classList.contains("sa-link")).toBe(true);
-    expect(demo.querySelector(".sa-link-label")?.textContent).toBe(
-      "View project",
-    );
-    demo.click();
-    expect(introEl.classList.contains("intro-stage-done")).toBe(true);
-    expect(introEl.querySelector(".intro-done")?.textContent).toBe(
-      "You got it! Scroll away.",
-    );
-
-    // The demonstration is keyboard-operable: specimen buttons and the gateway.
-    expect(introEl.querySelectorAll("button").length).toBeGreaterThanOrEqual(2);
+    expect(introEl.querySelectorAll("button")).toHaveLength(0);
+    expect(
+      introEl.querySelector(".edition-specimen--note .hs-stroke"),
+    ).not.toBeNull();
+    expect(
+      introEl.querySelector(".edition-specimen--project .hs-stroke"),
+    ).not.toBeNull();
+    expect(introEl.getAttribute("aria-hidden")).toBe("true");
   });
 
   it("does NOT show intro annotation when at least one hotspot is in the viewport", () => {

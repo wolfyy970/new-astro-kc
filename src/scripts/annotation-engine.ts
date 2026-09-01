@@ -341,9 +341,7 @@ function showIntroAnnotation(): void {
   const docPage = document.querySelector<HTMLElement>(SEL_DOC_PAGE);
   if (!docPage) return;
 
-  introAnnotationEl = mountMarginIntro(docPage, (element) => {
-    if (introAnnotationEl === element) introAnnotationEl = null;
-  });
+  introAnnotationEl = mountMarginIntro(docPage);
 }
 
 function dismissIntroAnnotation(): void {

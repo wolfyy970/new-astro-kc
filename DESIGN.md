@@ -403,9 +403,9 @@ The theme toggle and the case-study back link. Stock fill, hairline border, `{ro
 
 ### The Editor's Note (introduction below the wide tier)
 
-The introduction for every tier without margins. A static piece of the sheet — bound into its top with a resting hairline, the mono INTERACTIVE label, and two note-size sentences wearing yellow and green specimen strokes on the colour words. It does not duplicate the margin intro's staged ladder; hidden at ≥1420px, where the margin performs the full demonstration instead.
+The introduction for every tier without margins. A static piece of the sheet — bound into its top with a resting hairline, the mono INTERACTIVE label, and two note-size sentences wearing yellow and green specimen strokes on the colour words. Below 600px the lead sentence says **Tap**; above that it says **Click**. Hidden at ≥1420px, where the margin carries the same copy instead.
 
-**The payoff conversation** runs in the wide tier's margin intro only — see the margin note section above.
+**The payoff conversation** lives in `intro-payoff.ts` only — not currently mounted in the live introductions.
 
 ### Project Gateway (shared control)
 

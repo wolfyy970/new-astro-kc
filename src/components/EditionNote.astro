@@ -1,4 +1,10 @@
 ---
+import {
+  INTERACTIVE_LEAD_CLICK,
+  INTERACTIVE_LEAD_TAP,
+  INTERACTIVE_PENS,
+} from "../content/instructions.ts";
+
 // ── The Editor's Note ─────────────────────────────────────────────────────────
 // Introduction for tiers without margins (<1420px): a resting hairline, the mono
 // label, and two note-size sentences with yellow/green specimens on the color
@@ -12,15 +18,18 @@
 >
   <div class="edition-rule" aria-hidden="true"></div>
   <div class="edition-label">Interactive</div>
-  <p class="edition-text">
-    Highlighted terms are interactive. Click to reveal detail.
+  <p class="edition-text edition-text--desktop">
+    {INTERACTIVE_LEAD_CLICK}
+  </p>
+  <p class="edition-text edition-text--mobile">
+    {INTERACTIVE_LEAD_TAP}
   </p>
   <p class="edition-text edition-text--pens">
     <span class="edition-specimen edition-specimen--note hs-mark-3"
-      ><span class="hs-stroke">Yellow</span></span
-    > highlight opens in page note; <span
+      ><span class="hs-stroke">{INTERACTIVE_PENS.yellowWord}</span></span
+    >{INTERACTIVE_PENS.betweenYellow}<span
       class="edition-specimen edition-specimen--project hs-mark-6"
-      ><span class="hs-stroke">green</span></span
-    > navigates to the project detail.
+      ><span class="hs-stroke">{INTERACTIVE_PENS.greenWord}</span></span
+    >{INTERACTIVE_PENS.afterGreen}
   </p>
 </aside>
