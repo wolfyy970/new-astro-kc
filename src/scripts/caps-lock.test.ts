@@ -47,8 +47,24 @@ describe("caps lock warning control", () => {
     const warning = document.querySelector<HTMLElement>("#caps-warning")!;
 
     warning.dataset.active = "true";
+    input.setAttribute("aria-describedby", "caps-warning");
     input.dispatchEvent(new FocusEvent("blur"));
     expect(warning.dataset.active).toBe("false");
+    expect(input.getAttribute("aria-describedby")).toBeNull();
+  });
+
+  it("adds caps-warning to aria-describedby when Caps Lock is on", () => {
+    initCapsLockWarning();
+
+    const input = document.querySelector<HTMLInputElement>("#password")!;
+    const warning = document.querySelector<HTMLElement>("#caps-warning")!;
+
+    const keyEvent = new KeyboardEvent("keydown", { bubbles: true });
+    keyEvent.getModifierState = () => true;
+
+    input.dispatchEvent(keyEvent);
+    expect(warning.dataset.active).toBe("true");
+    expect(input.getAttribute("aria-describedby")).toBe("caps-warning");
   });
 
   it("cleans up listeners when invoking returned teardown function", () => {

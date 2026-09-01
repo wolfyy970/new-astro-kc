@@ -1,6 +1,7 @@
 ---
 import BaseHead from "../components/BaseHead.astro";
 import ThemeToggleButton from "../components/ThemeToggleButton.astro";
+import SkipLink from "../components/SkipLink.astro";
 
 interface Props {
   title: string;
@@ -20,6 +21,7 @@ const {
     <BaseHead title={title} description={description} ogImage={ogImage} />
   </head>
   <body>
+    <SkipLink />
     <ThemeToggleButton />
     <slot />
   </body>

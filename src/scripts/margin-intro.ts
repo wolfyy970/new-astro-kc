@@ -10,11 +10,18 @@ import {
 } from "./constants.ts";
 import { attachIntroPayoff } from "./intro-payoff.ts";
 
-function buildIntroSpecimen(text: string, project: boolean): HTMLElement {
-  const term = document.createElement("span");
+function buildIntroSpecimen(
+  text: string,
+  project: boolean,
+  controlsId: string,
+): HTMLButtonElement {
+  const term = document.createElement("button");
+  term.type = "button";
   term.className = project
     ? "intro-term intro-term--project hs-mark-6"
     : "intro-term hs-mark-3";
+  term.setAttribute("aria-expanded", "false");
+  term.setAttribute("aria-controls", controlsId);
   const stroke = document.createElement("span");
   stroke.className = "hs-stroke";
   stroke.textContent = text;
@@ -25,13 +32,16 @@ function buildIntroSpecimen(text: string, project: boolean): HTMLElement {
 
 function buildGateway(): {
   container: HTMLElement;
-  link: HTMLElement;
+  link: HTMLButtonElement;
 } {
   const container = document.createElement("div");
+  container.id = "margin-intro-gateway";
   container.className = "intro-reveal intro-reveal--gateway";
+  container.hidden = true;
   const inner = document.createElement("div");
   inner.className = "intro-reveal-inner";
-  const link = document.createElement("span");
+  const link = document.createElement("button");
+  link.type = "button";
   link.className = "sa-link intro-demo-link";
   const label = document.createElement("span");
   label.className = "sa-link-label";
@@ -48,6 +58,7 @@ function buildPayoffLine(): {
 } {
   const container = document.createElement("div");
   container.className = "intro-reveal intro-reveal--done";
+  container.hidden = true;
   const inner = document.createElement("div");
   inner.className = "intro-reveal-inner";
   const line = document.createElement("div");
@@ -76,23 +87,34 @@ export function mountMarginIntro(
 
   const text = document.createElement("div");
   text.className = "sa-text";
+  const yellowSpecimen = buildIntroSpecimen(
+    "highlighted terms",
+    false,
+    "margin-intro-more",
+  );
   text.append(
     "Scroll to reveal. As you read, ",
-    buildIntroSpecimen("highlighted terms", false),
+    yellowSpecimen,
     " surface detail, data, and media here in the margin.",
   );
 
   const more = document.createElement("div");
+  more.id = "margin-intro-more";
   more.className = "sa-more";
+  more.hidden = true;
   const moreInner = document.createElement("div");
   moreInner.className = "sa-more-inner";
   const moreText = document.createElement("div");
   moreText.className = "sa-text";
-  const greenSpecimen = buildIntroSpecimen("green mark", true);
+  const greenSpecimen = buildIntroSpecimen(
+    "green mark",
+    true,
+    "margin-intro-gateway",
+  );
   moreText.append(
     "A yellow mark holds a note like this one; a ",
     greenSpecimen,
-    " leads onward to a complete project.",
+    " navigates to the project detail.",
   );
   moreInner.appendChild(moreText);
 
@@ -101,17 +123,36 @@ export function mountMarginIntro(
   moreInner.append(gateway.container, payoff.container);
   more.appendChild(moreInner);
 
-  greenSpecimen.addEventListener("click", () =>
-    root.classList.add(CLS_INTRO_GATEWAY),
-  );
+  const expandIntro = (): void => {
+    root.classList.add(CLS_EXPANDED);
+    more.hidden = false;
+  };
+
+  yellowSpecimen.addEventListener("click", (event) => {
+    event.stopPropagation();
+    expandIntro();
+    yellowSpecimen.setAttribute("aria-expanded", "true");
+  });
+
+  greenSpecimen.addEventListener("click", (event) => {
+    event.stopPropagation();
+    expandIntro();
+    root.classList.add(CLS_INTRO_GATEWAY);
+    gateway.container.hidden = false;
+    greenSpecimen.setAttribute("aria-expanded", "true");
+  });
+
   attachIntroPayoff({
     root,
     link: gateway.link,
     line: payoff.line,
     doneClass: CLS_INTRO_DONE,
     onRemoved: () => onRemoved(root),
+    onStageReveal: () => {
+      payoff.container.hidden = false;
+    },
   });
-  root.addEventListener("click", () => root.classList.add(CLS_EXPANDED));
+
   root.append(rule, label, text, more);
 
   docPage.appendChild(root);

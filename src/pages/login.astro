@@ -3,6 +3,7 @@ import "../styles/tokens.css";
 import "../styles/controls.css";
 import ThemeScript from "../components/ThemeScript.astro";
 import ThemeToggleButton from "../components/ThemeToggleButton.astro";
+import SkipLink from "../components/SkipLink.astro";
 import HeadFonts from "../components/HeadFonts.astro";
 import Icon from "../components/Icon.astro";
 import {
@@ -215,7 +216,7 @@ if (Astro.request.method === "POST") {
         top: 0;
         display: inline-flex;
         width: 44px;
-        height: 22px;
+        height: 24px;
         align-items: center;
         justify-content: flex-end;
         margin: 0;
@@ -231,7 +232,7 @@ if (Astro.request.method === "POST") {
       .password-toggle::before {
         content: "";
         position: absolute;
-        inset: -11px 0;
+        inset: -10px 0;
       }
 
       .password-toggle:hover,
@@ -332,8 +333,9 @@ if (Astro.request.method === "POST") {
     </style>
   </head>
   <body>
+    <SkipLink />
     <ThemeToggleButton />
-    <main class="login-container">
+    <main class="login-container" id="main-content">
       <div class="login-sheet">
         <header class="logo">
           <h1 class="logo-name">KC Wolff-<wbr />Ingham</h1>

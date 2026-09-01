@@ -34,7 +34,7 @@ const { section, isDark } = Astro.props;
     <figcaption>
       {section.caption && <span>{section.caption}</span>}
       <a href={section.sourceUrl} target="_blank" rel="noopener noreferrer">
-        Watch on TED
+        Watch on TED<span class="sr-only"> (opens in new tab)</span>
       </a>
     </figcaption>
   </figure>

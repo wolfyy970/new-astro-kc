@@ -26,6 +26,12 @@ import {
   CLS_MARGIN_FOCUS,
 } from "./constants.ts";
 import { isWideScreen, prefersReducedMotion } from "../utils/viewport.ts";
+import {
+  annotationId,
+  setAnnotationInert,
+  syncAllHotspotDefaultControls,
+  syncHotspotDefaultControls,
+} from "./hotspot-a11y.ts";
 import { assistNoteIntoView } from "./note-geometry.ts";
 
 // ── Engine state ───────────────────────────────────────────────────────────────
@@ -87,13 +93,11 @@ function buildAllAnnotations(popovers: PopoverMap): void {
       // stretched rule takes the same highlighter ink as its marked term —
       // yellow for marginalia, green for a project note.
       if (data.link) el.classList.add("sa-project");
+      el.id = annotationId(key);
       el.dataset.annotationKey = key; // used by popover-engine to suppress on open
 
-      // The margin note is a visual convenience that restates, in shortened
-      // form, content already reachable from the marked term. Exposing it to
-      // assistive tech would read every note twice — once in the margin, once
-      // in the popover. The marked term is the accessible control.
-      el.setAttribute("aria-hidden", "true");
+      // Collapsed: hidden from AT and inert so keyboard focus stays on the term.
+      setAnnotationInert(el, true);
 
       renderAnnotation(el, data);
 
@@ -142,6 +146,7 @@ function buildAllAnnotations(popovers: PopoverMap): void {
   });
 
   annotationsBuilt = true;
+  syncAllHotspotDefaultControls();
 }
 
 /**
@@ -248,9 +253,10 @@ export function collapseAnnotation(): void {
   expandedKey = null;
   if (entry) {
     entry.el.classList.remove(CLS_EXPANDED);
-    entry.el.setAttribute("aria-hidden", "true");
+    setAnnotationInert(entry.el, true);
     entry.hotspot.classList.remove(CLS_ACTIVE);
     entry.hotspot.setAttribute("aria-expanded", "false");
+    syncHotspotDefaultControls(entry.hotspot);
   }
   document
     .querySelector<HTMLElement>(SEL_DOC_PAGE)
@@ -275,11 +281,10 @@ function expandAnnotation(key: string): boolean {
   expandedKey = key;
   scrollExitAcc = 0;
   entry.el.classList.add(CLS_EXPANDED, CLS_REVEALED);
-  // Collapsed notes restate content reachable from the term, so they are
-  // hidden from assistive tech. An expanded note IS the content.
-  entry.el.setAttribute("aria-hidden", "false");
+  setAnnotationInert(entry.el, false);
   entry.hotspot.classList.add(CLS_ACTIVE);
   entry.hotspot.setAttribute("aria-expanded", "true");
+  entry.hotspot.setAttribute("aria-controls", annotationId(key));
 
   // The rest of the margin recedes a step while one note is being read —
   // the eye is answered, not shouted at. The document itself never dims.
@@ -370,6 +375,7 @@ function resetAnnotationState(): void {
     el.remove();
     hotspot.classList.remove(CLS_ACTIVE, CLS_SCROLL_REVEALED);
     hotspot.setAttribute("aria-expanded", "false");
+    syncHotspotDefaultControls(hotspot);
   });
   document
     .querySelector<HTMLElement>(SEL_DOC_PAGE)
@@ -502,8 +508,10 @@ export function initAnnotationEngine(popovers: PopoverMap): () => void {
     const isWide = isWideScreen();
     if (!isWide && annotationsBuilt) resetAnnotationState();
     if (isWide && !annotationsBuilt) init();
+    syncAllHotspotDefaultControls();
   }
 
   init();
+  syncAllHotspotDefaultControls();
   return cleanupAnnotations;
 }

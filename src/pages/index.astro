@@ -74,7 +74,10 @@ const summaryParagraphs = resume.summary.split("\n\n");
         <a
           href={resume.contact.linkedinUrl}
           target="_blank"
-          rel="noopener noreferrer">{resume.contact.linkedin}</a
+          rel="noopener noreferrer"
+          >{resume.contact.linkedin}<span class="sr-only">
+            {" "}(opens in new tab)</span
+          ></a
         >
         <span class="masthead-sep" aria-hidden="true">·</span>
         <span>{resume.contact.location}</span>
@@ -150,16 +153,13 @@ const summaryParagraphs = resume.summary.split("\n\n");
       <!-- Patents & Recognition -->
       <h2 class="doc-section-heading">Patents &amp; Recognition</h2>
       <div class="doc-awards-line">
-        <strong>Patents:</strong>
-        {resume.patentsAndRecognition.patents}
+        <strong>Patents:</strong> {resume.patentsAndRecognition.patents}
       </div>
       <div class="doc-awards-line">
-        <strong>Awards:</strong>
-        {resume.patentsAndRecognition.awards}
+        <strong>Awards:</strong> {resume.patentsAndRecognition.awards}
       </div>
       <div class="doc-awards-line">
-        <strong>Certifications:</strong>
-        {resume.patentsAndRecognition.certifications}
+        <strong>Certifications:</strong> {resume.patentsAndRecognition.certifications}
       </div>
 
       <!-- No running colophon. In print a running foot exists because pages get

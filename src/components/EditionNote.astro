@@ -13,11 +13,6 @@
 // real control's classes) → the payoff line. The rule above narrates each
 // stage in the pen on stage — yellow, then green, then back to the resting
 // hairline once the reader has the whole ladder.
-//
-// Accessibility: the first sentence is real instructional content and is
-// exposed. The staged extras are pointer theater — duplicative of what the
-// genuinely accessible marked terms teach — so the reveal blocks are
-// aria-hidden and nothing in the demonstration can take focus.
 import { renderCaseStudyMarker } from "../utils/render";
 
 const marker = renderCaseStudyMarker();
@@ -31,32 +26,37 @@ const marker = renderCaseStudyMarker();
   <div class="edition-rule" aria-hidden="true"></div>
   <div class="edition-label">Interactive</div>
   <p class="edition-text">
-    As you read, <span class="intro-term hs-mark-3"
-      ><span class="hs-stroke">highlighted terms</span></span
-    > hold detail, data, and media.<span class="edition-widen"
-      >{" In a wider window, the notes keep to the margins."}</span
-    >
+    <button
+      type="button"
+      class="intro-term hs-mark-3"
+      aria-expanded="false"
+      aria-controls="edition-intro-pens"
+      ><span class="hs-stroke">Highlighted terms</span></button
+    > are interactive. Click to reveal detail.
   </p>
-  <div class="intro-reveal intro-reveal--pens" aria-hidden="true">
+  <div id="edition-intro-pens" class="intro-reveal intro-reveal--pens" hidden>
     <div class="intro-reveal-inner">
       <p class="edition-text edition-text--pens">
-        A yellow mark opens its note in the page; a <span
+        A yellow mark opens its note in the page; a <button
+          type="button"
           class="intro-term intro-term--project hs-mark-6"
+          aria-expanded="false"
+          aria-controls="edition-intro-gateway"
           ><span class="hs-stroke">green mark</span><Fragment
             set:html={marker}
-          /></span
-        > leads onward to a complete project.
+          /></button
+        > navigates to the project detail.
       </p>
     </div>
   </div>
-  <div class="intro-reveal intro-reveal--gateway" aria-hidden="true">
+  <div id="edition-intro-gateway" class="intro-reveal intro-reveal--gateway" hidden>
     <div class="intro-reveal-inner">
-      <span class="popover-link intro-demo-link"
-        ><span class="popover-link-label">View project</span></span
-      >
+      <button type="button" class="popover-link intro-demo-link">
+        <span class="popover-link-label">View project</span>
+      </button>
     </div>
   </div>
-  <div class="intro-reveal intro-reveal--done" aria-hidden="true">
+  <div class="intro-reveal intro-reveal--done" hidden>
     <div class="intro-reveal-inner">
       <div class="intro-done">You got it!</div>
     </div>
@@ -73,23 +73,40 @@ const marker = renderCaseStudyMarker();
 
   const note = document.getElementById("edition-note");
   if (note) {
-    note
-      .querySelector(".intro-term:not(.intro-term--project)")
-      ?.addEventListener("click", () => note.classList.add(CLS_INTRO_PENS));
-    note
-      .querySelector(".intro-term--project")
-      ?.addEventListener("click", () => note.classList.add(CLS_INTRO_GATEWAY));
+    const pens = note.querySelector("#edition-intro-pens");
+    const gatewayBlock = note.querySelector("#edition-intro-gateway");
+    const yellowBtn = note.querySelector<HTMLButtonElement>(
+      ".intro-term:not(.intro-term--project)",
+    );
+    const greenBtn = note.querySelector<HTMLButtonElement>(
+      ".intro-term--project",
+    );
+
+    yellowBtn?.addEventListener("click", () => {
+      note.classList.add(CLS_INTRO_PENS);
+      pens?.removeAttribute("hidden");
+      yellowBtn.setAttribute("aria-expanded", "true");
+    });
+
+    greenBtn?.addEventListener("click", () => {
+      note.classList.add(CLS_INTRO_GATEWAY);
+      gatewayBlock?.removeAttribute("hidden");
+      greenBtn.setAttribute("aria-expanded", "true");
+    });
 
     const link = note.querySelector<HTMLElement>(".intro-demo-link");
     const line = note.querySelector<HTMLElement>(".intro-done");
     if (link && line) {
-      // First click unfolds the authored payoff; every click after that is
-      // the payoff module's conversation, ending in the choreographed exit.
       attachIntroPayoff({
         root: note,
         link,
         line,
         doneClass: CLS_INTRO_DONE,
+        onStageReveal: () => {
+          note
+            .querySelector(".intro-reveal--done")
+            ?.removeAttribute("hidden");
+        },
       });
     }
   }

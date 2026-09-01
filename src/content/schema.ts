@@ -282,6 +282,7 @@ const videoSectionSchema = sectionSchema("video", {
   video: videoPathSchema,
   poster: imagePathSchema.optional(),
   caption: nonEmptyString.optional(),
+  captions: z.string().regex(/^\//, "captions path must start with /").optional(),
 });
 
 const externalVideoSectionSchema = sectionSchema("externalVideo", {

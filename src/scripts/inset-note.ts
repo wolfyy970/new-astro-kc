@@ -27,6 +27,7 @@ import {
   CLS_OPEN,
 } from "./constants.ts";
 import { prefersReducedMotion } from "../utils/viewport.ts";
+import { syncHotspotDefaultControls } from "./hotspot-a11y.ts";
 import { assistNoteIntoView } from "./note-geometry.ts";
 
 // Canonical Tabler "X", matching the sheet's close control.
@@ -202,7 +203,7 @@ export function closeInset(options: { instant?: boolean } = {}): void {
   if (term) {
     term.classList.remove(CLS_ACTIVE);
     term.setAttribute("aria-expanded", "false");
-    term.setAttribute("aria-controls", ID_POPOVER);
+    syncHotspotDefaultControls(term);
   }
   if (!note) return;
 

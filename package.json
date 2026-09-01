@@ -17,6 +17,7 @@
     "preview": "astro preview",
     "quality": "npm run format:check && npm run lint && npm run check && npm run test && npm run build",
     "test": "vitest run",
+    "a11y": "node scripts/a11y-audit.mjs",
     "verify": "tsx scripts/verify-content.ts"
   },
   "dependencies": {

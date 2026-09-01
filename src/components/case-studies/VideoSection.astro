@@ -30,6 +30,17 @@ const videoType = section.video.toLowerCase().endsWith(".webm")
       aria-label={section.title}
     >
       <source src={section.video} type={videoType} />
+      {
+        section.captions && (
+          <track
+            kind="captions"
+            src={section.captions}
+            srclang="en"
+            label="English"
+            default
+          />
+        )
+      }
       Your browser does not support embedded video.
     </video>
     {section.caption && <figcaption>{section.caption}</figcaption>}

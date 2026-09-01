@@ -100,6 +100,8 @@ interface IntroPayoffOptions {
   doneClass: string;
   /** Called after the exit choreography removes the introduction. */
   onRemoved?: () => void;
+  /** Called when the first click reveals the payoff row (e.g. remove `hidden`). */
+  onStageReveal?: () => void;
 }
 
 /**
@@ -109,7 +111,7 @@ interface IntroPayoffOptions {
  * reply lands as a surprise.
  */
 export function attachIntroPayoff(options: IntroPayoffOptions): void {
-  const { root, link, line, doneClass, onRemoved } = options;
+  const { root, link, line, doneClass, onRemoved, onStageReveal } = options;
 
   // One conversation per gateway, ever. A second attachment (dev hot reload,
   // an accidental double init) would put two brains behind one button —
@@ -238,6 +240,7 @@ export function attachIntroPayoff(options: IntroPayoffOptions): void {
       started = true;
       lastReplyAt = performance.now();
       root.classList.add(doneClass);
+      onStageReveal?.();
       return;
     }
 

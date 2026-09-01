@@ -50,6 +50,7 @@ import {
   SEL_HOTSPOT,
 } from "./constants.ts";
 import { isMobileScreen, isWideScreen } from "../utils/viewport.ts";
+import { syncAllHotspotDefaultControls } from "./hotspot-a11y.ts";
 
 // CSS custom property used to animate the bottom-sheet during swipe-to-dismiss.
 // The mobile transform rules reference this variable so JS can drive the offset
@@ -465,11 +466,13 @@ export function initPopoverEngine(popoverData: PopoverMap): () => void {
           closePopover({ returnFocus: false });
           collapseAnnotation();
         }
+        syncAllHotspotDefaultControls();
       }, RESIZE_DEBOUNCE_MS);
     },
     { signal },
   );
 
+  syncAllHotspotDefaultControls();
   return cleanupPopoverEngine;
 }
 

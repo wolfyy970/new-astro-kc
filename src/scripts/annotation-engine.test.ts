@@ -244,8 +244,11 @@ describe("Intro annotation (cold-start)", () => {
 
     // Rung one: the glance marks itself with a genuine yellow specimen and a
     // click continues the note, exactly like a real mark.
-    expect(introEl.querySelector(".intro-term .hs-stroke")).not.toBeNull();
-    introEl.click();
+    const yellow = introEl.querySelector<HTMLElement>(
+      ".intro-term:not(.intro-term--project)",
+    )!;
+    expect(yellow.querySelector(".hs-stroke")).not.toBeNull();
+    yellow.click();
     expect(introEl.classList.contains("is-expanded")).toBe(true);
 
     // Rung two: the continuation carries a live green specimen, icon and all.
@@ -267,8 +270,8 @@ describe("Intro annotation (cold-start)", () => {
       "You got it! Scroll away.",
     );
 
-    // Nothing in the demonstration may take focus — the intro is aria-hidden.
-    expect(introEl.querySelectorAll("a, button, [tabindex]").length).toBe(0);
+    // The demonstration is keyboard-operable: specimen buttons and the gateway.
+    expect(introEl.querySelectorAll("button").length).toBeGreaterThanOrEqual(2);
   });
 
   it("does NOT show intro annotation when at least one hotspot is in the viewport", () => {

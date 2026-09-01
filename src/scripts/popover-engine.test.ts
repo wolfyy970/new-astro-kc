@@ -197,7 +197,7 @@ describe("NoteEngine", () => {
 
       expect(hotspot.classList.contains(CLS_ACTIVE)).toBe(false);
       expect(hotspot.getAttribute("aria-expanded")).toBe("false");
-      expect(hotspot.getAttribute("aria-controls")).toBe("popover");
+      expect(hotspot.getAttribute("aria-controls")).toBe(ID_INSET);
       // The dying note loses the id immediately, so the trigger never points
       // at a corpse while it folds away.
       expect(document.getElementById(ID_INSET)).toBeNull();

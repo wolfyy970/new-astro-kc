@@ -1291,21 +1291,37 @@ body.popover-open {
 }
 
 .popover-carousel-dot {
-  width: 5px;
-  height: 5px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  background-color: var(--doc-rule);
+  background-color: transparent;
   border: none;
   padding: 0;
   cursor: pointer;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.popover-carousel-dot::before {
+  content: "";
+  position: absolute;
+  inset: 9.5px;
+  border-radius: 50%;
+  background-color: var(--doc-rule);
   transition:
     background-color 0.2s ease,
     transform 0.2s ease;
 }
 
-.popover-carousel-dot.active {
+.popover-carousel-dot.active::before {
   background-color: var(--doc-light);
   transform: scale(1.3);
+}
+
+.popover-carousel-nav:focus-visible,
+.popover-carousel-dot:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .popover-close {
@@ -1502,6 +1518,26 @@ body.popover-open {
   --hs-ink-b: rgba(var(--mark-rgb), calc(var(--mark-a) * 0.88));
   position: relative;
   cursor: pointer;
+}
+
+button.intro-term,
+button.intro-demo-link {
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: inline;
+  vertical-align: baseline;
+}
+
+button.intro-term:focus-visible,
+button.intro-demo-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 1px;
 }
 
 .intro-term--project {
@@ -1704,6 +1740,12 @@ body.popover-open {
    local. */
 .edition-note .popover-link {
   margin: 12px 0 2px;
+}
+
+button.popover-link {
+  appearance: none;
+  font: inherit;
+  text-align: inherit;
 }
 
 /* At the wide tier the margin performs the introduction. */
@@ -2223,21 +2265,38 @@ li > .inset-note {
   }
 
   .sa-carousel-dot {
-    width: 5px;
-    height: 5px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
-    background-color: var(--doc-rule);
+    background-color: transparent;
     border: none;
     padding: 0;
     cursor: pointer;
+    position: relative;
+    transition: transform 0.2s ease;
+  }
+
+  .sa-carousel-dot::before {
+    content: "";
+    position: absolute;
+    inset: 9.5px;
+    border-radius: 50%;
+    background-color: var(--doc-rule);
     transition:
       background-color 0.2s ease,
       transform 0.2s ease;
   }
 
-  .sa-carousel-dot.active {
+  .sa-carousel-dot.active::before {
     background-color: var(--doc-light);
     transform: scale(1.3);
+  }
+
+  .sa-carousel-nav:focus-visible,
+  .sa-carousel-dot:focus-visible,
+  .sa-play-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 
   /* The same project gateway used by the overlay, scaled for a 220px margin.
