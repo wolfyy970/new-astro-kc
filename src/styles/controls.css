@@ -2,10 +2,31 @@
    The floating theme toggle (every page) and the case-study back link. Shared by
    global.css and login.astro so the control chrome is defined exactly once and
    the login toggle matches the rest of the app. */
-.theme-toggle,
+.theme-toggle {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 10000;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  color: var(--doc-light);
+  background: var(--doc-white);
+  border: 1px solid var(--doc-rule);
+  border-radius: 2px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
 .back-link {
   position: fixed;
   top: 24px;
+  left: 24px;
   z-index: 10000;
   font-family: var(--mono);
   font-size: var(--type-meta, 11px);
@@ -16,8 +37,6 @@
   background: var(--doc-white);
   border: 1px solid var(--doc-rule);
   padding: 8px 12px;
-  /* Matches the sheet's 2px corner — the chrome should look cut from the same
-     stock as the document, not applied on top of it. */
   border-radius: 2px;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -26,15 +45,26 @@
   align-items: center;
   gap: 6px;
   user-select: none;
-  text-decoration: none; /* For link back button */
+  text-decoration: none;
 }
 
-.theme-toggle {
-  right: 24px;
+.theme-toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
-.back-link {
-  left: 24px;
+.theme-toggle-icon--moon {
+  display: none;
+}
+
+html.theme-dark .theme-toggle-icon--sun {
+  display: none;
+}
+
+html.theme-dark .theme-toggle-icon--moon {
+  display: inline-flex;
 }
 
 .theme-toggle:hover,
@@ -76,28 +106,22 @@ html.theme-dark .back-link {
   .theme-toggle,
   .back-link {
     top: 16px;
-    padding: 6px 10px;
   }
   .theme-toggle {
     right: 16px;
   }
   .back-link {
     left: 16px;
+    padding: 6px 10px;
   }
 }
 
-/* On a phone the toggle shrinks to its glyph. The word named the current
-   edition, but the edition is self-evident — the page is its own label — and
-   a floating word chip beside the name was the loudest thing on the masthead.
-   The aria-label carries the name for assistive tech; even padding keeps the
-   chip square and comfortably tappable. */
+/* The toggle is a 34px square chip across all viewports.
+   The aria-label carries the name for assistive tech. */
 @media (max-width: 600px) {
   .theme-toggle {
-    padding: 10px;
-  }
-
-  .theme-toggle .theme-label-text {
-    display: none;
+    width: 34px;
+    height: 34px;
   }
 }
 

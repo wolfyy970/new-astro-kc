@@ -394,11 +394,12 @@ A tracked mono label with a hairline running to the end of the measure. It is in
 
 ### Chrome Buttons
 
-The theme toggle and the back link. Stock fill, hairline border, `{rounded.chrome}`, mono label in `{colors.light}`.
+The theme toggle and the case-study back link. Stock fill, hairline border, `{rounded.chrome}`, in `{colors.light}`.
 
-- **Hover:** border shifts to accent, text to ink, and a 1px lift (or 4px left-slide for the back link).
+- **Theme toggle:** a 34px square chip across all viewports with an outline icon (sun for light edition, moon for dark). The aria-label announces the destination action for assistive tech.
+- **Back link:** mono label with left-pointing arrow icon, padding 8px 12px.
+- **Hover:** border shifts to accent, text/icon to ink, and a 1px lift (or 4px left-slide for the back link).
 - **Focus:** 2px accent outline at 2px offset.
-- **Phone (≤600px):** the toggle shrinks to its glyph — a 34px square chip. The word named the current edition, but the edition is self-evident; the aria-label carries the name for assistive tech.
 
 ### The Editor's Note (introduction below the wide tier)
 
@@ -414,11 +415,15 @@ The introduction for every tier without margins, and the retirement of two piece
 
 ### Inputs (login)
 
-A centred underline field — no box, no fill, transparent background with a 1px bottom border.
+A centred stack with a left-aligned underline field — no box, no fill, transparent background with a 1px bottom border matching the masthead hairline's measure. The password label sits snug with the field, not with the title.
 
+- **Header:** `<header>` containing `<h1 class="logo-name">` and subtitle.
+- **Divider:** 1px `{colors.ink}` hairline matching the width of the display name.
+- **Field:** left-aligned underline, no box, no fill, transparent background with a 1px bottom border, with 8px baseline clearance under the input text.
 - **Focus:** bottom border to accent. No glow, no ring.
-- **Placeholder:** italic, `{colors.light}`.
-- **Error:** one calm sentence in the system UI face, directly beneath the field with a 1px rule. It is interface feedback, not editorial prose or publication apparatus. Carried by copy and position, per The No-Hue-For-State Rule.
+- **Notice:** quiet situational Caps Lock notice (`Caps Lock is on`) sitting flush-left below the line without displacing layout.
+- **Submit:** filled accent button, mono label (`Continue`), 44px minimum.
+- **Error:** one calm sentence in the system UI face (`That didn’t match. Please try again.`), directly beneath the field with matching margins. Carried by copy and position, per The No-Hue-For-State Rule.
 
 ## Do's and Don'ts
 

@@ -50,6 +50,7 @@ The entire portfolio is protected by an elegant password gate powered by Astro m
 - **Environment Variable:** Set `SITE_PASSWORD` in your Vercel Dashboard or local `.env.local` file. The local file is intentionally ignored by Git.
 - **Access:** Users are redirected to `/login` if not authenticated.
 - **Visibility:** The password field uses canonical Tabler `eye-off`/`eye` icons, with synchronized accessible labels, to reveal or conceal the entered value.
+- **Notice:** A dynamic Caps Lock warning alerts users if Caps Lock is enabled.
 - **Errors:** A failed attempt keeps feedback adjacent to the field, announces it with `role="alert"`, and marks the input invalid.
 - **Privacy:** Crawler indexing is disabled project-wide via `X-Robots-Tag` headers and a global `robots.txt` exclusion.
 - **Session:** A secure, `HttpOnly` cookie maintains the session for 7 days.

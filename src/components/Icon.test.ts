@@ -18,6 +18,7 @@ describe("Icon component imports", () => {
       "@tabler/icons/outline/arrows-horizontal.svg?raw",
       "@tabler/icons/outline/eye-off.svg?raw",
       "@tabler/icons/outline/eye.svg?raw",
+      "@tabler/icons/outline/moon.svg?raw",
       "@tabler/icons/outline/sun.svg?raw",
     ]);
   });

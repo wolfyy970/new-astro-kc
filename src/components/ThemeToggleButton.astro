@@ -2,7 +2,15 @@
 import Icon from "./Icon.astro";
 ---
 
-<button id="theme-toggle" class="theme-toggle" aria-label="Toggle color theme">
-  <Icon name="sun" size={12} />
-  <span class="theme-label-text">Dark</span>
+<button
+  id="theme-toggle"
+  class="theme-toggle"
+  aria-label="Switch to dark theme"
+>
+  <span class="theme-toggle-icon theme-toggle-icon--sun">
+    <Icon name="sun" size={14} />
+  </span>
+  <span class="theme-toggle-icon theme-toggle-icon--moon">
+    <Icon name="moon" size={14} />
+  </span>
 </button>
