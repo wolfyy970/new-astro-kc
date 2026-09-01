@@ -1,4 +1,5 @@
 @import "./base.css";
+@import "./gateway-link.css";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    THE ANNOTATED DOCUMENT
@@ -273,7 +274,7 @@ html.theme-dark {
 .masthead-head .masthead-name {
   grid-column: 1;
   grid-row: 1;
-  align-self: end;
+  align-self: start;
 }
 
 .masthead-head .masthead-rule {
@@ -282,16 +283,12 @@ html.theme-dark {
 }
 
 .masthead-portrait {
-  /* How far the figure hangs below the rule's row, into the quiet air right
-     of the colophon labels. The engraving straddles the hairline — head above
-     the line, shoulders below — rather than ballooning the name-to-rule gap
-     to hold its full height. */
-  /* Tuned so the shoulders clear the tagline's right end below — the figure
-     straddles the hairline, it never crosses another line of ink. */
+  /* Top of the head aligns with the name's cap height. The shoulders still
+     straddle the hairline via --portrait-overhang below. */
   --portrait-overhang: 20px;
   grid-column: 2;
   grid-row: 1 / 3;
-  align-self: end;
+  align-self: start;
   /* As large as the head allows: the single-line name measures ~477px of the
      704px head, and the name must never wrap for a figure. The figure takes
      the rest, and takes its extra height below the line instead. The floor
@@ -546,7 +543,7 @@ html.theme-dark {
   font-size: var(--type-h3);
   letter-spacing: var(--type-label-spacing-wide);
   color: var(--doc-heading);
-  margin: 52px 0 24px;
+  margin: var(--space-section) 0 24px;
 }
 
 /* The rule runs out of the label in the signal colour and fades — the mark
@@ -566,7 +563,7 @@ html.theme-dark {
   font-weight: 400;
   color: var(--doc-body);
   line-height: 1.72;
-  margin-bottom: 22px;
+  margin-bottom: var(--space-block);
 }
 
 .doc-summary:first-of-type::first-line {
@@ -594,9 +591,10 @@ html.theme-dark {
    single edge the masthead and the prose already share, and drops the years
    into the band beside it where dates and margin notes live. */
 .doc-exp {
+  --exp-rail: max(4.5rem, var(--sheet-inset));
   display: grid;
-  grid-template-columns: var(--sheet-inset) 1fr;
-  margin-left: calc(-1 * var(--sheet-inset));
+  grid-template-columns: var(--exp-rail) 1fr;
+  margin-left: calc(-1 * var(--exp-rail));
   /* First-baseline alignment, so a 12px mono year sits on the same line as the
      17px serif it labels rather than centring in its own box. */
   align-items: baseline;
@@ -607,6 +605,9 @@ html.theme-dark {
    would break the alignment it exists to create. Ink, not --doc-light: the
    section numerals are publication furniture, but these are the claim. */
 .doc-exp-years {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   font-family: var(--mono);
   font-size: var(--type-year);
   font-weight: 500;
@@ -616,24 +617,29 @@ html.theme-dark {
   color: var(--doc-heading);
   text-align: right;
   padding-right: 14px;
+  line-height: 1.28;
+  min-width: 0;
+}
+
+.date-range {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.date-range-start,
+.date-range-end {
+  display: block;
   white-space: nowrap;
 }
 
-/* Experience carries a span; the rail can only hold nine characters when the
-   sheet margin is at its full 88px. Below that the span steps down to the
-   start year, which is what the rail is really for — sequence. */
-.doc-exp-years .year-start {
-  display: none;
+.date-range-end {
+  color: var(--doc-light);
 }
 
-@media (max-width: 1320px) {
-  .doc-exp-years .year-span {
-    display: none;
-  }
-
-  .doc-exp-years .year-start {
-    display: inline;
-  }
+.doc-exp-body {
+  min-width: 0;
 }
 
 /* ── Bullets ── */
@@ -649,7 +655,7 @@ html.theme-dark {
   line-height: 1.68;
   padding-left: 20px;
   position: relative;
-  margin-bottom: 9px;
+  margin-bottom: var(--space-line);
 }
 
 .doc-exp li::before {
@@ -661,7 +667,7 @@ html.theme-dark {
 
 /* ── Experience entries ── */
 .doc-exp {
-  margin-bottom: 34px;
+  margin-bottom: var(--space-entry);
 }
 
 .doc-exp-company {
@@ -1393,86 +1399,16 @@ body.popover-open {
   margin-bottom: 14px;
 }
 
-/* Project gateway for the overlay/bottom-sheet experience. It begins in the
-   reading order directly after the media (or after the label/stat when there
-   is no media), then stays available at the top once the reader scrolls past
-   it. The crisp document-white surface and black action make it discoverable
-   without introducing a muddy third color into the editorial system. */
-.popover-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 14px 14px 0;
-  padding: 10px 10px 10px 14px;
-  border: 1px solid var(--doc-heading);
-  background: var(--doc-white);
-  font-family: var(--mono);
-  font-size: var(--type-meta);
-  font-weight: 600;
-  letter-spacing: var(--type-label-spacing);
-  text-transform: uppercase;
-  color: var(--doc-heading);
-  text-decoration: none;
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.12s ease;
-}
-
-/* Only the sheet has an inner scroll region, so only there does the gateway
-   stay pinned while longer copy scrolls. Everywhere else the control sits in
-   the document flow, like everything else on the sheet of paper. */
+/* Project gateway — base styles live in gateway-link.css. Context only here. */
 .popover-scroll .popover-link {
   position: sticky;
   top: 0;
   z-index: 3;
 }
 
-/* The press. The control depresses into the paper by exactly one pixel —
-   the same click feel wherever the gateway appears: sheet, bound-in note,
-   margin, and the introductions' demonstration. */
-.popover-link:active {
-  transform: translateY(1px);
-}
-
-.popover-link-label {
-  padding-left: 2px;
-}
-
-.popover-link::after {
-  content: "\2192";
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  background: var(--doc-heading);
-  color: var(--doc-white);
-  letter-spacing: 0;
-  flex-shrink: 0;
-  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.popover-body > .popover-link {
+.popover-body > .popover-link,
+.popover-body > .gateway-link.gateway-link--invert {
   margin: 0 0 18px;
-}
-
-.popover-link:hover,
-.popover-link:focus-visible {
-  background: var(--doc-heading);
-  color: var(--doc-white);
-}
-
-.popover-link:hover::after,
-.popover-link:focus-visible::after {
-  background: var(--doc-white);
-  color: var(--doc-heading);
-  transform: translateX(3px);
-}
-
-.popover-link:focus-visible {
-  outline: 2px solid var(--doc-heading);
-  outline-offset: 3px;
 }
 
 .popover-quote {
@@ -1674,31 +1610,23 @@ button.intro-demo-link:focus-visible {
   margin: 0 0 36px;
 }
 
-/* The note's rule narrates the demonstration: resting hairline, yellow while
-   the yellow pen is on stage, green when the green pen takes it, and back to
-   rest once the reader has the whole ladder — the apparatus stands down. */
+/* The note's rule matches the bottom border — a resting hairline only. */
 .edition-rule {
   width: 100%;
   height: 1px;
   background: var(--doc-rule);
   margin-bottom: 12px;
-  transition:
-    background-color 0.3s ease,
-    height 0.25s ease;
 }
 
-.edition-note.intro-stage-pens .edition-rule {
-  height: 2px;
-  background: rgba(var(--mark-note-rgb), 0.8);
+.edition-specimen {
+  --mark-rgb: var(--mark-note-rgb);
+  --hs-ink: rgba(var(--mark-rgb), var(--mark-a));
+  --hs-ink-b: rgba(var(--mark-rgb), calc(var(--mark-a) * 0.88));
+  position: relative;
 }
 
-.edition-note.intro-stage-gateway .edition-rule {
-  background: rgba(var(--mark-project-rgb), 0.8);
-}
-
-.edition-note.intro-stage-done .edition-rule {
-  height: 1px;
-  background: var(--doc-rule);
+.edition-specimen--project {
+  --mark-rgb: var(--mark-project-rgb);
 }
 
 .edition-label {
@@ -1722,30 +1650,6 @@ button.intro-demo-link:focus-visible {
 
 .edition-text--pens {
   margin-top: 6px;
-}
-
-/* The widen invitation is one quiet clause, shown only where widening is
-   possible — a phone cannot be widened and should not be told to try. */
-.edition-widen {
-  display: none;
-}
-
-@media (min-width: 601px) {
-  .edition-widen {
-    display: inline;
-  }
-}
-
-/* The demo gateway wears the real control's classes; only its spacing is
-   local. */
-.edition-note .popover-link {
-  margin: 12px 0 2px;
-}
-
-button.popover-link {
-  appearance: none;
-  font: inherit;
-  text-align: inherit;
 }
 
 /* At the wide tier the margin performs the introduction. */
@@ -2299,73 +2203,7 @@ li > .inset-note {
     outline-offset: 2px;
   }
 
-  /* The same project gateway used by the overlay, scaled for a 220px margin.
-     It appears directly after media (or after label/stat context when there is
-     no media), so the route is part of the opening hierarchy rather than an
-     afterthought below the narrative. */
-  .sa-link {
-    position: relative;
-    z-index: 3;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    margin: 12px 0 14px;
-    padding: 7px 7px 7px 10px;
-    border: 1px solid var(--doc-heading);
-    background: var(--doc-white);
-    font-family: var(--mono);
-    font-size: var(--type-meta);
-    font-weight: 600;
-    letter-spacing: var(--type-label-spacing);
-    text-transform: uppercase;
-    color: var(--doc-heading);
-    text-decoration: none;
-    transition:
-      background-color 0.2s ease,
-      color 0.2s ease,
-      transform 0.12s ease;
-  }
-
-  /* The same one-pixel press the gateway has on every other surface. */
-  .sa-link:active {
-    transform: translateY(1px);
-  }
-
-  .sa-link-label {
-    padding-left: 1px;
-  }
-
-  .sa-link::after {
-    content: "\2192";
-    display: grid;
-    place-items: center;
-    width: 26px;
-    height: 26px;
-    background: var(--doc-heading);
-    color: var(--doc-white);
-    letter-spacing: 0;
-    flex-shrink: 0;
-    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .sa-link:hover,
-  .sa-link:focus-visible {
-    background: var(--doc-heading);
-    color: var(--doc-white);
-  }
-
-  .sa-link:hover::after,
-  .sa-link:focus-visible::after {
-    background: var(--doc-white);
-    color: var(--doc-heading);
-    transform: translateX(3px);
-  }
-
-  .sa-link:focus-visible {
-    outline: 2px solid var(--doc-heading);
-    outline-offset: 3px;
-  }
+  /* Margin gateway — base in gateway-link.css (.sa-link / --margin). */
 
   /* Both margins set flush-left. Right-ragged text in the left margin looks
      like a mistake at this column width; a shared left edge on both sides
@@ -2496,7 +2334,7 @@ li > .inset-note {
   .masthead-meta {
     flex-direction: column;
     align-items: flex-start;
-    gap: 22px;
+    gap: var(--space-block);
   }
 
   .masthead-sub {
@@ -2523,7 +2361,13 @@ li > .inset-note {
   }
 
   .doc-exp-years {
+    align-items: flex-start;
     text-align: left;
+    padding-right: 0;
+  }
+
+  .date-range {
+    align-items: flex-start;
   }
 
   .doc-wrapper {
@@ -2542,7 +2386,7 @@ li > .inset-note {
   }
 
   .doc-section-heading {
-    margin: 34px 0 18px;
+    margin: var(--space-entry) 0 18px;
   }
 
   /* ── Mobile bottom sheet ──
@@ -2569,11 +2413,8 @@ li > .inset-note {
     overscroll-behavior: contain;
     background: var(--doc-white);
     border-top: 1px solid var(--doc-rule);
-    border-radius: 14px 14px 0 0;
-    box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.05),
-      0 12px 28px rgba(0, 0, 0, 0.1),
-      0 32px 64px rgba(0, 0, 0, 0.09);
+    border-radius: var(--radius-sheet-mobile) var(--radius-sheet-mobile) 0 0;
+    box-shadow: var(--shadow-sheet);
     opacity: 0;
     pointer-events: none;
     /* --sheet-drag-offset is driven by JS during swipe-to-dismiss */
@@ -2584,7 +2425,7 @@ li > .inset-note {
   }
 
   html.theme-dark .popover {
-    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
+    box-shadow: var(--shadow-sheet-night);
   }
 
   .popover-scroll {

@@ -111,9 +111,15 @@ function buildProjectLink(
 ): HTMLAnchorElement | null {
   if (!data.link || !data.linkText) return null;
   const link = document.createElement("a");
-  link.className = `${prefix}-link`;
+  const surface = prefix === "sa" ? "margin" : "sheet";
+  link.className = `gateway-link gateway-link--invert gateway-link--${surface} ${prefix}-link`;
   link.href = data.link;
-  appendText(link, "span", `${prefix}-link-label`, data.linkText);
+  appendText(
+    link,
+    "span",
+    `gateway-link__label ${prefix}-link-label`,
+    data.linkText,
+  );
   return link;
 }
 

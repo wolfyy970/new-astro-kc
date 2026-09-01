@@ -18,11 +18,11 @@ import type { PopoverMap } from "../types/content.ts";
 import { buildContentNode } from "./note-content.ts";
 import {
   ID_INSET,
-  ID_POPOVER,
   INSET_COLLAPSE_MS,
   ASSIST_BOTTOM_GAP,
   ASSIST_NOTE_TOP,
-  SCROLL_EXIT_THRESHOLD,
+  INSET_SCROLL_EXIT_GRACE_MS,
+  INSET_SCROLL_EXIT_THRESHOLD,
   CLS_ACTIVE,
   CLS_OPEN,
 } from "./constants.ts";
@@ -30,9 +30,7 @@ import { prefersReducedMotion } from "../utils/viewport.ts";
 import { syncHotspotDefaultControls } from "./hotspot-a11y.ts";
 import { assistNoteIntoView } from "./note-geometry.ts";
 
-// Canonical Tabler "X", matching the sheet's close control.
-const ICON_FOLD =
-  '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>';
+import { ICON_X } from "./icons.ts";
 
 let activeTerm: HTMLElement | null = null;
 let activeNote: HTMLElement | null = null;
@@ -81,6 +79,8 @@ function assistIntoView(note: HTMLElement, term: HTMLElement): void {
 // scroll position compensated in the same frame — nothing visible moves.
 
 let scrollExitAcc = 0;
+let scrollExitGraceUntil = 0;
+let lastTouchY: number | null = null;
 
 /** Instant close that keeps everything currently on screen exactly still. */
 function closeNoteScrolledPast(note: HTMLElement): void {
@@ -97,6 +97,7 @@ function closeNoteScrolledPast(note: HTMLElement): void {
 function onReaderScrollIntent(delta: number): void {
   const note = activeNote;
   if (!note) return;
+  if (Date.now() < scrollExitGraceUntil) return;
 
   const rect = note.getBoundingClientRect();
 
@@ -111,7 +112,7 @@ function onReaderScrollIntent(delta: number): void {
   }
 
   scrollExitAcc += Math.abs(delta);
-  if (scrollExitAcc >= SCROLL_EXIT_THRESHOLD) {
+  if (scrollExitAcc >= INSET_SCROLL_EXIT_THRESHOLD) {
     // Fully above the viewport: fold without moving the reader's view.
     // Otherwise the fold is visible below/around them and animates closed.
     if (rect.bottom < 0) closeNoteScrolledPast(note);
@@ -129,15 +130,47 @@ function bindExitListeners(): void {
     { passive: true, signal },
   );
   document.addEventListener(
-    "touchmove",
-    // A drag that STARTS inside the note is reading — swiping its carousel —
-    // not leaving. A real departure swipe fires dozens of these, so a fixed
-    // step reaches the threshold immediately while jitter does not.
+    "touchstart",
     (e: TouchEvent) => {
       if (e.target instanceof Element && e.target.closest(".inset-note")) {
+        lastTouchY = null;
         return;
       }
-      onReaderScrollIntent(SCROLL_EXIT_THRESHOLD / 2);
+      lastTouchY = e.touches[0]?.clientY ?? null;
+    },
+    { passive: true, signal },
+  );
+  document.addEventListener(
+    "touchmove",
+    // A drag that STARTS inside the note is reading — swiping its carousel —
+    // not leaving. Measure real finger travel so jitter stays below threshold.
+    (e: TouchEvent) => {
+      if (e.target instanceof Element && e.target.closest(".inset-note")) {
+        lastTouchY = null;
+        return;
+      }
+      const y = e.touches[0]?.clientY;
+      if (y == null) return;
+      if (lastTouchY == null) {
+        lastTouchY = y;
+        return;
+      }
+      onReaderScrollIntent(y - lastTouchY);
+      lastTouchY = y;
+    },
+    { passive: true, signal },
+  );
+  document.addEventListener(
+    "touchend",
+    () => {
+      lastTouchY = null;
+    },
+    { passive: true, signal },
+  );
+  document.addEventListener(
+    "touchcancel",
+    () => {
+      lastTouchY = null;
     },
     { passive: true, signal },
   );
@@ -174,7 +207,7 @@ function buildInset(key: string, popovers: PopoverMap): HTMLElement | null {
   fold.type = "button";
   fold.className = "inset-fold";
   fold.setAttribute("aria-label", "Close note");
-  fold.innerHTML = ICON_FOLD;
+  fold.innerHTML = ICON_X;
   fold.addEventListener("click", () => closeInset());
   body.querySelector(".popover-head")?.appendChild(fold);
 
@@ -253,6 +286,8 @@ function openInset(term: HTMLElement, popovers: PopoverMap): void {
 
   bindExitListeners();
   scrollExitAcc = 0;
+  lastTouchY = null;
+  scrollExitGraceUntil = Date.now() + INSET_SCROLL_EXIT_GRACE_MS;
   activeTerm = term;
   activeNote = note;
   term.classList.add(CLS_ACTIVE);
@@ -287,6 +322,8 @@ export function activeInsetTerm(): HTMLElement | null {
 export function cleanupInset(): void {
   exitAbortController?.abort();
   exitAbortController = null;
+  lastTouchY = null;
+  scrollExitGraceUntil = 0;
   collapseTimers.forEach((timer) => window.clearTimeout(timer));
   collapseTimers.clear();
   closeInset({ instant: true });

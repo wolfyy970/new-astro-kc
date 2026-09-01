@@ -5,12 +5,7 @@ import {
   VIDEO_EXTENSIONS,
 } from "./constants.ts";
 
-const ICON_PLAY =
-  '<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
-const ICON_CHEVRON_PREV =
-  '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>';
-const ICON_CHEVRON_NEXT =
-  '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+import { ICON_CHEVRON_NEXT, ICON_CHEVRON_PREV, ICON_PLAY } from "./icons.ts";
 
 interface MediaElementOptions {
   autoPlay?: boolean;

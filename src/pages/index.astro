@@ -11,7 +11,7 @@ import "../styles/global.css";
 
 import { optimizePopoverImages } from "../utils/images";
 import { applyFeatureFlags } from "../utils/feature-flags";
-import { yearSpan, startYear } from "../utils/dates";
+import { dateRangeLines } from "../utils/dates";
 
 // ── Image Optimization + Feature Flags ───────────────────────────────────────
 // 1. Ask Astro's image service for fitted WebP URLs before popover data is
@@ -107,34 +107,39 @@ const summaryParagraphs = resume.summary.split("\n\n");
       <h2 class="doc-section-heading">Experience</h2>
 
       {
-        resume.experience.map((job) => (
-          <section class="doc-exp">
-            {/* The time axis. Years run down one edge of the document, so
+        resume.experience.map((job) => {
+          const range = dateRangeLines(job.dates);
+          return (
+            <section class="doc-exp">
+              {/* The time axis. Years run down one edge of the document, so
                 tenure and sequence are readable without parsing a sentence.
                 This was a company-left/dates-right row — the most generic
                 pattern the résumé form has. The rail hangs in the sheet's own
                 margin (see --sheet-inset) so the prose keeps one left edge. */}
-            <span class="doc-exp-years" aria-hidden="true">
-              <span class="year-span">{yearSpan(job.dates)}</span>
-              <span class="year-start">{startYear(job.dates)}</span>
-            </span>
-            <div class="doc-exp-body">
-              <h3 class="doc-exp-company">
-                {job.company}
-                <span class="sr-only">, {job.dates}</span>
-              </h3>
-              <div class="doc-exp-title">{job.title}</div>
-              {job.description && (
-                <div class="doc-exp-desc" set:html={mark(job.description)} />
-              )}
-              <ul>
-                {job.bullets.map((bullet) => (
-                  <li set:html={mark(bullet)} />
-                ))}
-              </ul>
-            </div>
-          </section>
-        ))
+              <span class="doc-exp-years" aria-hidden="true">
+                <span class="date-range">
+                  <span class="date-range-start">{range.start}</span>
+                  {range.end && <span class="date-range-end">{range.end}</span>}
+                </span>
+              </span>
+              <div class="doc-exp-body">
+                <h3 class="doc-exp-company">
+                  {job.company}
+                  <span class="sr-only">, {job.dates}</span>
+                </h3>
+                <div class="doc-exp-title">{job.title}</div>
+                {job.description && (
+                  <div class="doc-exp-desc" set:html={mark(job.description)} />
+                )}
+                <ul>
+                  {job.bullets.map((bullet) => (
+                    <li set:html={mark(bullet)} />
+                  ))}
+                </ul>
+              </div>
+            </section>
+          );
+        })
       }
 
       <!-- Education -->
@@ -153,13 +158,16 @@ const summaryParagraphs = resume.summary.split("\n\n");
       <!-- Patents & Recognition -->
       <h2 class="doc-section-heading">Patents &amp; Recognition</h2>
       <div class="doc-awards-line">
-        <strong>Patents:</strong> {resume.patentsAndRecognition.patents}
+        <strong>Patents:</strong>
+        {resume.patentsAndRecognition.patents}
       </div>
       <div class="doc-awards-line">
-        <strong>Awards:</strong> {resume.patentsAndRecognition.awards}
+        <strong>Awards:</strong>
+        {resume.patentsAndRecognition.awards}
       </div>
       <div class="doc-awards-line">
-        <strong>Certifications:</strong> {resume.patentsAndRecognition.certifications}
+        <strong>Certifications:</strong>
+        {resume.patentsAndRecognition.certifications}
       </div>
 
       <!-- No running colophon. In print a running foot exists because pages get

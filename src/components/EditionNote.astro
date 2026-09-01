@@ -1,21 +1,8 @@
 ---
 // ── The Editor's Note ─────────────────────────────────────────────────────────
-// The introduction for every tier WITHOUT margins (<1420px), replacing two
-// pieces of chrome that announced the system instead of demonstrating it: the
-// black "widen to reveal marginalia" bar and the bordered "best on desktop"
-// badge. Like the wide tier's cold-start margin note, this is a working scale
-// model of the system, set where notes live at these tiers — bound into the
-// top of the sheet as a printed editor's note: a rule, a mono label, and one
-// sentence wearing a genuine yellow specimen stroke.
-//
-// The staged ladder is the same demonstration the margin intro performs:
-// yellow specimen → the two-pens sentence → an example project gateway (the
-// real control's classes) → the payoff line. The rule above narrates each
-// stage in the pen on stage — yellow, then green, then back to the resting
-// hairline once the reader has the whole ladder.
-import { renderCaseStudyMarker } from "../utils/render";
-
-const marker = renderCaseStudyMarker();
+// Introduction for tiers without margins (<1420px): a resting hairline, the mono
+// label, and two note-size sentences with yellow/green specimens on the color
+// words. Hidden at the wide tier, where the margin performs the introduction instead.
 ---
 
 <aside
@@ -26,88 +13,14 @@ const marker = renderCaseStudyMarker();
   <div class="edition-rule" aria-hidden="true"></div>
   <div class="edition-label">Interactive</div>
   <p class="edition-text">
-    <button
-      type="button"
-      class="intro-term hs-mark-3"
-      aria-expanded="false"
-      aria-controls="edition-intro-pens"
-      ><span class="hs-stroke">Highlighted terms</span></button
-    > are interactive. Click to reveal detail.
+    Highlighted terms are interactive. Click to reveal detail.
   </p>
-  <div id="edition-intro-pens" class="intro-reveal intro-reveal--pens" hidden>
-    <div class="intro-reveal-inner">
-      <p class="edition-text edition-text--pens">
-        A yellow mark opens its note in the page; a <button
-          type="button"
-          class="intro-term intro-term--project hs-mark-6"
-          aria-expanded="false"
-          aria-controls="edition-intro-gateway"
-          ><span class="hs-stroke">green mark</span><Fragment
-            set:html={marker}
-          /></button
-        > navigates to the project detail.
-      </p>
-    </div>
-  </div>
-  <div id="edition-intro-gateway" class="intro-reveal intro-reveal--gateway" hidden>
-    <div class="intro-reveal-inner">
-      <button type="button" class="popover-link intro-demo-link">
-        <span class="popover-link-label">View project</span>
-      </button>
-    </div>
-  </div>
-  <div class="intro-reveal intro-reveal--done" hidden>
-    <div class="intro-reveal-inner">
-      <div class="intro-done">You got it!</div>
-    </div>
-  </div>
+  <p class="edition-text edition-text--pens">
+    <span class="edition-specimen edition-specimen--note hs-mark-3"
+      ><span class="hs-stroke">Yellow</span></span
+    > highlight opens in page note; <span
+      class="edition-specimen edition-specimen--project hs-mark-6"
+      ><span class="hs-stroke">green</span></span
+    > navigates to the project detail.
+  </p>
 </aside>
-
-<script>
-  import {
-    CLS_INTRO_PENS,
-    CLS_INTRO_GATEWAY,
-    CLS_INTRO_DONE,
-  } from "../scripts/constants.ts";
-  import { attachIntroPayoff } from "../scripts/intro-payoff.ts";
-
-  const note = document.getElementById("edition-note");
-  if (note) {
-    const pens = note.querySelector("#edition-intro-pens");
-    const gatewayBlock = note.querySelector("#edition-intro-gateway");
-    const yellowBtn = note.querySelector<HTMLButtonElement>(
-      ".intro-term:not(.intro-term--project)",
-    );
-    const greenBtn = note.querySelector<HTMLButtonElement>(
-      ".intro-term--project",
-    );
-
-    yellowBtn?.addEventListener("click", () => {
-      note.classList.add(CLS_INTRO_PENS);
-      pens?.removeAttribute("hidden");
-      yellowBtn.setAttribute("aria-expanded", "true");
-    });
-
-    greenBtn?.addEventListener("click", () => {
-      note.classList.add(CLS_INTRO_GATEWAY);
-      gatewayBlock?.removeAttribute("hidden");
-      greenBtn.setAttribute("aria-expanded", "true");
-    });
-
-    const link = note.querySelector<HTMLElement>(".intro-demo-link");
-    const line = note.querySelector<HTMLElement>(".intro-done");
-    if (link && line) {
-      attachIntroPayoff({
-        root: note,
-        link,
-        line,
-        doneClass: CLS_INTRO_DONE,
-        onStageReveal: () => {
-          note
-            .querySelector(".intro-reveal--done")
-            ?.removeAttribute("hidden");
-        },
-      });
-    }
-  }
-</script>

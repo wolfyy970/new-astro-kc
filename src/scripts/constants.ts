@@ -18,6 +18,10 @@
 // very common laptop no matter how the window was sized.
 export const BREAKPOINT_WIDE = 1420; // px — wide desktop, marginalia visible
 export const BREAKPOINT_MOBILE = 600; // px — mobile, bottom-sheet popover
+// CSS @media cannot use custom properties — these mirror hardcoded widths in
+// global.css and case-study.css so JS and DESIGN.md stay aligned.
+export const BREAKPOINT_TABLET = 1024; // px — case-study pad (--cs-pad-tablet)
+export const BREAKPOINT_INSET_COLUMNS = 760; // px — bound-in note column wrap
 
 // ── Mobile sheet ──
 // The sheet is the only floating note surface left. On wider viewports the
@@ -33,6 +37,11 @@ export const SHEET_SNAPBACK_MS = 350; // ms — snap-back settle before clearing
 
 // ── Bound-in note (middle tier) ──
 export const INSET_COLLAPSE_MS = 400; // ms — fold-up before the note leaves the DOM (≥ CSS transition)
+// Tablet notes sit in the document flow; touch scroll was folding them on the
+// first few pixels after open. Grace gives the assist time to finish; a higher
+// threshold and real touch deltas add leeway on finger scroll.
+export const INSET_SCROLL_EXIT_THRESHOLD = 62; // px — accumulated wheel/touch delta that counts as leaving
+export const INSET_SCROLL_EXIT_GRACE_MS = 450; // ms — ignore exit intent right after open
 
 // ── Note scroll assist (margin and bound-in alike) ──
 // The assist aims at the note's FINAL unfolded extent, not its current top:

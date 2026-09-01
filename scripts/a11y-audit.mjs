@@ -135,7 +135,9 @@ for (const page of summary) {
   if (!page.incomplete.length) continue;
   console.log(`\n${page.path}`);
   for (const v of page.incomplete) {
-    console.log(`  [${v.impact ?? "n/a"}] ${v.id}: ${v.help} (${v.nodes} nodes)`);
+    console.log(
+      `  [${v.impact ?? "n/a"}] ${v.id}: ${v.help} (${v.nodes} nodes)`,
+    );
   }
 }
 

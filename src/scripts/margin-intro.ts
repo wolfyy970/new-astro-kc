@@ -42,9 +42,10 @@ function buildGateway(): {
   inner.className = "intro-reveal-inner";
   const link = document.createElement("button");
   link.type = "button";
-  link.className = "sa-link intro-demo-link";
+  link.className =
+    "gateway-link gateway-link--invert gateway-link--margin sa-link intro-demo-link";
   const label = document.createElement("span");
-  label.className = "sa-link-label";
+  label.className = "gateway-link__label sa-link-label";
   label.textContent = "View project";
   link.appendChild(label);
   inner.appendChild(link);

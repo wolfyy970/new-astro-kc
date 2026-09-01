@@ -17,40 +17,40 @@
       "Executive MBA"
     ]
   },
-  "summary": "Multidisciplinary design leader with a career built on connecting those perspectives. Bringing the system, the user, the business, and the technology into one frame. As AI changes how expertise is applied, the ability to integrate those perspectives becomes increasingly key. That has been the through line of my career, most often through the lens of design and product strategy.\n\nProven track record building and maturing design organizations, product execution and coaching, delivering measurable business growth, and leading at the intersection of emerging technology and product strategy at Fortune companies and in consulting. Experience spans media, finance, e-commerce, and consulting sectors.",
+  "summary": "Multidisciplinary design leader with a career built on connecting design, engineering and product to the business. As AI changes how expertise is applied, the ability to integrate disciplines is increasingly key. That has been the through line of my career, most often through the lens of design and product strategy.\n\nProven track record building and maturing design organizations, product execution and coaching, delivering measurable business growth, and leading at the intersection of emerging technology and product strategy at Fortune companies and in consulting. Experience spans media, finance, e-commerce, and consulting sectors.",
   "experience": [
     {
       "company": "GENUINE PARTS COMPANY",
-      "dates": "January 2023 - 2026",
+      "dates": "January 2023 - May 2026",
       "title": "Senior Director & Head of UX Design and Research · Atlanta, GA",
       "description": "Executive design leader leading UX design and research for Fortune Global 500 automotive/industrial parts distribution leader.",
       "bullets": [
         "Leading research-driven redesign of <hotspot key=\"gpc-revenue\">$8B unified commerce platform</hotspot> and <hotspot key=\"agentic\">AI-driven (agentic) new product</hotspot>, informed by prior consulting engagement.",
         "Developed <hotspot key=\"bolt\">\"Bolt\" global design system</hotspot> adopted across North America, Europe, and APAC.",
         "Introduced balanced team model embedding dedicated design and research roles in agile pods, supported by a scalable design process integrating stakeholder engagement and user research.",
-        "Pioneered early 2025 assessment of and subsequent introduction of AI design and prototyping tool (v0) to optimize for exploration breadth and execution speed."
+        "Led the design team's adoption of AI, the first team outside of the dedicated AI team and ahead of engineering. Early 2025 AI tool bakeoff and the subsequent introduction of AI design and prototyping tool v0 by April. Subsequently trained my team and deepened their exposure with Claude Code."
       ]
     },
     {
       "company": "WOLFF CONSULTING, LLC",
       "dates": "June 2021 - January 2023",
       "title": "Founder & Principal Consultant · Atlanta, GA",
-      "description": "Boutique product and design consultancy bridging strategy and execution for clients across fitness, media analytics, and automotive sectors.",
+      "description": "Built on my experience and expertise from consulting to start a boutique product and design consultancy bridging strategy and execution for clients across fitness, media analytics, and automotive sectors.",
       "bullets": [
         "Conducted yearlong research and strategic foresight engagement for GPC CIO on the future of automotive retail and repair, including primary research and journey mapping across drivers, repair shops, parts stores, and supply chain. Work directly informed the company's digital transformation roadmap and led to recruitment as Head of UX Design and Research.",
-        "Redesigned FitRadio's workout music streaming app. Product coaching for Comscore. Mobile app heuristic design evaluation for Gold's Gym."
+        "Redesigned the FitRadio mobile experience, modernizing the UI and streaming flows to elevate audio discovery during workouts. Delivered strategic product coaching to Comscore, strengthening product process management and team alignment. Conducted a heuristic evaluation of the Gold's Gym mobile app, identifying core usability friction points to guide interface refinements."
       ]
     },
     {
       "company": "TRUIST (SunTrust prior to SunTrust BB&T Merger)",
       "dates": "July 2017 - June 2021",
       "title": "Head of UX Design & Research · Atlanta, GA",
-      "description": "Inherited a 10-person nascent UX team at SunTrust with no research or UI capability and no independent design voice; established UI and Research as new functions and scaled to around 30 by the time of the $66B SunTrust-BB&T merger, then continued the build-out to a 50-person multidisciplinary organization across the merged Truist entity, establishing an evidence-based design methodology.",
+      "description": "Inherited and transformed a 10-person nascent UX team at SunTrust, building dedicated research and UI capabilities from the ground up while establishing an independent design voice, scaling to 30 by the time of the $66B SunTrust-BB&T merger, then continuing the build-out to a 50-person multidisciplinary organization across the merged Truist entity, establishing an evidence-based design methodology.",
       "bullets": [
         "Rebooted and repositioned the <hotspot key=\"merger\">SunTrust Innovation Accelerator Studio</hotspot>, introducing service design, customer journey mapping and strategic foresight as core capabilities. Partnered with Corporate Strategy on a foresight exercise - presenting three future-of-banking scenarios to CEO and C-Suite; CEO called the work \"instrumental\" in shaping merger strategy.",
         "Led UX design and research across Consumer Banking, Small Business, Wealth Management, Small Business and Commercial Banking for SunTrust and Small Business and Commercial Banking for Truist.",
         "Rebuilt all business <hotspot key=\"truist-products\">products</hotspot> for the merged entity (commercial and small business banking). Integrated design into Scaled Agile Framework (SAFe) to deliver a unified experience across all products.",
-        "Translated the new Truist brand into visual design and UI standards, defining the Truist design system deployed across all digital products."
+        "Translated the new Truist brand into visual design and UI standards, defining the Truist design system deployed across all digital products. Engineering completed by my opposite leading the consumer design team."
       ]
     },
     {
@@ -79,7 +79,7 @@
       "title": "Senior Director, Strategic Product · Atlanta, GA",
       "description": "Led multi-disciplinary (Product, UX, Engineering) R&D team driving innovation across emerging platforms for CNN, Cartoon Network, TBS, and TNT.",
       "bullets": [
-        "Contributed to an <hotspot key=\"emmy\">Emmy Award</hotspot> (Outstanding Creative Achievement in Interactive Media) for the Team Coco sync-to-TV app, designing how the sync-to-TV events worked in production while my team delivered much of the engineering.",
+        "Architected the underlying automatic content recognition and sync-to-TV technology that enabled the Team Coco app's <hotspot key=\"emmy\">Emmy Award</hotspot> for Outstanding Creative Achievement in Interactive Media.",
         "Awarded two <hotspot key=\"patents\">U.S. patents</hotspot> for automatic content recognition and audience engagement technologies that synchronized interactive content with live broadcast television.",
         "Designed and led development for CNN World Cup Twitter Buzz, producing real-time data visualization that earned a <hotspot key=\"rts-award\">Royal Television Society Award</hotspot> and Fast Company's \"Infographic of the Day\"."
       ]
@@ -101,17 +101,16 @@
       "company": "ENSEQUENCE INTERNATIONAL",
       "dates": "Mar 2003 - Apr 2005",
       "title": "Interactive TV Architect · Portland, OR / London, UK",
-      "description": "Ensequence was the dominant interactive TV software platform from the US, powering interactive shows and commercials across more than 20 million homes worldwide. Client roster included NBCUniversal, ESPN, MTV Networks, HBO, BSkyB, BBC.",
+      "description": "Ensequence was the dominant interactive TV software platform from the US, powering interactive shows and commercials across more than 20 million homes worldwide.",
       "bullets": [
-        "UK product manager for the \"on-Q\" Interactive TV Authoring System.",
-        "Designed, engineered, and deployed solutions and applications for broadcast deployments for major clients."
+        "Designed, engineered, and deployed solutions and applications for broadcast deployments for major clients including NBCUniversal, ESPN, MTV Networks, HBO, BSkyB, BBC."
       ]
     },
     {
       "company": "TWO WAY MEDIA",
       "dates": "Sep 1995 - Mar 2003",
       "title": "Solutions Development Manager · London, UK",
-      "description": "Founding team member of Two Way TV, a world-leading interactive television pioneer that operated dedicated gaming channels across the UK's major digital platforms and internationally in the US/Canada and Australia. The company held key interactive TV patents, and signed a strategic alliance with Microsoft to bring the technology to the MSTV platform.",
+      "description": "Two Way TV, a world-leading interactive television pioneer that operated dedicated gaming channels across the UK's major digital platforms and internationally in the US/Canada and Australia. The company held key interactive TV patents, and signed a strategic alliance with Microsoft to bring the technology to the MSTV platform.",
       "bullets": [
         "Designed, produced, and architected \"Armchair Manager - Football,\" including its database. It became the first interactive television game ever nominated in the <hotspot key=\"bafta\">BAFTA Sports category</hotspot> (2000).",
         "Pioneered the UK's first <hotspot key=\"two-way-games\">interactive television multiplayer game service</hotspot> and a global first with the Challenge TV fully interactive network. All games playable live alongside in studio participants."

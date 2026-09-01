@@ -14,6 +14,7 @@ import {
   CLS_VISIBLE,
   ID_INSET,
   RESIZE_DEBOUNCE_MS,
+  INSET_SCROLL_EXIT_GRACE_MS,
 } from "./constants";
 
 describe("NoteEngine", () => {
@@ -65,10 +66,13 @@ describe("NoteEngine", () => {
     window.innerHeight = 900;
     window.scrollY = 0;
 
-    // Mock requestAnimationFrame to run immediately
+    // Mock requestAnimationFrame with advancing time so margin reflow loops terminate.
+    let frameTime = 0;
+    vi.spyOn(performance, "now").mockImplementation(() => frameTime);
     vi.spyOn(window, "requestAnimationFrame").mockImplementation(
       (cb: FrameRequestCallback) => {
-        cb(0);
+        frameTime += 20;
+        cb(frameTime);
         return 0;
       },
     );
@@ -251,8 +255,11 @@ describe("NoteEngine", () => {
     });
 
     it("folds when the reader scrolls away, forgiving jitter", () => {
+      vi.useFakeTimers();
       hotspot.click();
       expect(document.getElementById(ID_INSET)).not.toBeNull();
+
+      vi.advanceTimersByTime(INSET_SCROLL_EXIT_GRACE_MS);
 
       // Below the exit threshold: still reading.
       document.dispatchEvent(new WheelEvent("wheel", { deltaY: 6 }));
@@ -260,19 +267,73 @@ describe("NoteEngine", () => {
       expect(document.getElementById(ID_INSET)).not.toBeNull();
 
       // A deliberate motion is the exit gesture.
-      document.dispatchEvent(new WheelEvent("wheel", { deltaY: 40 }));
+      document.dispatchEvent(new WheelEvent("wheel", { deltaY: 70 }));
       expect(document.getElementById(ID_INSET)).toBeNull();
       expect(hotspot.getAttribute("aria-expanded")).toBe("false");
+      vi.useRealTimers();
+    });
+
+    it("ignores scroll-exit intent during the post-open grace window", () => {
+      vi.useFakeTimers();
+      hotspot.click();
+      expect(document.getElementById(ID_INSET)).not.toBeNull();
+
+      document.dispatchEvent(new WheelEvent("wheel", { deltaY: 70 }));
+      expect(document.getElementById(ID_INSET)).not.toBeNull();
+
+      vi.advanceTimersByTime(INSET_SCROLL_EXIT_GRACE_MS);
+      document.dispatchEvent(new WheelEvent("wheel", { deltaY: 70 }));
+      expect(document.getElementById(ID_INSET)).toBeNull();
+      vi.useRealTimers();
+    });
+
+    it("forgives small touch scrolls until travel exceeds the exit threshold", () => {
+      vi.useFakeTimers();
+      hotspot.click();
+      vi.advanceTimersByTime(INSET_SCROLL_EXIT_GRACE_MS);
+
+      const touch = (clientY: number): Touch =>
+        ({ clientY, identifier: 0 }) as Touch;
+
+      document.dispatchEvent(
+        new TouchEvent("touchstart", {
+          bubbles: true,
+          cancelable: true,
+          touches: [touch(100)],
+        }),
+      );
+      document.dispatchEvent(
+        new TouchEvent("touchmove", {
+          bubbles: true,
+          cancelable: true,
+          touches: [touch(120)],
+        }),
+      );
+      expect(document.getElementById(ID_INSET)).not.toBeNull();
+
+      document.dispatchEvent(
+        new TouchEvent("touchmove", {
+          bubbles: true,
+          cancelable: true,
+          touches: [touch(180)],
+        }),
+      );
+      expect(document.getElementById(ID_INSET)).toBeNull();
+      vi.useRealTimers();
     });
 
     it("resets the exit accumulator on each open", () => {
+      vi.useFakeTimers();
       hotspot.click();
+      vi.advanceTimersByTime(INSET_SCROLL_EXIT_GRACE_MS);
       document.dispatchEvent(new WheelEvent("wheel", { deltaY: 20 }));
       hotspot.click(); // close
       hotspot.click(); // reopen — accumulated 20 must not carry over
+      vi.advanceTimersByTime(INSET_SCROLL_EXIT_GRACE_MS);
 
       document.dispatchEvent(new WheelEvent("wheel", { deltaY: 20 }));
       expect(document.getElementById(ID_INSET)).not.toBeNull();
+      vi.useRealTimers();
     });
 
     it("swaps to another term's note in a single click", () => {

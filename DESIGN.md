@@ -271,7 +271,7 @@ Add icons to the registry in `Icon.astro`; do not import library components dire
 
 **The sheet is wider than the measure.** 880px of sheet holds a 704px text block with 88px of margin on each side (`--sheet-inset`, a `clamp(24px, 6vw, 88px)`). That difference is the whole reason it reads as a page rather than a column — at 720px the sheet _was_ the measure and read as a strip down the middle of the viewport. The inset is a named token because three things must agree on it: the sheet's padding, the masthead's padding, and the year rail, which hangs in exactly that band.
 
-**The time axis.** Experience sets its years in a mono rail that hangs in the sheet inset, right-aligned against the text edge, baseline-aligned with the first line of the entry it dates. The rail costs the measure nothing: it is negative-margined by `--sheet-inset` so the prose stays on the single left edge everything else uses. Below 1320px a date span steps down to its start year, because that is all nine characters' worth of rail the inset can hold; below 600px the rail collapses and the year sets flush above its entry.
+**The time axis.** Experience sets abbreviated months in a two-line mono rail that hangs in the sheet inset — start date above, end date below, right-aligned against the text edge, baseline-aligned with the first line of the entry it dates. The rail costs the measure nothing: it is negative-margined by `--exp-rail` (`max(4.5rem, var(--sheet-inset))`) so the prose stays on the single left edge everything else uses. Below 600px the rail collapses and the dates set flush above each entry.
 
 **The margins are real columns.** At ≥1420px, notes render in a 220px column with a 42px gutter, alternating sides down the page (verified: both `side-left` and `side-right` at exactly 42px). Both margins set flush left — a shared left edge on both sides reads as one apparatus running down the page, where right-ragged text in the left margin reads as a mistake.
 
@@ -339,10 +339,10 @@ The system's defining component: a highlighter stroke laid by the document's rea
 
 ### Year Rail
 
-- **Position:** hangs in `--sheet-inset`, negative-margined so prose keeps its left edge.
-- **Type:** `{typography.year}`, right-aligned, `tabular-nums`, ink.
+- **Position:** hangs in `--exp-rail`, negative-margined so prose keeps its left edge.
+- **Type:** `{typography.year}`, right-aligned, `tabular-nums`, ink on the start line; end line in `{colors.ink-muted}`.
 - **Alignment:** grid `align-items: baseline`, so a 12px numeral sits on the baseline of the 17px serif beside it instead of centring in its own row.
-- **Responsive:** full span → start year at 1320px → stacked flush-left at 600px.
+- **Responsive:** two-line rail at desktop/tablet widths; stacked flush-left at 600px.
 
 ### The Author's Portrait (masthead)
 
@@ -403,9 +403,13 @@ The theme toggle and the case-study back link. Stock fill, hairline border, `{ro
 
 ### The Editor's Note (introduction below the wide tier)
 
-The introduction for every tier without margins, and the retirement of two pieces of chrome: the black widen-to-reveal bar and the bordered best-on-desktop badge — both were announcements pinned above a printed sheet. The editor's note is instead a piece of the sheet: bound into its top like a printed "how to read this edition" note — a resting hairline, the mono INTERACTIVE label, and one note-size sentence wearing a genuine yellow specimen stroke. Like the wide tier's cold-start margin note, it is a working scale model of the system: the yellow specimen unfolds the two-pens sentence (with a live green specimen carrying the real superscript marker), the green specimen unfolds an example project gateway in the real control's classes, and the gateway pays off with the apparatus line "You got it!" The note's rule narrates each stage in the pen on stage — yellow, then green, then back to the resting hairline as the apparatus stands down. The widen invitation survives as one quiet clause, shown only above 600px where widening is possible. Specimens are spans, never controls: the staged extras are pointer theater, and the genuinely accessible marked terms do the teaching for keyboard and screen-reader readers. Hidden at ≥1420px, where the margin performs the introduction.
+The introduction for every tier without margins. A static piece of the sheet — bound into its top with a resting hairline, the mono INTERACTIVE label, and two note-size sentences wearing yellow and green specimen strokes on the colour words. It does not duplicate the margin intro's staged ladder; hidden at ≥1420px, where the margin performs the full demonstration instead.
 
-**The payoff conversation.** Clicking the demonstration gateway again is answered — the payoff line retypes at constant speed, sub-second, in the author's wry voice, and what it says responds to how it is being clicked: a rapid burst is one utterance answered once (trailing debounce), drumming earns the rapid track ("Drumroll..."), a contemplative single click after a long pause earns the patient one. The conversation is capped at five replies; at "Okay, time to go!" the introduction leaves with its exit choreography — content settles down to the rule, the rule retracts to its middle, one small ink-square blip (the gateway's action square, not a circle — circles here mean controls), gone. An easter egg with an ending. The same conversation runs in the wide tier's margin intro.
+**The payoff conversation** runs in the wide tier's margin intro only — see the margin note section above.
+
+### Project Gateway (shared control)
+
+One gateway family (`.gateway-link`) serves every project destination: `--invert` for note surfaces (sheet, margin, bound-in) and `--muted` for case-study CTAs. Legacy aliases (`.popover-link`, `.sa-link`, `.feature-link`) remain for one release. Case studies compose the muted variant through `ProjectGateway.astro`.
 
 ### Cards (case studies)
 
@@ -439,6 +443,7 @@ A centred stack with a left-aligned underline field — no box, no fill, transpa
 - **Do** recompute the 1420px threshold from `880 + 2 × (42 + 220)` whenever the sheet, gutter or column changes, and update `BREAKPOINT_WIDE` by hand.
 - **Do** reserve shadow for the four surfaces that genuinely float, and give everything else a hairline.
 - **Do** preserve opacity and colour states under `prefers-reduced-motion` — remove the movement, not the feedback.
+- **Do** consume the canonical token vocabulary in CSS: `--doc-*` for ink and paper, `--type-*` for the type scale, `--space-*` / `--radius-*` / `--shadow-*` for rhythm and surfaces, `--cs-*` only for case-study layout and hero scale. `{colors.ink}` in this document maps to `--doc-heading`.
 
 ### Don't:
 
@@ -454,3 +459,4 @@ A centred stack with a left-aligned underline field — no box, no fill, transpa
 - **Don't** put glyphs, arrows or punctuation-as-affordance inside content strings. If it is an affordance it belongs in CSS, where it can be changed once.
 - **Don't** reduce body copy below 17px at any viewport.
 - **Don't** reuse the `theme-*` prefix for anything but the `<html>` edition flag — section wrappers are `section-light` / `section-dark`, and the collision has already cost this codebase once.
+- **Don't** reintroduce retired colour aliases (`--text-primary`, `--text-secondary`, `--text-muted`, `--warm-white`). They pointed at `--doc-*` and `--bg`; use those names directly.

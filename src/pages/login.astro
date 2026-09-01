@@ -3,7 +3,6 @@ import "../styles/tokens.css";
 import "../styles/controls.css";
 import ThemeScript from "../components/ThemeScript.astro";
 import ThemeToggleButton from "../components/ThemeToggleButton.astro";
-import SkipLink from "../components/SkipLink.astro";
 import HeadFonts from "../components/HeadFonts.astro";
 import Icon from "../components/Icon.astro";
 import {
@@ -333,7 +332,6 @@ if (Astro.request.method === "POST") {
     </style>
   </head>
   <body>
-    <SkipLink />
     <ThemeToggleButton />
     <main class="login-container" id="main-content">
       <div class="login-sheet">

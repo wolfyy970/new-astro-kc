@@ -1,0 +1,341 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/Icon.astro";
+import ProjectGateway from "../components/ProjectGateway.astro";
+import SectionHeader from "../components/case-studies/SectionHeader.astro";
+import "../styles/global.css";
+import "../styles/case-study.css";
+
+const typeScale = [
+  { name: "editorial", token: "--type-editorial", sample: "KC Wolff-Ingham" },
+  {
+    name: "editorial-sub",
+    token: "--type-editorial-sub",
+    sample: "Design leadership tagline",
+  },
+  { name: "h2", token: "--type-h2", sample: "Company name" },
+  {
+    name: "body-lg",
+    token: "--type-body-lg",
+    sample: "Summary lead paragraph at 19px.",
+  },
+  {
+    name: "body",
+    token: "--type-body",
+    sample: "Running prose at the reading floor — 17px.",
+  },
+  {
+    name: "body-sm",
+    token: "--type-body-sm",
+    sample: "Margin note and caption size.",
+  },
+  { name: "meta", token: "--type-meta", sample: "SECTION MARK" },
+  { name: "year", token: "--type-year", sample: "2023" },
+  { name: "stat", token: "--type-stat", sample: "$8B" },
+];
+
+const spaceTokens = [
+  { token: "--space-line", value: "9px" },
+  { token: "--space-block", value: "22px" },
+  { token: "--space-entry", value: "34px" },
+  { token: "--space-section", value: "52px" },
+];
+
+const radiusTokens = [
+  { token: "--radius-sheet", value: "0" },
+  { token: "--radius-chrome", value: "2px" },
+  { token: "--radius-panel", value: "4px" },
+  { token: "--radius-sheet-mobile", value: "14px" },
+];
+---
+
+<BaseLayout
+  title="Design system"
+  description="Living catalog of tokens and shared parts."
+>
+  <main class="design-page">
+    <header class="design-masthead">
+      <p class="design-kicker">Internal catalog</p>
+      <h1 class="design-title">Design system</h1>
+      <p class="design-lede">
+        Tokens and shared parts for the annotated monograph. Password-gated; not
+        linked from the public résumé.
+      </p>
+    </header>
+
+    <section class="design-section">
+      <h2 class="design-section-title">Ink and paper</h2>
+      <div class="design-swatches">
+        <div class="design-swatch" style="background: var(--doc-heading)">
+          <span>--doc-heading</span>
+        </div>
+        <div class="design-swatch" style="background: var(--doc-body)">
+          <span>--doc-body</span>
+        </div>
+        <div class="design-swatch" style="background: var(--doc-light)">
+          <span>--doc-light</span>
+        </div>
+        <div
+          class="design-swatch design-swatch--border"
+          style="background: var(--doc-white)"
+        >
+          <span>--doc-white</span>
+        </div>
+        <div
+          class="design-swatch design-swatch--border"
+          style="background: var(--bg)"
+        >
+          <span>--bg</span>
+        </div>
+      </div>
+      <p class="design-note">
+        Night edition remaps these five on <code>html.theme-dark</code>. Case
+        studies inject <code>--accent</code> on <code>&lt;body&gt;</code> only.
+      </p>
+    </section>
+
+    <section class="design-section">
+      <h2 class="design-section-title">Type scale</h2>
+      <ul class="design-type-list">
+        {
+          typeScale.map((row) => (
+            <li class="design-type-row">
+              <code>{row.token}</code>
+              <span style={`font-size: var(${row.token})`}>{row.sample}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="design-section">
+      <h2 class="design-section-title">Spacing and radius</h2>
+      <table class="design-table">
+        <thead>
+          <tr><th>Token</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          {
+            [...spaceTokens, ...radiusTokens].map((row) => (
+              <tr>
+                <td>
+                  <code>{row.token}</code>
+                </td>
+                <td>{row.value}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </section>
+
+    <section class="design-section">
+      <h2 class="design-section-title">Highlighter marks</h2>
+      <p class="design-prose">
+        <span class="edition-specimen edition-specimen--note hs-mark-3"
+          ><span class="hs-stroke">Yellow</span></span
+        > marginalia · <span
+          class="edition-specimen edition-specimen--project hs-mark-6"
+          ><span class="hs-stroke">Green</span></span
+        > project gateway
+      </p>
+    </section>
+
+    <section class="design-section">
+      <h2 class="design-section-title">Project gateway</h2>
+      <div class="design-gateway-row">
+        <a
+          class="gateway-link gateway-link--invert gateway-link--sheet popover-link"
+          href="/bolt"
+        >
+          <span class="gateway-link__label popover-link-label"
+            >Invert (notes)</span
+          >
+        </a>
+        <ProjectGateway href="/truist" label="Muted (case study)" />
+      </div>
+    </section>
+
+    <section class="design-section">
+      <h2 class="design-section-title">Section header</h2>
+      <SectionHeader
+        label="Eyebrow"
+        title="Section heading at case-study scale"
+        description="Body copy wired through SectionHeader.astro and shared .section-* classes in case-study.css."
+        bodyMaxWidth="measure"
+      />
+    </section>
+
+    <section class="design-section">
+      <h2 class="design-section-title">Icons (Astro registry)</h2>
+      <div class="design-icons">
+        <Icon name="sun" />
+        <Icon name="moon" />
+        <Icon name="eye" />
+        <Icon name="eye-off" />
+        <Icon name="arrows-horizontal" />
+      </div>
+      <p class="design-note">
+        Client scripts use <code>src/scripts/icons.ts</code> (X, chevrons, play).
+      </p>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .design-page {
+    max-width: var(--doc-max-width, 880px);
+    margin: 0 auto;
+    padding: clamp(52px, 8vh, 92px) var(--sheet-inset, 24px) 96px;
+  }
+
+  .design-kicker {
+    font-family: var(--mono);
+    font-size: var(--type-meta);
+    letter-spacing: var(--type-label-spacing-wide);
+    text-transform: uppercase;
+    color: var(--doc-light);
+    margin-bottom: 12px;
+  }
+
+  .design-title {
+    font-family: var(--display);
+    font-size: var(--type-editorial);
+    font-weight: 200;
+    line-height: 1.02;
+    letter-spacing: -0.022em;
+    color: var(--doc-heading);
+    margin-bottom: 16px;
+  }
+
+  .design-lede {
+    font-family: var(--doc-serif);
+    font-size: var(--type-body-lg);
+    line-height: 1.72;
+    color: var(--doc-body);
+    max-width: 704px;
+    margin-bottom: var(--space-section);
+  }
+
+  .design-section {
+    margin-bottom: var(--space-section);
+    padding-bottom: var(--space-section);
+    border-bottom: 1px solid var(--doc-rule);
+  }
+
+  .design-section:last-child {
+    border-bottom: 0;
+  }
+
+  .design-section-title {
+    font-family: var(--mono);
+    font-size: var(--type-meta);
+    letter-spacing: var(--type-label-spacing-wide);
+    text-transform: uppercase;
+    color: var(--doc-heading);
+    margin-bottom: var(--space-block);
+  }
+
+  .design-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: var(--space-block);
+  }
+
+  .design-swatch {
+    width: 120px;
+    height: 72px;
+    border-radius: var(--radius-panel);
+    display: grid;
+    place-items: end start;
+    padding: 8px;
+  }
+
+  .design-swatch--border {
+    border: 1px solid var(--doc-rule);
+  }
+
+  .design-swatch span {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--doc-white);
+    mix-blend-mode: difference;
+  }
+
+  .design-swatch--border span {
+    color: var(--doc-heading);
+    mix-blend-mode: normal;
+  }
+
+  .design-type-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .design-type-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 16px;
+    align-items: baseline;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--doc-rule);
+  }
+
+  .design-type-row code {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--doc-light);
+  }
+
+  .design-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .design-table th,
+  .design-table td {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--doc-rule);
+  }
+
+  .design-prose {
+    font-family: var(--doc-serif);
+    font-size: var(--type-body);
+    color: var(--doc-body);
+  }
+
+  .design-gateway-row {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 360px;
+  }
+
+  .design-gateway-row .gateway-link--invert {
+    margin: 0;
+  }
+
+  .design-icons {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: var(--space-block);
+  }
+
+  .design-note {
+    font-family: var(--doc-serif);
+    font-size: var(--type-body-sm);
+    color: var(--doc-light);
+    line-height: 1.6;
+  }
+
+  .design-note code {
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+</style>

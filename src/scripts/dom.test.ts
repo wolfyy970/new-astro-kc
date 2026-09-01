@@ -319,9 +319,10 @@ describe("buildContentNode", () => {
       }),
     );
     expect(collapsed).toContain('href="/case-study"');
-    expect(collapsed).toContain('class="sa-link"');
+    expect(collapsed).toContain("gateway-link");
+    expect(collapsed).toMatch(/\bsa-link\b/);
     // The label is its own element so the underline belongs to the words.
-    expect(collapsed).toContain('class="sa-link-label"');
+    expect(collapsed).toMatch(/\bsa-link-label\b/);
   });
 
   it("should keep affordance glyphs out of the content string", () => {

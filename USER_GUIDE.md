@@ -43,6 +43,10 @@ The project is configured for **manual production deployment** to Vercel via the
 2. **Integration Checks:**
    Run `npm run quality` before pushing to production.
 
+## Internal Design Catalog
+
+`/design` is a password-gated living catalog of tokens and shared parts (gateway links, section headers, highlighter specimens). It is not linked from the public résumé; reach it directly after signing in.
+
 ## Password Protection
 
 The entire portfolio is protected by an elegant password gate powered by Astro middleware and server-side logic.

@@ -1,0 +1,41 @@
+---
+interface Props {
+  label?: string;
+  title?: string;
+  description?: string;
+  bodyMaxWidth?: "measure" | "62ch" | "none";
+  headingSpacing?: boolean;
+}
+
+const {
+  label,
+  title,
+  description,
+  bodyMaxWidth = "none",
+  headingSpacing = true,
+} = Astro.props;
+
+const headingClass = headingSpacing
+  ? "section-heading"
+  : "section-heading section-heading--flush";
+
+const bodyClass = [
+  "section-body",
+  bodyMaxWidth === "measure" && "section-body--measure",
+  bodyMaxWidth === "62ch" && "section-body--62ch",
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+{label && <div class="section-label">{label}</div>}
+{title && <h2 class={headingClass}>{title}</h2>}
+{
+  description ? (
+    <p class={bodyClass}>{description}</p>
+  ) : Astro.slots.has("default") ? (
+    <div class={bodyClass}>
+      <slot />
+    </div>
+  ) : null
+}

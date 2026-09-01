@@ -56,10 +56,7 @@ import { syncAllHotspotDefaultControls } from "./hotspot-a11y.ts";
 // The mobile transform rules reference this variable so JS can drive the offset
 // without fighting the `!important` declarations directly.
 const CSS_PROP_SHEET_OFFSET = "--sheet-drag-offset";
-// Canonical Tabler "X" geometry. The sheet chrome is built client-side, so it
-// cannot render the Astro icon component used by server-rendered controls.
-const ICON_CLOSE =
-  '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>';
+import { ICON_X } from "./icons.ts";
 
 // ── Annotation dissolve ───────────────────────────────────────────────────────
 
@@ -252,7 +249,7 @@ function injectSheetChrome(
   const closeBtn = document.createElement("button");
   closeBtn.className = "popover-close";
   closeBtn.setAttribute("aria-label", "Close");
-  closeBtn.innerHTML = ICON_CLOSE;
+  closeBtn.innerHTML = ICON_X;
   closeBtn.addEventListener("click", () => closePopover());
 
   popoverEl.prepend(closeBtn);

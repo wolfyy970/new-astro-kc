@@ -13,10 +13,10 @@
   color: var(--doc-light);
   background: var(--doc-white);
   border: 1px solid var(--doc-rule);
-  border-radius: 2px;
+  border-radius: var(--radius-chrome);
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: var(--shadow-chrome);
+  transition: all var(--duration-medium) var(--ease-move);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -37,10 +37,10 @@
   background: var(--doc-white);
   border: 1px solid var(--doc-rule);
   padding: 8px 12px;
-  border-radius: 2px;
+  border-radius: var(--radius-chrome);
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: var(--shadow-chrome);
+  transition: all var(--duration-medium) var(--ease-move);
   display: inline-flex;
   align-items: center;
   gap: 6px;

@@ -1,4 +1,6 @@
 ---
+import SectionHeader from "./SectionHeader.astro";
+
 interface Props {
   challenge: string;
   role: string;
@@ -13,13 +15,16 @@ const { challenge, role, company, scope, team } = Astro.props;
 <section class="context">
   <div class="context-inner">
     <div class="context-lead">
-      <div class="section-label">The Challenge</div>
-      <h2 class="section-heading">{challenge}</h2>
+      <SectionHeader
+        label="The Challenge"
+        title={challenge}
+        headingSpacing={false}
+      />
     </div>
     <div class="context-body">
-      <p class="section-body">
+      <SectionHeader bodyMaxWidth="62ch" headingSpacing={false}>
         <slot />
-      </p>
+      </SectionHeader>
     </div>
     <div class="meta-grid">
       <div class="meta-item">
@@ -66,33 +71,6 @@ const { challenge, role, company, scope, team } = Astro.props;
     padding-top: 42px;
   }
 
-  .section-label {
-    font-family: var(--mono);
-    font-size: var(--cs-eyebrow);
-    font-weight: 500;
-    letter-spacing: var(--cs-eyebrow-tracking);
-    text-transform: uppercase;
-    color: var(--label-color);
-    margin-bottom: 24px;
-  }
-
-  .section-heading {
-    font-family: var(--display);
-    font-size: var(--cs-heading);
-    font-weight: 400;
-    color: var(--text-primary);
-    line-height: 1.25;
-  }
-
-  .section-body {
-    font-family: var(--doc-serif);
-    font-size: var(--cs-body);
-    font-weight: 400;
-    color: var(--text-secondary);
-    line-height: 1.75;
-    max-width: 62ch;
-  }
-
   .meta-grid {
     grid-column: 1 / -1;
     display: grid;
@@ -121,7 +99,7 @@ const { challenge, role, company, scope, team } = Astro.props;
     font-weight: 500;
     letter-spacing: var(--cs-eyebrow-tracking);
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--doc-light);
     line-height: 1.4;
     margin-bottom: 10px;
   }
@@ -129,7 +107,7 @@ const { challenge, role, company, scope, team } = Astro.props;
   .meta-item p {
     font-size: var(--cs-card-body);
     font-weight: 400;
-    color: var(--text-primary);
+    color: var(--doc-heading);
     line-height: 1.4;
   }
 

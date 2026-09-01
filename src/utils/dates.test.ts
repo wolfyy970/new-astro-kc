@@ -1,71 +1,78 @@
 import { describe, it, expect } from "vitest";
-import { yearSpan, startYear } from "./dates";
+import { dateRangeLines } from "./dates";
 import resume from "../content/resume.json";
 
-describe("yearSpan", () => {
-  it("compresses a month-precision range to its years", () => {
-    expect(yearSpan("September 2014 - March 2017")).toBe("2014–2017");
-    expect(yearSpan("Dec 2008 - Oct 2012")).toBe("2008–2012");
+describe("dateRangeLines", () => {
+  it("splits a month-precision range into start and end lines", () => {
+    expect(dateRangeLines("September 2014 - March 2017")).toEqual({
+      start: "Sep 2014",
+      end: "Mar 2017",
+    });
+    expect(dateRangeLines("Dec 2008 - Oct 2012")).toEqual({
+      start: "Dec 2008",
+      end: "Oct 2012",
+    });
   });
 
-  it("leaves an ongoing role open-ended", () => {
-    // The trailing en dash runs into the text column, which is how the rail
-    // says "still there" without a word.
-    expect(yearSpan("January 2023 - Present")).toBe("2023–");
-    expect(yearSpan("Jan 2023 - present")).toBe("2023–");
-    expect(yearSpan("2023 - Current")).toBe("2023–");
+  it("leaves an ongoing role open on the second line", () => {
+    expect(dateRangeLines("January 2023 - Present")).toEqual({
+      start: "Jan 2023",
+      end: "–",
+    });
   });
 
   it("handles a range that is already years only", () => {
-    expect(yearSpan("1991 - 1992")).toBe("1991–1992");
+    expect(dateRangeLines("1991 - 1992")).toEqual({
+      start: "1991",
+      end: "1992",
+    });
   });
 
-  it("collapses a role that starts and ends in one year", () => {
-    // "2019–2019" would be a column of noise.
-    expect(yearSpan("March 2019 - November 2019")).toBe("2019");
+  it("keeps the start month when the end is year-only", () => {
+    expect(dateRangeLines("January 2023 - 2026")).toEqual({
+      start: "Jan 2023",
+      end: "2026",
+    });
+  });
+
+  it("formats the current GPC role with a month-precision end", () => {
+    expect(dateRangeLines("January 2023 - May 2026")).toEqual({
+      start: "Jan 2023",
+      end: "May 2026",
+    });
+    expect(resume.experience[0].dates).toBe("January 2023 - May 2026");
+  });
+
+  it("returns one line when start and end match", () => {
+    expect(dateRangeLines("March 2019 - March 2019")).toEqual({
+      start: "Mar 2019",
+      end: null,
+    });
   });
 
   it("returns the input untouched when it holds no year", () => {
-    expect(yearSpan("Ongoing")).toBe("Ongoing");
-    expect(yearSpan("")).toBe("");
-  });
-
-  it("ignores stray numbers that are not four digits", () => {
-    expect(yearSpan("Q3 2015 - Q1 2018")).toBe("2015–2018");
-  });
-});
-
-describe("startYear", () => {
-  it("returns the first four-digit year", () => {
-    expect(startYear("September 2014 - March 2017")).toBe("2014");
-    expect(startYear("January 2023 - Present")).toBe("2023");
-  });
-
-  it("returns the input untouched when it holds no year", () => {
-    expect(startYear("Ongoing")).toBe("Ongoing");
+    expect(dateRangeLines("Ongoing")).toEqual({ start: "Ongoing", end: null });
+    expect(dateRangeLines("")).toEqual({ start: "", end: null });
   });
 });
 
 describe("the rail against the real résumé", () => {
-  // The rail only reads as a column if every entry produces a value of the same
-  // shape. Driven off the real data so a new role with an unusual date string
-  // fails here rather than silently rendering a paragraph in the margin.
-  it("produces a compact span for every experience entry", () => {
+  it("produces two short lines for every experience entry", () => {
     for (const job of resume.experience) {
-      const span = yearSpan(job.dates);
-      expect(span.length).toBeLessThanOrEqual(9);
-      expect(span).toMatch(/^\d{4}(–(\d{4})?)?$/);
-    }
-  });
-
-  it("produces a bare four-digit year for every entry at the narrow tier", () => {
-    for (const job of resume.experience) {
-      expect(startYear(job.dates)).toMatch(/^\d{4}$/);
+      const { start, end } = dateRangeLines(job.dates);
+      expect(start.length).toBeGreaterThan(0);
+      expect(start.length).toBeLessThanOrEqual(10);
+      if (end) {
+        expect(end.length).toBeLessThanOrEqual(10);
+      }
     }
   });
 
   it("orders newest first, so the rail runs backwards down the page", () => {
-    const starts = resume.experience.map((j) => Number(startYear(j.dates)));
+    const starts = resume.experience.map((j) => {
+      const match = dateRangeLines(j.dates).start.match(/\d{4}/);
+      return Number(match?.[0]);
+    });
     const sorted = [...starts].sort((a, b) => b - a);
     expect(starts).toEqual(sorted);
   });

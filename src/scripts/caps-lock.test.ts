@@ -34,7 +34,7 @@ describe("caps lock warning control", () => {
       cancelable: true,
       key: "a",
     });
-    keyEventWithoutCaps.getModifierState = (_key: string) => false;
+    keyEventWithoutCaps.getModifierState = () => false;
 
     input.dispatchEvent(keyEventWithoutCaps);
     expect(warning.dataset.active).toBe("false");

@@ -245,7 +245,9 @@ export function initResumeReturnTracking(
     const target = event.target;
     if (!(target instanceof Element)) return;
 
-    const link = target.closest<HTMLAnchorElement>(".popover-link, .sa-link");
+    const link = target.closest<HTMLAnchorElement>(
+      ".gateway-link, .popover-link, .sa-link",
+    );
     if (!link || (link.target && link.target !== "_self")) return;
 
     let destination: URL;

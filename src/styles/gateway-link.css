@@ -1,0 +1,159 @@
+/* ── Project gateway (shared link control) ─────────────────────────────────
+   One family, two behaviors: invert (notes) and muted (case-study CTAs).
+   Legacy .popover-link / .sa-link remain as aliases for one release. */
+
+button.gateway-link {
+  appearance: none;
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.gateway-link,
+.popover-link,
+.sa-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: var(--type-meta);
+  font-weight: 600;
+  letter-spacing: var(--type-label-spacing);
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    background-color var(--duration-fast) ease,
+    border-color var(--duration-fast) ease,
+    color var(--duration-fast) ease,
+    transform 0.12s ease;
+}
+
+.gateway-link__label,
+.popover-link-label,
+.sa-link-label {
+  padding-left: 2px;
+}
+
+.gateway-link::after,
+.popover-link::after,
+.sa-link::after {
+  content: "\2192";
+  display: grid;
+  place-items: center;
+  background: var(--doc-heading);
+  color: var(--doc-white);
+  letter-spacing: 0;
+  flex-shrink: 0;
+  transition: transform var(--duration-fast) var(--ease-move);
+}
+
+/* Invert — sheet and margin notes */
+.gateway-link--invert,
+.popover-link,
+.sa-link {
+  border: 1px solid var(--doc-heading);
+  background: var(--doc-white);
+  color: var(--doc-heading);
+}
+
+.gateway-link--invert::after,
+.popover-link::after,
+.sa-link::after {
+  width: 28px;
+  height: 28px;
+}
+
+.gateway-link--invert.gateway-link--sheet,
+.popover-link {
+  gap: 12px;
+  margin: 14px 14px 0;
+  padding: 10px 10px 10px 14px;
+}
+
+.gateway-link--invert.gateway-link--margin,
+.sa-link {
+  position: relative;
+  z-index: 3;
+  gap: 8px;
+  margin: 12px 0 14px;
+  padding: 7px 7px 7px 10px;
+}
+
+.gateway-link--invert.gateway-link--margin::after,
+.sa-link::after {
+  width: 26px;
+  height: 26px;
+}
+
+.sa-link-label {
+  padding-left: 1px;
+}
+
+.gateway-link--invert:active,
+.popover-link:active,
+.sa-link:active {
+  transform: translateY(1px);
+}
+
+.gateway-link--invert:hover,
+.gateway-link--invert:focus-visible,
+.popover-link:hover,
+.popover-link:focus-visible,
+.sa-link:hover,
+.sa-link:focus-visible {
+  background: var(--doc-heading);
+  color: var(--doc-white);
+}
+
+.gateway-link--invert:hover::after,
+.gateway-link--invert:focus-visible::after,
+.popover-link:hover::after,
+.popover-link:focus-visible::after,
+.sa-link:hover::after,
+.sa-link:focus-visible::after {
+  background: var(--doc-white);
+  color: var(--doc-heading);
+  transform: translateX(3px);
+}
+
+.gateway-link--invert:focus-visible,
+.popover-link:focus-visible,
+.sa-link:focus-visible {
+  outline: 2px solid var(--doc-heading);
+  outline-offset: 3px;
+}
+
+/* Muted — in-page case-study CTA */
+.gateway-link--muted {
+  display: inline-flex;
+  gap: 28px;
+  margin-top: 32px;
+  padding: 10px 10px 10px 14px;
+  min-width: min(100%, 300px);
+  border: 1px solid var(--doc-rule);
+  background: color-mix(in srgb, var(--doc-heading) 4%, var(--doc-white));
+  color: var(--doc-heading);
+}
+
+.gateway-link--muted::after {
+  width: 32px;
+  height: 32px;
+}
+
+.gateway-link--muted:hover,
+.gateway-link--muted:focus-visible {
+  border-color: var(--doc-heading);
+  background: color-mix(in srgb, var(--doc-heading) 7%, var(--doc-white));
+}
+
+.gateway-link--muted:hover::after,
+.gateway-link--muted:focus-visible::after {
+  transform: translateX(3px);
+}
+
+.gateway-link--muted:focus-visible {
+  outline: 2px solid var(--doc-heading);
+  outline-offset: 3px;
+}

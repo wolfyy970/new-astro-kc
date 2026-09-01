@@ -4,6 +4,12 @@ import * as constants from "./constants";
 describe("Constants", () => {
   it("should have breakpoints in descending order", () => {
     expect(constants.BREAKPOINT_WIDE).toBeGreaterThan(
+      constants.BREAKPOINT_TABLET,
+    );
+    expect(constants.BREAKPOINT_TABLET).toBeGreaterThan(
+      constants.BREAKPOINT_INSET_COLUMNS,
+    );
+    expect(constants.BREAKPOINT_INSET_COLUMNS).toBeGreaterThan(
       constants.BREAKPOINT_MOBILE,
     );
   });

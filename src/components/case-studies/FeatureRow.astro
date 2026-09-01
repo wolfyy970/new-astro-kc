@@ -1,5 +1,7 @@
 ---
 import { Image } from "astro:assets";
+import ProjectGateway from "../ProjectGateway.astro";
+import SectionHeader from "./SectionHeader.astro";
 import { publicImageSize } from "../../utils/image-size";
 
 interface Props {
@@ -43,19 +45,8 @@ const size = (await publicImageSize(image)) ?? { width: 800, height: 600 };
     {caption && <p class="feature-image-caption">{caption}</p>}
   </div>
   <div class="feature-text">
-    {label && <div class="section-label">{label}</div>}
-    <h2 class="section-heading">{title}</h2>
-    <p class="section-body">{description}</p>
-    {
-      link && linkText && (
-        <a class="feature-link" href={link}>
-          <span>{linkText}</span>
-          <span class="feature-link-arrow" aria-hidden="true">
-            →
-          </span>
-        </a>
-      )
-    }
+    <SectionHeader {label} {title} description={description} />
+    {link && linkText && <ProjectGateway href={link} label={linkText} />}
     <slot />
   </div>
 </section>
@@ -94,7 +85,7 @@ const size = (await publicImageSize(image)) ?? { width: 800, height: 600 };
   :global(.feature-image-caption) {
     margin-top: 20px;
     max-width: 680px;
-    color: var(--text-secondary, #666);
+    color: var(--doc-body, #666);
     font-family: var(--doc-serif);
     font-size: var(--cs-caption);
     font-style: italic;
@@ -104,85 +95,6 @@ const size = (await publicImageSize(image)) ?? { width: 800, height: 600 };
 
   .feature-text {
     flex: 1;
-  }
-
-  .section-label {
-    font-family: var(--mono);
-    font-size: var(--cs-eyebrow);
-    font-weight: 500;
-    letter-spacing: var(--cs-eyebrow-tracking);
-    text-transform: uppercase;
-    color: var(--label-color);
-    margin-bottom: 24px;
-  }
-
-  .section-heading {
-    font-family: var(--display);
-    font-size: var(--cs-heading);
-    font-weight: 400;
-    color: var(--text-primary);
-    line-height: 1.25;
-    margin-bottom: 32px;
-  }
-
-  .section-body {
-    font-family: var(--doc-serif);
-    font-size: var(--cs-body);
-    font-weight: 400;
-    color: var(--text-secondary);
-    line-height: 1.8;
-  }
-
-  /* Astro does not statically see the optional CTA branch when pruning
-       scoped selectors. Keep this component-owned class global so the
-       conditional link receives its intended treatment when rendered. */
-  :global(.feature-link) {
-    display: inline-flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 28px;
-    margin-top: 32px;
-    padding: 10px 10px 10px 14px;
-    min-width: min(100%, 300px);
-    border: 1px solid var(--doc-rule);
-    background: color-mix(in srgb, var(--text-primary) 4%, var(--doc-white));
-    font-family: var(--mono);
-    font-size: var(--cs-eyebrow);
-    font-weight: 600;
-    letter-spacing: var(--cs-eyebrow-tracking);
-    text-transform: uppercase;
-    color: var(--text-primary);
-    text-decoration: none;
-    transition:
-      background-color 0.2s ease,
-      border-color 0.2s ease;
-  }
-
-  :global(.feature-link-arrow) {
-    display: grid;
-    place-items: center;
-    width: 32px;
-    height: 32px;
-    flex: 0 0 auto;
-    background: var(--text-primary);
-    color: var(--doc-white);
-    letter-spacing: 0;
-    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  :global(.feature-link:hover) {
-    border-color: var(--text-primary);
-    background: color-mix(in srgb, var(--text-primary) 7%, var(--doc-white));
-  }
-
-  :global(.feature-link:hover .feature-link-arrow),
-  :global(.feature-link:focus-visible .feature-link-arrow) {
-    transform: translateX(3px);
-  }
-
-  :global(.feature-link:focus-visible) {
-    outline: 2px solid var(--text-primary);
-    outline-offset: 3px;
   }
 
   @media (max-width: 1024px) {

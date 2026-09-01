@@ -3,7 +3,6 @@ import "../styles/case-study.css";
 import { buildAccentStyle } from "../utils/color";
 import BaseHead from "../components/BaseHead.astro";
 import ThemeToggleButton from "../components/ThemeToggleButton.astro";
-import SkipLink from "../components/SkipLink.astro";
 
 interface Props {
   title: string;
@@ -24,7 +23,6 @@ const accentStyle = buildAccentStyle(accent);
     <BaseHead title={title} description={description} ogImage={ogImage} />
   </head>
   <body style={accentStyle}>
-    <SkipLink />
     <ThemeToggleButton />
     <nav class="back-nav" aria-label="Case study navigation">
       <a

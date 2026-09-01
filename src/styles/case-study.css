@@ -23,12 +23,6 @@
 
 /* ── Theme variables mapping ── */
 :root {
-  --warm-white: var(--bg);
-  --text-primary: var(--doc-heading);
-  --text-secondary: var(--doc-body);
-  --text-muted: var(--doc-light);
-  --stat-label-color: var(--text-secondary);
-
   /* ── Case-study type scale ──
      One deliberate ramp for the section-header family. Eyebrow/heading/body are
      normalized to a single value each (previously drifted 11/12/13, 32/42, 16/18
@@ -40,14 +34,14 @@
   --cs-eyebrow-tracking: var(--type-label-spacing-wide);
   --cs-heading: 42px;
   --cs-body: 18px;
-  --cs-card-title: 22px;
-  --cs-card-body: 17px;
+  --cs-card-title: var(--type-h2);
+  --cs-card-body: var(--type-body);
   --cs-photo-title: clamp(24px, 3vw, 36px);
   --cs-hero-title: clamp(48px, 6vw, 80px);
   --cs-hero-subtitle: 20px;
   --cs-stat-value: clamp(40px, 5vw, 72px);
-  --cs-stat-label: 11px;
-  --cs-caption: 14px;
+  --cs-stat-label: var(--type-meta);
+  --cs-caption: var(--type-body-sm);
 
   /* ── Case-study layout scale (values preserved from prior literals) ── */
   --cs-pad: 160px 80px;
@@ -61,7 +55,7 @@
   /* One radius, matching the document's panel step. A case-study card is the
      same kind of object as a popover — a piece of paper laid over the page —
      so it gets the same corner. 12px/10px were a second corner language. */
-  --cs-radius: 4px;
+  --cs-radius: var(--radius-panel);
 
   /* Dark-section background. Pages override it per section via `darkBg`
      (Delta's navy #0b1b2b, Upwave's warm #1e1e1e), which is where the real
@@ -115,15 +109,9 @@ html.theme-dark body {
   --doc-body: #3a3d4d;
   --doc-light: #686c7d;
   --doc-rule: #e1e4eb;
-  --warm-white: var(--bg);
-  --text-primary: var(--doc-heading);
-  --text-secondary: var(--doc-body);
-  --text-muted: var(--doc-light);
-  /* --accent-ink for the same reason as on <body>: not every raw brand value
-     is readable as small text on light stock. */
   --label-color: var(--accent-ink, var(--accent));
   --stat-value-color: var(--accent-ink, var(--accent));
-  --stat-label-color: var(--text-secondary);
+  --stat-label-color: var(--doc-body);
 }
 
 /* Dark section container override (for sections on a dark background).
@@ -141,10 +129,6 @@ html.theme-dark body {
   --doc-body: #e5e7eb;
   --doc-light: #9ca3af;
   --doc-rule: #2d3142;
-  --warm-white: var(--bg);
-  --text-primary: var(--doc-heading);
-  --text-secondary: var(--doc-body);
-  --text-muted: var(--doc-light);
   --label-color: color-mix(in srgb, var(--accent) 35%, #fff);
   --stat-value-color: color-mix(in srgb, var(--accent) 35%, #fff);
   --stat-label-color: var(--doc-light);
@@ -165,9 +149,50 @@ html.theme-dark body {
    brings the prose with them. */
 body {
   font-family: var(--doc-serif);
-  color: var(--text-primary);
-  background: var(--warm-white);
+  color: var(--doc-heading);
+  background: var(--bg);
   line-height: 1.5;
+}
+
+/* ── Case-study section header (shared) ── */
+.section-label {
+  font-family: var(--mono);
+  font-size: var(--cs-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--cs-eyebrow-tracking);
+  text-transform: uppercase;
+  color: var(--label-color);
+  margin-bottom: 24px;
+}
+
+.section-heading {
+  font-family: var(--display);
+  font-size: var(--cs-heading);
+  font-weight: 400;
+  color: var(--doc-heading);
+  line-height: 1.25;
+  margin-bottom: 32px;
+}
+
+.section-heading--flush {
+  margin-bottom: 0;
+}
+
+.section-body {
+  font-family: var(--doc-serif);
+  font-size: var(--cs-body);
+  font-weight: 400;
+  color: var(--doc-body);
+  line-height: 1.8;
+}
+
+.section-body--measure {
+  max-width: 704px;
+}
+
+.section-body--62ch {
+  max-width: 62ch;
+  line-height: 1.75;
 }
 
 /* ── Footer ── */
@@ -190,7 +215,7 @@ footer p {
   /* Was opacity: 0.5, which put this under AA against its own background.
      Dim by colour, not opacity — opacity composites the glyph against whatever
      is behind it, so the real contrast is unmeasurable from the declared value. */
-  color: var(--text-muted);
+  color: var(--doc-light);
 }
 
 /* ── Responsive ── */

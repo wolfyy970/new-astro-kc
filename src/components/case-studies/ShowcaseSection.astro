@@ -1,4 +1,6 @@
 ---
+import SectionHeader from "./SectionHeader.astro";
+
 interface Props {
   label?: string;
   title: string;
@@ -11,9 +13,12 @@ const { label, title, description, isDark = false } = Astro.props;
 
 <section class={`showcase-section${isDark ? " is-dark" : ""}`}>
   <div class="section-content">
-    {label && <div class="section-label">{label}</div>}
-    <h2 class="section-heading">{title}</h2>
-    <p class="section-body">{description}</p>
+    <SectionHeader
+      {label}
+      {title}
+      description={description}
+      bodyMaxWidth="measure"
+    />
 
     <slot />
   </div>
@@ -28,43 +33,12 @@ const { label, title, description, isDark = false } = Astro.props;
   .showcase-section.is-dark {
     /* Pages can set --case-study-dark to override the computed dark bg */
     background: var(--case-study-dark, var(--cs-dark-bg));
-    color: var(--text-primary);
+    color: var(--doc-heading);
   }
 
   .section-content {
     max-width: var(--cs-max-width);
     margin: 0 auto;
-  }
-
-  .section-label {
-    font-family: var(--mono);
-    font-size: var(--cs-eyebrow);
-    font-weight: 500;
-    letter-spacing: var(--cs-eyebrow-tracking);
-    text-transform: uppercase;
-    color: var(--label-color);
-    margin-bottom: 24px;
-  }
-
-  .section-heading {
-    font-family: var(--display);
-    font-size: var(--cs-heading);
-    font-weight: 400;
-    color: var(--text-primary);
-    line-height: 1.25;
-    margin-bottom: 32px;
-  }
-
-  /* Running text holds the document's measure — 704px, the same ~70
-       characters the résumé sets. It was 800px, which on a serif at 18px runs
-       past 80 characters and starts costing the reader line returns. */
-  .section-body {
-    font-family: var(--doc-serif);
-    font-size: var(--cs-body);
-    font-weight: 400;
-    color: var(--text-secondary);
-    line-height: 1.8;
-    max-width: 704px;
   }
 
   @media (max-width: 1024px) {
