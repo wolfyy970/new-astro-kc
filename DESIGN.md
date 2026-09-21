@@ -21,6 +21,16 @@ colors:
   marker-project-night: "#76e052"
   marker-project-ref-night: "#7fd95e"
 typography:
+  page-title:
+    fontFamily: "Newsreader, Georgia, 'Times New Roman', serif"
+    fontSize: "clamp(64px, 8.5vw, 124px)"
+    fontWeight: 200
+    lineHeight: 0.88
+  hero-title:
+    fontFamily: "Newsreader, Georgia, 'Times New Roman', serif"
+    fontSize: "clamp(48px, 6vw, 80px)"
+    fontWeight: 400
+    lineHeight: 1.05
   display:
     fontFamily: "Newsreader, Georgia, 'Times New Roman', serif"
     fontSize: "clamp(40px, 5.2vw, 68px)"
@@ -179,7 +189,7 @@ An achromatic résumé, and case studies each saturated in the colour of the cli
 
 - **Ink** (`{colors.ink}`): Headings, the masthead name and rule, section marks, statistics, and the underline on a link that has been earned. On the résumé `accent` resolves here, which is how "the accent" disappears into the type.
 - **Client Accent** (`{colors.accent}` at rest): A per-page token, not a palette entry. `CaseStudyLayout` injects the client's real brand hex as an inline style on `<body>`. On a case study it is the page's dominant colour: the hero gradient, the dark bands, the tint in the light sections, the eyebrows and the outcome numerals all derive from it. `src/content/case-studies/manifest.json` is the canonical inventory of published accents.
-- **The Reader's Pen** (`{colors.marker-note}`, `{colors.marker-project}`): The two highlighter pigments, applied as translucent RGB-triplet inks (`--mark-note-rgb`, `--mark-project-rgb` in `global.css`) at one shared load per state — 0.6 rest, 0.72 hover, 0.84 open. Yellow marks every annotated term; green marks the terms whose note leads to a case study, and `{colors.marker-project-ref}` inks the superscript icon at 3:1+ against stock. These are the résumé's only interface hues, and both denote.
+- **The Reader's Pen** (`{colors.marker-note}`, `{colors.marker-project}`): The two highlighter pigments, applied as translucent RGB-triplet inks (`--mark-note-rgb`, `--mark-project-rgb` in `global.css`) at one shared load per state — 0.6 rest, 0.72 hover, 0.84 open, and 0.96 when a margin-revealed term is directly under the pointer. Yellow marks every annotated term; green marks the terms whose note leads to a case study, and `{colors.marker-project-ref}` inks the superscript icon at 3:1+ against stock. These are the résumé's only interface hues, and both denote.
 
 ### Field colours (case studies)
 
@@ -232,9 +242,14 @@ A brand hex is chosen for logos and fields, not for 11px type or as a backdrop f
 
 ### Hierarchy
 
-- **Display** (200, `clamp(40px, 5.2vw, 68px)`, 1.02, -0.022em, `opsz 72`): The masthead name, once. Roughly 4× the body — a classical title ratio, not a cover ratio. Sets on one line at every width so the hyphenated surname never breaks.
+- **Page title / H1** (200, `clamp(64px, 8.5vw, 124px)`): Collection-page titles — Work, Projects & Writing, and References. It is the loudest role because these pages are indexes rather than documents.
+- **Hero title / H1** (200, `clamp(48px, 6vw, 80px)`): Case-study titles only, where the title sits inside an immersive branded field.
+- **Title-page identity / H1** (200, `clamp(40px, 5.2vw, 68px)`, 1.02, `opsz 72`): The résumé name, login identity, and internal catalog title. It is deliberately smaller than a collection title so the hyphenated surname holds together.
+- **H2** (350, `clamp(34px, 3.2vw, 44px)`): Major page sections, including Projects, Writing, and case-study section headings.
+- **H3** (250–300, `clamp(24px, 2.4vw, 34px)`): Project, article, and media-group titles within a section.
+- **H4** (500–600, `22px`; 18px on mobile): Company names and card/subsection titles.
+- **Reference quote** (`clamp(30px, 3.3vw, 52px)` featured; `clamp(23px, 2.25vw, 34px)` cards): A content role that shares the display face but is not part of the document outline.
 - **Headline** (300 italic, `clamp(20px, 2.1vw, 23px)`, 1.25): The positioning line under the rule; the only italic display type in the system. Sized to the sentence: 23px is the largest size at which the full tagline sets on ONE line inside the 704px measure. A broken tagline read as an accident at the top of the title page, so the line's integrity outranks its point size.
-- **Title** (600, 22px, `opsz 20`, `case` on): Company names. Source strings are already uppercase; the feature normalises the optical weight of all-caps rather than changing content.
 - **Lead** (400, 19px, 1.72): The opening summary paragraphs. The only prose allowed to behave like an opening; its first line takes ink instead of body.
 - **Body** (400, 17px, 1.68): Everything else a reader reads — bullets, descriptions, panel text. Held at ~70 characters (704px).
 - **Note** (400, 14px, 1.62): Margin-note prose only. Smaller because a 220px column takes fewer characters per line, not because it matters less.
@@ -247,6 +262,8 @@ A brand hex is chosen for logos and fields, not for 11px type or as a backdrop f
 **The One Voice Rule.** Newsreader sets everything a person reads. JetBrains Mono sets everything the publication says about itself. There is no third voice, and the mono never sets prose — if a sentence is in the mono, it is in the wrong typeface.
 
 **The Reading Floor Rule.** Body copy is 17px at every viewport including 375px. The scale reduces the display, the headline and the titles on small screens and deliberately does not touch the body. Reading size is not a responsive variable.
+
+**The Role, Not Tag Rule.** Heading tags preserve the document outline; visual roles express hierarchy. The résumé's mono section marks remain semantic `h2` elements set in the meta role because they are the publication's apparatus, while collection and case-study headings use the shared H1–H4 roles. Every role is defined in `tokens.css`; pages may choose a role but may not invent another clamp.
 
 **The Semantic Marker Rule.** A marked term announces marginalia the way a reader would: a translucent highlighter stroke over the letters — yellow for marginalia, green when a deeper case study also exists. The stroke embraces being a reader's gesture; precisely because it is one, it must behave like a real pen: flat matte ink, straight chisel-cut ends, no shading, no rounded caps, and it covers the words only. The superscript Tabler Notes icon appears solely on green terms, outside the ink, and its hint says “Case study.” More ink is a state the reader caused: the load deepens on hover and deepens again while open or revealed in the margin.
 
@@ -297,7 +314,7 @@ The document is flat. The sheet has no border, no lift, and no shadow, because i
 
 - **Sheet** (`0 2px 4px rgba(0,0,0,0.05), 0 12px 28px rgba(0,0,0,0.1), 0 32px 64px rgba(0,0,0,0.09)`): The mobile bottom sheet. Three layers — a contact shadow, a form shadow and an ambient one — so it reads as a physical object over the page rather than a div with a blur under it.
 - **Sheet, night** (`0 32px 80px rgba(0,0,0,0.6)`): One layer at higher opacity. Contact shadows are invisible on near-black stock, so they are not shipped.
-- **Chrome** (`0 2px 8px rgba(0,0,0,0.05)`): Fixed controls only — the theme toggle and the back link. Just enough to separate a fixed element from whatever scrolls beneath it.
+- **Chrome** (`0 2px 8px rgba(0,0,0,0.05)`): Fixed controls only — the theme toggle and the site navigation rail. Just enough to separate a fixed element from whatever scrolls beneath it.
 
 ### Named Rules
 
@@ -358,6 +375,7 @@ A hand-drawn line engraving of the author sits opposite the name, straddling the
 The glance. A 220px column entry: label, a 26×1px hairline, an optional figure or swipeable media carousel, an optional stat, and **one sentence** of prose. It reveals on scroll via IntersectionObserver, alternates sides, and dissolves when its sheet opens across a resize edge so the same words are never on screen twice.
 
 - **Media:** every authored image and video remains available in the default note. Expansion changes narrative depth, not the available media.
+- **Controls:** once a margin note is visible, its chevrons, pagination, and case-study gateway are independently actionable. Clicking the highlighted term changes visual focus and expands the note; it is never a prerequisite for using the note's controls.
 - **Open** (≥1420px): the note _continues_. The remaining narrative and the quote — rendered at build time inside a collapsed `.sa-more` wrapper — unfold in place; the note never becomes a surface: no stock, no border, no shadow, no radius, no height cap, no inner scrollbar, no repositioning. Three quiet marks say which note is open, all in the system's own language: the continuation itself; the hairline stretching across the full column at 2px in the term's own highlighter ink (yellow for marginalia, green for a project note) with the label stepping to full ink; and every other note receding to 35% (returning under the pointer). Notes below glide frame-by-frame as the margin re-typesets, and the page drifts just far enough that the unfolded note ends with real air above the fold — never so far that the clicked term leaves the screen.
 - **Case-study link:** notes that lead to a project include the framed black-and-white gateway in the collapsed state too, so reaching a case study never requires expanding anything first.
 - **Hover:** the rule grows 26px → 34px. One invitation, not two.
@@ -392,14 +410,14 @@ The dig on a phone. A bottom sheet with `{rounded.sheet-mobile}` top corners, sw
 
 A tracked mono label with a hairline running to the end of the measure. It is intentionally unnumbered: an ordinal that encodes nothing beyond document order adds noise rather than hierarchy.
 
-### Chrome Buttons
+### Global Navigation
 
-The theme toggle and the case-study back link. Stock fill, hairline border, `{rounded.chrome}`, in `{colors.light}`.
+A 60px sticky stock rail is shared by the résumé, Work index, Projects & Writing collection, References, the internal design catalog, and every case study. The public labels are **Résumé**, **Work**, **Projects**, and **References**; the Projects destination opens the broader **Projects & Writing** collection. Mono labels and a single active hairline make the rail part of the annotation apparatus rather than a second identity block. On case studies the active Work line inherits the client's accessible accent ink. The theme toggle is absorbed into the rail, while the case-study Résumé item owns the context-preserving return behavior formerly carried by a separate Back chip.
 
-- **Theme toggle:** a 34px square chip across all viewports with an outline icon (sun for light edition, moon for dark). The aria-label announces the destination action for assistive tech.
-- **Back link:** mono label with left-pointing arrow icon, padding 8px 12px.
-- **Hover:** border shifts to accent, text/icon to ink, and a 1px lift (or 4px left-slide for the back link).
-- **Focus:** 2px accent outline at 2px offset.
+- **Targets:** every link and the theme control retain a 44px minimum target.
+- **State:** `aria-current="page"` and the hairline identify the active section; colour is supplementary.
+- **Focus:** 2px ink/accent outline at 4px offset.
+- **Stacking:** the rail sits below the mobile note scrim and sheet. The desktop widen prompt is re-homed immediately below it.
 
 ### The Editor's Note (introduction below the wide tier)
 
@@ -407,9 +425,29 @@ The introduction for every tier without margins. A static piece of the sheet —
 
 **The payoff conversation** lives in `intro-payoff.ts` only — not currently mounted in the live introductions.
 
-### Project Gateway (shared control)
+### Widen Prompt (desktop discovery)
 
-One gateway family (`.gateway-link`) serves every project destination: `--invert` for note surfaces (sheet, margin, bound-in) and `--muted` for case-study CTAs. Legacy aliases (`.popover-link`, `.sa-link`, `.feature-link`) remain for one release. Case studies compose the muted variant through `ProjectGateway.astro`.
+A compact fixed status strip appears below the global rail on resize-capable desktop windows from 601px through 1419px. It says **Widen to reveal margin notes** and fills a quiet progress rule against the same derived 1420px threshold used by the annotation engine. Crossing that threshold briefly confirms **Margin notes ready**, then clears the prompt as the marginalia appear. It is absent on phones, coarse-pointer devices, and already-wide windows.
+
+### Case-study Gateway (shared control)
+
+One gateway family (`.gateway-link`) serves every case-study destination: `--invert` for note surfaces (sheet, margin, bound-in) and `--muted` for case-study CTAs. User-facing copy consistently says **case study**; the internal `ProjectGateway` component name remains for compatibility. Legacy aliases (`.popover-link`, `.sa-link`, `.feature-link`) remain for one release.
+
+### Work Index
+
+The `/work` page is the direct index of the evidence behind the résumé's green marks. `manifest.json` supplies the reverse-chronological sequence, titles, summaries, accent identifiers, and cover images. The lead case study receives a full-width editorial treatment; the remaining studies use a two-column reading rhythm that collapses to one column. Client colour appears only as an identifying index and rule, never as decorative page chrome.
+
+### Projects & Writing
+
+The `/projects` page uses one descending editorial hierarchy: the collection title is the only page-title text, H2 divides Projects from Writing, and individual project and article titles use H3 beneath it. Never stack hero-scale titles at consecutive levels. The lead project pairs a restrained title and summary with product evidence; forthcoming projects remain quiet until their stories are authored. Writing is an ordered publication index, with a direct link to KC's _horizon_ Substack beneath its section heading.
+
+### Résumé Download
+
+The downloadable résumé is a document action directly beneath the masthead name, not a fifth navigation destination. Its bordered 44px target names the action and uses the shared Tabler download glyph; ancillary file metadata is omitted because it competes with the action without helping the decision. The browser receives a native `download` hint while the public file remains directly addressable at `/downloads/KC-Wolff-Ingham-Resume.pdf`. The control stays achromatic in both editions and becomes full-width on mobile so its label and icon retain a clear reading order.
+
+### References
+
+The `/references` page is a typographic record of eight published testimonials. One reference is given the lead editorial scale; the remainder form a quiet two-column sequence with numbered entries and mono attribution lines. The wording and roles live in validated `references.json` and are reproduced verbatim from KC's consulting site. Display text uses Newsreader's native kerning; manual negative tracking is prohibited because it overrides the variable font's pair spacing and causes collisions at large sizes.
 
 ### Cards (case studies)
 

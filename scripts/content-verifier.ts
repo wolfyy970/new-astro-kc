@@ -5,12 +5,15 @@ import {
   caseStudyDataSchema,
   manifestSchema,
   popoverMapSchema,
+  projectsWritingSchema,
+  referencesSchema,
   resumeSchema,
 } from "../src/content/schema.ts";
 import type {
   AuthoredPopoverMap,
   CaseStudyData,
   CaseStudySectionData,
+  ProjectsWritingData,
 } from "../src/types/content.ts";
 import {
   extractHotspotKeys,
@@ -33,8 +36,11 @@ interface RepositoryPaths {
   manifest: string;
   pagesDir: string;
   popovers: string;
+  projectsWriting: string;
   publicDir: string;
+  references: string;
   resume: string;
+  resumeDownload: string;
 }
 
 function repositoryPaths(rootDir: string): RepositoryPaths {
@@ -44,8 +50,14 @@ function repositoryPaths(rootDir: string): RepositoryPaths {
     manifest: path.join(caseStudiesDir, "manifest.json"),
     pagesDir: path.join(rootDir, "src/pages"),
     popovers: path.join(rootDir, "src/content/popovers.json"),
+    projectsWriting: path.join(rootDir, "src/content/projects-writing.json"),
     publicDir: path.join(rootDir, "public"),
+    references: path.join(rootDir, "src/content/references.json"),
     resume: path.join(rootDir, "src/content/resume.json"),
+    resumeDownload: path.join(
+      rootDir,
+      "public/downloads/KC-Wolff-Ingham-Resume.pdf",
+    ),
   };
 }
 
@@ -205,6 +217,40 @@ function checkCaseStudyAssets(
   });
 }
 
+function checkProjectsAssets(
+  projects: ProjectsWritingData,
+  publicDir: string,
+  errors: string[],
+): void {
+  projects.projects.forEach((project, index) => {
+    if (project.state !== "published") return;
+    checkAsset(
+      publicDir,
+      project.leadImage.src,
+      `projects-writing.projects[${index}].leadImage.src`,
+      errors,
+    );
+    checkAsset(
+      publicDir,
+      project.supportingImage.src,
+      `projects-writing.projects[${index}].supportingImage.src`,
+      errors,
+    );
+    checkAsset(
+      publicDir,
+      project.video.src,
+      `projects-writing.projects[${index}].video.src`,
+      errors,
+    );
+    checkAsset(
+      publicDir,
+      project.video.poster,
+      `projects-writing.projects[${index}].video.poster`,
+      errors,
+    );
+  });
+}
+
 function jsonStudySlugs(caseStudiesDir: string): Set<string> {
   if (!fs.existsSync(caseStudiesDir)) return new Set();
   return new Set(
@@ -289,6 +335,12 @@ export function verifyContent(rootDir: string): VerificationResult {
   const rawResume = readJson(paths.resume, "Resume", errors);
   const rawPopovers = readJson(paths.popovers, "Popovers", errors);
   const rawManifest = readJson(paths.manifest, "Manifest", errors);
+  const rawProjectsWriting = readJson(
+    paths.projectsWriting,
+    "Projects and writing",
+    errors,
+  );
+  const rawReferences = readJson(paths.references, "References", errors);
 
   parseSchema(resumeSchema, rawResume, "Resume", errors);
   const popovers = parseSchema(
@@ -298,9 +350,25 @@ export function verifyContent(rootDir: string): VerificationResult {
     errors,
   );
   const manifest = parseSchema(manifestSchema, rawManifest, "Manifest", errors);
+  const projectsWriting = parseSchema(
+    projectsWritingSchema,
+    rawProjectsWriting,
+    "Projects and writing",
+    errors,
+  );
+  parseSchema(referencesSchema, rawReferences, "References", errors);
+
+  if (!fs.existsSync(paths.resumeDownload)) {
+    errors.push(
+      'Missing downloadable résumé: "public/downloads/KC-Wolff-Ingham-Resume.pdf"',
+    );
+  }
 
   const hotspotCount = checkHotspotParity(rawResume, popovers, errors);
   if (popovers) checkPopoverAssets(popovers, paths.publicDir, errors);
+  if (projectsWriting) {
+    checkProjectsAssets(projectsWriting, paths.publicDir, errors);
+  }
 
   const studySlugs = jsonStudySlugs(paths.caseStudiesDir);
   const manifestSlugs = new Set(manifest?.map(({ slug }) => slug) ?? []);

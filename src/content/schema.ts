@@ -6,6 +6,18 @@
 import { z } from "zod";
 
 const nonEmptyString = z.string().min(1);
+const calendarDateSchema = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Expected an ISO calendar date")
+  .refine((value) => {
+    const [year, month, day] = value.split("-").map(Number);
+    const date = new Date(Date.UTC(year, month - 1, day));
+    return (
+      date.getUTCFullYear() === year &&
+      date.getUTCMonth() === month - 1 &&
+      date.getUTCDate() === day
+    );
+  }, "Expected a real calendar date");
 const imagePathSchema = nonEmptyString.regex(
   /^\/images\//,
   "Expected a path below /images/",
@@ -369,5 +381,123 @@ export const manifestSchema = z
         });
       }
       seen.add(entry.slug);
+    });
+  });
+
+// ── References ───────────────────────────────────────────────────────────────
+
+const referenceSchema = z
+  .object({
+    quote: nonEmptyString,
+    name: nonEmptyString,
+    role: nonEmptyString,
+  })
+  .strict();
+
+export const referencesSchema = z
+  .object({
+    source: webUrlSchema,
+    references: z.array(referenceSchema).min(1),
+  })
+  .strict();
+
+// ── Projects and writing ─────────────────────────────────────────────────────
+
+const projectImageSchema = z
+  .object({
+    src: imagePathSchema,
+    alt: nonEmptyString,
+    width: z.number().int().positive(),
+    height: z.number().int().positive(),
+  })
+  .strict();
+
+const projectVideoSchema = z
+  .object({
+    src: videoPathSchema,
+    poster: imagePathSchema,
+    width: z.number().int().positive(),
+    height: z.number().int().positive(),
+    label: nonEmptyString,
+  })
+  .strict();
+
+const publishedProjectSchema = z
+  .object({
+    state: z.literal("published"),
+    title: nonEmptyString,
+    eyebrow: nonEmptyString,
+    summary: nonEmptyString,
+    detail: nonEmptyString,
+    liveUrl: webUrlSchema,
+    leadImage: projectImageSchema,
+    supportingImage: projectImageSchema,
+    video: projectVideoSchema,
+    relatedWriting: z.array(nonEmptyString).min(1),
+  })
+  .strict();
+
+const forthcomingProjectSchema = z
+  .object({
+    state: z.literal("forthcoming"),
+    title: nonEmptyString,
+    note: nonEmptyString,
+  })
+  .strict();
+
+const writingEntrySchema = z
+  .object({
+    slug: nonEmptyString.regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+    title: nonEmptyString,
+    subtitle: nonEmptyString,
+    date: calendarDateSchema,
+    url: webUrlSchema,
+  })
+  .strict();
+
+export const projectsWritingSchema = z
+  .object({
+    publication: z
+      .object({
+        name: nonEmptyString,
+        description: nonEmptyString,
+        url: webUrlSchema,
+      })
+      .strict(),
+    projects: z
+      .array(
+        z.discriminatedUnion("state", [
+          publishedProjectSchema,
+          forthcomingProjectSchema,
+        ]),
+      )
+      .length(3),
+    writing: z.array(writingEntrySchema).min(1),
+  })
+  .strict()
+  .superRefine((data, context) => {
+    const publishedProjects = data.projects.filter(
+      (project) => project.state === "published",
+    );
+    if (publishedProjects.length !== 1) {
+      context.addIssue({
+        code: "custom",
+        message: "Expected exactly one published project",
+        path: ["projects"],
+      });
+    }
+
+    const writingSlugs = new Set(data.writing.map((entry) => entry.slug));
+    data.projects.forEach((project, projectIndex) => {
+      if (project.state !== "published") return;
+      project.relatedWriting.forEach((slug, relatedIndex) => {
+        if (!writingSlugs.has(slug)) {
+          context.addIssue({
+            code: "custom",
+            message: `Unknown related writing slug "${slug}"`,
+            path: ["projects", projectIndex, "relatedWriting", relatedIndex],
+          });
+        }
+      });
     });
   });

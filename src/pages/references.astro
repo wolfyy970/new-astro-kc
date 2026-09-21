@@ -1,0 +1,56 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import referencesRaw from "../content/references.json";
+import { referencesSchema } from "../content/schema";
+import "../styles/references.css";
+
+const data = referencesSchema.parse(referencesRaw);
+const [featured, ...references] = data.references;
+---
+
+<BaseLayout
+  title="References — KC Wolff-Ingham"
+  description="References from leaders and colleagues who have worked with KC Wolff-Ingham."
+  navSection="references"
+>
+  <main class="references-page" id="main-content">
+    <header class="references-header">
+      <p class="references-kicker">References</p>
+      <h1>In their words.</h1>
+      <p>The people I&rsquo;ve worked with, and for.</p>
+    </header>
+
+    <section class="reference-feature" aria-label="Featured reference">
+      <span class="reference-number" aria-hidden="true">01</span>
+      <blockquote>&ldquo;{featured.quote}&rdquo;</blockquote>
+      <div class="reference-attribution">
+        <strong>{featured.name}</strong>
+        <span>{featured.role}</span>
+      </div>
+    </section>
+
+    <ol class="references-grid" start="2" aria-label="Professional references">
+      {
+        references.map((reference, index) => (
+          <li class="reference-card">
+            <span class="reference-number" aria-hidden="true">
+              {String(index + 2).padStart(2, "0")}
+            </span>
+            <blockquote>&ldquo;{reference.quote}&rdquo;</blockquote>
+            <div class="reference-attribution">
+              <strong>{reference.name}</strong>
+              <span>{reference.role}</span>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </main>
+
+  <footer class="references-footer">
+    <p>&copy; 2026 KC Wolff-Ingham</p>
+    <a href={data.source} target="_blank" rel="noreferrer"
+      >Source &amp; recommendations</a
+    >
+  </footer>
+</BaseLayout>

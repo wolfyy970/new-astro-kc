@@ -3,20 +3,21 @@
     "label": "Research & Business Impact",
     "text": "Leading design for the digital transformation of a $8B e-commerce platform. Customer research uncovered a key insight: B2B parts lookup is fundamentally different from traditional e-commerce. Service advisors often have the part in hand; they need to identify it, not shop for it. The \"ways of finding\" strategy (keyword search, category search, part number lookup, job type, legacy PDF catalogs) delivered a 7% add-to-cart improvement representing a $32.8M lift in revenue for the pro segment (2025).",
     "stat": "$32.8M",
-    "brandMark": "/images/gpc/napa-hexagon.webp",
-    "brandMarkAlt": "NAPA Auto Parts hexagon badge"
+    "brandMark": "/images/brands/napa.svg",
+    "brandMarkAlt": "NAPA Auto Parts logo"
   },
   "bolt": {
     "label": "Bolt Design System",
     "text": "Design engineering team designed and built a global themeable design system end to end - Figma 1 to 1 with code. Adopted across North America, Europe, and Asia Pacific. Reduced front-end development time by approximately 25%.",
-    "img": "/images/bolt/bolt-cover.webp",
+    "img": "/images/brands/gpc.svg",
     "link": "/bolt",
-    "linkText": "View Bolt project"
+    "linkText": "View Bolt case study"
   },
   "agentic": {
     "label": "Agentic AI",
     "text": "In August 2022 (three months before ChatGPT launched), I developed a roadmap for the Future of NAPA AutoCare built around AI-assisted issue diagnosis (NATE: NAPA Automated Technology Expert), AR-guided repair walkthroughs, and agentic shop management. The CIO hired me to execute it.",
     "media": [
+      "/images/brands/napa.svg",
       "/images/gpc/napa-autocare-future-cover.png",
       "/images/gpc/napa-ai-diagnosis.png",
       "/images/gpc/napa-ar-repair.png"
@@ -27,6 +28,7 @@
     "text": "The SunTrust-BB&T merger created Truist, the largest banking merger since 2008. Inheriting an innovation studio with an uncertain future, I rebooted it by adding customer journey mapping and strategic foresight. This repositioning earned a partnership with Corporate Strategy to run a major foresight exercise using the Jobs to Be Done framework, ultimately presenting three future-of-banking scenarios to the CEO and C-suite.",
     "quote": "Bill Rogers, the CEO of SunTrust, called the work \"instrumental\" in thinking that led to the merger.",
     "media": [
+      "/images/brands/truist.svg",
       "/images/truist/trend-card-1.png",
       "/images/truist/trend-card-2.png",
       "/images/truist/trend-card-3.png",
@@ -36,21 +38,21 @@
       "/images/truist/trend-card-7.png"
     ],
     "link": "/truist",
-    "linkText": "View Truist project"
+    "linkText": "View Truist case study"
   },
   "truist-products": {
     "label": "Truist Commercial Banking",
     "text": "Rebuilt Commercial and Small Business banking products for the merged Truist entity. All product lines required unifying two distinct legacy systems under one coherent design language designed by my team.",
-    "img": "/images/truist/1771281469482-048153c4.png",
+    "img": "/images/brands/truist.svg",
     "link": "/truist",
-    "linkText": "View Truist project"
+    "linkText": "View Truist case study"
   },
   "delta": {
     "label": "Delta Air Lines",
     "text": "Created news.delta.com, the corporate communications platform that serves Delta's media relations, employee engagement, and storytelling. A unified editorial system for a global airline with 90,000 employees.",
-    "img": "/images/sparks-grove/news-hub.jpg",
+    "img": "/images/brands/delta-official.png",
     "link": "/sparks-grove",
-    "linkText": "View Delta project"
+    "linkText": "View Delta case study"
   },
   "clients": {
     "label": "Client Work",
@@ -59,15 +61,18 @@
   "upwave": {
     "label": "Upwave · Turner Broadcasting",
     "text": "I ran product and design for this IoT-driven digital health venture, leading our internal designers and an external agency working alongside them. Partnered with IDEO for market validation and product-market fit, then introduced lean product methodology enabling daily release cycles. The product was ahead of mainstream wearable adoption: pre-Apple Watch.",
-    "img": "/images/upwave/upwave-homepage-desktop-mobile.webp",
+    "media": [
+      "/images/brands/upwave-original.png",
+      "/images/upwave/upwave-homepage-desktop-mobile.webp"
+    ],
     "link": "/upwave",
-    "linkText": "View Upwave project",
+    "linkText": "View Upwave case study",
     "stat": "Zero to one product."
   },
   "emmy": {
     "label": "Emmy Award · 2011",
     "text": "Primetime Creative Arts Emmy for Outstanding Creative Achievement in Interactive Media for the \"Conan O'Brien Presents: Team Coco\" app — a team award. The content-recognition technology was licensed; my contribution was the design of how the sync-to-TV events worked in production — reflected in my patents — with much of the engineering delivered by my team.",
-    "img": "/images/awards/conan-emmy.png"
+    "img": "/images/brands/conan.svg"
   },
   "patents": {
     "label": "Granted Patents",
@@ -77,16 +82,18 @@
     "label": "CNN Magic Wall",
     "text": "After seeing Jeff Han's breakthrough multi-touch presentation at TED2006, I connected with him and brokered Perceptive Pixel's engagement with CNN. Turner R&D designed and built the interactive weather application with CNN Weather. The election-night application that made the wall famous was a separate Perceptive Pixel and CNN collaboration.",
     "media": [
+      "/images/brands/cnn.svg",
       "/images/cnn/magic-wall-election-interaction.jpg",
       "/media/cnn-magic-wall.mp4"
     ],
     "link": "/magic-wall",
-    "linkText": "View Magic Wall project"
+    "linkText": "View Magic Wall case study"
   },
   "ar": {
     "label": "Mobile AR · 2005-2008",
     "text": "Pioneered the first mobile augmented reality applications in the US in partnership with Georgia Tech, for NBA (billboard advertising interactions) and Cartoon Network (gaming). Using the Nokia N90, before the iPhone existed. At the time, AR was widely assumed to require dedicated hardware or desktop-class processing. By tracking mobile GPU power trajectories, I made the non-obvious bet that phones, not strapped on PCs, would be where AR first reached scale. That prediction proved correct.",
     "media": [
+      "/images/brands/nba-original.svg",
       "/images/turner/nba-ar-prototype.png",
       "/media/nba-ar-prototype.mp4"
     ]
@@ -95,12 +102,13 @@
     "label": "Behavioral Design · FusionFall",
     "text": "Led behavioral design research for Cartoon Network's FusionFall with Immersyve and Richard Ryan, co-author of Self-Determination Theory and one of the world's most-cited psychologists. We translated motivation science into specific recommendations for onboarding, challenge, exploration, social play, and retention, giving the development team a behavioral framework for deciding what to change and why.",
     "media": [
+      "/images/brands/cartoon-network-original.svg",
       "/images/fusionfall/playtest-session.webp",
       "/images/fusionfall/research-model.webp",
       "/images/fusionfall/pens-findings.webp"
     ],
     "link": "/fusionfall",
-    "linkText": "View FusionFall project"
+    "linkText": "View FusionFall case study"
   },
   "dissertation": {
     "label": "March 1993",
@@ -124,7 +132,7 @@
       "/images/two-way-tv/armchair-manager-press.webp"
     ],
     "link": "/armchair-manager",
-    "linkText": "View Armchair Manager project"
+    "linkText": "View Armchair Manager case study"
   },
   "two-way-games": {
     "label": "Multiplayer Television · 2001",
@@ -135,7 +143,7 @@
       "/images/two-way-tv/anorak.webp"
     ],
     "link": "/two-way-tv",
-    "linkText": "View Two Way TV project"
+    "linkText": "View Two Way TV case study"
   },
   "apple-award": {
     "label": "Apple Design Award",
@@ -150,6 +158,7 @@
     "text": "Winner of the UK Royal Television Society (RTS) Innovation Award for CNN's World Cup Twitter Buzz, a realtime interactive data visualization experience",
     "stat": "2010",
     "media": [
+      "/images/brands/cnn-com.svg",
       "/images/awards/world-cup-twitter.png",
       "/media/world-cup-twitter.mp4",
       "/images/awards/rts-innovation-trophy.webp"
@@ -160,6 +169,6 @@
     "text": "Designer and producer of Felix the Cat's Giant Electronic Comic Book — stories, songs, and activities for ages 4–8 on Philips CD-i and PC CD-ROM, built at Epic Multimedia Group.",
     "media": ["/images/felix/cover.webp", "/media/felix-resume-reel.mp4"],
     "link": "/felix",
-    "linkText": "View Felix project"
+    "linkText": "View Felix case study"
   }
 }

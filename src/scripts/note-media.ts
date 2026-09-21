@@ -23,6 +23,19 @@ function isVideo(media: PopoverMedia): boolean {
   return VIDEO_EXTENSIONS.some((extension) => src.endsWith(extension));
 }
 
+/**
+ * Brand marks and award plates are identity frames, not full-bleed evidence.
+ * Keep them in the shared centred frame so a narrow SVG viewBox cannot leave
+ * the mark stranded against the column edge.
+ */
+function isBrandFrameMedia(media: PopoverMedia): boolean {
+  const src = mediaSource(media).toLowerCase();
+  return (
+    src.includes("/images/brands/") ||
+    src.endsWith("/images/awards/apple-design-award.png")
+  );
+}
+
 function describeMedia(
   data: PopoverData,
   index: number,
@@ -163,7 +176,9 @@ function buildCarousel(
 
   mediaList.forEach((media, index) => {
     const slide = document.createElement("div");
-    slide.className = `${prefix}-carousel-slide`;
+    slide.className = `${prefix}-carousel-slide${
+      index === 0 && isBrandFrameMedia(media) ? " brand-frame" : ""
+    }`;
     slide.appendChild(
       buildMediaElement(data, prefix, media, {
         autoPlay: index !== 0,
@@ -192,10 +207,14 @@ function buildCarousel(
       const first = slides[0];
       const target = slides[currentIndex];
       if (first && target) {
-        carousel.scrollTo({
-          left: target.offsetLeft - first.offsetLeft,
-          behavior: "smooth",
-        });
+        const left = target.offsetLeft - first.offsetLeft;
+        if (typeof carousel.scrollTo === "function") {
+          carousel.scrollTo({ left, behavior: "smooth" });
+        } else {
+          // Older embedded/webview engines expose scrollLeft but not the
+          // Element.scrollTo overload. The control must still move the strip.
+          carousel.scrollLeft = left;
+        }
       }
     }
     syncDots();
@@ -255,13 +274,16 @@ export function buildMediaContent(
   if (mediaList.length === 0) return null;
   if (mediaList.length > 1) return buildCarousel(data, prefix, mediaList);
 
-  const media = buildMediaElement(data, prefix, mediaList[0], {
+  const mediaItem = mediaList[0];
+  const media = buildMediaElement(data, prefix, mediaItem, {
     autoPlay: false,
   });
   if (!wrapSingle) return media;
 
   const wrapper = document.createElement("div");
-  wrapper.className = `${prefix}-media`;
+  wrapper.className = `${prefix}-media${
+    isBrandFrameMedia(mediaItem) ? " brand-frame" : ""
+  }`;
   wrapper.appendChild(media);
   return wrapper;
 }

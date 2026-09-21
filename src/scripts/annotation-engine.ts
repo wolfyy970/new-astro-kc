@@ -96,7 +96,9 @@ function buildAllAnnotations(popovers: PopoverMap): void {
       el.id = annotationId(key);
       el.dataset.annotationKey = key; // used by popover-engine to suppress on open
 
-      // Collapsed: hidden from AT and inert so keyboard focus stays on the term.
+      // Collapsed notes start inert until they enter the margin. Once visible,
+      // their own carousel and case-study gateway are live without requiring
+      // the reader to expand the note first.
       setAnnotationInert(el, true);
 
       renderAnnotation(el, data);
@@ -356,6 +358,9 @@ function revealAnnotation(key: string): void {
   const entry = annotationEls[key];
   if (!entry || entry.el.classList.contains(CLS_REVEALED)) return;
   entry.el.classList.add(CLS_REVEALED);
+  // A margin note's highlighted term controls visual focus only. The note's
+  // controls remain independently actionable as soon as the note is visible.
+  setAnnotationInert(entry.el, false);
   entry.hotspot.classList.add(CLS_SCROLL_REVEALED);
 }
 

@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import puppeteer from "puppeteer";
 import { AxePuppeteer } from "@axe-core/puppeteer";
 
@@ -6,6 +6,10 @@ const BASE = "http://localhost:4321";
 const PAGES = [
   "/login",
   "/",
+  "/work",
+  "/projects",
+  "/references",
+  "/design",
   "/bolt",
   "/truist",
   "/upwave",
@@ -27,7 +31,15 @@ function readPassword() {
 }
 
 const password = readPassword();
-const browser = await puppeteer.launch({ headless: true });
+const browserCandidates = [
+  process.env.PUPPETEER_EXECUTABLE_PATH,
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "/Applications/Chromium.app/Contents/MacOS/Chromium",
+].filter((candidate) => candidate && existsSync(candidate));
+const browser = await puppeteer.launch({
+  headless: true,
+  ...(browserCandidates[0] ? { executablePath: browserCandidates[0] } : {}),
+});
 const summary = [];
 
 for (const path of PAGES) {
@@ -35,7 +47,7 @@ for (const path of PAGES) {
   await page.setViewport({ width: 1440, height: 900 });
 
   if (path !== "/login") {
-    await page.setCookie({
+    await page.browserContext().setCookie({
       name: "portfolio_session",
       value: password,
       domain: "localhost",

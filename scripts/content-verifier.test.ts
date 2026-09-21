@@ -95,6 +95,58 @@ const validStudy = {
 function writeValidFixture(): void {
   writeJson("src/content/resume.json", validResume);
   writeJson("src/content/popovers.json", validPopovers);
+  writeJson("src/content/projects-writing.json", {
+    publication: {
+      name: "Publication",
+      description: "Description",
+      url: "https://example.com",
+    },
+    projects: [
+      {
+        state: "published",
+        title: "Project",
+        eyebrow: "Experiment",
+        summary: "Summary",
+        detail: "Detail",
+        liveUrl: "https://example.com/project",
+        leadImage: {
+          src: "/images/proof.png",
+          alt: "Lead",
+          width: 1200,
+          height: 800,
+        },
+        supportingImage: {
+          src: "/images/proof.png",
+          alt: "Supporting",
+          width: 1200,
+          height: 800,
+        },
+        video: {
+          src: "/media/demo.mp4",
+          poster: "/images/proof.png",
+          width: 1200,
+          height: 800,
+          label: "Demo",
+        },
+        relatedWriting: ["essay"],
+      },
+      { state: "forthcoming", title: "Second", note: "Soon" },
+      { state: "forthcoming", title: "Third", note: "Soon" },
+    ],
+    writing: [
+      {
+        slug: "essay",
+        title: "Essay",
+        subtitle: "Subtitle",
+        date: "2026-01-01",
+        url: "https://example.com/essay",
+      },
+    ],
+  });
+  writeJson("src/content/references.json", {
+    source: "https://example.com/references",
+    references: [{ quote: "Quote", name: "Name", role: "Role" }],
+  });
   writeJson("src/content/case-studies/manifest.json", validManifest);
   writeJson("src/content/case-studies/study.json", validStudy);
 
@@ -105,6 +157,15 @@ function writeValidFixture(): void {
   const image = path.join(fixtureRoot, "public/images/proof.png");
   mkdirSync(path.dirname(image), { recursive: true });
   writeFileSync(image, "");
+  const video = path.join(fixtureRoot, "public/media/demo.mp4");
+  mkdirSync(path.dirname(video), { recursive: true });
+  writeFileSync(video, "");
+  const pdf = path.join(
+    fixtureRoot,
+    "public/downloads/KC-Wolff-Ingham-Resume.pdf",
+  );
+  mkdirSync(path.dirname(pdf), { recursive: true });
+  writeFileSync(pdf, "");
 }
 
 describe("verifyContent", () => {
@@ -125,6 +186,21 @@ describe("verifyContent", () => {
       hotspotCount: 1,
       popoverCount: 1,
     });
+  });
+
+  it("checks projects media and the résumé download in the build gate", () => {
+    rmSync(path.join(fixtureRoot, "public/media/demo.mp4"));
+    rmSync(
+      path.join(fixtureRoot, "public/downloads/KC-Wolff-Ingham-Resume.pdf"),
+    );
+
+    const errors = verifyContent(fixtureRoot).errors;
+    expect(errors).toContain(
+      'Missing media for projects-writing.projects[0].video.src: "/media/demo.mp4"',
+    );
+    expect(errors).toContain(
+      'Missing downloadable résumé: "public/downloads/KC-Wolff-Ingham-Resume.pdf"',
+    );
   });
 
   it("enforces hotspot and popover parity in both directions", () => {

@@ -1,16 +1,18 @@
 ---
 import BaseHead from "../components/BaseHead.astro";
-import ThemeToggleButton from "../components/ThemeToggleButton.astro";
+import SiteNav from "../components/SiteNav.astro";
 
 interface Props {
   title: string;
   description?: string;
   ogImage?: string;
+  navSection?: "resume" | "work" | "projects" | "references";
 }
 const {
   title,
   description = "KC Wolff-Ingham, Design Leadership",
   ogImage,
+  navSection,
 } = Astro.props;
 ---
 
@@ -20,7 +22,7 @@ const {
     <BaseHead title={title} description={description} ogImage={ogImage} />
   </head>
   <body>
-    <ThemeToggleButton />
+    <SiteNav current={navSection} />
     <slot />
   </body>
 </html>

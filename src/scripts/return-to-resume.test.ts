@@ -43,7 +43,7 @@ describe("context-preserving case-study return", () => {
 
   it("records delegated same-tab project-link navigation", () => {
     document.body.innerHTML =
-      '<a class="popover-link" href="/upwave"><span>View Upwave project</span></a>';
+      '<a class="popover-link" href="/upwave"><span>View Upwave case study</span></a>';
     const environment = makeEnvironment({
       location: {
         href: "https://portfolio.test/",
@@ -73,7 +73,7 @@ describe("context-preserving case-study return", () => {
 
   it("does not claim modified clicks that may open another tab", () => {
     document.body.innerHTML =
-      '<a class="sa-link" href="/upwave">View Upwave project</a>';
+      '<a class="sa-link" href="/upwave">View Upwave case study</a>';
     const cleanup = initResumeReturnTracking(
       makeEnvironment({
         location: {
@@ -105,7 +105,7 @@ describe("context-preserving case-study return", () => {
         <button class="popover-carousel-dot"></button>
         <button class="popover-carousel-dot active"></button>
         <a class="popover-link" href="/truist">
-          <span>View Truist project</span>
+          <span>View Truist case study</span>
         </a>
       </div>
     `;
@@ -145,7 +145,7 @@ describe("context-preserving case-study return", () => {
         <button class="popover-carousel-dot active"></button>
         <button class="popover-carousel-dot"></button>
         <a class="popover-link" href="/upwave">
-          <span>View Upwave project</span>
+          <span>View Upwave case study</span>
         </a>
       </aside>
     `;
@@ -180,7 +180,7 @@ describe("context-preserving case-study return", () => {
     document.body.innerHTML = `
       <aside class="scroll-annotation is-expanded" data-annotation-key="merger">
         <a class="sa-link" href="/truist">
-          <span>View Truist project</span>
+          <span>View Truist case study</span>
         </a>
       </aside>
     `;

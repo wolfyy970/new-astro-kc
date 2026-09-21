@@ -1,0 +1,212 @@
+---
+import ThemeToggleButton from "./ThemeToggleButton.astro";
+
+interface Props {
+  current?: "resume" | "work" | "projects" | "references";
+  /** Preserve the résumé's saved reading position when leaving a case study. */
+  resumeBack?: boolean;
+}
+
+const { current, resumeBack = false } = Astro.props;
+
+const items = [
+  { key: "resume", href: "/", label: "Résumé" },
+  { key: "work", href: "/work", label: "Work" },
+  { key: "projects", href: "/projects", label: "Projects" },
+  { key: "references", href: "/references", label: "References" },
+] as const;
+---
+
+<div class="site-nav-shell">
+  <a class="site-skip-link" href="#main-content">Skip to content</a>
+  <div class="site-nav-inner">
+    <nav class="site-nav" aria-label="Primary navigation">
+      {
+        items.map((item) => (
+          <a
+            class="site-nav-link"
+            href={item.href}
+            aria-current={current === item.key ? "page" : undefined}
+            data-resume-back={
+              item.key === "resume" && resumeBack ? "" : undefined
+            }
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="site-nav-theme">
+      <ThemeToggleButton />
+    </div>
+  </div>
+</div>
+
+<style>
+  .site-nav-shell {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    min-height: var(--site-nav-height);
+    border-bottom: 1px solid var(--doc-rule);
+    background: color-mix(in srgb, var(--doc-white) 92%, transparent);
+    color: var(--doc-body);
+    backdrop-filter: blur(14px) saturate(1.15);
+    -webkit-backdrop-filter: blur(14px) saturate(1.15);
+  }
+
+  .site-nav-inner {
+    position: relative;
+    display: flex;
+    min-height: var(--site-nav-height);
+    align-items: center;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .site-nav-link {
+    font-family: var(--mono);
+    font-size: var(--type-meta);
+    font-weight: 500;
+    letter-spacing: var(--type-label-spacing);
+    text-transform: uppercase;
+  }
+
+  .site-nav {
+    position: absolute;
+    left: 50%;
+    display: flex;
+    align-self: stretch;
+    gap: clamp(24px, 4vw, 54px);
+    transform: translateX(-50%);
+  }
+
+  .site-nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--doc-light);
+    text-decoration: none;
+    transition: color var(--duration-fast) ease;
+  }
+
+  .site-nav-link::after {
+    position: absolute;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 2px;
+    content: "";
+    background: var(--accent-ink, var(--doc-heading));
+    opacity: 0;
+    transform: scaleX(0.25);
+    transition:
+      opacity var(--duration-fast) ease,
+      transform var(--duration-medium) var(--ease-move);
+  }
+
+  .site-nav-link:hover,
+  .site-nav-link:focus-visible,
+  .site-nav-link[aria-current="page"] {
+    color: var(--doc-heading);
+  }
+
+  .site-nav-link:hover::after,
+  .site-nav-link:focus-visible::after,
+  .site-nav-link[aria-current="page"]::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  .site-nav-link:focus-visible {
+    outline: 2px solid var(--accent-ink, var(--doc-heading));
+    outline-offset: 4px;
+  }
+
+  .site-nav-theme {
+    display: flex;
+    margin-left: auto;
+  }
+
+  .site-nav-theme :global(.theme-toggle) {
+    position: static;
+    width: 44px;
+    height: 44px;
+    color: var(--doc-light);
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  .site-nav-theme :global(.theme-toggle:hover) {
+    color: var(--doc-heading);
+    background: transparent;
+    border-color: var(--doc-rule);
+  }
+
+  .site-skip-link {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 2;
+    padding: 10px 12px;
+    font-family: var(--mono);
+    font-size: var(--type-meta);
+    color: var(--doc-heading);
+    background: var(--doc-white);
+    border: 1px solid var(--doc-heading);
+    transform: translateY(-180%);
+    transition: transform var(--duration-fast) ease;
+  }
+
+  .site-skip-link:focus {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 700px) {
+    .site-nav-inner {
+      padding: 0 12px 0 16px;
+    }
+
+    .site-nav {
+      position: static;
+      gap: clamp(12px, 4vw, 22px);
+      transform: none;
+    }
+
+    .site-nav-theme {
+      margin-left: 10px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .site-nav-inner {
+      padding: 0 6px 0 10px;
+    }
+
+    .site-nav {
+      gap: 8px;
+    }
+
+    .site-nav-link {
+      font-size: var(--type-meta-compact);
+      letter-spacing: 0.1em;
+    }
+
+    .site-nav-theme {
+      margin-left: 2px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-nav-link,
+    .site-nav-link::after,
+    .site-skip-link {
+      transition: none;
+    }
+  }
+</style>

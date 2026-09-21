@@ -3,9 +3,10 @@ import type { PopoverMap } from "../types/content";
 /**
  * Feature Flags
  *
- * Controls which case study pages are linked from popovers and margin
- * annotations. Filtering happens server-side before data is serialised to
- * window.__POPOVERS__, so the client never receives disabled links.
+ * Controls which case study pages are linked from popovers, margin
+ * annotations, and the Work index. Filtering happens server-side before data
+ * is serialised to window.__POPOVERS__, so the client never receives disabled
+ * links and the index cannot expose an unpublished destination.
  *
  * ── Environment variable ──────────────────────────────────────────────────────
  *
@@ -52,7 +53,7 @@ function parseEnabledSlugs(): Set<string> | null {
  * Returns true if the given popover link path points to an enabled case study.
  * Accepts absolute paths ("/truist") or bare slugs ("truist").
  */
-function isCaseStudyLinkEnabled(linkPath: string): boolean {
+export function isCaseStudyLinkEnabled(linkPath: string): boolean {
   const enabled = parseEnabledSlugs();
   if (enabled === null) return true; // CASE_STUDY_LINKS=true — all enabled
   if (enabled.size === 0) return false;

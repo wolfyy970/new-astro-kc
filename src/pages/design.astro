@@ -7,13 +7,31 @@ import "../styles/global.css";
 import "../styles/case-study.css";
 
 const typeScale = [
-  { name: "editorial", token: "--type-editorial", sample: "KC Wolff-Ingham" },
+  {
+    name: "page-title",
+    token: "--type-page-title",
+    sample: "Projects & Writing",
+  },
+  {
+    name: "hero-title",
+    token: "--type-hero-title",
+    sample: "Case study title",
+  },
+  { name: "title-page", token: "--type-title-page", sample: "KC Wolff-Ingham" },
+  { name: "heading-2", token: "--type-heading-2", sample: "Projects" },
+  { name: "heading-3", token: "--type-heading-3", sample: "Designer" },
+  { name: "heading-4", token: "--type-heading-4", sample: "Company name" },
+  {
+    name: "quote-lead",
+    token: "--type-quote-lead",
+    sample: "Featured reference",
+  },
+  { name: "quote", token: "--type-quote", sample: "Reference card" },
   {
     name: "editorial-sub",
     token: "--type-editorial-sub",
     sample: "Design leadership tagline",
   },
-  { name: "h2", token: "--type-h2", sample: "Company name" },
   {
     name: "body-lg",
     token: "--type-body-lg",
@@ -53,7 +71,7 @@ const radiusTokens = [
   title="Design system"
   description="Living catalog of tokens and shared parts."
 >
-  <main class="design-page">
+  <main class="design-page" id="main-content">
     <header class="design-masthead">
       <p class="design-kicker">Internal catalog</p>
       <h1 class="design-title">Design system</h1>
@@ -174,6 +192,7 @@ const radiusTokens = [
         <Icon name="eye" />
         <Icon name="eye-off" />
         <Icon name="arrows-horizontal" />
+        <Icon name="download" />
       </div>
       <p class="design-note">
         Client scripts use <code>src/scripts/icons.ts</code> (X, chevrons, play).
@@ -200,10 +219,11 @@ const radiusTokens = [
 
   .design-title {
     font-family: var(--display);
-    font-size: var(--type-editorial);
+    font-size: var(--type-title-page);
     font-weight: 200;
+    font-kerning: normal;
     line-height: 1.02;
-    letter-spacing: -0.022em;
+    letter-spacing: normal;
     color: var(--doc-heading);
     margin-bottom: 16px;
   }
@@ -228,10 +248,10 @@ const radiusTokens = [
   }
 
   .design-section-title {
-    font-family: var(--mono);
-    font-size: var(--type-meta);
-    letter-spacing: var(--type-label-spacing-wide);
-    text-transform: uppercase;
+    font-family: var(--display);
+    font-size: var(--type-heading-4);
+    font-weight: 500;
+    letter-spacing: normal;
     color: var(--doc-heading);
     margin-bottom: var(--space-block);
   }

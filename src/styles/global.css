@@ -64,6 +64,7 @@
   --mark-a: 0.6;
   --mark-a-hover: 0.72;
   --mark-a-active: 0.84;
+  --mark-a-hover-strong: 0.96;
 
   --hs-transition: --hs-ink 0.24s ease, --hs-ink-b 0.24s ease, color 0.2s ease;
 }
@@ -79,6 +80,7 @@ html.theme-dark {
   --mark-a: 0.26;
   --mark-a-hover: 0.36;
   --mark-a-active: 0.48;
+  --mark-a-hover-strong: 0.58;
 }
 
 /* No blend mode on media.
@@ -176,15 +178,13 @@ html.theme-dark {
 
 .masthead-name {
   font-family: var(--display);
-  font-size: var(--type-editorial);
+  font-size: var(--type-title-page);
   /* A light weight at title scale reads as printed; 400 reads as a CMS heading. */
   font-weight: 200;
   font-variation-settings: "opsz" 72;
+  font-kerning: normal;
   color: var(--doc-heading);
-  /* At 200px, default tracking and leading are both far too loose — display
-     type has to be set tighter than the metrics assume or it falls apart into
-     separate letters and separate lines. */
-  letter-spacing: -0.022em;
+  letter-spacing: normal;
   line-height: 1.02;
   width: 100%;
 }
@@ -277,9 +277,14 @@ html.theme-dark {
   align-self: start;
 }
 
-.masthead-head .masthead-rule {
+.masthead-head .masthead-document-actions {
   grid-column: 1;
   grid-row: 2;
+}
+
+.masthead-head .masthead-rule {
+  grid-column: 1;
+  grid-row: 3;
 }
 
 .masthead-portrait {
@@ -287,7 +292,7 @@ html.theme-dark {
      straddle the hairline via --portrait-overhang below. */
   --portrait-overhang: 20px;
   grid-column: 2;
-  grid-row: 1 / 3;
+  grid-row: 1 / 4;
   align-self: start;
   /* As large as the head allows: the single-line name measures ~477px of the
      704px head, and the name must never wrap for a figure. The figure takes
@@ -485,6 +490,62 @@ html.theme-dark {
   color: var(--doc-light);
 }
 
+/* A document action, not another navigation destination. It sits directly
+   beneath the name and uses the same stock-and-ink chrome as the rest of the
+   system: an explicit verb, a download glyph, and a full 44px target make the
+   outcome unambiguous before activation. */
+.masthead-document-actions {
+  display: flex;
+  width: 100%;
+  margin-top: 18px;
+}
+
+.masthead-download {
+  display: inline-grid;
+  grid-template-columns: auto 17px;
+  gap: 14px;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+  font-family: var(--mono);
+  font-size: var(--type-meta);
+  font-weight: 500;
+  letter-spacing: var(--type-label-spacing);
+  text-transform: uppercase;
+  color: var(--doc-body);
+  text-decoration: none;
+  background: var(--doc-white);
+  border: 1px solid var(--doc-rule);
+  border-radius: var(--radius-chrome);
+  transition:
+    color var(--duration-fast) ease,
+    background var(--duration-fast) ease,
+    border-color var(--duration-fast) ease;
+}
+
+.masthead-download-icon {
+  transition: transform var(--duration-medium) var(--ease-move);
+}
+
+.masthead-download:hover {
+  color: var(--doc-heading);
+  background: var(--bg);
+  border-color: var(--doc-heading);
+}
+
+.masthead-download:hover .masthead-download-icon {
+  transform: translateY(2px);
+}
+
+.masthead-download:focus-visible {
+  outline: 2px solid var(--doc-heading);
+  outline-offset: 3px;
+}
+
+.masthead-download:active .masthead-download-icon {
+  transform: translateY(4px);
+}
+
 .masthead-credentials .masthead-cred {
   white-space: nowrap;
 }
@@ -540,7 +601,7 @@ html.theme-dark {
   display: flex;
   align-items: center;
   gap: 14px;
-  font-size: var(--type-h3);
+  font-size: var(--type-meta);
   letter-spacing: var(--type-label-spacing-wide);
   color: var(--doc-heading);
   margin: var(--space-section) 0 24px;
@@ -672,7 +733,7 @@ html.theme-dark {
 
 .doc-exp-company {
   font-family: var(--display);
-  font-size: var(--type-h2);
+  font-size: var(--type-heading-4);
   font-weight: 600;
   font-variation-settings: "opsz" 20;
   color: var(--doc-heading);
@@ -700,7 +761,7 @@ html.theme-dark {
 
 .doc-exp-title {
   font-family: var(--display);
-  font-size: var(--type-h4);
+  font-size: var(--type-doc-role);
   font-style: italic;
   font-weight: 400;
   color: var(--doc-light);
@@ -722,14 +783,14 @@ html.theme-dark {
 .doc-edu-item .degree {
   margin-bottom: 1px;
   font-family: var(--display);
-  font-size: var(--type-h4);
+  font-size: var(--type-doc-role);
   font-weight: 600;
   font-variation-settings: "opsz" 18;
   color: var(--doc-heading);
 }
 
 .doc-edu-item .school {
-  font-size: var(--type-h5);
+  font-size: var(--type-doc-school);
   color: var(--doc-body);
 }
 
@@ -1075,6 +1136,17 @@ html.theme-dark .hotspot {
   --hs-a: calc(var(--mark-a-active) * var(--hs-recede, 1));
 }
 
+/* A revealed term is already at the margin's active ink load. Hover still
+   needs a visible response, though: the pointer is the reader pressing the
+   marker, not merely arriving at a term that happened to enter the viewport.
+   Keep the response scoped to revealed-but-closed terms so an open note stays
+   in its deliberate active state. */
+.hotspot.scroll-revealed:not(.active):hover,
+.hotspot.scroll-revealed:not(.active).hovered,
+.hotspot.scroll-revealed:not(.active):focus-visible {
+  --hs-a: calc(var(--mark-a-hover-strong) * var(--hs-recede, 1));
+}
+
 /* ── The focus answer ──
    While one note is open — continuing in the margin (.margin-focus) or bound
    into the flow (the inset present in the page) — every OTHER term's ink
@@ -1149,6 +1221,28 @@ body.popover-open {
 
 .popover-media {
   padding: 14px 14px 0;
+}
+
+/* Shared identity frame. Logos and award plates have their own intrinsic
+   whitespace and must be centred as a unit in every note surface — GPC,
+   CNN.com, Apple, and future marks all use the same organism. Evidence
+   photography keeps its authored edge alignment. */
+.brand-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 132px;
+}
+
+.brand-frame > .popover-img,
+.brand-frame > .popover-vid,
+.brand-frame > .sa-img,
+.brand-frame > .sa-vid {
+  width: auto;
+  max-width: 100%;
+  max-height: 132px;
+  object-position: center;
+  margin: 0;
 }
 
 /* The issuer's device. An archival artifact that does not identify its issuer
@@ -1596,9 +1690,8 @@ button.intro-demo-link:focus-visible {
 /* ══════════════════════════════════════
    THE EDITOR'S NOTE — introduction below the wide tier
    ══════════════════════════════════════
-   Bound into the top of the sheet, replacing two pieces of chrome: the black
-   widen-to-reveal bar and the bordered best-on-desktop badge. A printed
-   "how to read this edition" note in the document's own materials — a rule,
+   Bound into the top of the sheet as a printed "how to read this edition"
+   note in the document's own materials — a rule,
    a mono label, note-size prose, and live specimens. Hidden at the wide tier,
    where the margin performs the introduction instead. */
 .edition-note {
@@ -2318,14 +2411,9 @@ li > .inset-note {
    ══════════════════════════════════════ */
 @media (max-width: 600px) {
   :root {
-    /* Still the biggest thing on the screen, but the surname has to clear a
-       375px viewport: 15.5vw would set it at 58px and overrun. */
-    --type-editorial: clamp(34px, 9vw, 44px);
     --type-editorial-sub: 21px;
-    --type-h2: 18px;
-    --type-h3: 10px;
-    --type-h4: 16px;
-    --type-h5: 14px;
+    --type-doc-role: 16px;
+    --type-doc-school: 14px;
     --type-body-lg: 18px;
     --type-body: 17px; /* intentionally at the reading floor — no reduction */
     --type-body-sm: 14px;
@@ -2360,6 +2448,11 @@ li > .inset-note {
 
   .masthead-lede {
     max-width: 100%;
+  }
+
+  .masthead-download {
+    grid-template-columns: 1fr 17px;
+    width: 100%;
   }
 
   /* The rail collapses. A 76px column beside a 280px measure would leave the
@@ -2446,7 +2539,10 @@ li > .inset-note {
   }
 
   .popover-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
     -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
   }
 
   .popover.visible {
@@ -2523,11 +2619,6 @@ li > .inset-note {
    RESPONSIVE — SMALL MOBILE
    ══════════════════════════════════════ */
 @media (max-width: 380px) {
-  :root {
-    --type-editorial: clamp(30px, 8.5vw, 38px);
-    --type-h2: 17px;
-  }
-
   .masthead {
     padding: 40px 20px 28px;
   }

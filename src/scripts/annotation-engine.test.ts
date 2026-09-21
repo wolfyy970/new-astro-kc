@@ -145,6 +145,59 @@ describe("Annotation Engine (DOM auto-mapping)", () => {
     ).toBe(true);
   });
 
+  it("keeps visible carousel controls and case-study links live before expansion", () => {
+    mockPopovers.item1 = {
+      label: "Item 1",
+      text: "Text 1",
+      media: ["/images/item-1.webp", "/images/item-2.webp"],
+      link: "/case-study",
+      linkText: "View case study",
+    };
+
+    initAnnotationEngine(mockPopovers);
+
+    const annotation = document.querySelector<HTMLElement>(
+      '[data-annotation-key="item1"]',
+    )!;
+    const carousel = annotation.querySelector<HTMLElement>(".sa-carousel")!;
+    const slides =
+      annotation.querySelectorAll<HTMLElement>(".sa-carousel-slide");
+    Object.defineProperty(carousel, "scrollTo", {
+      value: vi.fn(),
+      configurable: true,
+    });
+    Object.defineProperty(slides[0], "offsetLeft", {
+      value: 0,
+      configurable: true,
+    });
+    Object.defineProperty(slides[1], "offsetLeft", {
+      value: 240,
+      configurable: true,
+    });
+
+    const link = annotation.querySelector<HTMLAnchorElement>(".sa-link")!;
+    const linkClick = vi.fn();
+    link.addEventListener("click", linkClick);
+
+    expect(annotation.classList.contains("revealed")).toBe(true);
+    expect(annotation.inert).toBe(false);
+    expect(annotation.getAttribute("aria-hidden")).toBe("false");
+    expect(annotation.classList.contains("is-expanded")).toBe(false);
+
+    annotation
+      .querySelector<HTMLButtonElement>(".sa-carousel-nav.next")!
+      .click();
+    link.click();
+
+    expect(
+      annotation
+        .querySelector('[aria-label="Go to slide 2"]')
+        ?.classList.contains("active"),
+    ).toBe(true);
+    expect(linkClick).toHaveBeenCalledTimes(1);
+    expect(annotation.classList.contains("is-expanded")).toBe(false);
+  });
+
   it("logs a warning and skips missing popover data", () => {
     const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
     // Remove item2 from popover data but it exists in DOM
@@ -226,7 +279,7 @@ describe("Intro annotation (cold-start)", () => {
     expect(introEl!.textContent).toContain("Click to reveal detail");
     expect(introEl!.textContent).toContain("Yellow");
     expect(introEl!.textContent).toContain("opens an in page note");
-    expect(introEl!.textContent).toContain("opens with a link to the project");
+    expect(introEl!.textContent).toContain("opens a case study");
   });
 
   it("keeps the margin intro static — specimens are spans, not controls", () => {

@@ -4,6 +4,7 @@ dist/
 .claude/
 .DS_Store
 .vercel
+.tmp/
 
 # Standard rules added for health
 .env

@@ -1,0 +1,213 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import projectsWritingRaw from "../content/projects-writing.json";
+import { projectsWritingSchema } from "../content/schema";
+import "../styles/work-index.css";
+
+const content = projectsWritingSchema.parse(projectsWritingRaw);
+const designer = content.projects.find(
+  (project) => project.state === "published",
+);
+
+if (!designer) {
+  throw new Error("The Projects page requires one published project.");
+}
+
+const forthcomingProjects = content.projects.filter(
+  (project) => project.state === "forthcoming",
+);
+const relatedWriting = designer.relatedWriting.map((slug) => {
+  const entry = content.writing.find((item) => item.slug === slug);
+  if (!entry) throw new Error(`Missing related writing entry: ${slug}`);
+  return entry;
+});
+
+const formatDate = (date: string) =>
+  new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${date}T12:00:00Z`));
+---
+
+<BaseLayout
+  title="Projects & Writing — KC Wolff-Ingham"
+  description="Independent projects and writing by design leader KC Wolff-Ingham."
+  navSection="projects"
+>
+  <main class="work-index projects-index" id="main-content">
+    <header class="work-index-header projects-index-header">
+      <p class="work-index-kicker">Independent work</p>
+      <h1 class="work-index-title projects-index-title">
+        Projects <span>&amp; Writing</span>
+      </h1>
+      <p class="work-index-intro">
+        Products, experiments, and essays about design leadership at the edge of
+        what software can do.
+      </p>
+    </header>
+
+    <section class="projects-section" aria-labelledby="projects-heading">
+      <header class="projects-section-heading">
+        <h2 id="projects-heading">Projects</h2>
+      </header>
+
+      <article class="project-feature">
+        <div class="project-feature-intro">
+          <div>
+            <p class="project-eyebrow">{designer.eyebrow}</p>
+            <h3>{designer.title}</h3>
+          </div>
+          <div class="project-feature-summary">
+            <p>{designer.summary}</p>
+            <a
+              class="projects-text-link"
+              href={designer.liveUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Open Designer <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+
+        <figure class="project-lead-media">
+          <img
+            src={designer.leadImage.src}
+            alt={designer.leadImage.alt}
+            width={designer.leadImage.width}
+            height={designer.leadImage.height}
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption>
+            From brief to differentiated hypotheses and working prototypes.
+          </figcaption>
+        </figure>
+
+        <div class="project-feature-body">
+          <div class="project-finding">
+            <p class="project-eyebrow">What the experiment found</p>
+            <p>{designer.detail}</p>
+          </div>
+
+          <figure class="project-demo">
+            <video
+              controls
+              playsinline
+              preload="metadata"
+              poster={designer.video.poster}
+              width={designer.video.width}
+              height={designer.video.height}
+              aria-label={designer.video.label}
+            >
+              <source src={designer.video.src} type="video/mp4" />
+              <p>
+                Your browser cannot play this video. <a
+                  href="https://kcwolfy.substack.com/p/designer"
+                  target="_blank"
+                  rel="noreferrer">Watch the Designer demo on horizon.</a
+                >
+              </p>
+            </video>
+            <figcaption>Designer in use · 1:08</figcaption>
+          </figure>
+        </div>
+
+        <div class="project-supporting">
+          <img
+            src={designer.supportingImage.src}
+            alt={designer.supportingImage.alt}
+            width={designer.supportingImage.width}
+            height={designer.supportingImage.height}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+
+        <aside
+          class="project-related"
+          aria-labelledby="designer-reading-heading"
+        >
+          <p class="project-eyebrow" id="designer-reading-heading">
+            The experiment, in writing
+          </p>
+          <ol>
+            {
+              relatedWriting.map((entry, index) => (
+                <li>
+                  <span aria-hidden="true">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <a href={entry.url} target="_blank" rel="noreferrer">
+                    {entry.title} <span aria-hidden="true">↗</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ol>
+        </aside>
+      </article>
+
+      <ol
+        class="forthcoming-projects"
+        start="2"
+        aria-label="Forthcoming projects"
+      >
+        {
+          forthcomingProjects.map((project, index) => (
+            <li>
+              <span class="forthcoming-index" aria-hidden="true">
+                {String(index + 2).padStart(2, "0")}
+              </span>
+              <h3>{project.title}</h3>
+              <p>{project.note}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="writing-section" aria-labelledby="writing-heading">
+      <header class="projects-section-heading writing-section-heading">
+        <div>
+          <h2 id="writing-heading">Writing</h2>
+          <p>
+            <a href={content.publication.url} target="_blank" rel="noreferrer"
+              >Read all writing on {content.publication.name}
+              <span aria-hidden="true">↗</span></a
+            >
+            <span>{content.publication.description}</span>
+          </p>
+        </div>
+      </header>
+
+      <ol class="writing-list">
+        {
+          content.writing.map((entry, index) => (
+            <li>
+              <a href={entry.url} target="_blank" rel="noreferrer">
+                <span class="writing-index" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span class="writing-copy">
+                  <h3 class="writing-title">{entry.title}</h3>
+                  <span class="writing-subtitle">{entry.subtitle}</span>
+                </span>
+                <time datetime={entry.date}>{formatDate(entry.date)}</time>
+                <span class="writing-arrow" aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+  </main>
+
+  <footer class="work-index-footer">
+    <p>&copy; 2026 KC Wolff-Ingham</p>
+  </footer>
+</BaseLayout>
