@@ -6,8 +6,8 @@ const result = verifyContent(process.cwd());
 
 console.log("📋 Validating schemas...");
 console.log(`📡 Checking ${result.stats.hotspotCount} unique hotspots...`);
-console.log("🖼️ Verifying image paths...");
-console.log("🖼️ Verifying case study image paths...");
+console.log("🖼️ Verifying résumé, project, and case-study media paths...");
+console.log("📄 Verifying the downloadable résumé...");
 
 if (result.errors.length > 0) {
   console.error("\n❌ Integrity Verification Failed:");

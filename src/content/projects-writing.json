@@ -1,0 +1,102 @@
+{
+  "publication": {
+    "name": "horizon",
+    "description": "Design and Product on the Edge.",
+    "url": "https://kcwolfy.substack.com/"
+  },
+  "projects": [
+    {
+      "state": "published",
+      "title": "Designer",
+      "eyebrow": "Agentic UX experiment · 2026",
+      "summary": "An experimental agentic UX design harness that moves generative design upstream. Designer frames the problem, produces differentiated hypotheses, and builds selected directions into working prototypes so the ideas can be judged in use.",
+      "detail": "The useful result was not simply the interface. The experiment exposed where agentic design helped—and where it did not. Hypothesis generation produced genuinely different bets; a human-shaped canvas and adversarial evaluation loop became bottlenecks. Those findings now point toward a leaner, headless system of coordinating agents.",
+      "liveUrl": "https://try-designer.vercel.app/",
+      "leadImage": {
+        "src": "/images/projects/designer/canvas.png",
+        "alt": "Designer canvas connecting a design brief and supporting inputs to three distinct product hypotheses and working prototype previews.",
+        "width": 2956,
+        "height": 1514
+      },
+      "supportingImage": {
+        "src": "/images/projects/designer/inputs.jpeg",
+        "alt": "Designer canvas with nodes for the brief, research, objectives, design system, constraints, and hypothesis incubator.",
+        "width": 2752,
+        "height": 1536
+      },
+      "video": {
+        "src": "/media/designer/designer-demo.mp4",
+        "poster": "/images/projects/designer/demo-poster.png",
+        "width": 1692,
+        "height": 1080,
+        "label": "Designer product demo, 1 minute 8 seconds"
+      },
+      "relatedWriting": [
+        "the-designer-experiment-part-1",
+        "the-designer-experiment-part-two",
+        "designer"
+      ]
+    },
+    {
+      "state": "forthcoming",
+      "title": "Org Chart Studio",
+      "note": "Project story forthcoming."
+    },
+    {
+      "state": "forthcoming",
+      "title": "Unreel Recipes",
+      "note": "Project story forthcoming."
+    }
+  ],
+  "writing": [
+    {
+      "slug": "debunking-ux-strategy",
+      "title": "Debunking UX Strategy",
+      "subtitle": "What strategy really is.",
+      "date": "2026-07-23",
+      "url": "https://kcwolfy.substack.com/p/debunking-ux-strategy"
+    },
+    {
+      "slug": "the-designer-experiment-part-two",
+      "title": "The Designer Experiment (Part 2)",
+      "subtitle": "What worked, what didn’t, and what comes next.",
+      "date": "2026-06-17",
+      "url": "https://kcwolfy.substack.com/p/the-designer-experiment-part-two"
+    },
+    {
+      "slug": "the-designer-experiment-part-1",
+      "title": "The Designer Experiment (Part 1)",
+      "subtitle": "What Designer is and how it works.",
+      "date": "2026-06-04",
+      "url": "https://kcwolfy.substack.com/p/the-designer-experiment-part-1"
+    },
+    {
+      "slug": "designer",
+      "title": "Designer Demo",
+      "subtitle": "A video tour of the experimental agentic UX harness.",
+      "date": "2026-05-28",
+      "url": "https://kcwolfy.substack.com/p/designer"
+    },
+    {
+      "slug": "the-visible-layer",
+      "title": "The Visible Layer",
+      "subtitle": "Why a generated interface no longer proves there’s design behind it.",
+      "date": "2026-05-27",
+      "url": "https://kcwolfy.substack.com/p/the-visible-layer"
+    },
+    {
+      "slug": "the-new-rules-of-design-and-code",
+      "title": "The New Rules of Design and Code",
+      "subtitle": "UX and UI design in the agentic era.",
+      "date": "2026-05-26",
+      "url": "https://kcwolfy.substack.com/p/the-new-rules-of-design-and-code"
+    },
+    {
+      "slug": "the-agentic-ui-landscape-a-primer",
+      "title": "The Agentic UI Landscape: A Primer (Part 1/2)",
+      "subtitle": "An exploration of the present and future of agentic and generative UX and UI design.",
+      "date": "2026-01-04",
+      "url": "https://kcwolfy.substack.com/p/the-agentic-ui-landscape-a-primer"
+    }
+  ]
+}

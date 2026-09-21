@@ -16,6 +16,7 @@ describe("Icon component imports", () => {
 
     expect(directImports.sort()).toEqual([
       "@tabler/icons/outline/arrows-horizontal.svg?raw",
+      "@tabler/icons/outline/download.svg?raw",
       "@tabler/icons/outline/eye-off.svg?raw",
       "@tabler/icons/outline/eye.svg?raw",
       "@tabler/icons/outline/moon.svg?raw",

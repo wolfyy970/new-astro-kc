@@ -47,9 +47,11 @@ The site's own mechanism is also positioning: **the résumé is the interface.**
 - **Content model:** `resume.json` and `popovers.json` are the résumé database; each case study is a self-contained JSON file indexed by `manifest.json` and rendered through a type-dispatching section component.
 - **Annotated terms:** 20, enforced strictly 1:1 against their notes at build time. All wear a highlighter marker stroke — yellow for marginalia, green for project-backed terms — and the nine authored project destinations additionally carry a semantic case-study icon when enabled for the environment.
 - **Reading tiers:** margin notes at ≥1420px (derived from sheet + gutter + column, deliberately under a 1440px laptop); a note bound into the document flow between 600px and that; a bottom sheet at ≤600px. Nothing floats over the page on a desktop, and no content is unreachable at any width.
-- **Marginalia discovery:** a static editor's note bound into the top of the sheet (tablet and mobile) explains the two highlighter inks with yellow and green specimens — **Tap** on phone, **Click** on wider viewports. At ≥1420px the note yields to the same copy in the margin's cold-start introduction.
+- **Marginalia discovery:** on resize-capable desktops between 601px and 1419px, a compact fixed prompt asks the reader to widen the browser and tracks progress toward the 1420px margin threshold. A static editor's note bound into the top of the sheet explains the two highlighter inks with yellow and green specimens — **Tap** on phone, **Click** on wider viewports. At ≥1420px both yield to the same copy in the margin's cold-start introduction.
 - **Feature flag:** `CASE_STUDY_LINKS` controls which case-study links reach the client, filtered server-side, so studies can be published incrementally.
-- **Build gate:** `npm run verify` validates schemas, exact hotspot-to-note parity, case-study inventory, and every media path; the build fails on a broken reference. `npm run quality` runs formatting, ESLint, Astro diagnostics, the unit suite, content verification, and the production build.
+- **Primary navigation:** Résumé (`/`), Work (`/work`), Projects (`/projects`), and References (`/references`) share one sticky rail across every authenticated page. Work is the reverse-chronological index of enabled case studies; Projects opens **Projects & Writing**, led by the Designer experiment with forthcoming entries for Org Chart Studio and Unreel Recipes plus the complete public _horizon_ archive; References presents eight testimonials selected from KC's consulting site.
+- **Downloadable résumé:** directly beneath the name, the résumé masthead includes a clearly labelled action with a download icon and native download behavior. The published source is `public/downloads/KC-Wolff-Ingham-Resume.pdf`; replacing that file updates the downloadable artifact without changing the interface.
+- **Build gate:** `npm run verify` validates schemas, exact hotspot-to-note parity, case-study inventory, project media, the downloadable résumé, and every referenced media path; the build fails on a broken reference. `npm run quality` runs formatting, ESLint, Astro diagnostics, the unit suite, content verification, and the production build.
 
 **Resolved — the headline now matches the objective.** The masthead read _"Fractional product & design leadership,"_ which disagreed with the confirmed goal of a senior in-house role and with the primary reader being an executive recruiter. It now reads _"Design leadership at the intersection of product, technology and business."_ Fractional and advisory work remains a secondary audience; it is no longer what the headline offers.
 
@@ -63,7 +65,8 @@ The site's own mechanism is also positioning: **the résumé is the interface.**
 
 Real, in the repository:
 
-- **8 case studies** — Truist ($66B merger, C-suite foresight), Sparks Grove/Delta (news.delta.com), Upwave (Turner venture), Two Way TV (interactive television platform), Armchair Manager (live fantasy sports and BAFTA nomination), FusionFall (behavioral design and Self-Determination Theory), CNN Magic Wall (technology strategy and weather), and Felix the Cat (CD-i / CD-ROM).
+- **9 case studies** — Bolt (global design system), Truist ($66B merger, C-suite foresight), Sparks Grove/Delta (news.delta.com), Upwave (Turner venture), FusionFall (behavioral design and Self-Determination Theory), CNN Magic Wall (technology strategy and weather), Two Way TV (interactive television platform), Armchair Manager (live fantasy sports and BAFTA nomination), and Felix the Cat (CD-i / CD-ROM).
+- **8 professional references** — verbatim testimonials and attribution lines selected from KC's published consulting site, stored in validated structured content.
 - **20 annotated notes** with authored image, video, poster, and brand-mark references checked at build time.
 - **Awards:** Emmy (Outstanding Creative Achievement in Interactive Media), Royal Television Society Award, BAFTA Interactive Entertainment nomination, Webby nomination, Apple Design Project Award.
 - **Patents:** two granted US patents in automatic content recognition.
@@ -73,7 +76,7 @@ Not for publication:
 
 - `KC_Wolff-Ingham_Career_Toolkit.md` is an internal job-search reference. Its own header states it is **not** intended to be sent to recruiters or employers. Use it as source material only.
 
-Absences future work must not fabricate: there are no testimonials, no named references, no pricing, and no third-party benchmarks on this site.
+Absences future work must not fabricate: there is no pricing and there are no third-party benchmarks on this site. References must remain verbatim and attributable to the published source.
 
 ## Product Principles
 

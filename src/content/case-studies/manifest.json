@@ -14,13 +14,6 @@
     "ogImage": "/images/truist/1771246115132-cd678175.png"
   },
   {
-    "slug": "upwave",
-    "title": "Upwave",
-    "description": "0 → 1M users in 8 months · Turner internal venture · Webby nomination",
-    "accent": "#f26522",
-    "ogImage": "/images/upwave/upwave-homepage-desktop-mobile.webp"
-  },
-  {
     "slug": "sparks-grove",
     "title": "Sparks Grove: Delta Air Lines",
     "description": "$4.7M in new business · Delta News Hub · National Impact Award",
@@ -28,18 +21,11 @@
     "ogImage": "/images/sparks-grove/news-hub.jpg"
   },
   {
-    "slug": "two-way-tv",
-    "title": "Two Way TV",
-    "description": "Founding team · UK's first multiplayer TV service · Challenge TV network",
-    "accent": "#00c2e0",
-    "ogImage": "/images/two-way-tv/fruity4some.png"
-  },
-  {
-    "slug": "felix",
-    "title": "Felix the Cat's Giant Electronic Comic Book",
-    "description": "Interactive comic & edutainment · Designer & producer · CD-i & PC CD-ROM",
-    "accent": "#1e4db7",
-    "ogImage": "/images/felix/cover.webp"
+    "slug": "upwave",
+    "title": "Upwave",
+    "description": "0 → 1M users in 8 months · Turner internal venture · Webby nomination",
+    "accent": "#f26522",
+    "ogImage": "/images/upwave/upwave-homepage-desktop-mobile.webp"
   },
   {
     "slug": "fusionfall",
@@ -56,10 +42,24 @@
     "ogImage": "/images/cnn/magic-wall-election-interaction.jpg"
   },
   {
+    "slug": "two-way-tv",
+    "title": "Two Way TV",
+    "description": "Founding team · UK's first multiplayer TV service · Challenge TV network",
+    "accent": "#00c2e0",
+    "ogImage": "/images/two-way-tv/fruity4some.png"
+  },
+  {
     "slug": "armchair-manager",
     "title": "Armchair Manager Football",
     "description": "Live fantasy sports · Interactive television · BAFTA nomination",
     "accent": "#009b3a",
     "ogImage": "/images/armchair-manager/title-screen.webp"
+  },
+  {
+    "slug": "felix",
+    "title": "Felix the Cat's Giant Electronic Comic Book",
+    "description": "Interactive comic & edutainment · Designer & producer · CD-i & PC CD-ROM",
+    "accent": "#1e4db7",
+    "ogImage": "/images/felix/cover.webp"
   }
 ]

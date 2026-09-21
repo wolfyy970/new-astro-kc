@@ -10,5 +10,5 @@ export const INTERACTIVE_PENS = {
   yellowWord: "Yellow",
   greenWord: "green",
   betweenYellow: " highlight opens an in page note; ",
-  afterGreen: " opens with a link to the project.",
+  afterGreen: " opens a case study.",
 } as const;

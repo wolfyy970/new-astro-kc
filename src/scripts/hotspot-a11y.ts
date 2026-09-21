@@ -25,7 +25,11 @@ export function syncAllHotspotDefaultControls(): void {
     .forEach(syncHotspotDefaultControls);
 }
 
-/** Collapsed margin notes are hidden from AT and inert so focus cannot enter. */
+/**
+ * Keeps off-screen margin notes out of the accessibility tree. Visible notes
+ * call this with `false` so their controls can be used without first toggling
+ * the matching highlighted term.
+ */
 export function setAnnotationInert(el: HTMLElement, hidden: boolean): void {
   el.setAttribute("aria-hidden", hidden ? "true" : "false");
   el.inert = hidden;

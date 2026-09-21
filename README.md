@@ -22,6 +22,9 @@ High-fidelity Design Leadership Portfolio built with Astro 7. This project demon
 - **Brand-Accurate Case Study Theming:** Each case study is its client's environment — Delta reads as Delta, Truist as Truist. `CaseStudyLayout` takes the page's `accent` and a validated server-side utility (`src/utils/color.ts`) derives `--accent`, `--accent-rgb`, `--accent-contrast` and `--accent-ink`, applied as an inline body style so brand colours can never bleed between pages regardless of CSS bundle order. `--accent-ink` darkens a brand only as far as legibility requires, so a light brand can set 11px type without dropping under AA.
 - **Data-Driven Case Studies:** Content-separated architecture — each study is a self-contained `<slug>.json` file; a dispatcher component (`CaseStudySection.astro`) switches on a `type` field to render the correct layout composition. Adding a new case study or a new section type requires no changes to existing pages.
 - **Context-Preserving Project Navigation:** Returning from a case study restores the exact résumé position and reopens the note the reader left from — margin, bound-in, or sheet, per the current tier — including its carousel frame, when the browser cache does not retain them.
+- **Shared site navigation:** A single sticky rail connects the résumé, reverse-chronological Work index, Projects & Writing collection, References, and every case study, with active state, skip link, theme control, and context-preserving return to the résumé.
+- **Independent work and writing:** `/projects` presents Designer, forthcoming Org Chart Studio and Unreel Recipes entries, and a dated index linked to KC's _horizon_ publication on Substack. `/references` presents eight validated testimonials.
+- **Downloadable résumé:** The masthead action directly beneath KC's name downloads the maintained PDF at `/downloads/KC-Wolff-Ingham-Resume.pdf` with a native browser download hint.
 
 ## Quick Start
 
@@ -46,3 +49,9 @@ npm run quality # Run the complete pre-deployment gate
 - [**ARCHITECTURE.md**](./ARCHITECTURE.md) — Technical design, modular interactive engines, and data flow.
 - [**DESIGN.md**](./DESIGN.md) — The visual system: palette doctrine, type roles, layout rules, components. Machine-readable tokens in the frontmatter.
 - [**DOCUMENTATION.md**](./DOCUMENTATION.md) — Meta-documentation philosophy and maintenance rules.
+
+### Internal source records
+
+- [**KC_Wolff-Ingham_Career_Toolkit.md**](./KC_Wolff-Ingham_Career_Toolkit.md) — private job-search source material; not a recruiter-facing document.
+- [**asset-quarantine/README.md**](./asset-quarantine/README.md) — reversible record of media removed from deployment.
+- [**FusionFall image sources**](./src/content/case-studies/fusionfall-sources.md) — attribution record for the case-study imagery.

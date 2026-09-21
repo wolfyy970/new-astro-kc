@@ -117,6 +117,16 @@ describe("NoteEngine", () => {
       expect(overlay.classList.contains(CLS_OPEN)).toBe(true);
     });
 
+    it("keeps the case-study gateway actionable on the first click", () => {
+      window.innerWidth = 375;
+      hotspot.click();
+
+      const link = popoverEl.querySelector<HTMLAnchorElement>(".popover-link");
+      expect(link?.getAttribute("href")).toBe("https://example.com");
+      expect(link?.classList.contains("gateway-link")).toBe(true);
+      expect(popoverEl.querySelector(".popover-carousel-nav")).toBeNull();
+    });
+
     it("is idempotent when initialized more than once", () => {
       initPopoverEngine(mockData);
       initPopoverEngine(mockData);

@@ -99,9 +99,7 @@ export function dateRangeLines(dates: string): DateRangeLines {
   return { start: startStr, end: endStr };
 }
 
-/**
- * @deprecated Prefer {@link dateRangeLines} for the two-line rail.
- */
+/** Legacy one-line formatter retained for callers outside the current rail. */
 export function dateSpan(dates: string): string {
   const { start, end } = dateRangeLines(dates);
   if (!end) return start;
@@ -109,15 +107,13 @@ export function dateSpan(dates: string): string {
   return `${start}–${end}`;
 }
 
-/**
- * @deprecated Prefer {@link dateRangeLines}.
- */
+/** Legacy start-only formatter retained for callers outside the current rail. */
 export function dateStart(dates: string): string {
   return dateRangeLines(dates).start;
 }
 
-/** @deprecated Use {@link dateSpan} */
+/** Legacy alias for {@link dateSpan}. */
 export const yearSpan = dateSpan;
 
-/** @deprecated Use {@link dateStart} */
+/** Legacy alias for {@link dateStart}. */
 export const startYear = dateStart;

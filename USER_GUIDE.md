@@ -32,7 +32,7 @@ The project uses **Vitest** with a **jsdom** environment for unit testing core l
 
 ## Deployment
 
-The project is configured for **manual production deployment** to Vercel via the CLI. Git-based auto-deployment is disabled to maintain strict release control.
+Production releases are made explicitly through the Vercel CLI in this repository. Whether a Vercel project also has a Git integration is a dashboard setting; do not infer it from the repository. Use the CLI command below for a deliberate production release.
 
 1. **Production Manual Push:**
 
@@ -85,6 +85,11 @@ aspect ratio:
 - **Popovers:** Before serializing note data to the client, `index.astro` asks
   Astro's image service for WebP URLs constrained inside a 600×400 bounding box
   and retains the returned dimensions.
+- **Brand marks:** Resume note lead frames use local, web-ready copies of the
+  supplied Delta, Truist, NAPA, Genuine Parts Company, and historical Upwave
+  marks under `public/images/brands/`. The Upwave source is converted to a
+  browser-safe PNG while preserving the supplied artwork; replace a mark only
+  with a verified source asset, not a hand-drawn approximation.
 - **Asset quarantine:** Tracked images with no source, content, CSS, or manifest reference live under `asset-quarantine/images/`, preserving their former project grouping. The directory sits outside `public`, so quarantined files are not deployed. It exists as a reversible holding area until browser verification confirms those assets can be deleted.
 
 ### Source Material Library
@@ -142,13 +147,14 @@ Popover data is stored in `src/content/popovers.json`.
 - Media support:
   - `img` (string): For a single legacy image string payload.
   - `media` (array of strings): Use this for rich media (both `.jpg`/`.png` and `.mp4`/`.webm`). If multiple paths are provided, it creates an interactive swipeable carousel containing images and looping videos.
+  - Brand-first media: use a local SVG or raster logo as the first `media` item when a note should open on a legible client mark while keeping the supporting evidence available to the carousel. Single-image notes can use the logo as `img`.
   - `brandMark` and `brandMarkAlt`: Optional issuer's mark for an archival artifact that does not identify its issuer visually. It renders as a small device on the note's label line, on every surface — margin, bound-in, and sheet.
 
 ## Feature Flags
 
 ### Case Study Links (`CASE_STUDY_LINKS`)
 
-Controls which case study pages are linked from popover cards and margin annotations. Filtering is applied server-side — the client never receives links to pages that are not yet enabled.
+Controls which case study pages are linked from popover cards, margin annotations, and the Work index. Filtering is applied server-side — the client never receives links to pages that are not yet enabled.
 
 Set the variable in your `.env` file or Vercel Dashboard:
 
@@ -169,14 +175,20 @@ CASE_STUDY_LINKS=truist,sparks-grove
 - **`true` (case-insensitive):** Show all case study links regardless of slug list.
 - **Comma-separated slugs:** Show only the listed slugs (path segment after the leading `/`). Matching is case-insensitive.
 - **Empty or absent:** All case study links are hidden (safe default while authoring).
-- **Scope:** Affects the `link`/`linkText` fields in `popovers.json` entries only. The case study pages themselves remain accessible directly.
+- **Scope:** Affects the `link`/`linkText` fields in `popovers.json` entries and the `/work` index. The case study pages themselves remain accessible directly.
 - **Adding a new slug:** When you add a new case study page at `/my-project`, either set `CASE_STUDY_LINKS=true` or append `my-project` to the list.
 
 ## CSS Type Scale
 
-The résumé uses semantic CSS custom properties (`--type-editorial`, `--type-h2` through `--type-h5`, `--type-body`, `--type-meta`, `--type-year`, `--type-stat`, …) defined in `src/styles/tokens.css`, alongside the shared palette and font stacks — the login gate consumes the scale but does not import `global.css`, so it has to live in the shared layer. The case-study subsystem uses a parallel `--cs-*` scale in `src/styles/case-study.css`.
+Every public surface uses semantic CSS custom properties defined in `src/styles/tokens.css`: `--type-page-title` for collection indexes, `--type-hero-title` for case-study heroes, `--type-title-page` for résumé/login/catalog identity, `--type-heading-2` through `--type-heading-4` for descending section and item hierarchy, `--type-quote-lead`/`--type-quote` for references, and the body/meta/year/stat roles. The tokens are shared by the résumé, Work, Projects & Writing, References, case studies, login gate, and design catalog, so a page chooses a role instead of inventing a local clamp. The case-study subsystem maps its component roles to these shared tokens in `src/styles/case-study.css`.
 
 **The rule:** never write a `font-size` pixel value directly on an element — use the appropriate token, and override only the `:root` variables inside a breakpoint block. See `ARCHITECTURE.md` for the full scale table.
+
+## Independent work and references
+
+- Edit `src/content/projects-writing.json` for the published Designer project, forthcoming Org Chart Studio and Unreel Recipes entries, the public Substack link, and dated writing links. The schema requires exactly three project records and validates every Designer-related writing slug.
+- Edit `src/content/references.json` only when the published testimonial source changes. It records the source URL and eight verbatim references; the `/references` page renders the first as the feature and the remainder as numbered cards.
+- The résumé download is the checked-in file at `public/downloads/KC-Wolff-Ingham-Resume.pdf`. Replace it deliberately when the source résumé changes, then run `npm run quality` so the static asset is included in the production build.
 
 ## Adding Case Studies
 

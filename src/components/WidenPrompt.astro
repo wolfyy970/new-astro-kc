@@ -1,0 +1,206 @@
+---
+// A desktop-only cue for readers whose window is too narrow to show the
+// marginalia columns. The behavior lives in scripts/widen-prompt.ts so it can
+// share the real breakpoints and be exercised without rendering Astro.
+---
+
+<div
+  id="widen-prompt"
+  class="widen-prompt"
+  role="status"
+  aria-live="polite"
+  aria-hidden="true"
+>
+  <span class="widen-prompt-icon" aria-hidden="true">
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.7"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <polyline class="widen-chevron-left" points="9 7 4 12 9 17"></polyline>
+      <polyline class="widen-chevron-right" points="15 7 20 12 15 17"
+      ></polyline>
+    </svg>
+  </span>
+  <span class="widen-prompt-text">
+    <span class="widen-prompt-label" aria-hidden="false"
+      >Widen to reveal margin notes</span
+    >
+    <span class="widen-prompt-done" aria-hidden="true">Margin notes ready</span>
+  </span>
+  <span class="widen-prompt-track" aria-hidden="true">
+    <span class="widen-prompt-fill"></span>
+  </span>
+</div>
+
+<style>
+  .widen-prompt {
+    --widen-progress: 0;
+    position: fixed;
+    top: calc(var(--site-nav-height) + 14px);
+    left: 50%;
+    z-index: 1100;
+    display: flex;
+    visibility: hidden;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 16px;
+    border: 1px solid var(--doc-rule);
+    border-radius: var(--radius-chrome);
+    background: var(--doc-white);
+    background: color-mix(in srgb, var(--doc-white) 82%, transparent);
+    box-shadow: var(--shadow-chrome);
+    color: var(--doc-heading);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -10px);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    transition:
+      opacity var(--duration-medium) ease,
+      visibility var(--duration-medium) ease,
+      transform var(--duration-medium) var(--ease-move);
+  }
+
+  .widen-prompt.is-visible {
+    visibility: visible;
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  .widen-prompt.is-done {
+    background: var(--doc-heading);
+    color: var(--doc-white);
+  }
+
+  .widen-prompt.is-complete {
+    visibility: hidden;
+    opacity: 0;
+    transform: translate(-50%, -10px);
+  }
+
+  .widen-prompt-icon {
+    display: flex;
+    flex: none;
+  }
+
+  .widen-prompt-icon polyline {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .widen-chevron-left {
+    animation: widen-chevron-left 3.8s ease-in-out 700ms infinite;
+  }
+
+  .widen-chevron-right {
+    animation: widen-chevron-right 3.8s ease-in-out 700ms infinite;
+  }
+
+  .is-done .widen-prompt-icon polyline {
+    animation: none;
+  }
+
+  @keyframes widen-chevron-left {
+    0%,
+    18%,
+    100% {
+      opacity: 0.7;
+      transform: translateX(0);
+    }
+    8% {
+      opacity: 1;
+      transform: translateX(-2px);
+    }
+  }
+
+  @keyframes widen-chevron-right {
+    0%,
+    18%,
+    100% {
+      opacity: 0.7;
+      transform: translateX(0);
+    }
+    8% {
+      opacity: 1;
+      transform: translateX(2px);
+    }
+  }
+
+  .widen-prompt-text {
+    display: grid;
+  }
+
+  .widen-prompt-label,
+  .widen-prompt-done {
+    grid-area: 1 / 1;
+    font-family: var(--mono);
+    font-size: var(--type-meta);
+    font-weight: 500;
+    letter-spacing: var(--type-label-spacing);
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: opacity var(--duration-fast) ease;
+  }
+
+  .widen-prompt-done {
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .is-done .widen-prompt-label {
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .is-done .widen-prompt-done {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .widen-prompt-track {
+    width: 54px;
+    height: 2px;
+    flex: none;
+    overflow: hidden;
+    background: var(--doc-rule);
+    transition: opacity var(--duration-fast) ease;
+  }
+
+  .widen-prompt-fill {
+    display: block;
+    width: calc(var(--widen-progress) * 100%);
+    height: 100%;
+    background: var(--doc-heading);
+  }
+
+  .is-done .widen-prompt-track {
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  @media (hover: none), (pointer: coarse), (max-width: 600px) {
+    .widen-prompt {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .widen-prompt,
+    .widen-prompt-label,
+    .widen-prompt-done,
+    .widen-prompt-track {
+      transition: none;
+    }
+
+    .widen-prompt-icon polyline {
+      animation: none;
+      opacity: 1;
+    }
+  }
+</style>

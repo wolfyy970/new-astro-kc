@@ -2,7 +2,9 @@
 import { getImage } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import EditionNote from "../components/EditionNote.astro";
+import Icon from "../components/Icon.astro";
 import SmilePortrait from "../components/SmilePortrait.astro";
+import WidenPrompt from "../components/WidenPrompt.astro";
 import resumeRaw from "../content/resume.json";
 import popoversRaw from "../content/popovers.json";
 import { popoverMapSchema, resumeSchema } from "../content/schema";
@@ -35,7 +37,10 @@ const summaryParagraphs = resume.summary.split("\n\n");
 <BaseLayout
   title={resume.displayName}
   description="Design leadership by KC Wolff-Ingham. Senior product design leader with 30 years spanning banking, health tech, and media."
+  navSection="resume"
 >
+  <WidenPrompt />
+
   <!-- ═══════ MASTHEAD — the cover ═══════ -->
   <!-- Full-bleed ink field; the document emerges on light stock below it. -->
   <header class="masthead">
@@ -45,6 +50,17 @@ const summaryParagraphs = resume.summary.split("\n\n");
            curtails the rule. It stops where the figure's column begins. -->
       <div class="masthead-head">
         <h1 class="masthead-name">{resume.displayName}</h1>
+        <div class="masthead-document-actions" aria-label="Résumé download">
+          <a
+            class="masthead-download"
+            href="/downloads/KC-Wolff-Ingham-Resume.pdf"
+            download="KC Wolff-Ingham Resume.pdf"
+            aria-label="Download KC Wolff-Ingham résumé as a PDF"
+          >
+            <span class="masthead-download-label">Download résumé</span>
+            <Icon name="download" size={17} class="masthead-download-icon" />
+          </a>
+        </div>
         <SmilePortrait />
         <div class="masthead-rule"></div>
       </div>

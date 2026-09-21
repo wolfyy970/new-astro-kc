@@ -14,10 +14,12 @@ import {
   initResumeReturnTracking,
   restoreResumeReturnView,
 } from "./return-to-resume.ts";
+import { initWidenPrompt } from "./widen-prompt.ts";
 import { CLS_VISIBLE, REVEAL_THRESHOLD, SEL_REVEAL } from "./constants.ts";
 
 function bootResumeInteractions(popovers: PopoverMap): () => void {
   const stopReturnTracking = initResumeReturnTracking();
+  const stopWidenPrompt = initWidenPrompt();
   document.documentElement.classList.add("js-reveal");
 
   const revealObserver = new IntersectionObserver(
@@ -32,10 +34,16 @@ function bootResumeInteractions(popovers: PopoverMap): () => void {
     .querySelectorAll(SEL_REVEAL)
     .forEach((element) => revealObserver.observe(element));
 
+  // Bind the sheet router immediately. The sheet owns the reader's first
+  // actionable controls (carousel chevrons, dots, and case-study gateway),
+  // so putting it behind two animation frames made those controls inert in
+  // background tabs and during a slow first paint. Margin layout can wait for
+  // the next frame; the interaction contract cannot.
+  initPopoverEngine(popovers);
+
   let innerFrame = 0;
   const outerFrame = requestAnimationFrame(() => {
     innerFrame = requestAnimationFrame(() => {
-      initPopoverEngine(popovers);
       initAnnotationEngine(popovers);
       restoreResumeReturnView();
     });
@@ -46,6 +54,7 @@ function bootResumeInteractions(popovers: PopoverMap): () => void {
     cancelAnimationFrame(innerFrame);
     revealObserver.disconnect();
     stopReturnTracking();
+    stopWidenPrompt();
     cleanupPopoverEngine();
     cleanupAnnotations();
   };

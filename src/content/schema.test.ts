@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import resume from "./resume.json";
 import popovers from "./popovers.json";
+import references from "./references.json";
+import projectsWriting from "./projects-writing.json";
 import manifest from "./case-studies/manifest.json";
 import truist from "./case-studies/truist.json";
 import upwave from "./case-studies/upwave.json";
@@ -15,6 +17,8 @@ import {
   popoverMapSchema,
   manifestSchema,
   caseStudyDataSchema,
+  referencesSchema,
+  projectsWritingSchema,
 } from "./schema";
 
 describe("content schemas — real data conforms", () => {
@@ -28,6 +32,14 @@ describe("content schemas — real data conforms", () => {
 
   it("manifest.json matches manifestSchema", () => {
     expect(manifestSchema.safeParse(manifest).success).toBe(true);
+  });
+
+  it("references.json matches referencesSchema", () => {
+    expect(referencesSchema.safeParse(references).success).toBe(true);
+  });
+
+  it("projects-writing.json matches projectsWritingSchema", () => {
+    expect(projectsWritingSchema.safeParse(projectsWriting).success).toBe(true);
   });
 
   it.each([
@@ -48,6 +60,57 @@ describe("content schemas — reject malformed data", () => {
   it("rejects a popover missing the required `text` field", () => {
     const bad = { k: { label: "x" } };
     expect(popoverMapSchema.safeParse(bad).success).toBe(false);
+  });
+
+  it("rejects impossible writing dates before Intl formatting can crash", () => {
+    const bad = {
+      ...projectsWriting,
+      writing: projectsWriting.writing.map((entry, index) =>
+        index === 0 ? { ...entry, date: "2026-02-31" } : entry,
+      ),
+    };
+    expect(projectsWritingSchema.safeParse(bad).success).toBe(false);
+  });
+
+  it("requires exactly one published project for the projects page", () => {
+    const forthcoming = { state: "forthcoming", title: "Later", note: "Soon" };
+    const twoPublished = {
+      ...projectsWriting,
+      projects: [
+        projectsWriting.projects[0],
+        projectsWriting.projects[0],
+        forthcoming,
+      ],
+    };
+    expect(projectsWritingSchema.safeParse(twoPublished).success).toBe(false);
+
+    const noPublished = {
+      ...projectsWriting,
+      projects: [forthcoming, forthcoming, forthcoming],
+    };
+    expect(projectsWritingSchema.safeParse(noPublished).success).toBe(false);
+  });
+
+  it("keeps the named resume notes on a readable brand-mark first frame", () => {
+    const expected = {
+      merger: "/images/brands/truist.svg",
+      magicwall: "/images/brands/cnn.svg",
+      "rts-award": "/images/brands/cnn-com.svg",
+      fusionfall: "/images/brands/cartoon-network-original.svg",
+      ar: "/images/brands/nba-original.svg",
+      upwave: "/images/brands/upwave-original.png",
+    } as const;
+
+    Object.entries(expected).forEach(([key, path]) => {
+      const media = popovers[key as keyof typeof expected].media;
+      expect(media?.[0]).toBe(path);
+    });
+    expect(popovers.delta.img).toBe("/images/brands/delta-official.png");
+    expect(popovers["truist-products"].img).toBe("/images/brands/truist.svg");
+    expect(popovers["gpc-revenue"].brandMark).toBe("/images/brands/napa.svg");
+    expect(popovers.bolt.img).toBe("/images/brands/gpc.svg");
+    expect(popovers.agentic.media?.[0]).toBe("/images/brands/napa.svg");
+    expect(popovers.emmy.img).toBe("/images/brands/conan.svg");
   });
 
   it("rejects a resume missing a required top-level field", () => {
@@ -157,5 +220,17 @@ describe("content schemas — reject malformed data", () => {
         { title: "x", description: "y", accent: "#000000", ogImage: "/a.png" },
       ]).success,
     ).toBe(false);
+  });
+
+  it("rejects a project whose related writing does not exist", () => {
+    const published = projectsWriting.projects[0];
+    const bad = {
+      ...projectsWriting,
+      projects: [
+        { ...published, relatedWriting: ["not-in-the-archive"] },
+        ...projectsWriting.projects.slice(1),
+      ],
+    };
+    expect(projectsWritingSchema.safeParse(bad).success).toBe(false);
   });
 });

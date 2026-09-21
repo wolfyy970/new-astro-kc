@@ -15,6 +15,8 @@ import type {
   caseStudyStatItemSchema,
   caseStudySectionSchema,
   caseStudyDataSchema,
+  referencesSchema,
+  projectsWritingSchema,
 } from "../content/schema.ts";
 
 type AuthoredPopoverData = z.infer<typeof popoverDataSchema>;
@@ -38,3 +40,5 @@ export type CaseStudyPhotoItem = z.infer<typeof caseStudyPhotoItemSchema>;
 export type CaseStudyStatItem = z.infer<typeof caseStudyStatItemSchema>;
 export type CaseStudySectionData = z.infer<typeof caseStudySectionSchema>;
 export type CaseStudyData = z.infer<typeof caseStudyDataSchema>;
+export type ReferencesData = z.infer<typeof referencesSchema>;
+export type ProjectsWritingData = z.infer<typeof projectsWritingSchema>;

@@ -1,0 +1,77 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import manifestRaw from "../content/case-studies/manifest.json";
+import { manifestSchema } from "../content/schema";
+import { isCaseStudyLinkEnabled } from "../utils/feature-flags";
+import { publicImageSize } from "../utils/image-size";
+import "../styles/work-index.css";
+
+const studies = await Promise.all(
+  manifestSchema
+    .parse(manifestRaw)
+    .filter((study) => isCaseStudyLinkEnabled(study.slug))
+    .map(async (study) => ({
+      ...study,
+      imageSize: (await publicImageSize(study.ogImage)) ?? {
+        width: 1200,
+        height: 750,
+      },
+    })),
+);
+---
+
+<BaseLayout
+  title="Work — KC Wolff-Ingham"
+  description="Selected case studies from KC Wolff-Ingham's design leadership portfolio."
+  navSection="work"
+>
+  <main class="work-index" id="main-content">
+    <header class="work-index-header">
+      <p class="work-index-kicker">Case studies</p>
+      <h1 class="work-index-title">Work</h1>
+    </header>
+
+    {
+      studies.length > 0 ? (
+        <ol class="work-grid" aria-label="Case studies">
+          {studies.map((study, index) => (
+            <li class:list={["work-item", { "work-item--lead": index === 0 }]}>
+              <a
+                class="work-card"
+                href={`/${study.slug}`}
+                style={`--work-accent: ${study.accent}`}
+              >
+                <figure class="work-card-media">
+                  <img
+                    src={study.ogImage}
+                    alt=""
+                    width={study.imageSize.width}
+                    height={study.imageSize.height}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    decoding="async"
+                  />
+                </figure>
+                <div class="work-card-copy">
+                  <span class="work-card-index" aria-hidden="true">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <h2>{study.title}</h2>
+                  <p>{study.description}</p>
+                  <span class="work-card-action">
+                    Read case study <span aria-hidden="true">→</span>
+                  </span>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <p class="work-index-empty">No case studies are published yet.</p>
+      )
+    }
+  </main>
+
+  <footer class="work-index-footer">
+    <p>&copy; 2026 KC Wolff-Ingham</p>
+  </footer>
+</BaseLayout>

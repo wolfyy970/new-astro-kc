@@ -18,14 +18,14 @@ signals, and removes only its own dead lock. Recovery commands belong in
 
 ### Layouts
 
-- **BaseLayout.astro:** Used for the main interactive resume. Renders the shared `<BaseHead />` and sets up the popover overlay infrastructure.
-- **CaseStudyLayout.astro:** Used for individual case study pages. Adds context-preserving back navigation and per-page accent theming, and renders the same `<BaseHead />`.
+- **BaseLayout.astro:** Used for the résumé, Work index, Projects & Writing, References, and internal design catalog. Renders the shared `<BaseHead />` and `<SiteNav />`; callers identify the active primary section.
+- **CaseStudyLayout.astro:** Used for individual case study pages. Renders the same `<SiteNav />` with Work active, preserves context when its Résumé link returns to the annotated document, and applies per-page accent theming.
 - **BaseHead.astro:** Shared `<head>` partial (charset/viewport/title, `robots: noindex`, Open Graph + Twitter tags, favicon, fonts via `<HeadFonts />`, and the theme `<ThemeScript />`) used by both layouts so the document head can't drift between them.
 - **Theme wash:** `ThemeScript` wraps the edition flip in a View Transition when the API exists: it records the toggle's live centre into `--wash-x/-y`, and the THEME WASH block in `controls.css` reveals the new edition's snapshot through a growing SVG blob mask pinned to that point (keyframes move `mask-position` by exactly half of `mask-size` on the same easing, so the centre never drifts). The blob's paths carry embedded SMIL animations, so the edge undulates while it blooms; browsers that freeze SVG animation in masks get the same bloom with a static edge, reduced motion gets the API's default crossfade, and no API means the original instant switch.
 
 ### Content Flow
 
-1. **JSON Files:** `resume.json` and `popovers.json` act as the "database."
+1. **JSON Files:** `resume.json` and `popovers.json` act as the résumé database; `projects-writing.json`, `references.json`, and `case-studies/manifest.json` back the public indexes.
 2. **Feature Flags (`src/utils/feature-flags.ts`):** `applyFeatureFlags` strips `link`/`linkText` from any popover whose case study page is not enabled in `CASE_STUDY_LINKS`. This runs server-side in `index.astro` before data is serialised to `window.__POPOVERS__`, so the client never receives links to unpublished pages.
 3. **Page Templates:** `src/pages/index.astro` reads the JSON data, optimizes popover images, then applies feature flags before serializing the final map to the client.
 4. **Hotspot Processing:** one `createHotspotRenderer(popovers)` instance converts `<hotspot>` tags into interactive spans. Every term gets an underline; only an enabled project-backed term gets the superscript Tabler Notes icon and “Case study” hint.
@@ -68,6 +68,7 @@ Manages the "magazine-style" margin content:
 - **Cold-Start Intro Annotation:** When the engine initializes at wide screen and no hotspots are immediately in the viewport, `margin-intro.ts` mounts the same static introduction as the editor's note — label, two note-size sentences, and yellow/green specimens — in the left margin. It is decorative (`aria-hidden`); keyboard and screen-reader readers are taught by the genuinely accessible marked terms instead. The annotation engine owns when this vignette mounts and dissolves.
 - **The payoff conversation (`intro-payoff.ts`):** retained as a tested module; not currently mounted in the live introductions.
 - **Resize tier handling:** A debounced `resize` handler builds annotations on entering the wide tier (≥1420px) and tears them down on leaving it.
+- **Desktop width discovery:** `WidenPrompt.astro` supplies the fixed status UI and `widen-prompt.ts` owns its resize/pointer lifecycle. It appears only on resize-capable desktops below the wide tier, derives progress from the shared `BREAKPOINT_MOBILE` and `BREAKPOINT_WIDE` constants, confirms the threshold crossing, and returns a disposer to `main.ts` so listeners and timers do not accumulate during hot reloads.
 - **The threshold is derived, not chosen:** `BREAKPOINT_WIDE` = 880 (sheet) + 2 × (42 gutter + 220 column) = 1404, rounded to 1420. The original 1460 sat just above the 1440px logical width of a 13" MacBook Air, so the feature the entire reading experience is built around was unreachable on a very common laptop no matter how the window was sized. If any of `DOC_MAX_WIDTH`, `MARGIN_COL_WIDTH` or `MARGIN_COL_GUTTER` changes, the threshold must be recomputed.
 - **Introduction below the wide tier:** `EditionNote.astro` — a static editor's note bound into the top of the sheet with the mono INTERACTIVE label and two note-size sentences wearing yellow/green specimens. The lead sentence says **Tap** below 600px and **Click** above. The note hides at ≥1420px, where the margin carries the same copy instead.
 - **The masthead portrait (`SmilePortrait.astro` + `smile-portrait.ts`):** the title page's engraving. `src/assets/smile-portrait.svg` is inlined via `?raw` so the line work takes `currentColor` (both editions ink it themselves) and the smile can be staged by class. The first pointerenter or tap adds `is-smiling` (bind-guarded, once per visit); three expression plates crossfade over 1.2s and settle forwards — the smile stays, and leaving never rewinds it. All presentation, including the two-column head grid that curtails the masthead rule, lives in global.css ("The author's portrait"). Reduced motion shows the settled smile statically.
@@ -75,29 +76,37 @@ Manages the "magazine-style" margin content:
 
 ### 3. Deterministic Type Scale
 
-Every `font-size` is driven by semantic custom properties defined once in **`src/styles/tokens.css`**. They live there rather than in `global.css` because three surfaces consume the scale — the résumé, the case studies and the login gate — and only the first two import `global.css`. While the scale lived in `global.css` the gate resolved every `--type-*` to nothing, so its input silently inherited 16px and its title collapsed to body size.
+Every `font-size` is driven by semantic custom properties defined once in **`src/styles/tokens.css`**. They live there rather than in `global.css` because every public surface consumes the scale — résumé, Work, Projects & Writing, References, case studies, login, and the internal design catalog — while only the résumé imports the résumé-specific `global.css`. Keeping the roles in the shared layer prevents the gate, indexes, and branded pages from silently inheriting unrelated local sizes.
 
-| Variable               | Role                      | Desktop        | ≤600px         | ≤380px         |
-| ---------------------- | ------------------------- | -------------- | -------------- | -------------- |
-| `--type-editorial`     | Masthead name             | clamp(40–68px) | clamp(34–44px) | clamp(30–38px) |
-| `--type-editorial-sub` | Masthead tagline          | clamp(20–23px) | 21px           | —              |
-| `--type-h2`            | Company names             | 22px           | 18px           | 17px           |
-| `--type-h3`            | Section marks (mono)      | 11px           | 10px           | —              |
-| `--type-h4`            | Job title, degree         | 17px           | 16px           | —              |
-| `--type-h5`            | School name               | 15px           | 14px           | —              |
-| `--type-body-lg`       | Lead paragraph            | 19px           | 18px           | —              |
-| `--type-body`          | Body copy                 | 17px           | 17px           | —              |
-| `--type-body-sm`       | Quotes, margin-note prose | 14px           | 14px           | —              |
-| `--type-meta`          | Mono labels               | 11px           | 11px           | —              |
-| `--type-year`          | Date rail                 | 12px           | 12px           | —              |
-| `--type-stat`          | Panel display numbers     | 34px           | 34px           | —              |
-| `--type-stat-margin`   | Margin display numbers    | 26px           | 26px           | —              |
+| Variable               | Role                          | Desktop         | ≤600px         | ≤380px         |
+| ---------------------- | ----------------------------- | --------------- | -------------- | -------------- |
+| `--type-page-title`    | Collection-page H1            | clamp(64–124px) | same           | same           |
+| `--type-hero-title`    | Case-study H1                 | clamp(48–80px)  | clamp(34–44px) | same           |
+| `--type-title-page`    | Résumé/login/catalog H1       | clamp(40–68px)  | clamp(34–44px) | clamp(30–38px) |
+| `--type-heading-2`     | Major page section            | clamp(34–44px)  | same           | same           |
+| `--type-heading-3`     | Project/article title         | clamp(24–34px)  | same           | same           |
+| `--type-heading-4`     | Company/card/subsection title | 22px            | 18px           | 17px           |
+| `--type-quote-lead`    | Featured reference            | clamp(30–52px)  | clamp(29–40px) | same           |
+| `--type-quote`         | Reference card                | clamp(23–34px)  | same           | same           |
+| `--type-editorial-sub` | Masthead tagline              | clamp(20–23px)  | 21px           | —              |
+| `--type-doc-role`      | Résumé role and degree        | 17px            | 16px           | —              |
+| `--type-doc-school`    | Résumé school                 | 15px            | 14px           | —              |
+| `--type-body-lg`       | Lead paragraph                | 19px            | 18px           | —              |
+| `--type-body`          | Body copy                     | 17px            | 17px           | —              |
+| `--type-body-sm`       | Quotes, margin-note prose     | 14px            | 14px           | —              |
+| `--type-meta`          | Mono labels                   | 11px            | 11px           | —              |
+| `--type-meta-compact`  | Narrow navigation labels      | 10px            | 10px           | —              |
+| `--type-year`          | Date rail                     | 12px            | 12px           | —              |
+| `--type-stat`          | Panel display numbers         | 34px            | 34px           | —              |
+| `--type-stat-margin`   | Margin display numbers        | 26px            | 26px           | —              |
 
 Body copy stays 17px at every viewport including 375px: the scale reduces the display, headline and title levels on small screens and deliberately does not touch the body, because reading size is not a responsive variable. The two stat steps are one role in two rooms — the panel is a fluid 480–560px focal surface, the margin a 220px aside, and the panel's 34px there out-shouted the 22px company headings beside it.
 
 **The rule:** a breakpoint overrides the `:root` variables only, never an element's `font-size`.
 
-**Shared tokens (`tokens.css`, `controls.css`).** The palette, the font stacks and the type scale live in `src/styles/tokens.css`, imported by `global.css`, `case-study.css` and `login.astro`, so no surface can drift. The floating theme toggle and the case-study back link live in `src/styles/controls.css`, shared the same way. The résumé's own layout metrics (`--doc-max-width`, `--sheet-inset`, `--margin-col-*`, `--popover-*`) and annotation state variables stay in `global.css`.
+The HTML outline and the visual scale are related but not mechanically identical. Collection and case-study pages use the H1–H4 display roles directly. The résumé's semantic `h2` section marks are intentionally set in the mono meta role because they belong to the publication apparatus; that named exception prevents a document convention from becoming an undocumented local size.
+
+**Shared tokens (`tokens.css`, `controls.css`).** The palette, the font stacks and the type scale live in `src/styles/tokens.css`, imported by `global.css`, `case-study.css` and `login.astro`, so no surface can drift. The floating theme toggle lives in `src/styles/controls.css`; the sitewide navigation rail owns the authenticated page menu. The résumé's own layout metrics (`--doc-max-width`, `--sheet-inset`, `--margin-col-*`, `--popover-*`) and annotation state variables stay in `global.css`.
 
 **Palette.** The résumé is achromatic apart from the reader's two highlighter inks, and each case study is its client's environment. That doctrine, its tokens and its contrast maths are documented once in [DESIGN.md](./DESIGN.md) and are not restated here.
 
@@ -177,6 +186,8 @@ src/content/case-studies/
   fusionfall.json
   magic-wall.json
   armchair-manager.json
+  magic-wall.json
+  bolt.json
 
 src/pages/
   truist.astro           ← thin wrapper: imports JSON, renders <CaseStudyPage cs={cs} />
@@ -205,16 +216,24 @@ src/components/case-studies/
   VideoSection.astro     ← native video with contextual heading/caption
 
 src/layouts/
-  CaseStudyLayout.astro  ← HTML shell, fonts, back nav, accent theming
+  CaseStudyLayout.astro  ← HTML shell, shared navigation, return context, accent theming
+
+src/content/
+  projects-writing.json  ← Designer, forthcoming projects, and dated Substack links
+  references.json        ← source URL and verbatim professional testimonials
+
+public/downloads/
+  KC-Wolff-Ingham-Resume.pdf ← maintained résumé artifact exposed by the masthead action
 ```
 
 **Data flows like this:**
 
-1. `manifest.json` — used by `verify-content.ts` to enumerate all studies and check image paths at build time. Also available for future nav/listing components.
+1. `manifest.json` — the reverse-chronological source for the `/work` index and the build verifier's canonical case-study inventory. The Work page filters it through the same `CASE_STUDY_LINKS` gate as the green résumé links, so unpublished studies cannot leak through the index.
 2. `truist.json` (etc.) — imported directly by the page file. Contains `meta`, `hero`, `context`, and an ordered `sections` array.
 3. `truist.astro` — imports its JSON and renders `<CaseStudyPage cs={cs} />`. Nothing else.
 4. `CaseStudyPage.astro` — validates the study against `caseStudyDataSchema` (zod) at the boundary, then composes `CaseStudyLayout` (`meta` + `accent`), `CaseStudyHero` (spread `{...cs.hero}`, which subsumes both the image and background hero variants), `ContextGrid` (`cs.context`), and maps `cs.sections` through `CaseStudySection`.
 5. `CaseStudySection.astro` — reads `section.type`, applies the shared `bg`/`darkBg` wrapper, and delegates specialized variants to their focused renderer components.
+6. `projects-writing.json` and `references.json` are parsed at the page boundary by their strict schemas; the collection pages do not share résumé hotspot state and therefore remain ordinary server-rendered index surfaces.
 
 #### Section Type Catalog
 
@@ -354,13 +373,14 @@ The same hazard applied to `theme-light`/`theme-dark`, which were simultaneously
   - `src/scripts/icons.ts`: client-side Tabler SVG wrappers for note chrome (close, carousel, play).
   - `src/utils/render.ts`: Hotspot-to-span transformation, project-aware case-study markers, accurate accessible labels for marginalia-only versus project-backed terms, and feature-flag-aware rendering.
   - `src/utils/feature-flags.ts`: Slug parsing, `isCaseStudyLinkEnabled`, and `applyFeatureFlags` immutability.
-  - `src/content/schema.ts`: the zod content schemas, parsed against the real `resume.json`/`popovers.json`/`manifest.json`/case-study JSON plus negative (malformed) cases.
+  - `src/content/schema.ts`: the zod content schemas, parsed against the real `resume.json`/`popovers.json`/`manifest.json`/`projects-writing.json`/`references.json`/case-study JSON plus negative (malformed) cases, including calendar dates and the one-published-project invariant.
   - `src/middleware.ts`: the auth gate — `/login` and static-asset bypass, fail-closed `503`, redirect on missing/incorrect cookie, the length-mismatch guard around `timingSafeEqual`, and security-header injection.
   - `src/scripts/annotation-engine.ts`: side assignment, intro mount/dismiss timing, margin carousels surviving expansion without a rebuild, and the resize state machine (build on entering the wide tier, tear down on leaving; `resetAnnotationState` preserves the resize listener while `cleanupAnnotations` aborts it).
   - `src/scripts/margin-intro.ts`: cold-start margin intro DOM — static copy shared with the edition note.
   - `src/scripts/popover-engine.ts`: the three-tier routing (margin unfold, bound-in note, sheet — nothing floats on desktop) and, through it, `inset-note.ts`: binding into flow and inside bullets, single-click swap between terms, scroll-away fold with jitter forgiveness and a per-open exit accumulator, Escape/outside-click/fold-control closes, sheet lifecycle with focus trap and swipe-to-dismiss (the non-modal bound-in note is exempt from trapping), and the wide tier's margin expand with wheel exit.
   - `src/scripts/note-content.ts`: shared note construction, the glance/dig split (`mediaMode`, `includeLink`), project-control placement, and accessible prose/quote structure.
   - `src/scripts/note-media.ts`: image/video construction, intrinsic media dimensions, circular carousel navigation, and nearest-slide scroll tracking.
+  - `src/scripts/main.ts`: startup ordering keeps the sheet router actionable before deferred annotation layout work.
   - `src/scripts/dom.ts`: small DOM and media-readiness primitives shared by the interaction engines.
   - `src/scripts/constants.ts`: Structural invariants — breakpoint ordering, value ranges, `VIDEO_EXTENSIONS` contents, CSS class/selector format, and swipe-gesture thresholds (`SWIPE_DISMISS_THRESHOLD`, `SWIPE_DISMISS_VELOCITY`).
   - `src/scripts/return-to-resume.ts`: same-tab project tracking, true Back behavior, stale-context rejection, and reconstruction of the saved note on whichever surface the current tier routes to (margin, bound-in, or sheet), including inner scroll and carousel frame.
@@ -368,5 +388,5 @@ The same hazard applied to `theme-light`/`theme-dark`, which were simultaneously
   - `src/scripts/password-visibility.ts`: concealed/visible state, canonical icon semantics, synchronized accessible labels, and focus retention.
   - `src/scripts/smile-portrait.ts`: the masthead portrait's one-time greeting — smiles on first pointerenter or tap, the smile survives pointerleave, and a duplicate attachment (dev hot reload) is a guarded no-op.
   - `src/components/Icon.astro`: the curated Tabler registry and direct SVG import contract that avoids transforming the library's full component barrel.
-  - `scripts/content-verifier.ts`: valid fixtures plus malformed schemas, bidirectional hotspot/note parity, manifest/JSON/page inventory drift, and public-path traversal.
+  - `scripts/content-verifier.ts`: valid fixtures plus malformed schemas, bidirectional hotspot/note parity, manifest/JSON/page inventory drift, project media and résumé-PDF checks, and public-path traversal.
   - `scripts/dev-server.ts`: Codex marker isolation and lock cleanup boundaries — owned/dead locks are removed, while live or foreign locks are preserved.

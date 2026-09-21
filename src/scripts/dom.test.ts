@@ -353,6 +353,58 @@ describe("buildContentNode", () => {
     expect(html).not.toContain("figure 1 of 1");
   });
 
+  it("centres identity frames across single and carousel media", () => {
+    const single = document.createElement("div");
+    single.appendChild(
+      buildContentNode(
+        {
+          label: "GPC",
+          text: "Identity frame.",
+          img: "/images/brands/gpc.svg",
+        },
+        "sa",
+      ),
+    );
+    expect(
+      single.querySelector(".sa-media")?.classList.contains("brand-frame"),
+    ).toBe(true);
+
+    const carousel = document.createElement("div");
+    carousel.appendChild(
+      buildContentNode(
+        {
+          label: "RTS",
+          text: "Identity frame.",
+          media: [
+            "/images/brands/cnn-com.svg",
+            "/images/awards/world-cup-twitter.png",
+          ],
+        },
+        "sa",
+      ),
+    );
+    expect(
+      carousel
+        .querySelector(".sa-carousel-slide")
+        ?.classList.contains("brand-frame"),
+    ).toBe(true);
+
+    const award = document.createElement("div");
+    award.appendChild(
+      buildContentNode(
+        {
+          label: "Apple Design Award",
+          text: "Identity frame.",
+          img: "/images/awards/apple-design-award.png",
+        },
+        "sa",
+      ),
+    );
+    expect(
+      award.querySelector(".sa-media")?.classList.contains("brand-frame"),
+    ).toBe(true);
+  });
+
   it("sets the issuer's device on the label line of every surface", () => {
     const brandedData: PopoverData = {
       label: "Apple Design Award",
@@ -534,6 +586,36 @@ describe("buildContentNode", () => {
     expect(next.style.opacity).toBe("");
     expect(prev.style.pointerEvents).toBe("");
     expect(next.style.pointerEvents).toBe("");
+  });
+
+  it("moves the strip when an embedded browser lacks scrollTo", () => {
+    const container = document.createElement("div");
+    container.appendChild(buildContentNode(richData, "sa"));
+
+    const carousel = container.querySelector(".sa-carousel") as HTMLElement;
+    const slides =
+      container.querySelectorAll<HTMLElement>(".sa-carousel-slide");
+    Object.defineProperty(carousel, "scrollTo", {
+      value: undefined,
+      configurable: true,
+    });
+    slides.forEach((slide, i) =>
+      Object.defineProperty(slide, "offsetLeft", {
+        value: i * 300,
+        configurable: true,
+      }),
+    );
+
+    container
+      .querySelector<HTMLButtonElement>(".sa-carousel-nav.next")!
+      .click();
+
+    expect(carousel.scrollLeft).toBe(300);
+    expect(
+      container
+        .querySelector('[aria-label="Go to slide 2"]')
+        ?.classList.contains("active"),
+    ).toBe(true);
   });
 
   it('should set type="button" on all dynamically created buttons (nav, dots, play)', () => {

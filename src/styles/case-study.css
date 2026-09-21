@@ -32,12 +32,12 @@
      one step off the one every other label on the site uses. */
   --cs-eyebrow: var(--type-meta);
   --cs-eyebrow-tracking: var(--type-label-spacing-wide);
-  --cs-heading: 42px;
-  --cs-body: 18px;
-  --cs-card-title: var(--type-h2);
+  --cs-heading: var(--type-heading-2);
+  --cs-body: var(--type-body);
+  --cs-card-title: var(--type-heading-4);
   --cs-card-body: var(--type-body);
-  --cs-photo-title: clamp(24px, 3vw, 36px);
-  --cs-hero-title: clamp(48px, 6vw, 80px);
+  --cs-photo-title: var(--type-heading-3);
+  --cs-hero-title: var(--type-hero-title);
   --cs-hero-subtitle: 20px;
   --cs-stat-value: clamp(40px, 5vw, 72px);
   --cs-stat-label: var(--type-meta);
