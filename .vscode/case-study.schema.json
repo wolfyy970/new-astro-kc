@@ -61,6 +61,21 @@
           "type": "string",
           "description": "Supporting paragraph beneath the title."
         },
+        "composition": {
+          "type": "string",
+          "enum": ["immersive", "product"],
+          "description": "Optional hero composition. `product` uses the product's own surface and requires an accessible brand mark."
+        },
+        "brandMark": {
+          "type": "string",
+          "pattern": "^/images/.*",
+          "description": "Product or organization mark displayed beside the title."
+        },
+        "brandMarkAlt": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Accessible name for the brand mark. Required together with brandMark."
+        },
         "image": {
           "type": "string",
           "pattern": "^/images/.*",
@@ -75,7 +90,20 @@
           "pattern": "^/images/.*",
           "description": "Full-bleed background photograph. Use either image or background, not both."
         }
-      }
+      },
+      "dependencies": {
+        "brandMark": ["brandMarkAlt"],
+        "brandMarkAlt": ["brandMark"]
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["composition"],
+            "properties": { "composition": { "const": "product" } }
+          },
+          "then": { "required": ["brandMark", "brandMarkAlt"] }
+        }
+      ]
     },
 
     "context": {
@@ -402,6 +430,11 @@
                           "caption": {
                             "type": "string",
                             "description": "Short attribution or context line below the video."
+                          },
+                          "captions": {
+                            "type": "string",
+                            "pattern": "^/",
+                            "description": "Optional WebVTT caption-track path relative to /public."
                           }
                         }
                       },

@@ -130,8 +130,37 @@ function writeValidFixture(): void {
         },
         relatedWriting: ["essay"],
       },
-      { state: "forthcoming", title: "Second", note: "Soon" },
-      { state: "forthcoming", title: "Third", note: "Soon" },
+      {
+        state: "story",
+        title: "Second",
+        note: "A published project story.",
+        href: "/second",
+        brandMark: "/images/brand.svg",
+        brandMarkAlt: "Second project mark",
+        story: validStudy,
+      },
+      {
+        state: "experiment",
+        title: "Third",
+        eyebrow: "Experiment",
+        summary: "Summary",
+        detail: "Detail",
+        liveUrl: "https://example.com/third",
+        screenshots: Array.from({ length: 4 }, (_, index) => ({
+          src: "/images/experiment.webp",
+          alt: `Screen ${index + 1}`,
+          width: 1200,
+          height: 800,
+          caption: `Caption ${index + 1}`,
+        })),
+        stirringVideo: {
+          src: "/media/stir.mp4",
+          poster: "/images/proof.png",
+          width: 1200,
+          height: 800,
+          label: "Stirring animation",
+        },
+      },
     ],
     writing: [
       {
@@ -153,13 +182,17 @@ function writeValidFixture(): void {
   const page = path.join(fixtureRoot, "src/pages/study.astro");
   mkdirSync(path.dirname(page), { recursive: true });
   writeFileSync(page, "---\n---\n");
+  writeFileSync(path.join(fixtureRoot, "src/pages/second.astro"), "---\n---\n");
 
   const image = path.join(fixtureRoot, "public/images/proof.png");
   mkdirSync(path.dirname(image), { recursive: true });
   writeFileSync(image, "");
+  writeFileSync(path.join(fixtureRoot, "public/images/brand.svg"), "<svg/>");
+  writeFileSync(path.join(fixtureRoot, "public/images/experiment.webp"), "");
   const video = path.join(fixtureRoot, "public/media/demo.mp4");
   mkdirSync(path.dirname(video), { recursive: true });
   writeFileSync(video, "");
+  writeFileSync(path.join(fixtureRoot, "public/media/stir.mp4"), "");
   const pdf = path.join(
     fixtureRoot,
     "public/downloads/KC-Wolff-Ingham-Resume.pdf",
@@ -200,6 +233,38 @@ describe("verifyContent", () => {
     );
     expect(errors).toContain(
       'Missing downloadable résumé: "public/downloads/KC-Wolff-Ingham-Resume.pdf"',
+    );
+  });
+
+  it("checks media referenced by an independent project story", () => {
+    rmSync(path.join(fixtureRoot, "public/images/proof.png"));
+
+    expect(verifyContent(fixtureRoot).errors).toContain(
+      'Missing media for projects-writing.projects[1].story hero.background: "/images/proof.png"',
+    );
+  });
+
+  it("checks project brand marks, experiment screenshots, and animation assets", () => {
+    rmSync(path.join(fixtureRoot, "public/images/brand.svg"));
+    rmSync(path.join(fixtureRoot, "public/images/experiment.webp"));
+    rmSync(path.join(fixtureRoot, "public/media/stir.mp4"));
+    const errors = verifyContent(fixtureRoot).errors;
+    expect(errors).toContain(
+      'Missing media for projects-writing.projects[1].brandMark: "/images/brand.svg"',
+    );
+    expect(errors).toContain(
+      'Missing media for projects-writing.projects[2].screenshots[0].src: "/images/experiment.webp"',
+    );
+    expect(errors).toContain(
+      'Missing media for projects-writing.projects[2].stirringVideo.src: "/media/stir.mp4"',
+    );
+  });
+
+  it("requires every linked project story to have a route", () => {
+    rmSync(path.join(fixtureRoot, "src/pages/second.astro"));
+
+    expect(verifyContent(fixtureRoot).errors).toContain(
+      'Project story "Second" links to "/second" but its page is missing',
     );
   });
 

@@ -38,7 +38,7 @@
       "darkBg": "#06351c",
       "label": "The Live Game Loop",
       "title": "Real matches became the game engine.",
-      "description": "Before kickoff, the system locked squad changes and predictions. During play, live match events updated footballer values, squad scores, and league positions. The experience connected preparation, prediction, live attention, and competition in one continuous loop.",
+      "description": "Before kickoff, the system locked squad changes and predictions. During play, live match events updated footballer values, squad scores, and league positions. The experience connected preparation, prediction, live attention, and competition in one continuous loop.",
       "cards": [
         {
           "title": "Predict the fixtures",

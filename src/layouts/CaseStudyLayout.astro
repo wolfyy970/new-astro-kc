@@ -11,9 +11,16 @@ interface Props {
   /** Brand accent color as a 6-digit hex (e.g. `"#3b1a5a"`). Falls back to the
    *  portfolio's neutral ink if omitted or invalid. */
   accent?: string;
+  navSection?: "work" | "projects";
 }
 
-const { title, description, ogImage, accent } = Astro.props;
+const {
+  title,
+  description,
+  ogImage,
+  accent,
+  navSection = "work",
+} = Astro.props;
 const accentStyle = buildAccentStyle(accent);
 ---
 
@@ -23,7 +30,7 @@ const accentStyle = buildAccentStyle(accent);
     <BaseHead title={title} description={description} ogImage={ogImage} />
   </head>
   <body style={accentStyle}>
-    <SiteNav current="work" resumeBack />
+    <SiteNav current={navSection} resumeBack={navSection === "work"} />
 
     <main id="main-content">
       <slot />

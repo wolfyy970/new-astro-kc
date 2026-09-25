@@ -152,8 +152,28 @@ const caseStudyImageHeroSchema = z
     ...heroBaseShape,
     image: imagePathSchema,
     imageAlt: nonEmptyString,
+    composition: z.enum(["immersive", "product"]).optional(),
+    brandMark: imagePathSchema.optional(),
+    brandMarkAlt: nonEmptyString.optional(),
   })
-  .strict();
+  .strict()
+  .superRefine((hero, context) => {
+    if (Boolean(hero.brandMark) !== Boolean(hero.brandMarkAlt)) {
+      context.addIssue({
+        code: "custom",
+        message: "brandMark and brandMarkAlt must be provided together",
+        path: [hero.brandMark ? "brandMarkAlt" : "brandMark"],
+      });
+    }
+    if (hero.composition === "product" && !hero.brandMark) {
+      context.addIssue({
+        code: "custom",
+        message:
+          "Product-led case-study heroes require an accessible brand mark",
+        path: ["brandMark"],
+      });
+    }
+  });
 
 const caseStudyBackgroundHeroSchema = z
   .object({
@@ -412,6 +432,16 @@ const projectImageSchema = z
   })
   .strict();
 
+const projectScreenshotSchema = z
+  .object({
+    src: imagePathSchema,
+    alt: nonEmptyString,
+    width: z.number().int().positive(),
+    height: z.number().int().positive(),
+    caption: nonEmptyString,
+  })
+  .strict();
+
 const projectVideoSchema = z
   .object({
     src: videoPathSchema,
@@ -437,6 +467,19 @@ const publishedProjectSchema = z
   })
   .strict();
 
+const experimentProjectSchema = z
+  .object({
+    state: z.literal("experiment"),
+    title: nonEmptyString,
+    eyebrow: nonEmptyString,
+    summary: nonEmptyString,
+    detail: nonEmptyString,
+    liveUrl: webUrlSchema,
+    screenshots: z.array(projectScreenshotSchema).length(4),
+    stirringVideo: projectVideoSchema,
+  })
+  .strict();
+
 const forthcomingProjectSchema = z
   .object({
     state: z.literal("forthcoming"),
@@ -444,6 +487,30 @@ const forthcomingProjectSchema = z
     note: nonEmptyString,
   })
   .strict();
+
+const projectStorySchema = z
+  .object({
+    state: z.literal("story"),
+    title: nonEmptyString,
+    note: nonEmptyString,
+    href: nonEmptyString.regex(
+      /^\/[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      "Expected an internal project-story route",
+    ),
+    brandMark: imagePathSchema.optional(),
+    brandMarkAlt: nonEmptyString.optional(),
+    story: caseStudyDataSchema,
+  })
+  .strict()
+  .superRefine((project, context) => {
+    if (Boolean(project.brandMark) !== Boolean(project.brandMarkAlt)) {
+      context.addIssue({
+        code: "custom",
+        message: "brandMark and brandMarkAlt must be provided together",
+        path: [project.brandMark ? "brandMarkAlt" : "brandMark"],
+      });
+    }
+  });
 
 const writingEntrySchema = z
   .object({
@@ -468,6 +535,8 @@ export const projectsWritingSchema = z
       .array(
         z.discriminatedUnion("state", [
           publishedProjectSchema,
+          experimentProjectSchema,
+          projectStorySchema,
           forthcomingProjectSchema,
         ]),
       )

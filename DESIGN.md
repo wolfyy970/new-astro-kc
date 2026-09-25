@@ -169,7 +169,7 @@ The system has **two registers, and the surface decides which one applies.**
 
 The résumé is achromatic by doctrine, not by restraint. Hierarchy there is built from size, weight, leading and white space, because a document that has to argue for thirty years of judgment cannot be caught decorating itself. Colour on the sheet belongs to exactly two parties, and neither is the typographer: the photographs, which are the work, and the reader's own highlighters — translucent yellow where marginalia exists, green where a case study runs deeper. The pens are annotation, not decoration; the doctrine survives because every hue on the page still denotes something.
 
-A case study is the opposite: it is **that client's environment**. Delta reads as Delta and Truist reads as Truist. The client's brand colour drives the hero field, the dark bands, the section stock, the labels and the outcome numerals — not a quarantined accent on an otherwise neutral page. This is the register that carries the evidence, and evidence of work done for a brand should look like that brand. The achromatic rule stops at the résumé and does not travel.
+A case study is the opposite: it is **that client's environment**. Reproduce the source brand's actual hierarchy and colour roles, not a generic saturated treatment. Some brands call for a coloured hero field; others, including Org Chart Studio's Sunny Peeps system, are surface-led: neutral stock and type, a restrained identity accent, and authentic product imagery carrying the richer colour. Evidence of work done for a brand should look like that brand. The résumé's achromatic rule does not travel, but neither does a one-hex-fills-everything rule.
 
 Density is a document's density, not an application's. Type is set at a reading size (17px body, never smaller), the measure is held at ~70 characters, and the margins are wide enough to hold a real column rather than a tooltip. Anti-references, confirmed in the work: no tinted washes or gradient sheens pretending to be marker ink (a highlighter is flat, and it is the reader's, never the layout's), no punch-in-the-face accent contrast, no warm browns or ambers outside the reader's pen, no blend modes over media, no font-smoothing overrides, no card-and-shadow chrome on anything that isn't actually floating.
 
@@ -183,12 +183,12 @@ Density is a document's density, not an application's. Type is set at a reading 
 
 ## Colors
 
-An achromatic résumé, and case studies each saturated in the colour of the client they document.
+An achromatic résumé, and case studies art-directed in the visual system of the client they document.
 
 ### Primary
 
 - **Ink** (`{colors.ink}`): Headings, the masthead name and rule, section marks, statistics, and the underline on a link that has been earned. On the résumé `accent` resolves here, which is how "the accent" disappears into the type.
-- **Client Accent** (`{colors.accent}` at rest): A per-page token, not a palette entry. `CaseStudyLayout` injects the client's real brand hex as an inline style on `<body>`. On a case study it is the page's dominant colour: the hero gradient, the dark bands, the tint in the light sections, the eyebrows and the outcome numerals all derive from it. `src/content/case-studies/manifest.json` is the canonical inventory of published accents.
+- **Client Accent** (`{colors.accent}` at rest): A per-page identity token, not a palette entry. `CaseStudyLayout` injects the client's real brand hex as an inline style on `<body>`. Use it for identifying moments and readable labels; let the source brand system determine whether a field should carry that hue or remain neutral. `src/content/case-studies/manifest.json` is the canonical inventory of published accents.
 - **The Reader's Pen** (`{colors.marker-note}`, `{colors.marker-project}`): The two highlighter pigments, applied as translucent RGB-triplet inks (`--mark-note-rgb`, `--mark-project-rgb` in `global.css`) at one shared load per state — 0.6 rest, 0.72 hover, 0.84 open, and 0.96 when a margin-revealed term is directly under the pointer. Yellow marks every annotated term; green marks the terms whose note leads to a case study, and `{colors.marker-project-ref}` inks the superscript icon at 3:1+ against stock. These are the résumé's only interface hues, and both denote.
 
 ### Field colours (case studies)
@@ -202,7 +202,7 @@ A brand is not one hex. The accent names the client while each page's _fields_ a
 
 A brand hex is chosen for logos and fields, not for 11px type or as a backdrop for white headlines. Three values are derived from it at build time in `src/utils/color.ts` so the brand can be used everywhere without going under AA:
 
-- **`--accent-ink`**: the brand darkened only as far as readability requires — until it clears 4.9:1 on white. Used for labels and stat numerals on light stock, and as the base the hero gradient is built from.
+- **`--accent-ink`**: the brand darkened only as far as readability requires — until it clears 4.9:1 on white. Used for labels and stat numerals on light stock, and for colored hero fields only when that treatment is true to the source brand.
 - **`--accent-contrast`**: the mirror, for a dark brand on dark stock.
 - **A light tint** (`color-mix(--accent 35%, #fff)`): labels and numerals on dark bands, where the brand itself would disappear. Still unmistakably that client's hue, lifted enough to read (8.88–11.97:1).
 
@@ -219,13 +219,13 @@ A brand hex is chosen for logos and fields, not for 11px type or as a backdrop f
 
 ### Named Rules
 
-**The Two Registers Rule.** The surface decides the palette. The résumé's typography and chrome carry no hue at all — its only colours are the photographs and the reader's two marker inks, and all three denote. A case study carries its client's colour, everywhere — hero, bands, stock, labels, numerals. There is no third setting, and neither register borrows from the other: a neutral case study is as wrong as a coloured résumé.
+**The Two Registers Rule.** The surface decides the palette. The résumé's typography and chrome carry no hue at all — its only colours are the photographs and the reader's two marker inks, and all three denote. A case study follows its client's documented visual system, including its surface hierarchy and semantic colour roles. There is no third setting, and neither register borrows from the other: a coloured résumé is as wrong as a case study that ignores its source brand.
 
-**The Accent Identifies, It Does Not Fill.** On a case study the accent drives the things that _name_ the client — hero field, eyebrows, outcome numerals, hover borders. It does not drive the page's fields. Those are art-directed per section in content, because most brands are more than one colour and deriving everything from a single hex collapses them: it turned Delta's navy page red.
+**The Accent Identifies; the Source System Sets the Fields.** On a case study the accent identifies the client — labels, outcome numerals, or a hero field when the documented brand uses one. It does not automatically fill the page. Art-direct fields from the client's actual system and evidence; deriving every surface from a single hex collapses brands that have more than one colour or rely on neutral stock.
 
 **The Derived, Never Guessed Rule.** Brand colour that carries text goes through `color.ts`, never straight from the hex. Use `--accent-ink` for light stock and the 35% white tint for dark stock, so adjustment is computed per brand rather than eyeballed once and assumed.
 
-**The True Neutral Rule (résumé only).** Every value in the résumé's interface satisfies R = G = B, including shadow tints. A warm or cool grey there is a hue that identifies nothing. On a case study the neutrals are deliberately _not_ neutral — they are mixed toward the accent, which is the point.
+**The True Neutral Rule (résumé only).** Every value in the résumé's interface satisfies R = G = B, including shadow tints. A warm or cool grey there is a hue that identifies nothing. Case-study neutrals come from the client's source system; they may remain neutral when that is how the brand is designed.
 
 **The Photograph Exception.** The work is the only colour on the résumé, and it renders as itself. No blend mode, no duotone, no filter, no opacity wash over media — ever.
 
@@ -243,9 +243,9 @@ A brand hex is chosen for logos and fields, not for 11px type or as a backdrop f
 ### Hierarchy
 
 - **Page title / H1** (200, `clamp(64px, 8.5vw, 124px)`): Collection-page titles — Work, Projects & Writing, and References. It is the loudest role because these pages are indexes rather than documents.
-- **Hero title / H1** (200, `clamp(48px, 6vw, 80px)`): Case-study titles only, where the title sits inside an immersive branded field.
+- **Hero title / H1** (400, `clamp(48px, 6vw, 80px)`): Case-study titles only, where the title sits inside an immersive branded field. A product-led hero sets the same role at `clamp(40px, 4.4vw, 64px)` and holds its title on one line beside the client mark.
 - **Title-page identity / H1** (200, `clamp(40px, 5.2vw, 68px)`, 1.02, `opsz 72`): The résumé name, login identity, and internal catalog title. It is deliberately smaller than a collection title so the hyphenated surname holds together.
-- **H2** (350, `clamp(34px, 3.2vw, 44px)`): Major page sections, including Projects, Writing, and case-study section headings.
+- **H2** (350 on the indexes, 400 in case-study sections, `clamp(34px, 3.2vw, 44px)`): Major page sections, including Projects, Writing, and case-study section headings.
 - **H3** (250–300, `clamp(24px, 2.4vw, 34px)`): Project, article, and media-group titles within a section.
 - **H4** (500–600, `22px`; 18px on mobile): Company names and card/subsection titles.
 - **Reference quote** (`clamp(30px, 3.3vw, 52px)` featured; `clamp(23px, 2.25vw, 34px)` cards): A content role that shares the display face but is not part of the document outline.
@@ -268,6 +268,8 @@ A brand hex is chosen for logos and fields, not for 11px type or as a backdrop f
 **The Semantic Marker Rule.** A marked term announces marginalia the way a reader would: a translucent highlighter stroke over the letters — yellow for marginalia, green when a deeper case study also exists. The stroke embraces being a reader's gesture; precisely because it is one, it must behave like a real pen: flat matte ink, straight chisel-cut ends, no shading, no rounded caps, and it covers the words only. The superscript Tabler Notes icon appears solely on green terms, outside the ink, and its hint says “Case study.” More ink is a state the reader caused: the load deepens on hover and deepens again while open or revealed in the margin.
 
 **The Less-Is-More Rule.** Marginalia-only terms receive no icon, and section headings receive no ornamental numbering. An extra mark must add information or it is noise.
+
+**The No-Stranded-Word Rule.** Headings and short prose blocks balance their lines; lists and tabular copy wrap pretty. `base.css` states this once for the whole site — `text-wrap: balance` on headings, paragraphs, blockquotes, captions and definitions (plus the hero subtitle, index intro and project copy), `text-wrap: pretty` on list items and table cells — so a single word is never left stranded on its own line, and no page invents a local wrapping fix.
 
 ## Icons
 
@@ -308,13 +310,13 @@ Add icons to the registry in `Icon.astro`; do not import library components dire
 
 ## Elevation & Depth
 
-The document is flat. The sheet has no border, no lift, and no shadow, because it is not sitting on top of anything — the masthead and the résumé are one continuous stock, and a card edge would invent a separation that isn't there. Depth in this system means one specific thing: _this surface is above the document._ Exactly two things are — the mobile bottom sheet and the fixed chrome buttons. On a desktop, nothing floats at all: an opened note either continues down the margin or binds into the document flow, and both are drawn with hairlines, in the page. Everything else is a hairline too.
+The document is flat. The sheet has no border, no lift, and no shadow, because it is not sitting on top of anything — the masthead and the résumé are one continuous stock, and a card edge would invent a separation that isn't there. Depth in this system means one specific thing: _this surface is above the document._ Two things qualify — the mobile bottom sheet, and fixed chrome (the desktop widen prompt, plus the theme toggle when it stands alone on the login gate; inside the site rail the toggle is cut from the rail's own stock and casts nothing). On a desktop, nothing floats at all: an opened note either continues down the margin or binds into the document flow, and both are drawn with hairlines, in the page. Everything else is a hairline too.
 
 ### Shadow Vocabulary
 
 - **Sheet** (`0 2px 4px rgba(0,0,0,0.05), 0 12px 28px rgba(0,0,0,0.1), 0 32px 64px rgba(0,0,0,0.09)`): The mobile bottom sheet. Three layers — a contact shadow, a form shadow and an ambient one — so it reads as a physical object over the page rather than a div with a blur under it.
 - **Sheet, night** (`0 32px 80px rgba(0,0,0,0.6)`): One layer at higher opacity. Contact shadows are invisible on near-black stock, so they are not shipped.
-- **Chrome** (`0 2px 8px rgba(0,0,0,0.05)`): Fixed controls only — the theme toggle and the site navigation rail. Just enough to separate a fixed element from whatever scrolls beneath it.
+- **Chrome** (`0 2px 8px rgba(0,0,0,0.05)`): Fixed controls only — the desktop widen prompt, and the theme toggle when it floats alone on the login gate. Just enough to separate a fixed element from whatever scrolls beneath it; the sticky rail and the toggle inside it carry no shadow of their own.
 
 ### Named Rules
 
@@ -398,6 +400,12 @@ Two or more figures share one swipeable, scroll-snapping strip on every surface;
 
 Two kinds of value share this slot, so it scales to what it holds. A figure — `$32.8M`, `2000` — takes display scale (34px in the panel, 26px in the margin). Anything over ten characters is a sentence, not a figure, and steps down to prose (`{typography.lead}` in the panel, `{typography.body}` in the margin) via a `--phrase` modifier the builder applies by length.
 
+### Identity Frame (brand and award marks)
+
+Some notes open on a mark rather than a photograph — a client logo standing in for the work, or an award plate that is itself the evidence. Those are identity frames, not full-bleed evidence, so they get one shared centred frame: a band at least 132px tall that centres the mark on both axes and caps it there, keeping the mark's own ratio instead of cropping it. A narrow SVG viewbox can then never leave the mark stranded against the column edge, and the same frame serves the margin note, the bound-in note and the sheet. The rule is mechanical rather than per-brand: any media under `/images/brands/`, plus the Apple award plate, is framed this way.
+
+**The Issuer's Device.** When an archival artifact does not identify its issuer visually, an optional `brandMark` seats the period-correct mark on the note's label line — or, when the note also carries a stat, composes with it (`(apple) 1994` reads as one hallmark rather than a second plate). It is sized in `em` against the stat, so one rule fits the margin's 26px figure and the panel's 34px one.
+
 ### Bound-In Note (middle tier)
 
 The dig, set into the page. Between 600px and the wide tier, a clicked term opens its full note in the document's own flow, directly after the term's paragraph or bullet — the prose below makes room via a soft grid-rows unfold, and the page drifts just far enough that the unfolded note ends with real air above the fold, never carrying the clicked term off-screen. A hairline above and below, the mono label row carrying a quiet hairline-square fold control, the media plate at the full measure, and the narrative in two ~330px columns at `{typography.note}` size (one column under 760px). No overlay, no dim, no scroll lock, no inner scrollbox, no shadow: a disclosure in the page, not a dialog over it. Closed by the term, the fold control, Escape, a click elsewhere — or simply scrolling away, which folds the note behind the departing reader (folded off-screen, the close is instant and scroll-compensated so nothing visible moves; a note taller than the viewport is read by scrolling and folds only once the reader passes its extent).
@@ -439,7 +447,7 @@ The `/work` page is the direct index of the evidence behind the résumé's green
 
 ### Projects & Writing
 
-The `/projects` page uses one descending editorial hierarchy: the collection title is the only page-title text, H2 divides Projects from Writing, and individual project and article titles use H3 beneath it. Never stack hero-scale titles at consecutive levels. The lead project pairs a restrained title and summary with product evidence; forthcoming projects remain quiet until their stories are authored. Writing is an ordered publication index, with a direct link to KC's _horizon_ Substack beneath its section heading.
+The `/projects` page uses one descending editorial hierarchy: the collection title is the only page-title text, H2 divides Projects from Writing, and individual project and article titles use H3 beneath it. Never stack hero-scale titles at consecutive levels; line wrapping is settled site-wide by The No-Stranded-Word Rule. A compact contents list near the top links to projects in this order: Org Chart Studio, Unreel Recipes, Designer. Org Chart Studio pairs its actual four-color tile mark with its title; Unreel Recipes uses the product's typographic wordmark rather than an invented icon. Unreel's four product views and optional, user-controlled stirring animation are supporting evidence, not decorative autoplay. Writing is an ordered publication index, with a direct link to KC's _horizon_ Substack beneath its section heading.
 
 ### Résumé Download
 
@@ -448,6 +456,15 @@ The downloadable résumé is a document action directly beneath the masthead nam
 ### References
 
 The `/references` page is a typographic record of eight published testimonials. One reference is given the lead editorial scale; the remainder form a quiet two-column sequence with numbered entries and mono attribution lines. The wording and roles live in validated `references.json` and are reproduced verbatim from KC's consulting site. Display text uses Newsreader's native kerning; manual negative tracking is prohibited because it overrides the variable font's pair spacing and causes collisions at large sizes.
+
+### Case-Study Hero
+
+The top of a case-study page, and the one place the source brand's own composition decides the layout. `hero.composition` selects between two settings:
+
+- **Immersive** (default): the client's colour field, full height, built from `--accent` — the hero is where a brand that genuinely leads with a colour field gets to fill one, and white type sits on it. An archival hero photograph (`background`) runs under the shared navy scrim instead of the gradient.
+- **Product** (`composition: "product"`): for surface-led brands whose own system is neutral. Stock and ink replace the saturated field; the client's mark — required in this composition, since a neutral hero has nothing else naming the brand — sits beside a title held on one line, the eyebrow moves below the subtitle, and the product screenshot takes the right column. Colour arrives through the product imagery, not a backdrop. Org Chart Studio's Sunny Peeps system is the reference.
+
+A `background` hero may crop to fill; so may the full-bleed strip. Every other image in a case study fits inside its box, at its own ratio.
 
 ### Cards (case studies)
 
@@ -479,7 +496,7 @@ A centred stack with a left-aligned underline field — no box, no fill, transpa
 - **Do** hold running text to 704px and align everything to the single left edge, on every page type.
 - **Do** reach for a 1px `{colors.rule}` hairline before reaching for a border, a fill, or a gap.
 - **Do** recompute the 1420px threshold from `880 + 2 × (42 + 220)` whenever the sheet, gutter or column changes, and update `BREAKPOINT_WIDE` by hand.
-- **Do** reserve shadow for the four surfaces that genuinely float, and give everything else a hairline.
+- **Do** reserve shadow for the surfaces that genuinely float, and give everything else a hairline.
 - **Do** preserve opacity and colour states under `prefers-reduced-motion` — remove the movement, not the feedback.
 - **Do** consume the canonical token vocabulary in CSS: `--doc-*` for ink and paper, `--type-*` for the type scale, `--space-*` / `--radius-*` / `--shadow-*` for rhythm and surfaces, `--cs-*` only for case-study layout and hero scale. `{colors.ink}` in this document maps to `--doc-heading`.
 

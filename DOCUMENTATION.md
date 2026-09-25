@@ -21,6 +21,11 @@ README.md (Hub)
 └── DOCUMENTATION.md  — This file (meta-documentation)
 ```
 
+The README also links two asset-provenance records rather than listing them as
+product documentation: the reversible record of undeployed media
+(`asset-quarantine/README.md`) and the FusionFall imagery attribution
+(`src/content/case-studies/fusionfall-sources.md`).
+
 ---
 
 ## Document Types

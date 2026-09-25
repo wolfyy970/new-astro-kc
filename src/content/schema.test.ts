@@ -42,6 +42,52 @@ describe("content schemas — real data conforms", () => {
     expect(projectsWritingSchema.safeParse(projectsWriting).success).toBe(true);
   });
 
+  it("keeps project data in the approved page sequence", () => {
+    expect(projectsWriting.projects.map((project) => project.title)).toEqual([
+      "Org Chart Studio",
+      "Unreel Recipes",
+      "Designer",
+    ]);
+  });
+
+  it("keeps Org Chart Studio's hero true to the Sunny Peeps surface system", () => {
+    const project = projectsWritingSchema
+      .parse(projectsWriting)
+      .projects.find(
+        (entry) =>
+          entry.state === "story" && entry.href === "/org-chart-studio",
+      );
+
+    expect(project?.state).toBe("story");
+    if (!project || project.state !== "story") return;
+
+    expect(project.story.hero).toMatchObject({
+      composition: "product",
+      brandMark: "/images/projects/org-chart-studio/brand-mark.svg",
+      brandMarkAlt: "Org Chart Studio four-color tile mark",
+      image: "/images/projects/org-chart-studio/northstar-spectrum.png",
+    });
+  });
+
+  it("requires alt text for the Org Chart Studio hero mark", () => {
+    const bad = {
+      ...projectsWriting,
+      projects: projectsWriting.projects.map((entry) =>
+        entry.state === "story" && entry.href === "/org-chart-studio"
+          ? {
+              ...entry,
+              story: {
+                ...entry.story,
+                hero: { ...entry.story.hero, brandMarkAlt: undefined },
+              },
+            }
+          : entry,
+      ),
+    };
+
+    expect(projectsWritingSchema.safeParse(bad).success).toBe(false);
+  });
+
   it.each([
     ["truist", truist],
     ["upwave", upwave],
@@ -74,13 +120,15 @@ describe("content schemas — reject malformed data", () => {
 
   it("requires exactly one published project for the projects page", () => {
     const forthcoming = { state: "forthcoming", title: "Later", note: "Soon" };
+    const published = projectsWriting.projects.find(
+      (project) => project.state === "published",
+    );
+    expect(published).toBeDefined();
+    if (!published) return;
+
     const twoPublished = {
       ...projectsWriting,
-      projects: [
-        projectsWriting.projects[0],
-        projectsWriting.projects[0],
-        forthcoming,
-      ],
+      projects: [published, published, forthcoming],
     };
     expect(projectsWritingSchema.safeParse(twoPublished).success).toBe(false);
 
@@ -89,6 +137,59 @@ describe("content schemas — reject malformed data", () => {
       projects: [forthcoming, forthcoming, forthcoming],
     };
     expect(projectsWritingSchema.safeParse(noPublished).success).toBe(false);
+  });
+
+  it("requires project-story links to stay on an internal portfolio route", () => {
+    const story = projectsWriting.projects.find(
+      (project) => project.state === "story",
+    );
+    expect(story).toBeDefined();
+    if (!story) return;
+
+    const bad = {
+      ...projectsWriting,
+      projects: projectsWriting.projects.map((project) =>
+        project === story
+          ? { ...project, href: "https://example.com" }
+          : project,
+      ),
+    };
+    expect(projectsWritingSchema.safeParse(bad).success).toBe(false);
+  });
+
+  it("keeps the Org Chart Studio logo paired with accessible text", () => {
+    const story = projectsWritingSchema
+      .parse(projectsWriting)
+      .projects.find((project) => project.state === "story");
+    expect(story?.state).toBe("story");
+    if (!story || story.state !== "story") return;
+
+    const missingAlt = { ...story, brandMarkAlt: undefined };
+    const bad = {
+      ...projectsWriting,
+      projects: projectsWriting.projects.map((project) =>
+        project.state === "story" ? missingAlt : project,
+      ),
+    };
+    expect(projectsWritingSchema.safeParse(bad).success).toBe(false);
+  });
+
+  it("requires the four documented Unreel Recipes product views", () => {
+    const experiment = projectsWritingSchema
+      .parse(projectsWriting)
+      .projects.find((project) => project.state === "experiment");
+    expect(experiment?.state).toBe("experiment");
+    if (!experiment || experiment.state !== "experiment") return;
+
+    const bad = {
+      ...projectsWriting,
+      projects: projectsWriting.projects.map((project) =>
+        project.state === "experiment"
+          ? { ...experiment, screenshots: experiment.screenshots.slice(0, 3) }
+          : project,
+      ),
+    };
+    expect(projectsWritingSchema.safeParse(bad).success).toBe(false);
   });
 
   it("keeps the named resume notes on a readable brand-mark first frame", () => {
@@ -223,7 +324,12 @@ describe("content schemas — reject malformed data", () => {
   });
 
   it("rejects a project whose related writing does not exist", () => {
-    const published = projectsWriting.projects[0];
+    const published = projectsWriting.projects.find(
+      (project) => project.state === "published",
+    );
+    expect(published?.state).toBe("published");
+    if (!published || published.state !== "published") return;
+
     const bad = {
       ...projectsWriting,
       projects: [

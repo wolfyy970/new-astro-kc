@@ -5,17 +5,26 @@ import { projectsWritingSchema } from "../content/schema";
 import "../styles/work-index.css";
 
 const content = projectsWritingSchema.parse(projectsWritingRaw);
+const orgChart = content.projects.find((project) => project.state === "story");
+const unreel = content.projects.find(
+  (project) => project.state === "experiment",
+);
 const designer = content.projects.find(
   (project) => project.state === "published",
 );
 
-if (!designer) {
-  throw new Error("The Projects page requires one published project.");
+if (!orgChart || !unreel || !designer) {
+  throw new Error(
+    "Projects requires Org Chart Studio, Unreel Recipes, and Designer.",
+  );
+}
+const orgChartHero = orgChart.story.hero;
+if (!("image" in orgChartHero)) {
+  throw new Error(
+    "Org Chart Studio's project index entry requires an image hero.",
+  );
 }
 
-const forthcomingProjects = content.projects.filter(
-  (project) => project.state === "forthcoming",
-);
 const relatedWriting = designer.relatedWriting.map((slug) => {
   const entry = content.writing.find((item) => item.slug === slug);
   if (!entry) throw new Error(`Missing related writing entry: ${slug}`);
@@ -48,16 +57,128 @@ const formatDate = (date: string) =>
       </p>
     </header>
 
+    <nav class="projects-contents" aria-label="Project contents">
+      <p class="projects-contents-label">On this page</p>
+      <ol>
+        <li><a href="#org-chart-studio"><span>01</span>Org Chart Studio</a></li>
+        <li><a href="#unreel-recipes"><span>02</span>Unreel Recipes</a></li>
+        <li><a href="#designer"><span>03</span>Designer</a></li>
+      </ol>
+    </nav>
+
     <section class="projects-section" aria-labelledby="projects-heading">
       <header class="projects-section-heading">
         <h2 id="projects-heading">Projects</h2>
       </header>
 
-      <article class="project-feature">
+      <article class="project-entry project-entry--org" id="org-chart-studio">
+        <header class="project-entry-header">
+          <h3 class="project-entry-title project-entry-title--brand">
+            <img
+              class="project-brand-mark project-brand-mark--org"
+              src={orgChart.brandMark}
+              alt={orgChart.brandMarkAlt}
+              width="52"
+              height="52"
+              decoding="async"
+            />
+            <span>Org Chart Studio</span>
+          </h3>
+          <p class="project-entry-meta">Independent product · 2026</p>
+        </header>
+        <div class="project-entry-lead">
+          <div class="project-entry-copy">
+            <p>{orgChartHero.subtitle}</p>
+            <p>{orgChart.story.context.body}</p>
+            <a class="project-story-link" href={orgChart.href}>
+              Explore the case study <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+          <figure class="project-entry-media">
+            <img
+              src={orgChartHero.image}
+              alt={orgChartHero.imageAlt}
+              width="1600"
+              height="1000"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>Sunny Peeps design system · Spectrum theme</figcaption>
+          </figure>
+        </div>
+      </article>
+
+      <article class="project-entry project-entry--unreel" id="unreel-recipes">
+        <header class="project-entry-header">
+          <h3 class="project-entry-title project-entry-title--wordmark">
+            <span>Unreel Recipes</span>
+          </h3>
+          <p class="project-entry-meta">{unreel.eyebrow}</p>
+        </header>
+        <div class="project-entry-lead project-entry-lead--unreel">
+          <div class="project-entry-copy">
+            <p>{unreel.summary}</p>
+            <p>{unreel.detail}</p>
+            <a
+              class="project-story-link"
+              href={unreel.liveUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Visit Unreel Recipes <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+          <figure class="project-motion">
+            <video
+              controls
+              playsinline
+              muted
+              preload="metadata"
+              poster={unreel.stirringVideo.poster}
+              width={unreel.stirringVideo.width}
+              height={unreel.stirringVideo.height}
+              aria-label={unreel.stirringVideo.label}
+            >
+              <source src={unreel.stirringVideo.src} type="video/mp4" />
+            </video>
+            <figcaption>
+              The pot-stirring animation plays while a recipe is being built.
+            </figcaption>
+          </figure>
+        </div>
+        <div
+          class="project-screenshots"
+          role="group"
+          aria-label="Unreel Recipes product screens"
+        >
+          {
+            unreel.screenshots.map((screenshot) => (
+              <figure>
+                <img
+                  src={screenshot.src}
+                  alt={screenshot.alt}
+                  width={screenshot.width}
+                  height={screenshot.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption>{screenshot.caption}</figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      </article>
+
+      <article
+        class="project-feature project-entry project-entry--designer"
+        id="designer"
+      >
         <div class="project-feature-intro">
           <div>
-            <p class="project-eyebrow">{designer.eyebrow}</p>
             <h3>{designer.title}</h3>
+            <p class="project-eyebrow project-feature-meta">
+              {designer.eyebrow}
+            </p>
           </div>
           <div class="project-feature-summary">
             <p>{designer.summary}</p>
@@ -78,7 +199,7 @@ const formatDate = (date: string) =>
             alt={designer.leadImage.alt}
             width={designer.leadImage.width}
             height={designer.leadImage.height}
-            loading="eager"
+            loading="lazy"
             decoding="async"
           />
           <figcaption>
@@ -149,24 +270,6 @@ const formatDate = (date: string) =>
           </ol>
         </aside>
       </article>
-
-      <ol
-        class="forthcoming-projects"
-        start="2"
-        aria-label="Forthcoming projects"
-      >
-        {
-          forthcomingProjects.map((project, index) => (
-            <li>
-              <span class="forthcoming-index" aria-hidden="true">
-                {String(index + 2).padStart(2, "0")}
-              </span>
-              <h3>{project.title}</h3>
-              <p>{project.note}</p>
-            </li>
-          ))
-        }
-      </ol>
     </section>
 
     <section class="writing-section" aria-labelledby="writing-heading">

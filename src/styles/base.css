@@ -22,3 +22,23 @@ body {
   background: var(--doc-white);
   color: var(--doc-body);
 }
+
+/* Keep final lines intentional across every page, including project heroes,
+   case studies, references, and navigation copy. */
+:where(h1, h2, h3, h4, h5, h6) {
+  text-wrap: balance;
+}
+
+:where(p, blockquote, figcaption, dd) {
+  text-wrap: balance;
+}
+
+:where(li, dt, th, td) {
+  text-wrap: pretty;
+}
+
+/* Keep prose blocks balanced even when component-local type is applied later;
+   long résumé and case-study passages retain their existing measure. */
+:where(.hero-subtitle, .work-index-intro, .project-entry-copy > p) {
+  text-wrap: balance;
+}

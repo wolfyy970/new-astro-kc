@@ -9,16 +9,32 @@ interface Props {
   image?: string;
   imageAlt?: string;
   background?: string;
+  composition?: "immersive" | "product";
+  brandMark?: string;
+  brandMarkAlt?: string;
 }
 
-const { title, subtitle, label, image, imageAlt, background } = Astro.props;
+const {
+  title,
+  subtitle,
+  label,
+  image,
+  imageAlt,
+  background,
+  composition = "immersive",
+  brandMark,
+  brandMarkAlt,
+} = Astro.props;
 
 // The product shot was declared 800x1200 whatever the file actually was.
 const imageSize = image ? await publicImageSize(image) : null;
 const bgSize = background ? await publicImageSize(background) : null;
 ---
 
-<div class={`hero ${background ? "has-bg" : ""}`}>
+<div
+  class={`hero ${background ? "has-bg" : ""}`}
+  data-composition={composition}
+>
   {
     background && (
       <div class="hero-bg">
@@ -35,9 +51,33 @@ const bgSize = background ? await publicImageSize(background) : null;
     )
   }
   <div class="hero-content">
-    {label && <div class="hero-label">{label}</div>}
-    <h1 class="hero-title">{title}</h1>
+    {
+      label && composition !== "product" && (
+        <div class="hero-label">{label}</div>
+      )
+    }
+    <div class="hero-title-row">
+      {
+        brandMark && (
+          <img
+            class="hero-brand-mark"
+            src={brandMark}
+            alt={brandMarkAlt ?? ""}
+            width="44"
+            height="44"
+            loading="eager"
+            decoding="async"
+          />
+        )
+      }
+      <h1 class="hero-title">{title}</h1>
+    </div>
     <p class="hero-subtitle">{subtitle}</p>
+    {
+      label && composition === "product" && (
+        <div class="hero-label product-label">{label}</div>
+      )
+    }
   </div>
   {
     image && (
@@ -110,6 +150,14 @@ const bgSize = background ? await publicImageSize(background) : null;
     max-width: 840px;
   }
 
+  .hero-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(16px, 3vw, 28px);
+    margin-bottom: 40px;
+  }
+
   /* When there's a standalone image (like Truist/Upwave) */
   .hero:not(.has-bg) .hero-content {
     margin-bottom: 80px;
@@ -151,7 +199,7 @@ const bgSize = background ? await publicImageSize(background) : null;
     font-weight: 400;
     color: #fff;
     line-height: 1.05;
-    margin-bottom: 40px;
+    margin: 0;
   }
 
   /* White, and held back from the title by size alone.
@@ -180,6 +228,130 @@ const bgSize = background ? await publicImageSize(background) : null;
     }
     .hero-right img {
       max-height: 480px;
+    }
+  }
+
+  /* Org Chart Studio's own Sunny Peeps system is surface-led: neutral stock,
+     near-black type, its official mark, and the product's real color doing the
+     expressive work. Keep the portfolio's immersive accent field for studies
+     whose source brand actually uses one. */
+  .hero[data-composition="product"] {
+    min-height: min(780px, calc(100svh - var(--site-nav-height)));
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    align-items: center;
+    gap: clamp(48px, 6vw, 96px);
+    padding: clamp(72px, 8vw, 120px) clamp(32px, 6vw, 96px);
+    background: var(--doc-white);
+    color: var(--doc-heading);
+    text-align: left;
+    border-bottom: 1px solid var(--doc-rule);
+  }
+
+  .hero[data-composition="product"] .hero-content {
+    max-width: 700px;
+    margin: 0;
+  }
+
+  .hero[data-composition="product"] .hero-title-row {
+    justify-content: flex-start;
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+
+  .hero-brand-mark {
+    display: block;
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+  }
+
+  .hero[data-composition="product"] .hero-title {
+    color: var(--doc-heading);
+    font-size: clamp(40px, 4.4vw, 64px);
+    white-space: nowrap;
+  }
+
+  .hero[data-composition="product"] .hero-subtitle {
+    max-width: 620px;
+    margin: 0;
+    color: var(--doc-body);
+    line-height: 1.55;
+  }
+
+  .hero[data-composition="product"] .product-label {
+    margin-top: 28px;
+    margin-bottom: 0;
+    color: var(--label-color);
+    text-align: left;
+  }
+
+  .hero[data-composition="product"] .hero-right {
+    justify-self: end;
+    max-width: 900px;
+  }
+
+  .hero[data-composition="product"] .hero-right img {
+    width: 100%;
+    max-height: min(560px, 68vh);
+    object-fit: contain;
+    background: var(--doc-white);
+    border: 1px solid var(--doc-rule);
+  }
+
+  @media (max-width: 1180px) {
+    .hero[data-composition="product"] {
+      min-height: auto;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 48px;
+      padding: var(--cs-pad-tablet);
+    }
+
+    .hero[data-composition="product"] .hero-content {
+      margin: 0 !important;
+    }
+
+    .hero[data-composition="product"] .hero-right {
+      justify-self: start;
+      max-width: 840px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .hero[data-composition="product"] {
+      gap: 32px;
+      padding: 72px 24px 64px;
+    }
+
+    .hero[data-composition="product"] .hero-title {
+      font-size: clamp(30px, 9vw, 36px);
+    }
+
+    .hero[data-composition="product"] .hero-title-row {
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .hero[data-composition="product"] .hero-brand-mark {
+      width: 32px;
+      height: 32px;
+      margin-top: 4px;
+    }
+
+    .hero[data-composition="product"] .hero-right img {
+      max-height: none;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .hero[data-composition="product"] .hero-title-row {
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .hero[data-composition="product"] .hero-brand-mark {
+      margin-top: 0;
     }
   }
 </style>

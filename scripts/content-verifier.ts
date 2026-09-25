@@ -176,7 +176,7 @@ function sectionAssetReferences(
 
 function checkCaseStudyAssets(
   study: CaseStudyData,
-  slug: string,
+  sourceLabel: string,
   publicDir: string,
   errors: string[],
 ): void {
@@ -184,7 +184,7 @@ function checkCaseStudyAssets(
     checkAsset(
       publicDir,
       study.meta.ogImage,
-      `case-studies/${slug}.json meta.ogImage`,
+      `${sourceLabel} meta.ogImage`,
       errors,
     );
   }
@@ -193,14 +193,14 @@ function checkCaseStudyAssets(
     checkAsset(
       publicDir,
       study.hero.image,
-      `case-studies/${slug}.json hero.image`,
+      `${sourceLabel} hero.image`,
       errors,
     );
   } else {
     checkAsset(
       publicDir,
       study.hero.background,
-      `case-studies/${slug}.json hero.background`,
+      `${sourceLabel} hero.background`,
       errors,
     );
   }
@@ -210,7 +210,7 @@ function checkCaseStudyAssets(
       checkAsset(
         publicDir,
         assetPath,
-        `case-studies/${slug}.json sections[${section.key}].${field}`,
+        `${sourceLabel} sections[${section.key}].${field}`,
         errors,
       );
     });
@@ -220,9 +220,56 @@ function checkCaseStudyAssets(
 function checkProjectsAssets(
   projects: ProjectsWritingData,
   publicDir: string,
+  pagesDir: string,
   errors: string[],
 ): void {
   projects.projects.forEach((project, index) => {
+    if (project.state === "story") {
+      const slug = project.href.slice(1);
+      if (!fs.existsSync(path.join(pagesDir, `${slug}.astro`))) {
+        errors.push(
+          `Project story "${project.title}" links to "${project.href}" but its page is missing`,
+        );
+      }
+      checkCaseStudyAssets(
+        project.story,
+        `projects-writing.projects[${index}].story`,
+        publicDir,
+        errors,
+      );
+      if (project.brandMark) {
+        checkAsset(
+          publicDir,
+          project.brandMark,
+          `projects-writing.projects[${index}].brandMark`,
+          errors,
+        );
+      }
+      return;
+    }
+    if (project.state === "experiment") {
+      project.screenshots.forEach((screenshot, screenshotIndex) => {
+        checkAsset(
+          publicDir,
+          screenshot.src,
+          `projects-writing.projects[${index}].screenshots[${screenshotIndex}].src`,
+          errors,
+        );
+      });
+      checkAsset(
+        publicDir,
+        project.stirringVideo.src,
+        `projects-writing.projects[${index}].stirringVideo.src`,
+        errors,
+      );
+      checkAsset(
+        publicDir,
+        project.stirringVideo.poster,
+        `projects-writing.projects[${index}].stirringVideo.poster`,
+        errors,
+      );
+      return;
+    }
     if (project.state !== "published") return;
     checkAsset(
       publicDir,
@@ -367,7 +414,12 @@ export function verifyContent(rootDir: string): VerificationResult {
   const hotspotCount = checkHotspotParity(rawResume, popovers, errors);
   if (popovers) checkPopoverAssets(popovers, paths.publicDir, errors);
   if (projectsWriting) {
-    checkProjectsAssets(projectsWriting, paths.publicDir, errors);
+    checkProjectsAssets(
+      projectsWriting,
+      paths.publicDir,
+      paths.pagesDir,
+      errors,
+    );
   }
 
   const studySlugs = jsonStudySlugs(paths.caseStudiesDir);
@@ -387,7 +439,14 @@ export function verifyContent(rootDir: string): VerificationResult {
       `case-studies/${slug}.json`,
       errors,
     );
-    if (study) checkCaseStudyAssets(study, slug, paths.publicDir, errors);
+    if (study) {
+      checkCaseStudyAssets(
+        study,
+        `case-studies/${slug}.json`,
+        paths.publicDir,
+        errors,
+      );
+    }
   });
 
   return {

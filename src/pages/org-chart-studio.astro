@@ -1,0 +1,19 @@
+---
+import CaseStudyPage from "../components/case-studies/CaseStudyPage.astro";
+import projectsWritingRaw from "../content/projects-writing.json";
+import { projectsWritingSchema } from "../content/schema";
+
+const content = projectsWritingSchema.parse(projectsWritingRaw);
+const projectStory = content.projects.find(
+  (project) =>
+    project.state === "story" && project.href === "/org-chart-studio",
+);
+
+if (!projectStory || projectStory.state !== "story") {
+  throw new Error(
+    "The Org Chart Studio page requires a published project story.",
+  );
+}
+---
+
+<CaseStudyPage cs={projectStory.story} navSection="projects" />

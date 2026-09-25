@@ -72,7 +72,7 @@ body {
 }
 
 .reference-feature blockquote {
-  max-width: 30ch;
+  max-width: 42ch;
   font-family: var(--display);
   font-size: var(--type-quote-lead);
   font-weight: 300;

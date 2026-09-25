@@ -1,4 +1,5 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import assert from "node:assert/strict";
 import puppeteer from "puppeteer";
 import { AxePuppeteer } from "@axe-core/puppeteer";
 
@@ -8,6 +9,7 @@ const PAGES = [
   "/",
   "/work",
   "/projects",
+  "/org-chart-studio",
   "/references",
   "/design",
   "/bolt",
@@ -75,6 +77,136 @@ for (const path of PAGES) {
       "best-practice",
     ]);
   const results = await axe.analyze();
+
+  if (path === "/projects") {
+    const projectPage = await page.evaluate(() => {
+      const contentsLinks = Array.from(
+        document.querySelectorAll(".projects-contents a"),
+      ).map((link) => ({
+        href: link.getAttribute("href"),
+        label: link.textContent?.replace(/\s+/g, " ").trim(),
+      }));
+      const contentTargetsExist = contentsLinks.every(({ href }) =>
+        href?.startsWith("#") ? Boolean(document.querySelector(href)) : false,
+      );
+      const screenshots = Array.from(
+        document.querySelectorAll(".project-screenshots img"),
+      ).map((image) => ({
+        alt: image.getAttribute("alt"),
+        src: image.getAttribute("src"),
+      }));
+      const motion = document.querySelector(".project-motion video");
+      const source = motion?.querySelector("source");
+
+      return {
+        contentsLinks,
+        contentTargetsExist,
+        orgChartLink: document.querySelector(
+          '.project-entry--org a[href="/org-chart-studio"]',
+        )?.textContent,
+        unreelLink: document.querySelector(
+          '.project-entry--unreel a[href="https://www.unreel.recipes/"]',
+        )?.textContent,
+        unreelWordmark: document
+          .querySelector(
+            ".project-entry--unreel .project-entry-title--wordmark",
+          )
+          ?.textContent?.replace(/\s+/g, " ")
+          .trim(),
+        screenshots,
+        video: motion
+          ? {
+              controls: motion.hasAttribute("controls"),
+              muted: motion.hasAttribute("muted"),
+              playsinline: motion.hasAttribute("playsinline"),
+              label: motion.getAttribute("aria-label"),
+              source: source?.getAttribute("src"),
+              poster: motion.getAttribute("poster"),
+              caption:
+                motion.parentElement?.querySelector("figcaption")?.textContent,
+            }
+          : null,
+      };
+    });
+
+    assert.deepEqual(
+      projectPage.contentsLinks.map(({ href }) => href),
+      ["#org-chart-studio", "#unreel-recipes", "#designer"],
+      "The Projects table of contents must preserve the requested order.",
+    );
+    assert.ok(
+      projectPage.contentTargetsExist,
+      "Every Projects contents link must point to a section on the page.",
+    );
+    assert.match(
+      projectPage.orgChartLink ?? "",
+      /Explore the case study/,
+      "Org Chart Studio must expose its internal case-study link.",
+    );
+    assert.match(
+      projectPage.unreelLink ?? "",
+      /Visit Unreel Recipes/,
+      "Unreel Recipes must expose its live product link.",
+    );
+    assert.equal(projectPage.unreelWordmark, "Unreel Recipes");
+    assert.equal(projectPage.screenshots.length, 4);
+    assert.ok(
+      projectPage.screenshots.every(({ alt, src }) => alt?.trim() && src),
+      "Each Unreel Recipes screen needs a source and descriptive alternative text.",
+    );
+    assert.deepEqual(projectPage.video, {
+      controls: true,
+      muted: true,
+      playsinline: true,
+      label: "The Unreel Recipes pot-stirring processing animation",
+      source: "/media/unreel-recipes/stirring-pot.mp4",
+      poster: "/images/projects/unreel-recipes/stirring-pot-poster.webp",
+      caption:
+        "The pot-stirring animation plays while a recipe is being built.",
+    });
+
+    await page.setViewport({ width: 390, height: 844 });
+    const mobileDocumentWidth = await page.evaluate(
+      () => document.documentElement.scrollWidth,
+    );
+    assert.ok(
+      mobileDocumentWidth <= 390,
+      `The Projects page must not overflow a 390px viewport (document is ${mobileDocumentWidth}px wide).`,
+    );
+
+    await page.goto(`${BASE}/projects`, { waitUntil: "networkidle0" });
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: "networkidle0" }),
+      page.click('.project-entry--org a[href="/org-chart-studio"]'),
+    ]);
+    assert.equal(
+      new URL(page.url()).pathname,
+      "/org-chart-studio",
+      "The Org Chart Studio case-study link must navigate to its page.",
+    );
+    console.log(
+      "Projects flow      PASS (contents, links, screens, motion, mobile, route)",
+    );
+  }
+
+  if (path === "/org-chart-studio") {
+    const storyPage = await page.evaluate(() => ({
+      title: document.querySelector(".hero-title")?.textContent?.trim(),
+      composition: document
+        .querySelector(".hero")
+        ?.getAttribute("data-composition"),
+      logoAlt: document.querySelector(".hero-brand-mark")?.getAttribute("alt"),
+      currentNavigation: document
+        .querySelector('.site-nav a[aria-current="page"]')
+        ?.getAttribute("href"),
+    }));
+    assert.deepEqual(storyPage, {
+      title: "Org Chart Studio",
+      composition: "product",
+      logoAlt: "Org Chart Studio four-color tile mark",
+      currentNavigation: "/projects",
+    });
+  }
 
   const violations = results.violations.map((v) => ({
     id: v.id,

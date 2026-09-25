@@ -21,7 +21,8 @@
         "/src/content/case-studies/felix.json",
         "/src/content/case-studies/fusionfall.json",
         "/src/content/case-studies/magic-wall.json",
-        "/src/content/case-studies/armchair-manager.json"
+        "/src/content/case-studies/armchair-manager.json",
+        "/src/content/case-studies/bolt.json"
       ],
       "url": "./.vscode/case-study.schema.json"
     }

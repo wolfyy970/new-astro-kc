@@ -44,12 +44,12 @@ The site's own mechanism is also positioning: **the résumé is the interface.**
 
 - **Stack:** Astro 7, `output: 'server'`, Vercel adapter.
 - **Auth:** site-wide middleware gate on `SITE_PASSWORD`; fail-closed with `503` when the variable is absent; constant-time cookie comparison; full security-header set.
-- **Content model:** `resume.json` and `popovers.json` are the résumé database; each case study is a self-contained JSON file indexed by `manifest.json` and rendered through a type-dispatching section component.
+- **Content model:** `resume.json` and `popovers.json` are the résumé database; each Work case study is a self-contained JSON file indexed by `manifest.json` and rendered through a type-dispatching section component. The Org Chart Studio project story lives in `projects-writing.json` and renders through those same components, so one template serves both collections.
 - **Annotated terms:** 20, enforced strictly 1:1 against their notes at build time. All wear a highlighter marker stroke — yellow for marginalia, green for project-backed terms — and the nine authored project destinations additionally carry a semantic case-study icon when enabled for the environment.
 - **Reading tiers:** margin notes at ≥1420px (derived from sheet + gutter + column, deliberately under a 1440px laptop); a note bound into the document flow between 600px and that; a bottom sheet at ≤600px. Nothing floats over the page on a desktop, and no content is unreachable at any width.
 - **Marginalia discovery:** on resize-capable desktops between 601px and 1419px, a compact fixed prompt asks the reader to widen the browser and tracks progress toward the 1420px margin threshold. A static editor's note bound into the top of the sheet explains the two highlighter inks with yellow and green specimens — **Tap** on phone, **Click** on wider viewports. At ≥1420px both yield to the same copy in the margin's cold-start introduction.
 - **Feature flag:** `CASE_STUDY_LINKS` controls which case-study links reach the client, filtered server-side, so studies can be published incrementally.
-- **Primary navigation:** Résumé (`/`), Work (`/work`), Projects (`/projects`), and References (`/references`) share one sticky rail across every authenticated page. Work is the reverse-chronological index of enabled case studies; Projects opens **Projects & Writing**, led by the Designer experiment with forthcoming entries for Org Chart Studio and Unreel Recipes plus the complete public _horizon_ archive; References presents eight testimonials selected from KC's consulting site.
+- **Primary navigation:** Résumé (`/`), Work (`/work`), Projects (`/projects`), and References (`/references`) share one sticky rail across every authenticated page. Work is the reverse-chronological index of enabled case studies; Projects opens **Projects & Writing**, with an in-page contents list and project sections ordered Org Chart Studio, Unreel Recipes, Designer, followed by the dated public _horizon_ index. Org Chart Studio uses its four-color tile mark; Unreel Recipes uses its typographic wordmark, four captured product views, and a user-controlled stirring animation. References presents eight testimonials selected from KC's consulting site.
 - **Downloadable résumé:** directly beneath the name, the résumé masthead includes a clearly labelled action with a download icon and native download behavior. The published source is `public/downloads/KC-Wolff-Ingham-Resume.pdf`; replacing that file updates the downloadable artifact without changing the interface.
 - **Build gate:** `npm run verify` validates schemas, exact hotspot-to-note parity, case-study inventory, project media, the downloadable résumé, and every referenced media path; the build fails on a broken reference. `npm run quality` runs formatting, ESLint, Astro diagnostics, the unit suite, content verification, and the production build.
 
@@ -71,10 +71,7 @@ Real, in the repository:
 - **Awards:** Emmy (Outstanding Creative Achievement in Interactive Media), Royal Television Society Award, BAFTA Interactive Entertainment nomination, Webby nomination, Apple Design Project Award.
 - **Patents:** two granted US patents in automatic content recognition.
 - **Metrics:** $32.8M attributable revenue and 7% add-to-cart lift (GPC, 2025); 0→1M monthly uniques in 8 months (upwave); the $66B SunTrust–BB&T merger; a 10-person team scaled to ~50.
-
-Not for publication:
-
-- `KC_Wolff-Ingham_Career_Toolkit.md` is an internal job-search reference. Its own header states it is **not** intended to be sent to recruiters or employers. Use it as source material only.
+- **Org Chart Studio independent project:** the case study is `/org-chart-studio`. Its selected production screenshots are copied to `public/images/projects/org-chart-studio/` from `/Users/kcwolff/Library/Mobile Documents/com~apple~CloudDocs/Projects/OrgChartStudio/Assets/Screenshots/2026-09-22/retina/`; the source README and manifest record the capture details. The Northstar people and organization in those captures are fictional. KC approved publication of this selected set on September 23, 2026.
 
 Absences future work must not fabricate: there is no pricing and there are no third-party benchmarks on this site. References must remain verbatim and attributable to the published source.
 

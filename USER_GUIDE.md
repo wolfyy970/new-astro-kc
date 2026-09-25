@@ -67,7 +67,7 @@ To ensure that the resume and its interactive layers remain synchronized, use th
 npm run verify
 ```
 
-This script validates the content JSON against the shared strict Zod schemas (`src/content/schema.ts`), confirms exact 1:1 hotspot-to-popover parity, checks manifest/JSON/page inventory alignment, and verifies that all referenced image, video, poster, and brand-mark paths exist on disk. It runs automatically during `npm run build`.
+This script validates the content JSON against the shared strict Zod schemas (`src/content/schema.ts`), confirms exact 1:1 hotspot-to-popover parity, checks manifest/JSON/page inventory alignment (every popover link names a published study; every project story has a page), and verifies that all referenced image, video, poster, and brand-mark paths — résumé notes, case studies, and the `/projects` collection — exist on disk, together with the downloadable résumé PDF. It runs automatically during `npm run build`.
 
 ## Image Handling
 
@@ -78,18 +78,24 @@ aspect ratio:
   marginalia, awards, and case-study illustrations is mounted at
   `/Volumes/home/_Jobs - CV - Resume/Resume in Action`. Search this library
   before sourcing or generating replacement artwork.
-- **Case studies:** Keep assets under `public/images/<slug>/`. Components read
-  each file's real dimensions through `publicImageSize()`; components using
-  Astro's `Image` request WebP output, while direct `<img>` renderers serve the
-  original public file.
+- **Case studies:** Keep assets under `public/images/<slug>/` and video under
+  `public/media/`. The `/projects` collection follows the same rule inside a
+  `projects` segment — `public/images/projects/<slug>/` for project images and
+  `public/media/<slug>/` for project video, as Org Chart Studio and Unreel
+  Recipes do. Components read each file's real dimensions through
+  `publicImageSize()`; components using Astro's `Image` request WebP output,
+  while direct `<img>` renderers serve the original public file.
 - **Popovers:** Before serializing note data to the client, `index.astro` asks
   Astro's image service for WebP URLs constrained inside a 600×400 bounding box
   and retains the returned dimensions.
 - **Brand marks:** Resume note lead frames use local, web-ready copies of the
-  supplied Delta, Truist, NAPA, Genuine Parts Company, and historical Upwave
-  marks under `public/images/brands/`. The Upwave source is converted to a
-  browser-safe PNG while preserving the supplied artwork; replace a mark only
-  with a verified source asset, not a hand-drawn approximation.
+  supplied Delta, Truist, NAPA, Genuine Parts Company, historical Upwave,
+  CNN / CNN.com, Cartoon Network, NBA, and Conan marks under
+  `public/images/brands/`. Every file under that directory renders inside the
+  shared centred identity frame (see `DESIGN.md`) rather than as full-bleed
+  evidence. The Upwave source is converted to a browser-safe PNG while
+  preserving the supplied artwork; replace a mark only with a verified source
+  asset, not a hand-drawn approximation.
 - **Asset quarantine:** Tracked images with no source, content, CSS, or manifest reference live under `asset-quarantine/images/`, preserving their former project grouping. The directory sits outside `public`, so quarantined files are not deployed. It exists as a reversible holding area until browser verification confirms those assets can be deleted.
 
 ### Source Material Library
@@ -186,7 +192,7 @@ Every public surface uses semantic CSS custom properties defined in `src/styles/
 
 ## Independent work and references
 
-- Edit `src/content/projects-writing.json` for the published Designer project, forthcoming Org Chart Studio and Unreel Recipes entries, the public Substack link, and dated writing links. The schema requires exactly three project records and validates every Designer-related writing slug.
+- Edit `src/content/projects-writing.json` for the Org Chart Studio case-study entry, Unreel Recipes experiment, published Designer project, public Substack link, and dated writing links. The Projects page controls presentation order (Org Chart Studio, Unreel Recipes, Designer); the schema requires exactly three project records, four Unreel screenshot entries, and validates every Designer-related writing slug. Project images, marks, posters, and videos must exist in `public` and are checked by `npm run verify`.
 - Edit `src/content/references.json` only when the published testimonial source changes. It records the source URL and eight verbatim references; the `/references` page renders the first as the feature and the remainder as numbered cards.
 - The résumé download is the checked-in file at `public/downloads/KC-Wolff-Ingham-Resume.pdf`. Replace it deliberately when the source résumé changes, then run `npm run quality` so the static asset is included in the production build.
 

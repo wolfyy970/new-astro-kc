@@ -16,8 +16,10 @@ import CaseStudySection from "./CaseStudySection.astro";
 
 interface Props {
   cs: unknown;
+  navSection?: "work" | "projects";
 }
-const cs = caseStudyDataSchema.parse(Astro.props.cs);
+const { cs: rawCaseStudy, navSection = "work" } = Astro.props;
+const cs = caseStudyDataSchema.parse(rawCaseStudy);
 ---
 
 <CaseStudyLayout
@@ -25,6 +27,7 @@ const cs = caseStudyDataSchema.parse(Astro.props.cs);
   description={cs.meta.description}
   ogImage={cs.meta.ogImage}
   accent={cs.meta.accent}
+  navSection={navSection}
 >
   <CaseStudyHero {...cs.hero} />
 

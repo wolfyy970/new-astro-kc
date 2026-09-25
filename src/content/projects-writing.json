@@ -6,6 +6,168 @@
   },
   "projects": [
     {
+      "state": "story",
+      "title": "Org Chart Studio",
+      "note": "Product strategy, brand, design system, and UX for a people-first challenger product.",
+      "href": "/org-chart-studio",
+      "brandMark": "/images/projects/org-chart-studio/brand-mark.svg",
+      "brandMarkAlt": "Org Chart Studio four-color tile mark",
+      "story": {
+        "meta": {
+          "title": "Org Chart Studio — KC Wolff-Ingham",
+          "description": "Product strategy, brand, design system, and product design for Org Chart Studio, built around the belief that strong teams make healthy organizations.",
+          "ogImage": "/images/projects/org-chart-studio/northstar-spectrum.png",
+          "accent": "#8450c2"
+        },
+        "hero": {
+          "label": "Independent product · 2026",
+          "title": "Org Chart Studio",
+          "subtitle": "A people-first product built around a simple belief: strong teams make healthy organizations.",
+          "composition": "product",
+          "brandMark": "/images/projects/org-chart-studio/brand-mark.svg",
+          "brandMarkAlt": "Org Chart Studio four-color tile mark",
+          "image": "/images/projects/org-chart-studio/northstar-spectrum.png",
+          "imageAlt": "A fictional 14-person organization shown in Org Chart Studio's Spectrum theme, with three distinct team colors and a shared hierarchy."
+        },
+        "context": {
+          "challenge": "Make org charts useful to managers, not another piece of enterprise overhead.",
+          "role": "Product strategy, product design, brand design, and design-system lead",
+          "company": "Org Chart Studio",
+          "scope": "Product direction, brand, user experience, and Sunny Peeps design system",
+          "team": "Independent product",
+          "body": "The product began with the conviction that strong teams make healthy organizations. The chart is a means, not the purpose: it gives managers a way to see structure, update it as work changes, and bring a clear picture into conversations and decisions. That reframing set the direction for the strategy, the brand, and the design of the product itself."
+        },
+        "sections": [
+          {
+            "key": "product-thesis",
+            "type": "textOnly",
+            "label": "Product strategy",
+            "title": "The chart is a tool. The team is the point.",
+            "description": "The category often treats the diagram as the whole job. The strategy here starts with the manager: make a team's structure visible, then keep that picture useful as people and responsibilities change. The product should remove setup friction, invite active editing, and create a useful artifact without requiring a large enterprise suite or a consultant just to draw the chart."
+          },
+          {
+            "key": "brand-system",
+            "type": "featureRow",
+            "label": "Brand · Sunny Peeps",
+            "title": "A challenger with an optimistic streak",
+            "description": "The brand was designed as an anti-hero: confident enough to challenge category incumbents and their enterprise overhead, while staying firmly on the manager's side. Sunny Peeps carries that point of view through a broad color spectrum representing the diversity of thought, color, creed, religion, culture, sexuality, and lived experience that healthy teams bring. In the interface, color distinguishes themes and departments; it never stands in for assumptions about an individual.",
+            "image": "/images/projects/org-chart-studio/theme-collection.png",
+            "imageAlt": "Org Chart Studio's theme browser showing three visual directions for the same fictional team, alongside a larger preview."
+          },
+          {
+            "key": "spreadsheet-import",
+            "type": "featureRow",
+            "label": "Product design · Import",
+            "title": "Start from the roster teams already have",
+            "description": "Spreadsheet import turns existing people data into a starting chart. Column mapping makes the interpretation visible before anything is confirmed. In this example, nine of ten rows are ready; one still needs a manager review.",
+            "image": "/images/projects/org-chart-studio/import-mapping.png",
+            "imageAlt": "Import mapping dialog for fictional Northstar team data. Four columns are mapped; nine of ten rows are ready and one needs manager review."
+          },
+          {
+            "key": "import-review",
+            "type": "photoGrid",
+            "label": "Import intelligence · Human review",
+            "title": "Automate the match. Keep the decision visible.",
+            "description": "A likely manager match is suggested, not silently applied. The manager can review the correction, accept it, and see the reporting line update. The product carries routine matching forward while leaving a consequential relationship under human control.",
+            "columns": 2,
+            "gap": "loose",
+            "images": [
+              {
+                "src": "/images/projects/org-chart-studio/import-manager-suggestion.png",
+                "alt": "Fictional Northstar import review showing a suggested match between the misspelled manager name Jordon Ellis and Jordan Ellis, waiting for confirmation."
+              },
+              {
+                "src": "/images/projects/org-chart-studio/import-manager-corrected.png",
+                "alt": "The fictional Northstar import after confirmation: Theo Brooks reports to Jordan Ellis and the Needs manager count is zero."
+              }
+            ]
+          },
+          {
+            "key": "contextual-help",
+            "type": "photoGrid",
+            "label": "Product design · Guidance",
+            "title": "Help that stays beside the work",
+            "description": "A manager can read a short guide while keeping the chart in view, or choose Show me to be pointed to the real Reports to control. The guidance does not change the chart; it helps the person make the change themselves.",
+            "columns": 2,
+            "gap": "loose",
+            "images": [
+              {
+                "src": "/images/projects/org-chart-studio/help-beside-chart.png",
+                "alt": "A change-manager guide open beside the fictional Northstar org chart, with the chart still visible."
+              },
+              {
+                "src": "/images/projects/org-chart-studio/help-show-me.png",
+                "alt": "The Show me guide points to the Reports to control in the People table without changing the fictional chart."
+              }
+            ]
+          },
+          {
+            "key": "export-handoff",
+            "type": "featureRow",
+            "label": "Product design · Export",
+            "title": "Design for where the chart goes next",
+            "description": "The product makes the handoff part of the experience: choose a format and scope, inspect page breaks, and preview the result before exporting. This fictional 14-person example plans seven team pages. PowerPoint exports use editable native shapes and text; PDF, PNG, and CSV support other ways teams share or reuse the information.",
+            "image": "/images/projects/org-chart-studio/export-team-preview.png",
+            "imageAlt": "Live export preview for a fictional 14-person organization, showing a team-level PowerPoint page and seven planned pages.",
+            "link": "https://www.orgchartstudio.com/",
+            "linkText": "Explore Org Chart Studio"
+          },
+          {
+            "key": "design-as-a-system",
+            "type": "textOnly",
+            "label": "Design leadership",
+            "title": "One point of view, carried through the product",
+            "description": "Strategy, brand, design system, and interaction design were treated as one connected problem. Sunny Peeps made the visual language reusable; the product carried it through chart editing, themes, import review, contextual help, and export. The result is not color for its own sake, but a more legible way for managers to see the people and structure behind the boxes."
+          }
+        ]
+      }
+    },
+    {
+      "state": "experiment",
+      "title": "Unreel Recipes",
+      "eyebrow": "Agentic business experiment · 2026",
+      "summary": "Unreel Recipes is an experiment in building a fully agentic business. Instead of a traditional human team, the entire operation—product management, product design, social media marketing, and data analytics—is handed over to a swarm of independent AI agents. These agents coordinate, manage, iterate, and run the product autonomously.",
+      "detail": "The product turns a YouTube cooking video or recipe text into a permanent, source-credited recipe page, then offers a one-step-at-a-time Cook Mode for following along.",
+      "liveUrl": "https://www.unreel.recipes/",
+      "screenshots": [
+        {
+          "src": "/images/projects/unreel-recipes/source-entry.webp",
+          "alt": "Unreel Recipes home page showing the video and recipe-text entry options and the Get the recipe action, with recent recipe cards below.",
+          "width": 1920,
+          "height": 1350,
+          "caption": "Start from a cooking video or the text of a recipe."
+        },
+        {
+          "src": "/images/projects/unreel-recipes/recipe-library.webp",
+          "alt": "Unreel Recipes saved recipe library showing food photography, recipe summaries, source attribution, and cooking metadata.",
+          "width": 1920,
+          "height": 1350,
+          "caption": "A searchable library keeps recipes easy to return to."
+        },
+        {
+          "src": "/images/projects/unreel-recipes/recipe-page.webp",
+          "alt": "Unreel Recipes pancake page with its cover photograph, source-video link, creator attribution, and recipe detail.",
+          "width": 1920,
+          "height": 1350,
+          "caption": "The source, creator, and cookable recipe stay together."
+        },
+        {
+          "src": "/images/projects/unreel-recipes/cook-mode.webp",
+          "alt": "Unreel Recipes Cook Mode showing one pancake step alongside the source video, ingredient list, progress, and large Back and Next controls.",
+          "width": 1920,
+          "height": 1350,
+          "caption": "Cook Mode keeps one step and its source moment in reach."
+        }
+      ],
+      "stirringVideo": {
+        "src": "/media/unreel-recipes/stirring-pot.mp4",
+        "poster": "/images/projects/unreel-recipes/stirring-pot-poster.webp",
+        "width": 1140,
+        "height": 642,
+        "label": "The Unreel Recipes pot-stirring processing animation"
+      }
+    },
+    {
       "state": "published",
       "title": "Designer",
       "eyebrow": "Agentic UX experiment · 2026",
@@ -36,16 +198,6 @@
         "the-designer-experiment-part-two",
         "designer"
       ]
-    },
-    {
-      "state": "forthcoming",
-      "title": "Org Chart Studio",
-      "note": "Project story forthcoming."
-    },
-    {
-      "state": "forthcoming",
-      "title": "Unreel Recipes",
-      "note": "Project story forthcoming."
     }
   ],
   "writing": [
