@@ -65,12 +65,12 @@ The site's own mechanism is also positioning: **the résumé is the interface.**
 
 Real, in the repository:
 
-- **9 case studies** — Bolt (global design system), Truist ($66B merger, C-suite foresight), Sparks Grove/Delta (news.delta.com), Upwave (Turner venture), FusionFall (behavioral design and Self-Determination Theory), CNN Magic Wall (technology strategy and weather), Two Way TV (interactive television platform), Armchair Manager (live fantasy sports and BAFTA nomination), and Felix the Cat (CD-i / CD-ROM).
+- **10 case studies** — Bolt (global design system), Truist ($66B merger, C-suite foresight), Sparks Grove/Delta (news.delta.com), Upwave (Turner venture), FusionFall (behavioral design and Self-Determination Theory), CNN Magic Wall (technology strategy and weather), NAPA PROLink (commerce redesign and Ways of Finding), Two Way TV (interactive television platform), Armchair Manager (live fantasy sports and BAFTA nomination), and Felix the Cat (CD-i / CD-ROM).
 - **8 professional references** — verbatim testimonials and attribution lines selected from KC's published consulting site, stored in validated structured content.
 - **20 annotated notes** with authored image, video, poster, and brand-mark references checked at build time.
 - **Awards:** Emmy (Outstanding Creative Achievement in Interactive Media), Royal Television Society Award, BAFTA Interactive Entertainment nomination, Webby nomination, Apple Design Project Award.
 - **Patents:** two granted US patents in automatic content recognition.
-- **Metrics:** $32.8M attributable revenue and 7% add-to-cart lift (GPC, 2025); 0→1M monthly uniques in 8 months (upwave); the $66B SunTrust–BB&T merger; a 10-person team scaled to ~50.
+- **Metrics:** $32.8M attributed revenue from the GPC homepage redesign and A/B-validated 7% add-to-cart improvement (2025); PROLink's best recorded month in January 2026; 0→1M monthly uniques in 8 months (upwave); the $66B SunTrust–BB&T merger; a 10-person team scaled to ~50.
 - **Org Chart Studio independent project:** the case study is `/org-chart-studio`. Its selected production screenshots are copied to `public/images/projects/org-chart-studio/` from `/Users/kcwolff/Library/Mobile Documents/com~apple~CloudDocs/Projects/OrgChartStudio/Assets/Screenshots/2026-09-22/retina/`; the source README and manifest record the capture details. The Northstar people and organization in those captures are fictional. KC approved publication of this selected set on September 23, 2026.
 
 Absences future work must not fabricate: there is no pricing and there are no third-party benchmarks on this site. References must remain verbatim and attributable to the published source.

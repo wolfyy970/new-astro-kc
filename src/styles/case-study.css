@@ -1,4 +1,5 @@
 @import "./base.css";
+@import "./gateway-link.css";
 
 /* ══════════════════════════════════════
    CASE STUDY — SHARED STYLES
@@ -43,9 +44,12 @@
   --cs-stat-label: var(--type-meta);
   --cs-caption: var(--type-body-sm);
 
-  /* ── Case-study layout scale (values preserved from prior literals) ── */
+  /* ── Case-study layout scale ── */
   --cs-pad: 160px 80px;
   --cs-pad-tablet: 100px 32px;
+  /* The smaller repeatable story unit; avoids a 320px valley between rows. */
+  --cs-pad-feature: clamp(88px, 7vw, 112px) 80px;
+  --cs-pad-feature-tablet: 72px 32px;
   --cs-pad-media: 80px;
   --cs-pad-media-tablet: 64px 32px;
   --cs-pad-media-mobile: 48px 24px;

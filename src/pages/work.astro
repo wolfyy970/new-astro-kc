@@ -41,7 +41,14 @@ const studies = await Promise.all(
                 href={`/${study.slug}`}
                 style={`--work-accent: ${study.accent}`}
               >
-                <figure class="work-card-media">
+                <figure
+                  class:list={[
+                    "work-card-media",
+                    {
+                      "work-card-media--contain": study.coverFit === "contain",
+                    },
+                  ]}
+                >
                   <img
                     src={study.ogImage}
                     alt=""

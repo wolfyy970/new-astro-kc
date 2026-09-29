@@ -12,6 +12,7 @@ import felix from "./case-studies/felix.json";
 import armchairManager from "./case-studies/armchair-manager.json";
 import fusionfall from "./case-studies/fusionfall.json";
 import magicWall from "./case-studies/magic-wall.json";
+import napaProlink from "./case-studies/napa-prolink.json";
 import {
   resumeSchema,
   popoverMapSchema,
@@ -69,6 +70,28 @@ describe("content schemas — real data conforms", () => {
     });
   });
 
+  it("shows the Org Chart Studio product link and complete role in the story", () => {
+    const project = projectsWritingSchema
+      .parse(projectsWriting)
+      .projects.find(
+        (entry) =>
+          entry.state === "story" && entry.href === "/org-chart-studio",
+      );
+
+    expect(project?.state).toBe("story");
+    if (!project || project.state !== "story") return;
+
+    expect(project.story.hero).toMatchObject({
+      productLink: {
+        href: "https://www.orgchartstudio.com/",
+        label: "Visit Org Chart Studio",
+      },
+    });
+    expect(project.story.context.role).toBe(
+      "Product strategy, product design, brand design, and design-system lead and coding (AI).",
+    );
+  });
+
   it("requires alt text for the Org Chart Studio hero mark", () => {
     const bad = {
       ...projectsWriting,
@@ -97,12 +120,143 @@ describe("content schemas — real data conforms", () => {
     ["armchair-manager", armchairManager],
     ["fusionfall", fusionfall],
     ["magic-wall", magicWall],
+    ["napa-prolink", napaProlink],
   ])("case study %s matches caseStudyDataSchema", (_slug, data) => {
     expect(caseStudyDataSchema.safeParse(data).success).toBe(true);
+  });
+
+  it("connects NAPA PROLink to the commerce résumé evidence and uses its supplied screens", () => {
+    const study = caseStudyDataSchema.parse(napaProlink);
+    const manifestEntry = manifest.find(
+      (entry) => entry.slug === "napa-prolink",
+    );
+    const consultingEntry = resume.experience.find(
+      (entry) => entry.company === "WOLFF CONSULTING, LLC",
+    );
+    const gpcEntry = resume.experience.find(
+      (entry) => entry.company === "GENUINE PARTS COMPANY",
+    );
+    const imagePaths = [
+      ...("image" in study.hero ? [study.hero.image] : []),
+      ...study.sections.flatMap((section) => {
+        if (section.type === "featureRow") return [section.image];
+        if (section.type === "photoGrid") {
+          return section.images.map((item) => item.src);
+        }
+        return [];
+      }),
+      ...(manifestEntry ? [manifestEntry.ogImage] : []),
+    ];
+    const expectedImages = [
+      "/images/gpc/napa-prolink/ecatalog-mobile.webp",
+      "/images/gpc/napa-prolink/invoices.webp",
+      "/images/gpc/napa-prolink/order-history.webp",
+      "/images/gpc/napa-prolink/order-status.webp",
+      "/images/gpc/napa-prolink/product-availability.webp",
+      "/images/gpc/napa-prolink/product-details.webp",
+      "/images/gpc/napa-prolink/prolink-logo.png",
+      "/images/gpc/napa-prolink/quick-view.webp",
+      "/images/gpc/napa-prolink/recent-and-saved-vehicles.webp",
+      "/images/gpc/napa-prolink/statements.webp",
+      "/images/gpc/napa-prolink/ways-of-finding-01.png",
+      "/images/gpc/napa-prolink/ways-of-finding-02.png",
+      "/images/gpc/napa-prolink/ways-of-finding-homepage.png",
+    ];
+
+    expect(manifestEntry?.ogImage).toBe(study.meta.ogImage);
+    expect(manifestEntry?.coverFit).toBe("contain");
+    expect(study.hero).toMatchObject({
+      image: "/images/gpc/napa-prolink/recent-and-saved-vehicles.webp",
+    });
+    expect(study.leadStats).toEqual([
+      {
+        value: "$32.8M",
+        label: "Attributed homepage-redesign revenue · 2025",
+      },
+      {
+        value: "7%",
+        label: "A/B-validated add-to-cart improvement",
+      },
+      {
+        value: "Jan ’26",
+        label: "PROLink’s best month on record",
+      },
+    ]);
+    expect(study.sections.slice(0, 2).map((section) => section.key)).toEqual([
+      "ways-of-finding-homepage",
+      "ways-of-finding-methods",
+    ]);
+    expect(
+      study.sections.find(
+        (section) => section.key === "ways-of-finding-homepage",
+      ),
+    ).toMatchObject({
+      type: "featureRow",
+      image: "/images/gpc/napa-prolink/ways-of-finding-homepage.png",
+    });
+    expect(
+      study.sections.find(
+        (section) => section.key === "ways-of-finding-methods",
+      ),
+    ).toMatchObject({
+      type: "photoGrid",
+      images: [
+        { src: "/images/gpc/napa-prolink/ways-of-finding-01.png" },
+        { src: "/images/gpc/napa-prolink/ways-of-finding-02.png" },
+      ],
+    });
+    expect(
+      study.sections.find((section) => section.key === "quick-view"),
+    ).toMatchObject({
+      type: "featureRow",
+      image: "/images/gpc/napa-prolink/quick-view.webp",
+      label: "QUICK VIEW",
+    });
+    expect(consultingEntry?.bullets.join(" ")).not.toContain(
+      '<hotspot key="napa-prolink">',
+    );
+    expect(gpcEntry?.bullets[0]).toContain(
+      '<hotspot key="gpc-revenue">$8B unified commerce platform</hotspot>',
+    );
+    expect(popovers["gpc-revenue"]).toMatchObject({
+      link: "/napa-prolink",
+      linkText: "View NAPA PROLink case study",
+    });
+    expect(popovers["gpc-revenue"].text).toContain(
+      "A/B-validated 7% add-to-cart improvement",
+    );
+    expect(popovers["gpc-revenue"].text).toContain(
+      "$32.8M in attributed revenue (2025)",
+    );
+    expect("link" in popovers.agentic).toBe(false);
+    expect(Object.hasOwn(popovers, "napa-prolink")).toBe(false);
+    expect(study.sections.map((section) => section.key)).toEqual([
+      "ways-of-finding-homepage",
+      "ways-of-finding-methods",
+      "mobile-ecatalog",
+      "availability",
+      "product-details",
+      "quick-view",
+      "order-history",
+      "order-status",
+      "account-records",
+    ]);
+    expect([...imagePaths].sort()).toEqual(expectedImages.sort());
+    expect(JSON.stringify(study).toLowerCase()).not.toContain("copilot");
+    expect(JSON.stringify(study)).not.toContain("O’Reilly First Call");
   });
 });
 
 describe("content schemas — reject malformed data", () => {
+  it("requires at least two metrics when a case study leads with outcomes", () => {
+    const bad = {
+      ...napaProlink,
+      leadStats: [{ value: "$32.8M", label: "Attributed revenue" }],
+    };
+
+    expect(caseStudyDataSchema.safeParse(bad).success).toBe(false);
+  });
+
   it("rejects a popover missing the required `text` field", () => {
     const bad = { k: { label: "x" } };
     expect(popoverMapSchema.safeParse(bad).success).toBe(false);

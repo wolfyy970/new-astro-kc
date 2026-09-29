@@ -31,6 +31,11 @@
         "type": "string",
         "pattern": "^/images/.*",
         "description": "Required thumbnail for inventory and share metadata. Mirrors the ogImage from the individual study file."
+      },
+      "coverFit": {
+        "type": "string",
+        "enum": ["cover", "contain"],
+        "description": "Optional fit for the Work index thumbnail. Use contain for a logo or mark that must remain uncropped."
       }
     }
   }

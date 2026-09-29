@@ -178,6 +178,7 @@ The case study system has three distinct layers. Each layer has a single respons
 ```
 src/content/case-studies/
   manifest.json          ← ordered index of all published studies
+  napa-prolink.json
   bolt.json              ← self-contained data for one study
   truist.json
   upwave.json
@@ -189,6 +190,7 @@ src/content/case-studies/
   felix.json
 
 src/pages/
+  napa-prolink.astro     ← NAPA PROLink commerce case study
   bolt.astro             ← thin wrapper: imports JSON, renders <CaseStudyPage cs={cs} />
   truist.astro
   upwave.astro
@@ -218,6 +220,8 @@ src/components/case-studies/
   StatRow.astro          ← typographic outcome numbers band
   VideoSection.astro     ← native video with contextual heading/caption
   ExternalVideoSection.astro ← approved external embed with its source link
+  CaseStudyImageTrigger.astro ← accessible trigger shared by editorial images
+  CaseStudyImageLightbox.astro ← one viewport-fit native dialog per case-study page
 
 src/components/
   ProjectGateway.astro   ← the shared case-study link control (styles in gateway-link.css)
@@ -238,8 +242,8 @@ public/downloads/
 1. `manifest.json` — the reverse-chronological source for the `/work` index and the build verifier's canonical case-study inventory. The Work page filters it through the same `CASE_STUDY_LINKS` gate as the green résumé links, so unpublished studies cannot leak through the index.
 2. `truist.json` (etc.) — imported directly by the page file. Contains `meta`, `hero`, `context`, and an ordered `sections` array.
 3. `truist.astro` — imports its JSON and renders `<CaseStudyPage cs={cs} />`. Nothing else.
-4. `CaseStudyPage.astro` — validates the study against `caseStudyDataSchema` (zod) at the boundary, then composes `CaseStudyLayout` (`meta` + `accent`), `CaseStudyHero` (spread `{...cs.hero}`, which subsumes both the image and background hero variants), `ContextGrid` (`cs.context`), and maps `cs.sections` through `CaseStudySection`.
-5. `CaseStudySection.astro` — reads `section.type`, applies the shared `bg`/`darkBg` wrapper, and delegates specialized variants to their focused renderer components.
+4. `CaseStudyPage.astro` — validates the study against `caseStudyDataSchema` (zod), composes `CaseStudyLayout` (`meta` + `accent`), `CaseStudyHero` (spread `{...cs.hero}` plus optional `productLink` and `leadStats`), and `ContextGrid`; maps `cs.sections` through `CaseStudySection` and mounts one shared image-viewer dialog for the page.
+5. `CaseStudySection.astro` — reads `section.type`, applies the shared `bg`/`darkBg` wrapper, and delegates specialized variants to their focused renderer components. Editorial images use `CaseStudyImageTrigger`; the page-level dialog opens the original image fit to the viewport and restores focus on dismissal.
 6. `projects-writing.json` and `references.json` are parsed at the page boundary by their strict schemas; the collection pages do not share résumé hotspot state and therefore remain ordinary server-rendered index surfaces.
 
 #### Section Type Catalog

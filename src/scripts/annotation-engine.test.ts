@@ -176,7 +176,7 @@ describe("Annotation Engine (DOM auto-mapping)", () => {
     });
 
     const link = annotation.querySelector<HTMLAnchorElement>(".sa-link")!;
-    const linkClick = vi.fn();
+    const linkClick = vi.fn((event: MouseEvent) => event.preventDefault());
     link.addEventListener("click", linkClick);
 
     expect(annotation.classList.contains("revealed")).toBe(true);

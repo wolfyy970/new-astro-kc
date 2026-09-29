@@ -1,0 +1,153 @@
+{
+  "meta": {
+    "title": "NAPA PROLink — KC Wolff-Ingham",
+    "description": "An A/B-validated NAPA PROLink homepage redesign: 7% higher add-to-cart and $32.8M in attributed 2025 revenue, built around seven ways to find a part.",
+    "ogImage": "/images/gpc/napa-prolink/prolink-logo.png",
+    "accent": "#06285f"
+  },
+  "hero": {
+    "label": "Genuine Parts Company · Commercial e-commerce",
+    "title": "PROLink",
+    "subtitle": "A commercial ordering experience designed around how repair shops identify, select, and fulfill parts.",
+    "composition": "product",
+    "brandMark": "/images/brands/napa.svg",
+    "brandMarkAlt": "NAPA Auto Parts logo",
+    "image": "/images/gpc/napa-prolink/recent-and-saved-vehicles.webp",
+    "imageAlt": "NAPA PROLink dashboard concepts showing recent and saved vehicle tabs beside searches, orders, and shop tools."
+  },
+  "leadStats": [
+    {
+      "value": "$32.8M",
+      "label": "Attributed homepage-redesign revenue · 2025"
+    },
+    {
+      "value": "7%",
+      "label": "A/B-validated add-to-cart improvement"
+    },
+    {
+      "value": "Jan ’26",
+      "label": "PROLink’s best month on record"
+    }
+  ],
+  "context": {
+    "challenge": "Help repair shops identify and order the part in front of them—without forcing them through a conventional storefront.",
+    "role": "Senior Director & Head of UX Design and Research",
+    "company": "Genuine Parts Company · NAPA",
+    "scope": "Commercial part discovery, ordering, fulfillment, and account tools",
+    "team": "GPC product, design, research, and engineering partners",
+    "body": "Two years of generative research surfaced a different starting point: service advisors often have the part in hand; they need to identify it, not browse a retail storefront. The homepage redesign made vehicle selection useful but optional, then brought multiple discovery routes into one place. That strategy carried through the full shop journey—from vehicle and catalog search to availability, ordering, fulfillment, and account history."
+  },
+  "sections": [
+    {
+      "key": "ways-of-finding-homepage",
+      "type": "featureRow",
+      "label": "THE HOMEPAGE REDESIGN",
+      "title": "Treat finding—not browsing—as the homepage’s primary job.",
+      "description": "Commercial customers often arrived with the part in hand; their job was to identify it, not browse a retail storefront. The redesign made the vehicle panel non-invasive: select by VIN, plate, or vehicle details when fitment helps, while search, interchange, categories, job types, and eCatalog remain available without a vehicle selection.",
+      "image": "/images/gpc/napa-prolink/ways-of-finding-homepage.png",
+      "imageAlt": "Annotated PROLink homepage concept showing optional VIN, license-plate, or vehicle-detail entry alongside search, interchange, categories, job types, eCatalog, recent searches, and recent orders.",
+      "caption": "Vehicle selection supports the task without blocking other routes to a part."
+    },
+    {
+      "key": "ways-of-finding-methods",
+      "type": "photoGrid",
+      "label": "WAYS OF FINDING",
+      "title": "Seven routes into the catalog. One job: identify the right part.",
+      "description": "The homepage orchestrated seven ways to find a part: search with auto-suggest; Quick Picks; recent homepage searches; job types; browse; part-number and interchange search; and category search. A shop could begin with the clue it had instead of being forced into a single funnel.",
+      "columns": 2,
+      "gap": "normal",
+      "images": [
+        {
+          "src": "/images/gpc/napa-prolink/ways-of-finding-01.png",
+          "alt": "Ways of Finding slide, routes one through four: auto-suggest search, Quick Picks, recent homepage searches, and job-type search."
+        },
+        {
+          "src": "/images/gpc/napa-prolink/ways-of-finding-02.png",
+          "alt": "Ways of Finding slide, routes five through seven: browse navigation, part-number or interchange search, and category search."
+        }
+      ]
+    },
+    {
+      "key": "mobile-ecatalog",
+      "type": "featureRow",
+      "label": "ECATALOG",
+      "title": "Keep the catalog in the shop workflow.",
+      "description": "On mobile, the eCatalog sits inside PROLink alongside vehicle selection and search. A shop can browse a reference catalog in place or expand the viewer to full screen when the work calls for a closer look.",
+      "image": "/images/gpc/napa-prolink/ecatalog-mobile.webp",
+      "imageAlt": "NAPA PROLink mobile eCatalog concept showing vehicle entry and search beside a catalog browser, with a full-screen catalog view.",
+      "caption": "Mobile eCatalog tab and embedded full-screen catalog viewer.",
+      "reverse": true
+    },
+    {
+      "key": "availability",
+      "type": "featureRow",
+      "label": "AVAILABILITY & FULFILLMENT",
+      "title": "Compare where a part can come from.",
+      "description": "The product summary expands into inventory across local stores and distribution centers. Quantity, cutoff times, and delivery estimates sit beside pricing, fitment notes, and the add-to-cart action.",
+      "image": "/images/gpc/napa-prolink/product-availability.webp",
+      "imageAlt": "NAPA PROLink product-summary design and expanded inventory table showing local-store and distribution quantities, delivery timing, pricing, and Add to Cart.",
+      "caption": "Product summary and expanded all-inventory view."
+    },
+    {
+      "key": "product-details",
+      "type": "featureRow",
+      "label": "PRODUCT DECISION",
+      "title": "Put the details beside the decision.",
+      "description": "The product-detail exploration brings interchange and supersession references together with product attributes, availability, price, quantity controls, and Add to Cart. A technician can weigh an alternative without losing sight of delivery options.",
+      "image": "/images/gpc/napa-prolink/product-details.webp",
+      "imageAlt": "Annotated NAPA PROLink product-detail design showing interchange and supersession references, delivery windows, pricing, quantity controls, and product guidance.",
+      "caption": "Annotated product-detail component exploration.",
+      "reverse": true
+    },
+    {
+      "key": "quick-view",
+      "type": "featureRow",
+      "label": "QUICK VIEW",
+      "title": "Inspect the part without leaving the list.",
+      "description": "The Quick View concept brings product imagery, part references, interchange details, quantity, and the cart action into one focused panel. A shop can check the item and continue from the surrounding product list without moving to a separate detail page.",
+      "image": "/images/gpc/napa-prolink/quick-view.webp",
+      "imageAlt": "Quick View modal concept showing a product gallery, part references and interchange, quantity control, pricing, and Add to Cart.",
+      "caption": "Quick View concept for a NAPA rotor product."
+    },
+    {
+      "key": "order-history",
+      "type": "featureRow",
+      "label": "ORDER HISTORY",
+      "title": "Make past orders easy to find again.",
+      "description": "Order History combines search with store, status, and date-range filters. Its results bring line items, invoice numbers, order state, and subtotals into one searchable record.",
+      "image": "/images/gpc/napa-prolink/order-history.webp",
+      "imageAlt": "NAPA PROLink Order History with search and store, status, and date filters; results show order date, items, invoice number, store, status, and subtotal.",
+      "caption": "Order History with searchable, filterable results."
+    },
+    {
+      "key": "order-status",
+      "type": "featureRow",
+      "label": "ORDER STATUS",
+      "title": "Follow fulfillment down to the item.",
+      "description": "The status view tracks an order through placement, invoicing, and delivery. Item quantity, fulfillment source, estimated delivery, invoice references, and delivery help stay alongside the order summary.",
+      "image": "/images/gpc/napa-prolink/order-status.webp",
+      "imageAlt": "NAPA PROLink Order Status page with item quantities, fulfillment source, estimated delivery, order and invoice details, and delivery support.",
+      "caption": "Item-level order progress, fulfillment details, and delivery support.",
+      "reverse": true
+    },
+    {
+      "key": "account-records",
+      "type": "photoGrid",
+      "label": "ACCOUNT TOOLS",
+      "title": "The work continues after checkout.",
+      "description": "Invoice search, printable records, PDF downloads, and dated statements give a shop access to its account history beyond the order itself.",
+      "columns": 2,
+      "gap": "normal",
+      "images": [
+        {
+          "src": "/images/gpc/napa-prolink/invoices.webp",
+          "alt": "NAPA PROLink Invoices page with invoice search, date range, invoice and purchase-order numbers, amounts, store addresses, and PDF downloads."
+        },
+        {
+          "src": "/images/gpc/napa-prolink/statements.webp",
+          "alt": "NAPA PROLink Statements page with monthly account records, dates, amounts, account number, print control, and PDF downloads."
+        }
+      ]
+    }
+  ]
+}

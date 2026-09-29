@@ -61,6 +61,24 @@
           "type": "string",
           "description": "Supporting paragraph beneath the title."
         },
+        "productLink": {
+          "type": "object",
+          "required": ["href", "label"],
+          "additionalProperties": false,
+          "properties": {
+            "href": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://",
+              "description": "Optional live product or company site linked from the hero."
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Action label for the hero link."
+            }
+          }
+        },
         "composition": {
           "type": "string",
           "enum": ["immersive", "product"],
@@ -136,6 +154,14 @@
           "description": "Full prose paragraph describing the engagement."
         }
       }
+    },
+
+    "leadStats": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/StatItem" },
+      "minItems": 2,
+      "maxItems": 5,
+      "description": "Optional outcomes shown in the product-led hero. Keep each value's scope and time window in its label."
     },
 
     "sections": {

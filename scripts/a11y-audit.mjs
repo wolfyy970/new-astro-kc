@@ -20,6 +20,7 @@ const PAGES = [
   "/felix",
   "/fusionfall",
   "/magic-wall",
+  "/napa-prolink",
   "/armchair-manager",
 ];
 
@@ -206,6 +207,140 @@ for (const path of PAGES) {
       logoAlt: "Org Chart Studio four-color tile mark",
       currentNavigation: "/projects",
     });
+  }
+
+  if (path === "/org-chart-studio") {
+    const projectPage = await page.evaluate(() => {
+      const link = document.querySelector(".hero .gateway-link");
+      const role = Array.from(document.querySelectorAll(".meta-item")).find(
+        (item) => item.querySelector("h3")?.textContent?.trim() === "My Role",
+      );
+      return {
+        productLink: link
+          ? {
+              href: link.getAttribute("href"),
+              label: link.textContent?.replace(/\s+/g, " ").trim(),
+              width: link.getBoundingClientRect().width,
+              borderStyle: getComputedStyle(link).borderTopStyle,
+              arrow: getComputedStyle(link, "::after").content,
+            }
+          : null,
+        role: role?.querySelector("p")?.textContent?.trim(),
+      };
+    });
+
+    assert.deepEqual(projectPage.productLink, {
+      href: "https://www.orgchartstudio.com/",
+      label: "Visit Org Chart Studio",
+      width: 300,
+      borderStyle: "solid",
+      arrow: '"→"',
+    });
+    assert.equal(
+      projectPage.role,
+      "Product strategy, product design, brand design, and design-system lead and coding (AI).",
+    );
+    console.log("Org Chart Studio flow PASS (styled product link, role)");
+  }
+
+  if (path === "/napa-prolink") {
+    const study = await page.evaluate(() => {
+      const leadStats = document.querySelectorAll(
+        ".hero .stat-row-section.is-compact .stat-item",
+      );
+      const imageTriggers = document.querySelectorAll(
+        "[data-case-study-image-trigger]",
+      );
+
+      return {
+        title: document.querySelector(".hero-title")?.textContent?.trim(),
+        leadStats: Array.from(leadStats).map((item) => ({
+          value: item.querySelector(".stat-value")?.textContent?.trim(),
+          label: item.querySelector(".stat-label")?.textContent?.trim(),
+        })),
+        firstStoryHeading: document
+          .querySelector(".feature-row .feature-text h2")
+          ?.textContent?.trim(),
+        viewerCount: imageTriggers.length,
+      };
+    });
+
+    assert.equal(study.title, "PROLink");
+    assert.deepEqual(study.leadStats, [
+      {
+        value: "$32.8M",
+        label: "Attributed homepage-redesign revenue · 2025",
+      },
+      {
+        value: "7%",
+        label: "A/B-validated add-to-cart improvement",
+      },
+      { value: "Jan ’26", label: "PROLink’s best month on record" },
+    ]);
+    assert.match(study.firstStoryHeading ?? "", /finding.*homepage/i);
+    assert.equal(study.viewerCount, 12);
+
+    await page.click("[data-case-study-image-trigger]");
+    await page.waitForFunction(
+      () => document.querySelector("[data-case-study-lightbox]")?.open,
+    );
+    const openedImage = await page.evaluate(() => ({
+      src: document
+        .querySelector("[data-case-study-lightbox-image]")
+        ?.getAttribute("src"),
+      alt: document
+        .querySelector("[data-case-study-lightbox-image]")
+        ?.getAttribute("alt"),
+      focusIsClose: document.activeElement?.matches(
+        "[data-case-study-image-close]",
+      ),
+    }));
+    assert.match(openedImage.src ?? "", /recent-and-saved-vehicles\.webp$/);
+    assert.ok(openedImage.alt?.trim());
+    assert.ok(openedImage.focusIsClose);
+
+    await page.keyboard.press("Escape");
+    assert.equal(
+      await page.$eval("[data-case-study-lightbox]", (dialog) => dialog.open),
+      false,
+      "Escape must close the image viewer.",
+    );
+    assert.equal(
+      await page.evaluate(() =>
+        document.activeElement?.matches("[data-case-study-image-trigger]"),
+      ),
+      true,
+      "Closing the viewer must restore focus to its image trigger.",
+    );
+
+    await page.setViewport({ width: 390, height: 844 });
+    await page.reload({ waitUntil: "networkidle0" });
+    const mobileDocumentWidth = await page.evaluate(
+      () => document.documentElement.scrollWidth,
+    );
+    assert.ok(
+      mobileDocumentWidth <= 390,
+      `PROLink must not overflow a 390px viewport (document is ${mobileDocumentWidth}px wide).`,
+    );
+    await page.click("[data-case-study-image-trigger]");
+    await page.waitForFunction(() => {
+      const image = document.querySelector("[data-case-study-lightbox-image]");
+      return image?.complete && image.naturalWidth > 0;
+    });
+    const mobileImageFits = await page.$eval(
+      "[data-case-study-lightbox-image]",
+      (image) => {
+        const bounds = image.getBoundingClientRect();
+        return bounds.width <= innerWidth && bounds.height <= innerHeight;
+      },
+    );
+    assert.ok(
+      mobileImageFits,
+      "The enlarged image must fit the viewport without zoom or pan.",
+    );
+    console.log(
+      "NAPA PROLink flow PASS (outcomes, strategy, 12 image controls, keyboard viewer, mobile fit)",
+    );
   }
 
   const violations = results.violations.map((v) => ({

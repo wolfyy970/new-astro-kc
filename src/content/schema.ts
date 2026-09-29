@@ -145,6 +145,10 @@ const heroBaseShape = {
   label: nonEmptyString,
   title: nonEmptyString,
   subtitle: nonEmptyString,
+  productLink: z
+    .object({ href: webUrlSchema, label: nonEmptyString })
+    .strict()
+    .optional(),
 };
 
 const caseStudyImageHeroSchema = z
@@ -359,6 +363,7 @@ export const caseStudyDataSchema = z
   .object({
     meta: caseStudyMetaSchema,
     hero: caseStudyHeroSchema,
+    leadStats: z.array(caseStudyStatItemSchema).min(2).max(5).optional(),
     context: caseStudyContextSchema,
     sections: z.array(caseStudySectionSchema).min(1),
   })
@@ -384,6 +389,7 @@ const manifestEntrySchema = z
     description: nonEmptyString,
     accent: accentSchema,
     ogImage: imagePathSchema,
+    coverFit: z.enum(["cover", "contain"]).optional(),
   })
   .strict();
 

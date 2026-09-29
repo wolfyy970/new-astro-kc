@@ -1,6 +1,10 @@
 ---
 import { Image } from "astro:assets";
 import { publicImageSize } from "../../utils/image-size";
+import type { CaseStudyStatItem } from "../../types/content";
+import ProjectGateway from "../ProjectGateway.astro";
+import CaseStudyImageTrigger from "./CaseStudyImageTrigger.astro";
+import StatRow from "./StatRow.astro";
 
 interface Props {
   title: string;
@@ -12,6 +16,8 @@ interface Props {
   composition?: "immersive" | "product";
   brandMark?: string;
   brandMarkAlt?: string;
+  productLink?: { href: string; label: string };
+  leadStats?: CaseStudyStatItem[];
 }
 
 const {
@@ -24,6 +30,8 @@ const {
   composition = "immersive",
   brandMark,
   brandMarkAlt,
+  productLink,
+  leadStats,
 } = Astro.props;
 
 // The product shot was declared 800x1200 whatever the file actually was.
@@ -78,19 +86,27 @@ const bgSize = background ? await publicImageSize(background) : null;
         <div class="hero-label product-label">{label}</div>
       )
     }
+    {productLink && <ProjectGateway {...productLink} />}
+    {leadStats && <StatRow stats={leadStats} compact />}
   </div>
   {
     image && (
       <div class="hero-right">
-        <Image
+        <CaseStudyImageTrigger
           src={image}
           alt={imageAlt || ""}
-          width={imageSize?.width ?? 800}
-          height={imageSize?.height ?? 1200}
-          format="webp"
-          quality="high"
-          loading="eager"
-        />
+          className="hero-image-trigger"
+        >
+          <Image
+            src={image}
+            alt={imageAlt || ""}
+            width={imageSize?.width ?? 800}
+            height={imageSize?.height ?? 1200}
+            format="webp"
+            quality="high"
+            loading="eager"
+          />
+        </CaseStudyImageTrigger>
       </div>
     )
   }

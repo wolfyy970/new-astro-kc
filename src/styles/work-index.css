@@ -117,6 +117,17 @@ body {
     filter var(--duration-medium) ease;
 }
 
+.work-card-media--contain {
+  /* Match the supplied NAPA PROLink mark's own background so the square logo
+     reads as one uninterrupted field inside the landscape work-card frame. */
+  background: #001489;
+}
+
+.work-card-media--contain img {
+  object-fit: contain;
+  filter: none;
+}
+
 .work-card-copy {
   position: relative;
   display: flex;
@@ -182,6 +193,12 @@ body {
 .work-card:focus-visible .work-card-media img {
   filter: saturate(1);
   transform: scale(1.025);
+}
+
+.work-card:hover .work-card-media--contain img,
+.work-card:focus-visible .work-card-media--contain img {
+  filter: none;
+  transform: none;
 }
 
 .work-card:hover .work-card-action span,

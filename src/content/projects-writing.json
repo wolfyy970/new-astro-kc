@@ -26,12 +26,16 @@
           "composition": "product",
           "brandMark": "/images/projects/org-chart-studio/brand-mark.svg",
           "brandMarkAlt": "Org Chart Studio four-color tile mark",
+          "productLink": {
+            "href": "https://www.orgchartstudio.com/",
+            "label": "Visit Org Chart Studio"
+          },
           "image": "/images/projects/org-chart-studio/northstar-spectrum.png",
           "imageAlt": "A fictional 14-person organization shown in Org Chart Studio's Spectrum theme, with three distinct team colors and a shared hierarchy."
         },
         "context": {
           "challenge": "Make org charts useful to managers, not another piece of enterprise overhead.",
-          "role": "Product strategy, product design, brand design, and design-system lead",
+          "role": "Product strategy, product design, brand design, and design-system lead and coding (AI).",
           "company": "Org Chart Studio",
           "scope": "Product direction, brand, user experience, and Sunny Peeps design system",
           "team": "Independent product",

@@ -1,5 +1,13 @@
 [
   {
+    "slug": "napa-prolink",
+    "title": "NAPA PROLink",
+    "description": "Commercial e-commerce for repair shops · Part discovery, fulfillment & account tools",
+    "accent": "#06285f",
+    "ogImage": "/images/gpc/napa-prolink/prolink-logo.png",
+    "coverFit": "contain"
+  },
+  {
     "slug": "bolt",
     "title": "Bolt Design System",
     "description": "Global themeable design system · Figma 1:1 with code · adopted across North America, Europe & APAC",

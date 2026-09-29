@@ -13,6 +13,7 @@ import CaseStudyLayout from "../../layouts/CaseStudyLayout.astro";
 import CaseStudyHero from "./CaseStudyHero.astro";
 import ContextGrid from "./ContextGrid.astro";
 import CaseStudySection from "./CaseStudySection.astro";
+import CaseStudyImageLightbox from "./CaseStudyImageLightbox.astro";
 
 interface Props {
   cs: unknown;
@@ -29,7 +30,7 @@ const cs = caseStudyDataSchema.parse(rawCaseStudy);
   accent={cs.meta.accent}
   navSection={navSection}
 >
-  <CaseStudyHero {...cs.hero} />
+  <CaseStudyHero {...cs.hero} leadStats={cs.leadStats} />
 
   <ContextGrid
     challenge={cs.context.challenge}
@@ -42,4 +43,6 @@ const cs = caseStudyDataSchema.parse(rawCaseStudy);
   </ContextGrid>
 
   {cs.sections.map((section) => <CaseStudySection {...section} />)}
+
+  <CaseStudyImageLightbox />
 </CaseStudyLayout>

@@ -82,7 +82,8 @@ aspect ratio:
   `public/media/`. The `/projects` collection follows the same rule inside a
   `projects` segment — `public/images/projects/<slug>/` for project images and
   `public/media/<slug>/` for project video, as Org Chart Studio and Unreel
-  Recipes do. Components read each file's real dimensions through
+  Recipes do. Client-owned evidence may use an extra namespace such as
+  `public/images/gpc/napa-prolink/`. Components read each file's real dimensions through
   `publicImageSize()`; components using Astro's `Image` request WebP output,
   while direct `<img>` renderers serve the original public file.
 - **Popovers:** Before serializing note data to the client, `index.astro` asks
@@ -200,8 +201,8 @@ Every public surface uses semantic CSS custom properties defined in `src/styles/
 
 Case studies are data-driven: content lives in JSON files and a thin `.astro` page imports and renders them. See `ARCHITECTURE.md → Case Study Template System` for the full section type reference.
 
-1. **Create `src/content/case-studies/<slug>.json`** following the schema in `.vscode/case-study.schema.json`. Include `meta`, `hero`, `context`, and a `sections` array where each item has a `type` field (e.g. `cardGrid`, `featureRow`, `textOnly`). Existing slugs are `bolt`, `truist`, `upwave`, `sparks-grove`, `two-way-tv`, `felix`, `fusionfall`, `magic-wall`, and `armchair-manager`.
-2. **Add an entry to `src/content/case-studies/manifest.json`** with `slug`, `title`, `description`, `accent` (6-digit hex), and `ogImage`.
+1. **Create `src/content/case-studies/<slug>.json`** following the schema in `.vscode/case-study.schema.json`. Include `meta`, `hero`, `context`, and a `sections` array where each item has a `type` field (e.g. `cardGrid`, `featureRow`, `textOnly`). `leadStats` is optional and presents two to five scoped outcomes in a product-led hero. Existing slugs are `napa-prolink`, `bolt`, `truist`, `upwave`, `sparks-grove`, `two-way-tv`, `felix`, `fusionfall`, `magic-wall`, and `armchair-manager`.
+2. **Add an entry to `src/content/case-studies/manifest.json`** with `slug`, `title`, `description`, `accent` (6-digit hex), and `ogImage`. Optional `coverFit: "contain"` preserves an uncropped logo in the Work index.
 3. **Create `src/pages/<slug>.astro`** — copy any existing page. The whole body is:
    ```astro
    ---
@@ -214,3 +215,5 @@ Case studies are data-driven: content lives in JSON files and a thin `.astro` pa
 4. **Register the editor schema** — add the file path to the `fileMatch` list in `.vscode/settings.json` (autocomplete only; runtime validation comes from `src/content/schema.ts`).
 5. **Add images** to `public/images/<slug>/`.
 6. **Enable case study links** — set `CASE_STUDY_LINKS=true` or add the slug to the list in `.env.local` / Vercel Dashboard.
+
+Editorial images across case-study heroes and sections share one accessible image viewer. The image trigger opens the authored source fit to the viewport; Escape, the close control, or backdrop dismissal closes it and restores keyboard focus. This is an image-reading view, not a zoom/pan tool.

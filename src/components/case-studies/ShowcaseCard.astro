@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { publicImageSize } from "../../utils/image-size";
+import CaseStudyImageTrigger from "./CaseStudyImageTrigger.astro";
 
 interface Props {
   title: string;
@@ -38,14 +39,20 @@ const sideways = wide && isPortrait;
 <div
   class={`showcase-card${isDark ? " is-dark" : ""}${sideways ? " is-sideways" : ""}`}
 >
-  <Image
+  <CaseStudyImageTrigger
     src={image}
     alt={imageAlt}
-    width={size.width}
-    height={size.height}
-    format="webp"
-    quality="mid"
-  />
+    className={sideways ? "sideways-image-trigger" : undefined}
+  >
+    <Image
+      src={image}
+      alt={imageAlt}
+      width={size.width}
+      height={size.height}
+      format="webp"
+      quality="mid"
+    />
+  </CaseStudyImageTrigger>
   <div class="card-text">
     <h3>{title}</h3>
     <p>{description}</p>

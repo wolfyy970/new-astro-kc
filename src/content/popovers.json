@@ -1,10 +1,12 @@
 {
   "gpc-revenue": {
     "label": "Research & Business Impact",
-    "text": "Leading design for the digital transformation of a $8B e-commerce platform. Customer research uncovered a key insight: B2B parts lookup is fundamentally different from traditional e-commerce. Service advisors often have the part in hand; they need to identify it, not shop for it. The \"ways of finding\" strategy (keyword search, category search, part number lookup, job type, legacy PDF catalogs) delivered a 7% add-to-cart improvement representing a $32.8M lift in revenue for the pro segment (2025).",
+    "text": "Leading design for the digital transformation of an $8B commerce platform. Research showed that B2B parts lookup is not traditional e-commerce: service advisors often have the part in hand and need to identify it, not browse a storefront. The homepage redesign organized multiple ways of finding around that task and delivered an A/B-validated 7% add-to-cart improvement, representing $32.8M in attributed revenue (2025).",
     "stat": "$32.8M",
     "brandMark": "/images/brands/napa.svg",
-    "brandMarkAlt": "NAPA Auto Parts logo"
+    "brandMarkAlt": "NAPA Auto Parts logo",
+    "link": "/napa-prolink",
+    "linkText": "View NAPA PROLink case study"
   },
   "bolt": {
     "label": "Bolt Design System",

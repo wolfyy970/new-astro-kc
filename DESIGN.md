@@ -462,9 +462,21 @@ The `/references` page is a typographic record of eight published testimonials. 
 The top of a case-study page, and the one place the source brand's own composition decides the layout. `hero.composition` selects between two settings:
 
 - **Immersive** (default): the client's colour field, full height, built from `--accent` — the hero is where a brand that genuinely leads with a colour field gets to fill one, and white type sits on it. An archival hero photograph (`background`) runs under the shared navy scrim instead of the gradient.
-- **Product** (`composition: "product"`): for surface-led brands whose own system is neutral. Stock and ink replace the saturated field; the client's mark — required in this composition, since a neutral hero has nothing else naming the brand — sits beside a title held on one line, the eyebrow moves below the subtitle, and the product screenshot takes the right column. Colour arrives through the product imagery, not a backdrop. Org Chart Studio's Sunny Peeps system is the reference.
+- **Product** (`composition: "product"`): for surface-led brands whose own system is neutral. Stock and ink replace the saturated field; the client's mark — required in this composition, since a neutral hero has nothing else naming the brand — sits beside a title held on one line, the eyebrow moves below the subtitle, and the product screenshot takes the right column. An optional, named product link uses the shared gateway control directly beneath the eyebrow. Colour arrives through the product imagery, not a backdrop. Org Chart Studio's Sunny Peeps system is the reference.
 
 A `background` hero may crop to fill; so may the full-bleed strip. Every other image in a case study fits inside its box, at its own ratio.
+
+### Case-Study Media Viewer
+
+Product and editorial images use the shared `CaseStudyImageTrigger`: the persistent **View larger** affordance opens the authored source at its natural ratio, constrained to the viewport. This is a fit-to-screen reading view, not a zoom or pan tool. The native dialog supplies modal keyboard focus; Close, Escape, and backdrop dismissal return focus to the image trigger. Alt text is also repeated as the viewer caption. Client marks and decorative hero backgrounds are not image-viewer controls.
+
+### Lead Outcomes
+
+`leadStats` is optional case-study content rendered inside a product-led hero, under the project identity and beside its product image. Use it when a small set of attributable results deserves to lead the skim; each value keeps its scope and time window in the label. The `StatRow` organism has a compact mode for this placement and retains its full-width mode for in-story impact sections.
+
+### Feature Rows
+
+Feature rows pair one piece of evidence with its explanation. They use the shared `--cs-pad-feature` rhythm (fluid 88–112px vertical padding on desktop, 72px on tablet, and 48px on mobile) rather than the larger chapter-section padding. This preserves a spacious reading pace without making a long sequence of product screens feel stalled. The feature image keeps its native ratio; on narrow screens the text moves before the image.
 
 ### Cards (case studies)
 

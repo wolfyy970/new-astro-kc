@@ -1,0 +1,106 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  className?: string;
+}
+
+const { src, alt, className } = Astro.props;
+---
+
+<button
+  class:list={["case-study-image-trigger", className]}
+  type="button"
+  data-case-study-image-trigger
+  data-full-src={src}
+  data-image-alt={alt}
+  aria-label={`View larger image: ${alt}`}
+>
+  <slot />
+  <span class="image-trigger-affordance" aria-hidden="true">
+    <span>View larger</span>
+    <svg viewBox="0 0 16 16" fill="none">
+      <path d="M1.5 6V1.5H6M10 1.5h4.5V6M14.5 10v4.5H10M6 14.5H1.5V10"></path>
+    </svg>
+  </span>
+</button>
+
+<style>
+  .case-study-image-trigger {
+    position: relative;
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    line-height: 0;
+    text-align: inherit;
+    cursor: pointer;
+  }
+
+  .case-study-image-trigger:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 4px;
+  }
+
+  .case-study-image-trigger > :global(img) {
+    display: block;
+  }
+
+  .case-study-image-trigger.hero-image-trigger,
+  .case-study-image-trigger.sideways-image-trigger {
+    width: auto;
+    max-width: 100%;
+  }
+
+  .case-study-image-trigger.full-bleed-image-trigger {
+    height: 100%;
+  }
+
+  .image-trigger-affordance {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 11px;
+    border: 1px solid currentColor;
+    background: var(--doc-heading, #111);
+    color: var(--doc-white, #fff);
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    text-transform: uppercase;
+    pointer-events: none;
+    transition:
+      background-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .image-trigger-affordance svg {
+    width: 13px;
+    height: 13px;
+    stroke: currentColor;
+    stroke-linecap: square;
+    stroke-width: 1.5;
+  }
+
+  .case-study-image-trigger:hover .image-trigger-affordance,
+  .case-study-image-trigger:focus-visible .image-trigger-affordance {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .image-trigger-affordance {
+      transition: none;
+    }
+  }
+</style>

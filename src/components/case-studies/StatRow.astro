@@ -12,12 +12,19 @@ interface Props {
   stats: CaseStudyStatItem[];
   label?: string;
   isDark?: boolean;
+  compact?: boolean;
 }
 
-const { stats, label, isDark = false } = Astro.props;
+const { stats, label, isDark = false, compact = false } = Astro.props;
 ---
 
-<section class={`stat-row-section${isDark ? " is-dark" : ""}`}>
+<section
+  class:list={[
+    "stat-row-section",
+    isDark && "is-dark",
+    compact && "is-compact",
+  ]}
+>
   <div class="stat-row-inner">
     {label && <p class="stat-row-label">{label}</p>}
     <div class="stat-grid">
@@ -101,6 +108,39 @@ const { stats, label, isDark = false } = Astro.props;
     max-width: 160px;
   }
 
+  .stat-row-section.is-compact {
+    padding: 30px 0 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .stat-row-section.is-compact .stat-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .stat-row-section.is-compact .stat-item {
+    align-items: flex-start;
+    padding: 16px 12px 0;
+    border: 0;
+    border-top: 1px solid var(--doc-rule);
+    text-align: left;
+  }
+
+  .stat-row-section.is-compact .stat-item:first-child {
+    padding-left: 0;
+  }
+
+  .stat-row-section.is-compact .stat-value {
+    font-size: clamp(28px, 3.3vw, 40px);
+  }
+
+  .stat-row-section.is-compact .stat-label {
+    max-width: none;
+    margin-top: 8px;
+    font-size: 11px;
+    text-align: left;
+  }
+
   @media (max-width: 768px) {
     .stat-row-section {
       padding: var(--cs-pad-media-tablet);
@@ -118,6 +158,25 @@ const { stats, label, isDark = false } = Astro.props;
     .stat-item:last-child {
       border-bottom: none;
     }
+
+    .stat-row-section.is-compact {
+      padding: 24px 0 0;
+    }
+
+    .stat-row-section.is-compact .stat-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .stat-row-section.is-compact .stat-item,
+    .stat-row-section.is-compact .stat-item:nth-child(odd) {
+      padding: 14px 8px 0;
+      border: 0;
+      border-top: 1px solid var(--doc-rule);
+    }
+
+    .stat-row-section.is-compact .stat-item:first-child {
+      padding-left: 0;
+    }
   }
 
   @media (max-width: 480px) {
@@ -129,6 +188,37 @@ const { stats, label, isDark = false } = Astro.props;
     }
     .stat-item {
       border-right: none;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .stat-row-section.is-compact {
+      padding-top: 20px;
+    }
+
+    .stat-row-section.is-compact .stat-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .stat-row-section.is-compact .stat-item,
+    .stat-row-section.is-compact .stat-item:nth-child(odd) {
+      display: grid;
+      grid-template-columns: minmax(112px, auto) 1fr;
+      align-items: baseline;
+      column-gap: 16px;
+      padding: 12px 0;
+      border: 0;
+      border-top: 1px solid var(--doc-rule);
+    }
+
+    .stat-row-section.is-compact .stat-value {
+      font-size: clamp(28px, 9vw, 36px);
+      white-space: nowrap;
+    }
+
+    .stat-row-section.is-compact .stat-label {
+      margin-top: 0;
+      line-height: 1.4;
     }
   }
 </style>
