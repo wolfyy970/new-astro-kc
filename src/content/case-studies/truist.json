@@ -2,14 +2,14 @@
   "meta": {
     "title": "Truist: Digital Banking Platform",
     "description": "I built and scaled a SunTrust UX team to around 30 across all lines of business, then grew it into a 50-person design organization through the $66B merger to Truist, leading business and commercial banking design.",
-    "ogImage": "/images/truist/1771246115132-cd678175.png",
+    "ogImage": "/images/truist/1771246115132-cd678175.webp",
     "accent": "#3b1a5a"
   },
   "hero": {
     "label": "Truist Financial",
     "title": "Defining the Digital Experience for America's 7th Largest Bank",
     "subtitle": "I built a 50-person design organization from a nascent SunTrust UX team, scaling it to around 30 across every line of business and then to 50 through the largest bank merger since 2008, leading business and commercial banking design at Truist.",
-    "image": "/images/truist/truist-mobile-app-tour-620x1150.jpg",
+    "image": "/images/truist/truist-mobile-app-tour.webp",
     "imageAlt": "Truist mobile app screens"
   },
   "context": {
@@ -27,7 +27,7 @@
       "isMobile": true,
       "bg": "#f3eff8",
       "label": "Consumer Banking",
-      "image": "/images/truist/1771246123096-e2ad64a0.png",
+      "image": "/images/truist/1771246123096-e2ad64a0.webp",
       "imageAlt": "Truist mobile home screen showing accounts, cards, and quick links for Janet",
       "caption": "The everyday banking experience. Accounts, transfers, and Zelle, designed for speed."
     },
@@ -35,7 +35,7 @@
       "key": "truist-assist",
       "type": "captionedImage",
       "label": "AI-Assisted Banking",
-      "image": "/images/truist/1771281467706-585c83de.png",
+      "image": "/images/truist/1771281467706-585c83de.webp",
       "imageAlt": "Truist Assist chatbot in light and dark mode showing conversation flow from home screen through credit card offers to agent escalation",
       "caption": "Truist Assist. Conversational banking with contextual card controls and a live-agent handoff path."
     },
@@ -47,11 +47,11 @@
       "gap": "normal",
       "images": [
         {
-          "src": "/images/truist/1771281472014-694a3592.png",
+          "src": "/images/truist/1771281472014-694a3592.webp",
           "alt": "Truist Apple Watch banking app showing Transfer and Pay with micro-banking widgets for balance, bills, and recent payments"
         },
         {
-          "src": "/images/truist/1771246117739-a469a233.png",
+          "src": "/images/truist/1771246117739-a469a233.webp",
           "alt": "Truist banking dashboard on iPad showing recent activity, weekly spending chart, and credit card management"
         }
       ]
@@ -75,11 +75,11 @@
       "gap": "normal",
       "images": [
         {
-          "src": "/images/truist/1771281467710-eb73fe7f.png",
+          "src": "/images/truist/1771281467710-eb73fe7f.webp",
           "alt": "Top 10 U.S. Bank composite showing Truist mobile home screen, Face ID sign-in, and the Digital Feature Toggle System dashboard"
         },
         {
-          "src": "/images/truist/1771281491304-7ab9939c.png",
+          "src": "/images/truist/1771281491304-7ab9939c.webp",
           "alt": "Truist One Checking account opening flow showing application start, multi-account upsell for savings and money market, and personal information form"
         }
       ]
@@ -93,11 +93,11 @@
       "gap": "normal",
       "images": [
         {
-          "src": "/images/truist/original.png",
+          "src": "/images/truist/original.webp",
           "alt": "Truist commercial wealth management portal showing a $149M institutional portfolio with holdings breakdown across desktop and mobile"
         },
         {
-          "src": "/images/truist/1771281491725-0f1b64fd.png",
+          "src": "/images/truist/1771281491725-0f1b64fd.webp",
           "alt": "Truist internal banker portal showing commercial application pipeline with pipeline metrics, completion rate, and top performer tracking"
         }
       ]
