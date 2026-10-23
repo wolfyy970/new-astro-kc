@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "src/components/case-studies/CaseStudyImageLightbox.astro"
+        ],
+        "createdAt": "2026-10-23T13:11:32.082Z",
+        "reason": "Lightbox <img> intentionally has no src: initCaseStudyLightbox sets it when the dialog opens (same pattern the component had before); dialog is closed until then."
+      }
+    ]
+  }
+}
