@@ -19,3 +19,6 @@ _resume/
 # Unselected image-generation experiments retained locally for review.
 public/images/linkedin-*.png
 public/images/me-friendly-smile-800.png
+
+# OpenRouter MCP output (generated images)
+openrouter-images/

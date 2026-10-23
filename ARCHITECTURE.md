@@ -344,6 +344,15 @@ Case-study artwork ships as 4K+ WebP so every pixel of a design survives, but th
 
 The lightbox and its lens are the only consumers of the full-resolution file, and the lightbox paints the already-cached display variant as a stand-in while it downloads.
 
+#### Image generation tooling: OpenRouter MCP
+
+`.mcp.json` registers `openrouter-image`, a stdio MCP server (`scripts/openrouter-image-mcp.ts`, core in `scripts/openrouter-image.ts`) that reaches Nano Banana 2.1 (`google/gemini-nano-banana-2.1`) through OpenRouter, the same model the Higgsfield workflow uses. It is local tooling only; nothing in the Astro build imports it.
+
+- Tools: `openrouter_generate_image` (prompt, up to 14 reference images, aspect ratio, `1K`/`2K`/`4K`, thinking `none`/`minimal`/`high`, seed; saves the file and reports path, size, route and cost), `openrouter_list_image_models`, and `openrouter_key_status`.
+- Routes: `chat` (default; the only route with thinking and seed) falls back to the dedicated `images` route when OpenRouter rejects the request shape or returns no image. Auth, credit and rate-limit errors never fall back.
+- Key lookup: `OPENROUTER_API_KEY`, else the file named by `OPENROUTER_KEY_FILE`, else `~/Developer/api_pass.txt` (the first `sk-or-…` token in it is used, so the file may hold other notes). The key is sent only as a Bearer header and scrubbed from errors. In a cloud session, add `OPENROUTER_API_KEY` in the environment's settings instead; never commit it.
+- Output lands in `./openrouter-images/` (git-ignored) unless `output_path` is given.
+
 #### Enlarged-image viewer and magnifier
 
 Every "View larger" trigger opens the one `CaseStudyImageLightbox` dialog (`src/scripts/case-study-lightbox.ts`, geometry in the DOM-free `src/scripts/image-magnifier.ts`):

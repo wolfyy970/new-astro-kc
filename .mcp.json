@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "openrouter-image": {
+      "command": "npx",
+      "args": ["tsx", "scripts/openrouter-image-mcp.ts"],
+      "env": {
+        "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY:-}"
+      }
+    }
+  }
+}
