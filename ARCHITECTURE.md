@@ -346,7 +346,7 @@ The lightbox and its lens are the only consumers of the full-resolution file, an
 
 #### Image generation tooling: OpenRouter MCP
 
-`.mcp.json` registers `openrouter-image`, a stdio MCP server (`scripts/openrouter-image-mcp.ts`, core in `scripts/openrouter-image.ts`) that reaches Nano Banana 2.1 (`google/gemini-nano-banana-2.1`) through OpenRouter, the same model the Higgsfield workflow uses. It is local tooling only; nothing in the Astro build imports it.
+`openrouter-image` is an optional stdio MCP server (`scripts/openrouter-image-mcp.ts`, core in `scripts/openrouter-image.ts`) that reaches Nano Banana 2.1 (`google/gemini-nano-banana-2.1`) through OpenRouter, the same model the Higgsfield workflow uses. It is local tooling only and is **not** registered by default (no `.mcp.json`); to use it, add an `openrouter-image` entry running `npx tsx scripts/openrouter-image-mcp.ts`. Nothing in the Astro build imports it.
 
 - Tools: `openrouter_generate_image` (prompt, up to 14 reference images, aspect ratio, `1K`/`2K`/`4K`, thinking `none`/`minimal`/`high`, seed; saves the file and reports path, size, route and cost), `openrouter_list_image_models`, and `openrouter_key_status`.
 - Routes: `chat` (default; the only route with thinking and seed) falls back to the dedicated `images` route when OpenRouter rejects the request shape or returns no image. Auth, credit and rate-limit errors never fall back.

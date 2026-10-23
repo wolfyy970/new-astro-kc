@@ -11,7 +11,7 @@ All 14 Bolt images are regenerated at 4K. The tall pages (`bolt-color`, `bolt-ty
 ## Workflow for the tall pages
 
 1. `python3 tools/image-restore/prep_tiles.py` cuts each page into ~3:2 tiles at whitespace rows and pads each to a supported aspect ratio. Send `$WORK/in/<tile>.png`; `meta.json` has each tile's `ratio`.
-2. Generate each tile with Nano Banana 2.1 (`resolution` 4K, thinking high). With the OpenRouter MCP: `openrouter_generate_image` with `reference_images: [".tmp/image-restore/in/<tile>.png"]`, `aspect_ratio` from `meta.json`, and `output_path: ".tmp/image-restore/raw/<tile>.png"`. Use the prompt below.
+2. Generate each tile with Nano Banana 2.1 (`resolution` 4K, thinking high). With the optional OpenRouter MCP: `openrouter_generate_image` with `reference_images: [".tmp/image-restore/in/<tile>.png"]`, `aspect_ratio` from `meta.json`, and `output_path: ".tmp/image-restore/raw/<tile>.png"`. Use the prompt below.
 3. `python3 tools/image-restore/restore.py <tile> ...` registers each result onto the original's geometry (affine, then dense optical flow), keeps the model only for thin structure (text, hairlines) and takes large shapes and flat fills from the original, then colour-locks it. It prints a correlation report; `0 low blocks` is the goal.
 4. The model sometimes changes a digit or smudges a glyph (it turned `#4A4A4A` into `#444444`). For any tile with flagged blocks, generate two more seeds, run `restore.py` on them in separate `$WORK` folders, then `python3 tools/image-restore/ensemble.py <tile> <alt_work_dir> ...` to patch only the bad spots from the best-matching alternative.
 5. `python3 tools/image-restore/stitch_tiles.py bolt-color bolt-typography bolt-depth bolt-grid` writes `$WORK/final3/<page>.webp`.
