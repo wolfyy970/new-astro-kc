@@ -142,6 +142,29 @@ def tint_field(orig,out,T,flat):
     Dc[dc<1e-4]=0
     return cv2.resize(Dc.astype(np.float32),T,interpolation=cv2.INTER_CUBIC)
 
+def thin_mask(orig):
+    """1 where the original has thin structure (text strokes, hairlines), 0 on large shapes and flat fills.
+    Large shapes keep the original's geometry; only thin structure is taken from the model."""
+    g=np.asarray(orig.convert("L"),dtype=np.float32)
+    k=cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(7,7))
+    th=np.maximum(g-cv2.morphologyEx(g,cv2.MORPH_OPEN,k),cv2.morphologyEx(g,cv2.MORPH_CLOSE,k)-g)
+    m=(th>10).astype(np.uint8)
+    m=cv2.dilate(m,np.ones((5,5),np.uint8))
+    return cv2.GaussianBlur(m.astype(np.float32),(0,0),0.8)
+
+def shape_layer(orig,T,K):
+    """The original upscaled with edge-sharpening (shock-style): crisp edges, exact colours, soft gradients untouched."""
+    up=cv2.resize(np.asarray(orig,dtype=np.float32),T,interpolation=cv2.INTER_CUBIC)
+    g=up@np.array([.299,.587,.114],np.float32)
+    ker=cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(max(3,int(round(K*1.6))|1),)*2)
+    lo,hi=cv2.erode(up,ker),cv2.dilate(up,ker)
+    glo,ghi=cv2.erode(g,ker),cv2.dilate(g,ker)
+    rng=ghi-glo
+    t=np.clip((g-(glo+ghi)/2)/np.maximum(0.2*rng,1e-3),-1,1)*0.5+0.5
+    sharp=lo+(hi-lo)*t[...,None]
+    amt=np.clip((rng-8)/20,0,1)[...,None]
+    return up*(1-amt)+sharp*amt
+
 def assemble(n):
     m=meta[n]
     orig=load_orig(n); raw=Image.open(f"{S}/raw/{n}.png").convert("RGB")
@@ -154,6 +177,9 @@ def assemble(n):
     out=A*v+Bv*(1-v)
     flat_t,_=flat_color_field(orig,r_std=2,erode=int(os.environ.get('TINT_ERODE','3')))
     out=out+tint_field(orig,out,T,flat_t)
+    if not os.environ.get("NO_STRUCT"):
+        tm=cv2.resize(thin_mask(orig),T,interpolation=cv2.INTER_LINEAR)[...,None]
+        out=out*tm+shape_layer(orig,T,K)*(1-tm)
     flat,col=flat_color_field(orig,r_std=1,erode=int(os.environ.get('LOCK_ERODE','2')))
     Alo=np.asarray(Image.fromarray(np.clip(out+0.5,0,255).astype(np.uint8)).resize(orig.size,Image.BOX),dtype=np.float32)
     vA=np.zeros(flat.shape,dtype=np.float32)

@@ -4,7 +4,7 @@
 
 Reads $WORK/tiles.json and $WORK/final2/<tile>.png (from restore.py) and writes
 $WORK/final3/<page>.webp at the smallest tile scale, so no tile is upsampled beyond what
-the model produced. Cuts sit on whitespace rows and each tile is colour-locked to the
+the model produced (and no wider than $MAX_WIDTH, default 3840). Cuts sit on whitespace rows and each tile is colour-locked to the
 original, so seams are invisible. Pages with transparency keep the original alpha, and
 semi-transparent pixels (shadows) keep the original colour: the model only saw a
 flattened copy of them.
@@ -16,6 +16,7 @@ from PIL import Image
 S=os.environ.get("WORK",os.path.join(os.getcwd(),".tmp","image-restore"))
 SRC=os.environ.get("SRC","public/images/bolt")
 Q=int(os.environ.get("Q","95"))
+MAX_WIDTH=int(os.environ.get("MAX_WIDTH","3840"))   # keeps a 10,000 px tall page under ~40 MP
 os.makedirs(f"{S}/final3",exist_ok=True)
 tiles=json.load(open(f"{S}/tiles.json"))
 
@@ -23,7 +24,7 @@ for page in sys.argv[1:]:
     orig=Image.open(f"{SRC}/{page}.webp").convert("RGBA"); w,h=orig.size
     parts=tiles[page]
     finals=[Image.open(f"{S}/final2/{t['name']}.png").convert("RGB") for t in parts]
-    s0=min(f.width/w for f in finals)
+    s0=min(min(f.width/w for f in finals),MAX_WIDTH/w)
     W0,H0=round(w*s0),round(h*s0)
     canvas=Image.new("RGB",(W0,H0))
     for t,f in zip(parts,finals):
