@@ -6,7 +6,7 @@ Needs `pip install numpy pillow opencv-python-headless`. Scratch files go to `$W
 
 ## Status
 
-All 14 Bolt images are regenerated at 4K. The tall pages (`bolt-color`, `bolt-typography`, `bolt-depth`, `bolt-grid`) were tiled, generated tile by tile, and stitched at 3840 px wide.
+The Bolt (14) and Upwave (6) case-study images are regenerated at 4K+. The tall pages (`bolt-color`, `bolt-typography`, `bolt-depth`, `bolt-grid`) were tiled, generated tile by tile, and stitched at 3840 px wide.
 
 ## Workflow for the tall pages
 
@@ -17,6 +17,12 @@ All 14 Bolt images are regenerated at 4K. The tall pages (`bolt-color`, `bolt-ty
 5. `python3 tools/image-restore/stitch_tiles.py bolt-color bolt-typography bolt-depth bolt-grid` writes `$WORK/final3/<page>.webp`.
 6. Check by eye at 100%: every hex code, label and number against the original (the "TBD" panels stay as they are).
 7. Copy the WebPs over `public/images/bolt/`, run `npm run images:display`, then `npm run quality`.
+
+## UI mockups with tiny text and icons: tile into a 2x2 grid first
+
+Whole-image generation at ~3x lets the model misread tiny text and icons (an ad that read "TROCKIIK" instead of "450kCal.", swapped nav icons, a changed share icon). A 2x2 grid reads them at ~6x and fixes it. `prep_grid.py <name> 2 2` cuts overlapping tiles (seams on quiet rows and columns), `restore.py` registers each one, `stitch_grid.py <name>` blends them back, and `screen.py` lists clusters that disagree with the original for a by-eye check (photo texture also flags: it is added detail, not a change).
+
+Notes from the Upwave pass: photos came back faithful (same faces and scenes, more detail). A dimmed or blurred backdrop (the Trackit modal) must not be tiled: the model re-lit the dim rail, so use the whole-image result there. Prompts must repeat the source's spelling exactly (the source says "Healthy Recipies"; a prompt that "corrected" it produced a broken glyph). Where the model completes a clipped edge with a torn shape, paste the original's pixels back over that strip.
 
 ## Prompt (per tile)
 
