@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import type { CaseStudySectionData } from "../../types/content";
-import { publicImageSize } from "../../utils/image-size";
+import { resolveDisplayImage } from "../../utils/display-image";
 import ShowcaseSection from "./ShowcaseSection.astro";
 import CaseStudyImageTrigger from "./CaseStudyImageTrigger.astro";
 
@@ -16,7 +16,8 @@ interface Props {
 }
 
 const { section, isDark } = Astro.props;
-const size = await publicImageSize(section.image);
+const display = await resolveDisplayImage(section.image);
+const size = display.size;
 ---
 
 <ShowcaseSection
@@ -28,7 +29,7 @@ const size = await publicImageSize(section.image);
   <div class="large-image-container">
     <CaseStudyImageTrigger src={section.image} alt={section.imageAlt}>
       <Image
-        src={section.image}
+        src={display.src}
         alt={section.imageAlt}
         width={section.imageWidth ?? size?.width ?? 1300}
         height={section.imageHeight ?? size?.height ?? 800}

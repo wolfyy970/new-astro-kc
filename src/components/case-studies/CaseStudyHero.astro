@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { publicImageSize } from "../../utils/image-size";
+import { resolveDisplayImage } from "../../utils/display-image";
 import type { CaseStudyStatItem } from "../../types/content";
 import ProjectGateway from "../ProjectGateway.astro";
 import CaseStudyImageTrigger from "./CaseStudyImageTrigger.astro";
@@ -35,7 +36,8 @@ const {
 } = Astro.props;
 
 // The product shot was declared 800x1200 whatever the file actually was.
-const imageSize = image ? await publicImageSize(image) : null;
+const display = image ? await resolveDisplayImage(image) : null;
+const imageSize = display?.size ?? null;
 const bgSize = background ? await publicImageSize(background) : null;
 ---
 
@@ -98,7 +100,7 @@ const bgSize = background ? await publicImageSize(background) : null;
           className="hero-image-trigger"
         >
           <Image
-            src={image}
+            src={display?.src ?? image}
             alt={imageAlt || ""}
             width={imageSize?.width ?? 800}
             height={imageSize?.height ?? 1200}
