@@ -47,7 +47,7 @@ export const MAX_REFERENCES = 14;
 const MAX_REFERENCE_BYTES = 20 * 1024 * 1024;
 const MAX_PROMPT_CHARS = 20_000;
 const RETRYABLE_STATUS = new Set([429, 502, 503, 504]);
-const MAX_RETRIES = 2;
+const MAX_BACKOFF_MS = 60_000;
 
 export type Resolution = (typeof RESOLUTIONS)[number];
 export type AspectRatio = (typeof ASPECT_RATIOS)[number];
@@ -90,6 +90,8 @@ export interface Deps {
   cwd: string;
   now: () => Date;
   timeoutMs: number;
+  /** Retries for 429/5xx; the wait doubles each time, capped at a minute. */
+  maxRetries: number;
   retryDelayMs: number;
 }
 
@@ -100,6 +102,7 @@ export const defaultDeps = (): Deps => ({
   cwd: process.cwd(),
   now: () => new Date(),
   timeoutMs: 300_000,
+  maxRetries: 6,
   retryDelayMs: 2_000,
 });
 
@@ -416,10 +419,15 @@ async function request(
       signal: AbortSignal.timeout(deps.timeoutMs),
     });
     if (response.ok) return response.json();
-    if (RETRYABLE_STATUS.has(response.status) && attempt < MAX_RETRIES) {
-      await new Promise((done) =>
-        setTimeout(done, deps.retryDelayMs * (attempt + 1)),
+    if (RETRYABLE_STATUS.has(response.status) && attempt < deps.maxRetries) {
+      const advised = Number(response.headers.get("retry-after")) * 1000;
+      const wait = Math.min(
+        Number.isFinite(advised) && advised > 0
+          ? advised
+          : deps.retryDelayMs * 2 ** attempt,
+        MAX_BACKOFF_MS,
       );
+      await new Promise((done) => setTimeout(done, wait));
       continue;
     }
     const text = await response.text();

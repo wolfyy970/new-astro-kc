@@ -284,6 +284,7 @@ describe("against a mock OpenRouter", () => {
       cwd: dir,
       homedir: dir,
       retryDelayMs: 0,
+      maxRetries: 2,
       now: () => new Date("2026-10-23T12:00:00Z"),
     };
   });
