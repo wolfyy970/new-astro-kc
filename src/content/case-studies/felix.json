@@ -27,7 +27,7 @@
       "label": "The Contents",
       "title": "A comic book you could open and stay inside.",
       "description": "The contents spread was the product in miniature: stories, songs, puzzles, drawing tools, movies, and farewell — laid out like an open book against a field of dancing Felix silhouettes. Kids didn't browse a file menu. They flipped into chapters.",
-      "image": "/images/felix/contents-menu.png",
+      "image": "/images/felix/contents-menu.webp",
       "imageAlt": "Contents menu from Felix the Cat's Giant Electronic Comic Book — an open book listing stories, activities, songs, and movies against a purple Felix-patterned background"
     },
     {
@@ -36,7 +36,7 @@
       "label": "Stories, Songs & Movies",
       "title": "A story on one page, a song on the other.",
       "description": "A Fish Story on the left, A Fish Song on the right — the same characters, read and then sung. The disc carried six complete Felix adventures paired this way, alongside the Felix Movies, so a child could move from watching to reading to singing without ever leaving the book.",
-      "image": "/images/felix/fish-story-song.png",
+      "image": "/images/felix/fish-story-song.webp",
       "imageAlt": "An open comic spread: Felix fishing from a rowboat under the title A Fish Story, and A Fish Song opposite with fish swimming among treble clefs."
     },
     {
@@ -53,15 +53,15 @@
       "gap": "normal",
       "images": [
         {
-          "src": "/images/felix/making-faces.png",
+          "src": "/images/felix/making-faces.webp",
           "alt": "Making Faces activity — a sketchpad silhouette of Felix with interchangeable cartoon eyes and a green pencil"
         },
         {
-          "src": "/images/felix/love-this-planet.png",
+          "src": "/images/felix/love-this-planet.webp",
           "alt": "Love This Planet recycle activity — plastic, metal, and glass bins on a notebook page with Felix navigation icons"
         },
         {
-          "src": "/images/felix/how-to-draw-felix.png",
+          "src": "/images/felix/how-to-draw-felix.webp",
           "alt": "How to Draw Felix activity — a sketchbook page with a line drawing of Felix and a cloud sidebar of drawing tools"
         }
       ]
@@ -77,7 +77,7 @@
     {
       "key": "credits",
       "type": "captionedImage",
-      "image": "/images/felix/credits-interactive-designer.png",
+      "image": "/images/felix/credits-interactive-designer.webp",
       "imageAlt": "The disc’s credit screen: Interactive Designer, Karl-Christian Wolff-Ingham; Narration Scripting, Karl-Christian Wolff-Ingham, Sue Bowles, Martin Koronka, Gary McGroarty."
     }
   ]

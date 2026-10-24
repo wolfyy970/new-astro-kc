@@ -26,7 +26,7 @@
     "title": "Sparks Grove: Delta Air Lines",
     "description": "$4.7M in new business · Delta News Hub · National Impact Award",
     "accent": "#c8102e",
-    "ogImage": "/images/sparks-grove/news-hub.jpg"
+    "ogImage": "/images/sparks-grove/news-hub.webp"
   },
   {
     "slug": "upwave",
@@ -47,14 +47,14 @@
     "title": "CNN Magic Wall",
     "description": "Technology scouting · Partner brokering · Interactive weather",
     "accent": "#cc0000",
-    "ogImage": "/images/cnn/magic-wall-election-interaction.jpg"
+    "ogImage": "/images/cnn/magic-wall-election-interaction.webp"
   },
   {
     "slug": "two-way-tv",
     "title": "Two Way TV",
     "description": "Founding team · UK's first multiplayer TV service · Challenge TV network",
     "accent": "#00c2e0",
-    "ogImage": "/images/two-way-tv/fruity4some.png"
+    "ogImage": "/images/two-way-tv/fruity4some.webp"
   },
   {
     "slug": "armchair-manager",

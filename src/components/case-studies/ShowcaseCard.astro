@@ -27,7 +27,7 @@ const display = await resolveDisplayImage(image);
 const size = display.size ?? { width: 800, height: 500 };
 
 // A tall artifact in a wide card is the layout problem this solves.
-// news-hub.jpg is a 1100x2070 full-page capture whose whole point is the
+// news-hub is a 1100x2070 full-page capture whose whole point is the
 // modular architecture running down it — stacked above a caption in a
 // full-width card it shrank to a ~300px stamp with a thousand pixels of dead
 // space either side. Portrait art in a full-width card turns the card
@@ -88,7 +88,7 @@ const sideways = wide && isPortrait;
   /* Fit inside a bounded box; never crop, never stretch.
        These sources run from 0.47 to 2.36. Cropping them all to 16:10 cut the
        composition out of every one that was not already landscape — but simply
-       releasing the ratio was no better: news-hub.jpg is 1100x2070 and rendered
+       releasing the ratio was no better: news-hub is 1100x2070 and rendered
        2443px tall inside a card. Capping the height and letting the width fall
        out of the ratio keeps the grid tidy with nothing cut off; a portrait
        screenshot just sits narrower on its card. */
