@@ -12,18 +12,22 @@ describe("publicImageSize", () => {
   });
 
   it("reports the real pixel dimensions of a file in public/", async () => {
-    // Felix's box art: portrait, and the reason the case-study components stopped
-    // hardcoding their own width/height.
-    expect(await publicImageSize("/images/felix/cover.webp")).toEqual({
-      width: 765,
-      height: 969,
+    // The Apple Design Award art: portrait, and the reason the case-study
+    // components stopped hardcoding their own width/height.
+    expect(
+      await publicImageSize("/images/awards/apple-design-award.png"),
+    ).toEqual({
+      width: 846,
+      height: 1024,
     });
   });
 
   it("reads a landscape asset just as accurately", async () => {
-    expect(await publicImageSize("/images/felix/contents-menu.png")).toEqual({
-      width: 1920,
-      height: 1440,
+    expect(
+      await publicImageSize("/images/hypercard/what-is-hypercard.webp"),
+    ).toEqual({
+      width: 512,
+      height: 342,
     });
   });
 
@@ -54,8 +58,8 @@ describe("publicImageSize", () => {
   });
 
   it("memoises, so a repeated reference costs one read", async () => {
-    const first = await publicImageSize("/images/felix/making-faces.png");
-    const second = await publicImageSize("/images/felix/making-faces.png");
+    const first = await publicImageSize("/images/felix/making-faces.webp");
+    const second = await publicImageSize("/images/felix/making-faces.webp");
     // Same object identity proves the cache was hit rather than the header
     // being re-parsed — a photo grid can name one asset several times.
     expect(second).toBe(first);

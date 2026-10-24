@@ -24,7 +24,9 @@ describe("displayVariantPath", () => {
     expect(
       displayVariantPath("/images/truist/original.display.webp"),
     ).toBeNull();
-    expect(displayVariantPath("/images/felix/contents-menu.png")).toBeNull();
+    expect(
+      displayVariantPath("/images/awards/apple-design-award.png"),
+    ).toBeNull();
     expect(displayVariantPath("/images/sparks-grove/gala_5.jpg")).toBeNull();
   });
 
@@ -51,14 +53,18 @@ describe("resolveDisplayImage", () => {
   });
 
   it("falls back to the original when no variant was generated", async () => {
-    const shown = await resolveDisplayImage("/images/felix/cover.webp");
-    expect(shown.src).toBe("/images/felix/cover.webp");
-    expect(shown.size).toEqual({ width: 765, height: 969 });
+    const shown = await resolveDisplayImage(
+      "/images/hypercard/what-is-hypercard.webp",
+    );
+    expect(shown.src).toBe("/images/hypercard/what-is-hypercard.webp");
+    expect(shown.size).toEqual({ width: 512, height: 342 });
   });
 
   it("leaves non-WebP artwork alone", async () => {
-    const shown = await resolveDisplayImage("/images/felix/contents-menu.png");
-    expect(shown.src).toBe("/images/felix/contents-menu.png");
-    expect(shown.size).toEqual({ width: 1920, height: 1440 });
+    const shown = await resolveDisplayImage(
+      "/images/awards/apple-design-award.png",
+    );
+    expect(shown.src).toBe("/images/awards/apple-design-award.png");
+    expect(shown.size).toEqual({ width: 846, height: 1024 });
   });
 });

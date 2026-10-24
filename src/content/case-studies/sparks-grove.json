@@ -2,14 +2,14 @@
   "meta": {
     "title": "Sparks Grove: Delta Air Lines",
     "description": "The design leadership behind Delta News Hub, a unified communications platform serving 90,000 employees and millions of customers.",
-    "ogImage": "/images/sparks-grove/news-hub.jpg",
+    "ogImage": "/images/sparks-grove/news-hub.webp",
     "accent": "#c8102e"
   },
   "hero": {
     "label": "Case Study: Delta Air Lines",
     "title": "High-Fidelity Storytelling for an Iconic Brand",
     "subtitle": "Leading the design team that unified Delta's digital newsroom, serving 90,000 employees and millions of passengers annually.",
-    "background": "/images/sparks-grove/delta-777-right-inflight_new_livery.jpg"
+    "background": "/images/sparks-grove/delta-777-right-inflight_new_livery.webp"
   },
   "context": {
     "challenge": "Elevating corporate communications to match the in-flight experience.",
@@ -31,20 +31,20 @@
       "primaryCard": {
         "title": "Editorial Architecture",
         "description": "A modular, category-driven framework gave the newsroom room to scale globally.",
-        "image": "/images/sparks-grove/news-hub.jpg",
+        "image": "/images/sparks-grove/news-hub.webp",
         "imageAlt": "News Hub Desktop"
       },
       "secondaryCards": [
         {
           "title": "Information Strategy",
           "description": "The information architecture prioritized real-time audience needs without flattening the editorial hierarchy.",
-          "image": "/images/sparks-grove/DNH01.jpg",
+          "image": "/images/sparks-grove/DNH01.webp",
           "imageAlt": "IA & Header"
         },
         {
           "title": "Design Oversight",
           "description": "A governed visual system preserved editorial quality across desktop and mobile touchpoints.",
-          "image": "/images/sparks-grove/delta-4.jpg",
+          "image": "/images/sparks-grove/delta-4.webp",
           "imageAlt": "Mobile Views"
         }
       ]
@@ -62,7 +62,7 @@
     {
       "key": "closing",
       "type": "fullBleed",
-      "image": "/images/sparks-grove/20150925_a330a2a_stills_cam1-1179-v2.jpg.jpeg",
+      "image": "/images/sparks-grove/20150925_a330a2a_stills_cam1-1179-v2.webp",
       "imageAlt": "A330 Inflight"
     }
   ]

@@ -44,7 +44,7 @@
       "label": "THE HOMEPAGE REDESIGN",
       "title": "Treat finding—not browsing—as the homepage’s primary job.",
       "description": "Commercial customers often arrived with the part in hand; their job was to identify it, not browse a retail storefront. The redesign made the vehicle panel non-invasive: select by VIN, plate, or vehicle details when fitment helps, while search, interchange, categories, job types, and eCatalog remain available without a vehicle selection.",
-      "image": "/images/gpc/napa-prolink/ways-of-finding-homepage.png",
+      "image": "/images/gpc/napa-prolink/ways-of-finding-homepage.webp",
       "imageAlt": "Annotated PROLink homepage concept showing optional VIN, license-plate, or vehicle-detail entry alongside search, interchange, categories, job types, eCatalog, recent searches, and recent orders.",
       "caption": "Vehicle selection supports the task without blocking other routes to a part."
     },
@@ -58,11 +58,11 @@
       "gap": "normal",
       "images": [
         {
-          "src": "/images/gpc/napa-prolink/ways-of-finding-01.png",
+          "src": "/images/gpc/napa-prolink/ways-of-finding-01.webp",
           "alt": "Ways of Finding slide, routes one through four: auto-suggest search, Quick Picks, recent homepage searches, and job-type search."
         },
         {
-          "src": "/images/gpc/napa-prolink/ways-of-finding-02.png",
+          "src": "/images/gpc/napa-prolink/ways-of-finding-02.webp",
           "alt": "Ways of Finding slide, routes five through seven: browse navigation, part-number or interchange search, and category search."
         }
       ]

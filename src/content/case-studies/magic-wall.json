@@ -2,14 +2,14 @@
   "meta": {
     "title": "CNN Magic Wall: From TED to Broadcast",
     "description": "How a relationship formed after Jeff Han's breakthrough TED2006 demo brought Perceptive Pixel's platform to CNN—and gave Turner R&D and CNN Weather a new canvas for live forecasting.",
-    "ogImage": "/images/cnn/magic-wall-election-interaction.jpg",
+    "ogImage": "/images/cnn/magic-wall-election-interaction.webp",
     "accent": "#cc0000"
   },
   "hero": {
     "label": "CNN · Technology Scouting & Product Development",
     "title": "From a TED Demo to CNN's Magic Wall",
     "subtitle": "After seeing Jeff Han unveil his breakthrough multi-touch interface at TED2006, I connected with him and brokered Perceptive Pixel's engagement with CNN. Turner R&D then designed and built the weather application with CNN Weather.",
-    "background": "/images/cnn/magic-wall-election-interaction.jpg"
+    "background": "/images/cnn/magic-wall-election-interaction.webp"
   },
   "context": {
     "challenge": "Move CNN beyond limited touchscreen experiments toward an interaction model that could support live broadcast storytelling.",
@@ -38,7 +38,7 @@
       "title": "Weather turned the wall into a broadcast tool.",
       "description": "Turner R&D designed the interface and built the application in collaboration with CNN Weather. Together, the teams translated meteorologists' domain knowledge and on-air workflow into a direct, spatial way to move through forecasts, storm systems, maps, warnings, and supporting data while staying connected to the audience.",
       "video": "/media/cnn-magic-wall.mp4",
-      "poster": "/images/cnn/magic-wall-weather-demo.jpg",
+      "poster": "/images/cnn/magic-wall-weather-demo.webp",
       "captions": "/media/cnn-magic-wall.vtt",
       "caption": "CNN chief meteorologist Chad Myers demonstrates the interactive weather application, designed and built by Turner R&D with CNN Weather."
     },
@@ -53,15 +53,15 @@
       "gap": "tight",
       "images": [
         {
-          "src": "/images/cnn/magic-wall-weather-map.jpg",
+          "src": "/images/cnn/magic-wall-weather-map.webp",
           "alt": "Development capture of the CNN Magic Wall weather application displaying an interactive satellite map of Atlanta"
         },
         {
-          "src": "/images/cnn/magic-wall-weather-warnings.jpg",
+          "src": "/images/cnn/magic-wall-weather-warnings.webp",
           "alt": "Development capture of the CNN Magic Wall weather application with map, flash-flood warning, and weather controls"
         },
         {
-          "src": "/images/cnn/magic-wall-weather-tools.jpg",
+          "src": "/images/cnn/magic-wall-weather-tools.webp",
           "alt": "Development capture of the CNN Magic Wall severe weather center with drawing and annotation tools"
         }
       ]
@@ -77,19 +77,19 @@
       "gap": "normal",
       "images": [
         {
-          "src": "/images/cnn/magic-wall-election-prototype.jpg",
+          "src": "/images/cnn/magic-wall-election-prototype.webp",
           "alt": "Early Perceptive Pixel and CNN election application showing a person manipulating a county-level United States results map"
         },
         {
-          "src": "/images/cnn/magic-wall-election-studio.jpg",
+          "src": "/images/cnn/magic-wall-election-studio.webp",
           "alt": "CNN election studio during preparation with the Magic Wall positioned among cameras and production staff"
         },
         {
-          "src": "/images/cnn/magic-wall-election-interaction.jpg",
+          "src": "/images/cnn/magic-wall-election-interaction.webp",
           "alt": "John King interacting with county-level Michigan election results on CNN's Magic Wall"
         },
         {
-          "src": "/images/cnn/magic-wall-election-results.jpg",
+          "src": "/images/cnn/magic-wall-election-results.webp",
           "alt": "CNN Magic Wall displaying Michigan election results in the 2008 election studio"
         }
       ]

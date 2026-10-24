@@ -158,9 +158,9 @@ describe("content schemas — real data conforms", () => {
       "/images/gpc/napa-prolink/quick-view.webp",
       "/images/gpc/napa-prolink/recent-and-saved-vehicles.webp",
       "/images/gpc/napa-prolink/statements.webp",
-      "/images/gpc/napa-prolink/ways-of-finding-01.png",
-      "/images/gpc/napa-prolink/ways-of-finding-02.png",
-      "/images/gpc/napa-prolink/ways-of-finding-homepage.png",
+      "/images/gpc/napa-prolink/ways-of-finding-01.webp",
+      "/images/gpc/napa-prolink/ways-of-finding-02.webp",
+      "/images/gpc/napa-prolink/ways-of-finding-homepage.webp",
     ];
 
     expect(manifestEntry?.ogImage).toBe(study.meta.ogImage);
@@ -192,7 +192,7 @@ describe("content schemas — real data conforms", () => {
       ),
     ).toMatchObject({
       type: "featureRow",
-      image: "/images/gpc/napa-prolink/ways-of-finding-homepage.png",
+      image: "/images/gpc/napa-prolink/ways-of-finding-homepage.webp",
     });
     expect(
       study.sections.find(
@@ -201,8 +201,8 @@ describe("content schemas — real data conforms", () => {
     ).toMatchObject({
       type: "photoGrid",
       images: [
-        { src: "/images/gpc/napa-prolink/ways-of-finding-01.png" },
-        { src: "/images/gpc/napa-prolink/ways-of-finding-02.png" },
+        { src: "/images/gpc/napa-prolink/ways-of-finding-01.webp" },
+        { src: "/images/gpc/napa-prolink/ways-of-finding-02.webp" },
       ],
     });
     expect(

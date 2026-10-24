@@ -148,7 +148,7 @@ def thin_mask(orig):
     g=np.asarray(orig.convert("L"),dtype=np.float32)
     k=cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(7,7))
     th=np.maximum(g-cv2.morphologyEx(g,cv2.MORPH_OPEN,k),cv2.morphologyEx(g,cv2.MORPH_CLOSE,k)-g)
-    m=(th>10).astype(np.uint8)
+    m=(th>float(os.environ.get("THIN_THR","10"))).astype(np.uint8)   # raise it where low-contrast fine texture (scanlines, dither) must stay the source's
     m=cv2.dilate(m,np.ones((5,5),np.uint8))
     return cv2.GaussianBlur(m.astype(np.float32),(0,0),0.8)
 
@@ -162,8 +162,33 @@ def shape_layer(orig,T,K):
     rng=ghi-glo
     t=np.clip((g-(glo+ghi)/2)/np.maximum(0.2*rng,1e-3),-1,1)*0.5+0.5
     sharp=lo+(hi-lo)*t[...,None]
-    amt=np.clip((rng-8)/20,0,1)[...,None]
+    amt=np.clip((rng-float(os.environ.get("SHOCK_MIN","8")))/20,0,1)[...,None]   # raise it so fine low-contrast texture is upscaled plainly, not shock-sharpened into swirls
     return up*(1-amt)+sharp*amt
+
+def texture_mask(orig,thr=0.55):
+    """1 where the source carries 1-px-period texture (scanlines, dither). Resampling it with optical flow or shock
+    sharpening turns the stripes into swirls, so those zones keep the source's own pixels (plain bicubic) and only
+    take the model for text strokes, found on a destriped copy."""
+    g=np.asarray(orig.convert("L"),dtype=np.float32)
+    def zig(a,axis):
+        d=np.diff(a,axis=axis)
+        n=d.shape[axis]
+        s0=[slice(None)]*2; s1=[slice(None)]*2; s0[axis]=slice(0,n-1); s1[axis]=slice(1,n)
+        z=((d[tuple(s0)]*d[tuple(s1)])<0)&(np.abs(d[tuple(s0)])>5)&(np.abs(d[tuple(s1)])>5)
+        out=np.zeros(a.shape,dtype=np.float32); sl=[slice(None)]*2; sl[axis]=slice(1,n); out[tuple(sl)]=z
+        return box(out,3)
+    tex=np.maximum(zig(g,1),zig(g,0))
+    m=cv2.GaussianBlur((tex>thr).astype(np.float32),(0,0),2.0)
+    m=(box(m,2)>0.6).astype(np.float32)
+    ds=cv2.filter2D(g,-1,np.array([[.25,.5,.25]],np.float32),borderType=cv2.BORDER_REFLECT)
+    ds=cv2.filter2D(ds,-1,np.array([[.25],[.5],[.25]],np.float32),borderType=cv2.BORDER_REFLECT)
+    return cv2.GaussianBlur(m,(0,0),1.2),ds
+
+def thin_mask_gray(g):
+    k=cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(7,7))
+    th=np.maximum(g-cv2.morphologyEx(g,cv2.MORPH_OPEN,k),cv2.morphologyEx(g,cv2.MORPH_CLOSE,k)-g)
+    m=(th>float(os.environ.get("TEX_TEXT_THR","18"))).astype(np.uint8)
+    return cv2.GaussianBlur(cv2.dilate(m,np.ones((5,5),np.uint8)).astype(np.float32),(0,0),0.8)
 
 def assemble(n):
     m=meta[n]
@@ -175,11 +200,18 @@ def assemble(n):
     A=np.asarray(img,dtype=np.float32); Bv=np.asarray(base,dtype=np.float32)
     v=valid[...,None]
     out=A*v+Bv*(1-v)
-    flat_t,_=flat_color_field(orig,r_std=2,erode=int(os.environ.get('TINT_ERODE','3')))
+    flat_t,_=flat_color_field(orig,r_std=2,thr=float(os.environ.get('TINT_THR','2.2')),erode=int(os.environ.get('TINT_ERODE','3')))   # raise TINT_THR for textured (print/JPEG) backgrounds so the model's colour bias is measured there too
     out=out+tint_field(orig,out,T,flat_t)
+    model_out=out.copy()
     if not os.environ.get("NO_STRUCT"):
         tm=cv2.resize(thin_mask(orig),T,interpolation=cv2.INTER_LINEAR)[...,None]
         out=out*tm+shape_layer(orig,T,K)*(1-tm)
+    if os.environ.get("TEXTURE"):
+        tx,ds=texture_mask(orig,float(os.environ.get("TEX_THR","0.55")))
+        txT=cv2.resize(tx,T,interpolation=cv2.INTER_LINEAR)[...,None]
+        tm2=cv2.resize(thin_mask_gray(ds),T,interpolation=cv2.INTER_LINEAR)[...,None]
+        out=out*(1-txT)+(model_out*tm2+Bv*(1-tm2))*txT
+        Image.fromarray((np.clip(tx,0,1)*255).astype(np.uint8)).save(f"{S}/report/{n}_texture.png")
     flat,col=flat_color_field(orig,r_std=1,erode=int(os.environ.get('LOCK_ERODE','2')))
     Alo=np.asarray(Image.fromarray(np.clip(out+0.5,0,255).astype(np.uint8)).resize(orig.size,Image.BOX),dtype=np.float32)
     vA=np.zeros(flat.shape,dtype=np.float32)
@@ -197,7 +229,13 @@ def assemble(n):
         al=np.asarray(a,dtype=np.float32)/255
         solid=cv2.erode((al>=0.9).astype(np.uint8),np.ones((int(K*2)|1,)*2,np.uint8)).astype(np.float32)
         sw=(np.clip((al-0.9)/0.1,0,1)*cv2.GaussianBlur(solid,(0,0),K*0.7))[...,None]   # soft / semi-transparent pixels (shadows) keep the original's own colour
-        out=out*sw+Bv*(1-sw)
+        Bs=Bv
+        sp=f"{S}/in/{n}.straight.png"
+        if os.path.exists(sp):
+            st=np.asarray(Image.open(sp).convert("RGBA"),dtype=np.float32); sa=st[...,3:]/255
+            pre=cv2.resize(st[...,:3]*sa,T,interpolation=cv2.INTER_CUBIC); aa=cv2.resize(sa[...,0],T,interpolation=cv2.INTER_CUBIC)[...,None]
+            Bs=np.where(aa>0.02,pre/np.maximum(aa,0.02),Bv)
+        out=out*sw+Bs*(1-sw)
     res=Image.fromarray(np.clip(out+0.5,0,255).astype(np.uint8))
     if m["has_alpha"]:
         res=res.convert("RGBA"); res.putalpha(a)
