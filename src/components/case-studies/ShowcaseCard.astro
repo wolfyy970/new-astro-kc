@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import { publicImageSize } from "../../utils/image-size";
+import { resolveDisplayImage } from "../../utils/display-image";
 import CaseStudyImageTrigger from "./CaseStudyImageTrigger.astro";
 
 interface Props {
@@ -23,7 +23,8 @@ const {
   wide = false,
 } = Astro.props;
 
-const size = (await publicImageSize(image)) ?? { width: 800, height: 500 };
+const display = await resolveDisplayImage(image);
+const size = display.size ?? { width: 800, height: 500 };
 
 // A tall artifact in a wide card is the layout problem this solves.
 // news-hub.jpg is a 1100x2070 full-page capture whose whole point is the
@@ -45,7 +46,7 @@ const sideways = wide && isPortrait;
     className={sideways ? "sideways-image-trigger" : undefined}
   >
     <Image
-      src={image}
+      src={display.src}
       alt={imageAlt}
       width={size.width}
       height={size.height}

@@ -221,7 +221,7 @@ src/components/case-studies/
   VideoSection.astro     ← native video with contextual heading/caption
   ExternalVideoSection.astro ← approved external embed with its source link
   CaseStudyImageTrigger.astro ← accessible trigger shared by editorial images
-  CaseStudyImageLightbox.astro ← one viewport-fit native dialog per case-study page
+  CaseStudyImageLightbox.astro ← one native dialog per case-study page: header controls (zoom, Magnifier, Close) above an image stage with a rectangular magnifier lens
 
 src/components/
   ProjectGateway.astro   ← the shared case-study link control (styles in gateway-link.css)
@@ -334,6 +334,35 @@ ratio, so both of these are required:
 1. **Declared dimensions must be true.** `src/utils/image-size.ts → publicImageSize()` reads the real pixel dimensions at build time through the project's direct `sharp` dependency and memoises them. Components pass those instead of the per-component constants they used to hardcode — `800×600`, `800×500`, `800×1200`, `1920×800`, and a `1300×800` default buried in `CaseStudySection`'s props. Every one of those declared a ratio its picture did not have. A missing or unreadable file returns `null` and the caller falls back, matching the warn-and-degrade policy below.
 2. **CSS must release the height.** An image rule that sets `width: 100%` without `height: auto` leaves the attribute height in force, so the picture is drawn at container-width × attribute-height and squashed. This is what distorted the case-study imagery even after the attributes were corrected.
 
+#### Image delivery: display variant inline, full resolution on demand
+
+Case-study artwork ships as 4K+ WebP so every pixel of a design survives, but the page only paints it ~1300 CSS px wide. Serving one file for both jobs made the Truist page download ~8 MB of 4K art before anyone asked to see it larger. Delivery is therefore two-tier:
+
+- `npm run images:display` (`scripts/generate-display-images.ts`) writes `<name>.display.webp` beside every `public/images/**/*.webp` wider than 2000 px or heavier than 300 KB — max 2000 px wide, quality 82, alpha preserved. It is idempotent (an up-to-date variant is skipped) and removes a variant that no longer pays for itself. Re-run it whenever an image is added or replaced.
+- `src/utils/display-image.ts → resolveDisplayImage()` returns the variant when one exists (else the original) with its real size. The seven trigger components (`CaseStudyHero`, `FeatureRow`, `PhotoGrid`, `CaptionedImage`, `FullBleedSection`, `LargeImageSection`, `ShowcaseCard`) render that inline, while `CaseStudyImageTrigger`'s `data-full-src` keeps the full-resolution original.
+- `npm run verify` (via `checkDisplayImages`) fails when a variant has no source, is wider than its source, or has a different aspect ratio — a stale variant would otherwise show a different crop than the viewer.
+
+The lightbox and its lens are the only consumers of the full-resolution file, and the lightbox paints the already-cached display variant as a stand-in while it downloads.
+
+#### Image generation tooling: OpenRouter MCP
+
+`openrouter-image` is an optional stdio MCP server (`scripts/openrouter-image-mcp.ts`, core in `scripts/openrouter-image.ts`) that reaches Nano Banana 2.1 (`google/gemini-nano-banana-2.1`) through OpenRouter, the same model the Higgsfield workflow uses. It is local tooling only and is **not** registered by default (no `.mcp.json`); to use it, add an `openrouter-image` entry running `npx tsx scripts/openrouter-image-mcp.ts`. Nothing in the Astro build imports it.
+
+- Tools: `openrouter_generate_image` (prompt, up to 14 reference images, aspect ratio, `1K`/`2K`/`4K`, thinking `none`/`minimal`/`high`, seed; saves the file and reports path, size, route and cost), `openrouter_list_image_models`, and `openrouter_key_status`.
+- Routes: `chat` (default; the only route with thinking and seed) falls back to the dedicated `images` route when OpenRouter rejects the request shape or returns no image. Auth, credit and rate-limit errors never fall back.
+- Key lookup: `OPENROUTER_API_KEY`, else the file named by `OPENROUTER_KEY_FILE`, else `~/Developer/api_pass.txt` (the first `sk-or-…` token in it is used, so the file may hold other notes). The key is sent only as a Bearer header and scrubbed from errors. In a cloud session, add `OPENROUTER_API_KEY` in the environment's settings instead; never commit it.
+- Output lands in `./openrouter-images/` (git-ignored) unless `output_path` is given.
+
+#### Enlarged-image viewer and magnifier
+
+Every "View larger" trigger opens the one `CaseStudyImageLightbox` dialog (`src/scripts/case-study-lightbox.ts`, geometry in the DOM-free `src/scripts/image-magnifier.ts`):
+
+- **Controls sit outside the image.** A header holds the caption, zoom −/level/+, the Magnifier toggle (`aria-pressed`), and Close; the image stage is below it, and the lens is clipped to the image with `pointer-events: none`, so it can never cover Close or the zoom controls.
+- **Lens.** A square-cornered ~280×200 window follows a mouse/pen pointer at 2.5× (1.5–5×; buttons, `+`/`-`, or the wheel while the lens shows — Ctrl+wheel stays browser zoom). It is centred on the pointer but clamped inside the image, and the magnified pixel under the pointer is drawn exactly at the pointer, so edge pixels stay reachable. It appears only after the full-resolution file has loaded; a click on the image, `M`, or the toggle turns it off/on.
+- **Touch.** Off by default on coarse pointers; the toggle turns it on, then press-and-drag moves a smaller lens that floats above the finger. **Keyboard.** The focusable stage moves the lens with the arrow keys (Shift = larger steps); zoom changes are announced through a polite live region.
+- **Tall captures** (height/width > 1.6) fit the stage width and scroll (`overscroll-behavior: contain`) instead of shrinking to a sliver; the wheel always scrolls there, and the lens is re-aimed from live bounding rects as the page moves under the pointer.
+- **Closing** works with Esc, a backdrop click, or Close; clicking the image never closes it. Closing clears the image, lens and listeners and returns focus to the trigger. Nothing (zoom, toggle state) persists between opens.
+
 `object-fit: cover` is reserved for surfaces that genuinely must fill — the hero background band and the full-bleed strip. Everywhere else, art fits inside a bounded box: `ShowcaseCard` caps height and lets width fall out of the ratio, so a portrait screenshot sits narrower on its card rather than being cropped to landscape or rendering 2443px tall. A full-width `mixedGrid` lead card holding portrait art turns sideways instead — image beside caption, the pair centred — because a tall artifact in a wide container can never fill it.
 
 ## Security
@@ -384,6 +413,8 @@ The same hazard applied to `theme-light`/`theme-dark`, which were simultaneously
   - `src/utils/validation.ts`: Logic for extracting and validating hotspots.
   - `src/utils/images.ts`: Pipeline for pre-optimizing dynamic image assets, including case-insensitive extension handling, forwarding of `IMAGE_OPTIMIZE_OPTIONS`, and that figures are sized with `fit: "inside"` — a bounding box, never a crop. Nothing else in the suite would catch a silent revert to `cover`.
   - `src/utils/image-size.ts`: `publicImageSize()` against real assets and real sharp — correct dimensions for portrait and landscape files, `null` (never a throw) for a missing or undecodable one, and the build-time memo.
+  - `src/utils/display-image.ts` and `scripts/generate-display-images.ts`: display-variant path rules, fallback to the original for non-WebP or un-generated files, same-aspect/2000px output, idempotent regeneration, stale-variant refresh, and the verifier's orphan / too-wide / aspect-mismatch errors (real sharp, real fixture files).
+  - `src/scripts/case-study-lightbox.ts` and `src/scripts/image-magnifier.ts`: the lightbox lifecycle (open on the full-resolution file, focus Close, Escape/backdrop/Close, focus return, nothing persisted) and the magnifier — lens centring and edge clamping, the pixel-under-the-pointer invariant, zoom bounds via buttons/keys/wheel (Ctrl+wheel and tall pages left to the browser), arrow-key lens movement, touch press-and-drag with the lens floating above the finger, tall-page scrolling, and listener teardown on close.
   - `src/utils/dates.ts`: `dateRangeLines()` across month-precision ranges, ongoing roles, single-line matches, and yearless strings, plus a pass over the real `resume.json` asserting every entry yields two short rail lines and that the entries stay newest-first.
   - `src/scripts/icons.ts`: client-side Tabler SVG wrappers for note chrome (close, carousel, play).
   - `src/utils/render.ts`: Hotspot-to-span transformation, project-aware case-study markers, accurate accessible labels for marginalia-only versus project-backed terms, and feature-flag-aware rendering.

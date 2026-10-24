@@ -13,7 +13,7 @@
  */
 
 import type { CaseStudyPhotoItem } from "../../types/content";
-import { publicImageSize } from "../../utils/image-size";
+import { resolveDisplayImage } from "../../utils/display-image";
 import CaseStudyImageTrigger from "./CaseStudyImageTrigger.astro";
 
 interface Props {
@@ -39,10 +39,10 @@ const {
   gap = "normal",
 } = Astro.props;
 const resolvedImages = await Promise.all(
-  images.map(async (image) => ({
-    ...image,
-    size: await publicImageSize(image.src),
-  })),
+  images.map(async (image) => {
+    const display = await resolveDisplayImage(image.src);
+    return { ...image, displaySrc: display.src, size: display.size };
+  }),
 );
 ---
 
@@ -63,7 +63,7 @@ const resolvedImages = await Promise.all(
           <div class="photo-item">
             <CaseStudyImageTrigger src={img.src} alt={img.alt}>
               <img
-                src={img.src}
+                src={img.displaySrc}
                 alt={img.alt}
                 width={img.size?.width}
                 height={img.size?.height}

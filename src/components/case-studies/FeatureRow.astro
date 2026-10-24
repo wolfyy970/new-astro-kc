@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import ProjectGateway from "../ProjectGateway.astro";
 import SectionHeader from "./SectionHeader.astro";
 import CaseStudyImageTrigger from "./CaseStudyImageTrigger.astro";
-import { publicImageSize } from "../../utils/image-size";
+import { resolveDisplayImage } from "../../utils/display-image";
 
 interface Props {
   title: string;
@@ -30,14 +30,15 @@ const {
 } = Astro.props;
 
 // Real dimensions, so the reserved box matches the picture.
-const size = (await publicImageSize(image)) ?? { width: 800, height: 600 };
+const display = await resolveDisplayImage(image);
+const size = display.size ?? { width: 800, height: 600 };
 ---
 
 <section class={`feature-row${reverse ? " reverse" : ""}`}>
   <div class="feature-image">
     <CaseStudyImageTrigger src={image} alt={imageAlt}>
       <Image
-        src={image}
+        src={display.src}
         alt={imageAlt}
         width={size.width}
         height={size.height}

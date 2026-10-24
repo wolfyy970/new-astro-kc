@@ -31,6 +31,7 @@ High-fidelity Design Leadership Portfolio built with Astro 7. This project demon
 ```bash
 npm install     # Install dependencies
 npm run verify  # Validate content integrity (hotspots & images)
+npm run images:display # Regenerate light display variants of heavy case-study images
 npm run dev     # Start development server
 npm run dev:status # Inspect a server left by an older session
 npm run dev:stop   # Stop a server left by an older session
